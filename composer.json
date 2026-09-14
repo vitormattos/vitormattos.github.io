@@ -21,8 +21,8 @@
     "sort-packages": true
   },
   "scripts": {
-    "build": "jigsaw build production",
-    "serve": "jigsaw serve",
+    "build": "npm run build",
+    "serve": "npm run dev",
     "lint": "find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
     "cs:check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
     "cs:fix": "php-cs-fixer fix --allow-risky=yes",
