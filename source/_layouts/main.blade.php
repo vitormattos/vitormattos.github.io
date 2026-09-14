@@ -21,6 +21,7 @@
     @include('_partials.seo')
     @viteRefresh()
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/main.scss') }}">
+    @stack('head')
 </head>
 <body>
 <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
@@ -45,5 +46,6 @@
     <p>{{ $isEnglish ? 'Content and code published with transparency and version control.' : 'Conteúdo e código publicados com transparência e controle de versão.' }}</p>
     <p><a href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">RSS</a></p>
 </footer>
+@stack('scripts')
 </body>
 </html>
