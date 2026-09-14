@@ -37,12 +37,12 @@ return [
     'collections' => [
         'articles' => [
             'path' => 'pt-BR/artigos/{filename}',
-            'sort' => '-date',
+            'sort' => '-year',
             'schemaType' => 'Article',
         ],
         'articlesEn' => [
             'path' => 'articles/{filename}',
-            'sort' => '-date',
+            'sort' => '-year',
             'schemaType' => 'Article',
         ],
         'talks' => [
