@@ -37,14 +37,12 @@ final class SiteBuildTest extends TestCase
         self::assertFileExists($build . '/articles/index.html');
         self::assertFileExists($build . '/articles/from-code-to-infrastructure/index.html');
         self::assertFileExists($build . '/talks/index.html');
-        self::assertFileExists($build . '/talks/free-software/index.html');
+        self::assertFileExists($build . '/talks/libresign-integrations/index.html');
         self::assertFileExists($build . '/pt-BR/index.html');
         self::assertFileExists($build . '/pt-BR/artigos/index.html');
         self::assertFileExists($build . '/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/index.html');
-        self::assertFileExists($build . '/pt-BR/palestras/software-livre/index.html');
-        self::assertFileExists($build . '/presentations/free-software/en.md');
-        self::assertFileExists($build . '/presentations/free-software/pt-BR.md');
+        self::assertFileExists($build . '/pt-BR/palestras/libresign-integracoes/index.html');
         self::assertFileExists($build . '/404.html');
         self::assertFileExists($build . '/feed.xml');
         self::assertFileExists($build . '/pt-BR/feed.xml');
@@ -80,34 +78,32 @@ final class SiteBuildTest extends TestCase
     public function testAssetsUseConfiguredBaseUrl(): void
     {
         $index = $this->read('index.html');
-        $talk = $this->read('talks/free-software/index.html');
+        $talk = $this->read('talks/libresign-integrations/index.html');
         $baseUrl = rtrim((string) (getenv('EXPECTED_BASE_URL') ?: self::SITE_URL), '/');
 
         self::assertMatchesRegularExpression(
             '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/main-[^"\']+\.css#',
             $index,
         );
-        self::assertStringContainsString($baseUrl . '/presentations/free-software/en.md', $talk);
         self::assertMatchesRegularExpression(
             '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/presentations-[^"\']+\.css#',
             $talk,
         );
     }
 
-    public function testPresentationContentIsIndependentAndComponentized(): void
+    public function testRealLibreSignTalkUsesSlidesComPresentation(): void
     {
-        $source = $this->read('presentations/free-software/en.md');
         $index = $this->read('talks/index.html');
-        $talk = $this->read('talks/free-software/index.html');
+        $talk = $this->read('talks/libresign-integrations/index.html');
+        $portugueseTalk = $this->read('pt-BR/palestras/libresign-integracoes/index.html');
 
-        self::assertStringContainsString('# Free software as infrastructure', $source);
-        self::assertStringNotContainsString('Jigsaw', $source);
-        self::assertStringNotContainsString('Blade', $source);
-        self::assertStringContainsString('data-presentation-mode="thumbnail"', $index);
-        self::assertStringContainsString('data-presentation-mode="detail"', $talk);
-        self::assertStringContainsString('data-presentation-action="overview"', $talk);
-        self::assertStringContainsString('data-presentation-action="reading"', $talk);
-        self::assertStringContainsString('data-presentation-action="fullscreen"', $talk);
+        self::assertStringContainsString('LibreSign - Integrações', $talk);
+        self::assertStringContainsString('https://slides.com/vitormattos/libresign-integracao/embed', $talk);
+        self::assertStringContainsString('https://youtu.be/WJpe_NnmW8o', $talk);
+        self::assertStringContainsString('slides.com', $index);
+        self::assertStringContainsString('LibreSign - Integrações', $portugueseTalk);
+        self::assertStringNotContainsString('Initial structure to register talks', $talk);
+        self::assertStringNotContainsString('structural example', $talk);
     }
 
     public function testCanonicalAndStructuredDataAlwaysUseProductionUrl(): void
@@ -130,13 +126,13 @@ final class SiteBuildTest extends TestCase
         $index = $this->read('index.html');
         $robots = $this->read('robots.txt');
         $notFound = $this->read('404.html');
-        $placeholderTalk = $this->read('talks/free-software/index.html');
+        $realTalk = $this->read('talks/libresign-integrations/index.html');
 
         self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $notFound);
-        self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $placeholderTalk);
 
         if ($this->isPreview()) {
             self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $index);
+            self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $realTalk);
             self::assertStringContainsString("Disallow: /", $robots);
             self::assertFileDoesNotExist($this->buildDirectory() . '/sitemap.xml');
 
@@ -146,6 +142,10 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString(
             '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">',
             $index,
+        );
+        self::assertStringContainsString(
+            '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">',
+            $realTalk,
         );
         self::assertStringContainsString('Disallow: /pr-preview/', $robots);
         self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $robots);
@@ -163,9 +163,9 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString(self::SITE_URL . '/articles', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/talks/libresign-integrations', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/pt-BR/palestras/libresign-integracoes', $sitemap);
         self::assertStringNotContainsString('/404.html', $sitemap);
-        self::assertStringNotContainsString('/talks/free-software', $sitemap);
-        self::assertStringNotContainsString('/pt-BR/palestras/software-livre', $sitemap);
         self::assertStringNotContainsString('/pr-preview/', $sitemap);
         self::assertStringNotContainsString('/feed.xml', $sitemap);
         self::assertStringNotContainsString('/llms.txt', $sitemap);
