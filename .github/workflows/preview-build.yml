@@ -12,8 +12,6 @@ permissions:
   contents: write
   pull-requests: write
 
-# A new commit makes an older preview of the same PR obsolete. Keep previews
-# for different PRs independent and never let a preview cancel production.
 concurrency:
   group: pr-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
@@ -45,9 +43,32 @@ jobs:
         if: github.event.action != 'closed'
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Test presentation contracts
+        if: github.event.action != 'closed'
+        run: vendor/bin/phpunit tests/Presentations
+
+      - name: Synchronize public Slides.com decks for preview
+        if: github.event.action != 'closed'
+        env:
+          SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
+        run: php scripts/sync-slides.php
+
+      - name: Restore presentation PDF cache
+        if: github.event.action != 'closed'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/slides-pdf
+          key: slides-pdf-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            slides-pdf-v1-${{ runner.os }}-
+
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
         run: npm install --no-audit --no-fund
+
+      - name: Generate presentation PDFs
+        if: github.event.action != 'closed'
+        run: php scripts/generate-slides-pdfs.php
 
       - name: Build preview
         if: github.event.action != 'closed'

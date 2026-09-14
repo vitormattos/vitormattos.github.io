@@ -6,6 +6,7 @@
     $sourceUrl = $page->baseUrl . $sourcePath;
     $deckId = 'deck-' . substr(sha1($sourcePath), 0, 10);
     $isEnglish = ($page->locale ?? 'en') === 'en';
+    $pdfUrl = $presentation['pdf'] ?? (rtrim($page->getPath(), '/') . '/presentation.pdf');
 @endphp
 
 <div class="presentation-frame">
@@ -15,6 +16,9 @@
             <button type="button" data-presentation-action="overview">
                 {{ $isEnglish ? 'Overview' : 'Miniaturas' }}
             </button>
+            <button type="button" data-presentation-action="search">
+                {{ $isEnglish ? 'Search' : 'Buscar' }}
+            </button>
             <button type="button" data-presentation-action="reading" aria-pressed="false">
                 {{ $isEnglish ? 'Reading view' : 'Modo leitura' }}
             </button>
@@ -22,9 +26,7 @@
                 {{ $isEnglish ? 'Fullscreen' : 'Tela cheia' }}
             </button>
             <a href="{{ $sourceUrl }}" rel="nofollow">Markdown</a>
-            @if ($presentation['pdf'] ?? false)
-                <a href="{{ $page->baseUrl }}/{{ ltrim($presentation['pdf'], '/') }}">PDF</a>
-            @endif
+            <a href="{{ $page->baseUrl }}/{{ ltrim($pdfUrl, '/') }}" download>PDF</a>
             @if ($presentation['video'] ?? false)
                 <a href="{{ $presentation['video'] }}">{{ $isEnglish ? 'Video' : 'Vídeo' }}</a>
             @endif

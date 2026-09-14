@@ -12,20 +12,34 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
 @endpush
-
 @push('scripts')
     <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/presentations.js') }}"></script>
 @endpush
 
 @section('body')
-<section class="content" aria-labelledby="page-title">
-    <header>
-        <p class="eyebrow">Speaking</p>
-        <h1 id="page-title">Talks</h1>
-        <p class="lead">Talks and presentations about free software, PHP, LibreSign, software engineering and community building.</p>
+<section class="content talks-catalog" aria-labelledby="page-title">
+    <header class="talks-catalog__header">
+        <div>
+            <p class="eyebrow">Speaking</p>
+            <h1 id="page-title">Talks</h1>
+            <p class="lead">Talks and presentations about free software, PHP, LibreSign, software engineering and community building.</p>
+        </div>
+        <div class="gallery-switcher" data-gallery-switcher>
+            <button class="gallery-switcher__trigger" type="button" data-gallery-menu-trigger aria-expanded="false" aria-haspopup="true">
+                <span>Layout:</span> <strong data-gallery-current>Grid</strong><span aria-hidden="true">⌄</span>
+            </button>
+            <div class="gallery-switcher__menu" data-gallery-menu hidden role="group" aria-label="Select layout">
+                <strong class="gallery-switcher__title">Select layout</strong>
+                <button type="button" data-gallery-view="grid" aria-pressed="true">
+                    <span><strong>Grid</strong><small>Big images, concise deck information</small></span><span class="gallery-switcher__check" aria-hidden="true">✓</span>
+                </button>
+                <button type="button" data-gallery-view="list" aria-pressed="false">
+                    <span><strong>List</strong><small>Small images, includes deck descriptions</small></span><span class="gallery-switcher__check" aria-hidden="true">✓</span>
+                </button>
+            </div>
+        </div>
     </header>
-
-    <div class="talk-list">
+    <div class="talk-list" data-talk-gallery data-view="grid">
         @foreach ($talksEn as $talk)
             @include('_partials.talk.card', ['talk' => $talk])
         @endforeach

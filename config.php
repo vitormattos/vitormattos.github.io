@@ -46,12 +46,12 @@ return [
             'schemaType' => 'Article',
         ],
         'talks' => [
-            'path' => 'pt-BR/palestras/{filename}',
+            'path' => 'pt-BR/palestras/{slug}',
             'sort' => '-date',
             'schemaType' => 'CreativeWork',
         ],
         'talksEn' => [
-            'path' => 'talks/{filename}',
+            'path' => 'talks/{slug}',
             'sort' => '-date',
             'schemaType' => 'CreativeWork',
         ],

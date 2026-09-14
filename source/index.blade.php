@@ -13,15 +13,14 @@ alternateUrl: /pt-BR/
     <p>Software developer, CTO and worker-owner at LibreCode, LibreSign maintainer, and participant in free software communities.</p>
 </section>
 
-<section id="talks" aria-labelledby="talks-title">
-    <h2 id="talks-title">Talks</h2>
-    <div class="grid">
-        @foreach ($talksEn as $talk)
-            <article class="card">
-                <p class="meta"><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date('Y-m-d', $talk->date) }}</time></p>
-                <h3><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h3>
-                <p>{{ $talk->description }}</p>
-            </article>
+<section id="talks" class="home-talks" aria-labelledby="talks-title">
+    <div class="section-heading">
+        <h2 id="talks-title">Talks</h2>
+        <a href="{{ rtrim($page->baseUrl, '/') }}/talks/">View all talks →</a>
+    </div>
+    <div class="home-talks__grid">
+        @foreach ($talksEn->take(4) as $talk)
+            @include('_partials.talk.home-card', ['talk' => $talk])
         @endforeach
     </div>
 </section>
