@@ -33,6 +33,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - `baseUrl` means where the current build is being served. It changes for previews.
 - `siteUrl` means the canonical production origin and must remain `https://vitormattos.github.io` even in previews.
 - Canonical URLs, hreflang and JSON-LD must use `siteUrl`, never the preview `baseUrl`.
+- Canonical path policy follows Jigsaw's generated URLs: `/` is the only canonical URL ending in `/`; all non-root canonical URLs omit the trailing slash (for example `/articles`, `/pt-BR`, `/articles/example`). Keep canonical, hreflang, Open Graph, JSON-LD, sitemap, RSS and crawlable internal links consistent with this rule.
 - Navigation and compiled asset URLs use `baseUrl` so preview links stay inside the preview.
 - Preview HTML must contain `noindex,nofollow,noarchive`.
 - The production root `robots.txt` must disallow `/pr-preview/`. A nested `robots.txt` inside a preview path is not authoritative under the robots exclusion standard.
@@ -41,8 +42,8 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 
 ## Crawlable information architecture
 
-- English collection hubs: `/articles/` and `/talks/`.
-- Portuguese collection hubs: `/pt-BR/artigos/` and `/pt-BR/palestras/`.
+- English collection hubs: `/articles` and `/talks`.
+- Portuguese collection hubs: `/pt-BR/artigos` and `/pt-BR/palestras`.
 - Main navigation links to these real hub pages, not only to homepage fragments.
 - Detail pages should remain reachable from both the homepage and the corresponding collection hub.
 - Detail-page structured data includes breadcrumbs through the appropriate collection hub.
