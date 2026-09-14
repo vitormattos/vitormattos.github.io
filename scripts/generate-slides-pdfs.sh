@@ -21,10 +21,18 @@ fi
 
 find presentations/slides.com -mindepth 2 -maxdepth 2 -name metadata.json -print0 | while IFS= read -r -d '' metadata; do
     deck_dir="$(dirname "$metadata")"
+    deck_id="$(basename "$deck_dir")"
     url="$(php -r '$m=json_decode(file_get_contents($argv[1]), true, flags: JSON_THROW_ON_ERROR); echo $m["urls"]["public"] ?? $m["url"] ?? "";' "$metadata")"
 
     if [[ -z "$url" ]]; then
-        echo "Skipping $metadata: no public URL in metadata." >&2
+        talk_file="$(grep -R -l -m1 "^slidesId: ${deck_id}$" source/_talks source/_talksEn 2>/dev/null | head -n1 || true)"
+        if [[ -n "$talk_file" ]]; then
+            url="$(sed -n 's/^  url: "\(.*\)"$/\1/p' "$talk_file" | head -n1)"
+        fi
+    fi
+
+    if [[ -z "$url" ]]; then
+        echo "Skipping $metadata: no public URL found." >&2
         continue
     fi
 
@@ -41,5 +49,4 @@ find presentations/slides.com -mindepth 2 -maxdepth 2 -name metadata.json -print
         --print-to-pdf-no-header \
         --print-to-pdf="$output" \
         "${url}${separator}print-pdf"
-
 done
