@@ -4,6 +4,7 @@
     $presentation = $page->presentation ?? [];
     $type = $presentation['type'] ?? 'external';
     $isEnglish = ($page->locale ?? 'en') === 'en';
+    $archivedPdf = $presentation['pdf'] ?? (($page->slidesId ?? false) ? '/presentations/slides.com/' . $page->slidesId . '/deck.pdf' : null);
 @endphp
 @if ($type === 'reveal')
     @include('_partials.talk.reveal')
@@ -16,7 +17,7 @@
                 <a href="{{ $page->baseUrl }}{{ $presentation['localHtml'] }}" download>{{ $isEnglish ? 'Download HTML' : 'Baixar HTML' }}</a>
                 @if ($presentation['localCss'] ?? false)<a href="{{ $page->baseUrl }}{{ $presentation['localCss'] }}" download>CSS</a>@endif
                 @if ($presentation['metadata'] ?? false)<a href="{{ $page->baseUrl }}{{ $presentation['metadata'] }}" download>JSON</a>@endif
-                @if ($presentation['pdf'] ?? false)<a href="{{ $presentation['pdf'] }}" download>PDF</a>@endif
+                @if ($archivedPdf)<a href="{{ $page->baseUrl }}{{ $archivedPdf }}" download>PDF</a>@endif
             </div>
         </div>
         <div class="presentation-stage">
