@@ -15,29 +15,18 @@ final class PdfExportPolicyTest extends TestCase
     public function testPrivateDeckCanNeverProduceExportCommand(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        PdfExportPolicy::deckTapeArguments([
-            'visibility' => 'self',
-            'embed_url' => 'https://slides.com/vitormattos/private-deck/embed',
-        ], '/tmp/deck.pdf');
+        PdfExportPolicy::deckTapeArguments(['visibility' => 'self', 'embed_url' => 'https://slides.com/vitormattos/private-deck/embed'], '/tmp/deck.pdf');
     }
 
     public function testTeamDeckCanNeverProduceExportCommand(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        PdfExportPolicy::deckTapeArguments([
-            'visibility' => 'team',
-            'embed_url' => 'https://slides.com/vitormattos/team-deck/embed',
-        ], '/tmp/deck.pdf');
+        PdfExportPolicy::deckTapeArguments(['visibility' => 'team', 'embed_url' => 'https://slides.com/vitormattos/team-deck/embed'], '/tmp/deck.pdf');
     }
 
     public function testExportAcceptsOnlyOwnedPublicSlidesEmbedUrl(): void
     {
-        foreach ([
-            'http://slides.com/vitormattos/deck/embed',
-            'https://example.com/vitormattos/deck/embed',
-            'https://slides.com/another-user/deck/embed',
-            'https://slides.com/vitormattos/deck',
-        ] as $url) {
+        foreach (['http://slides.com/vitormattos/deck/embed', 'https://example.com/vitormattos/deck/embed', 'https://slides.com/another-user/deck/embed', 'https://slides.com/vitormattos/deck'] as $url) {
             try {
                 PdfExportPolicy::deckTapeArguments(['visibility' => 'all', 'embed_url' => $url], '/tmp/deck.pdf');
                 self::fail("Embed URL should have been rejected: {$url}");
@@ -50,13 +39,8 @@ final class PdfExportPolicyTest extends TestCase
     public function testExportCommandUsesEmbedAndPreservesDeckDimensions(): void
     {
         $arguments = PdfExportPolicy::deckTapeArguments([
-            'visibility' => 'all',
-            'url' => 'https://slides.com/vitormattos/public-deck',
-            'embed_url' => 'https://slides.com/vitormattos/public-deck/embed',
-            'width' => 960,
-            'height' => 540,
+            'visibility' => 'all', 'embed_url' => 'https://slides.com/vitormattos/public-deck/embed', 'width' => 960, 'height' => 540,
         ], '/tmp/deck.pdf');
-
         self::assertSame('decktape@' . PdfExportPolicy::DECKTAPE_VERSION, $arguments[2]);
         self::assertSame('reveal', $arguments[3]);
         self::assertContains('960x540', $arguments);
@@ -66,12 +50,7 @@ final class PdfExportPolicyTest extends TestCase
 
     public function testInvalidDimensionsCannotCreateAnUnusableViewport(): void
     {
-        $arguments = PdfExportPolicy::deckTapeArguments([
-            'visibility' => 'all',
-            'embed_url' => 'https://slides.com/vitormattos/public-deck/embed',
-            'width' => 0,
-            'height' => -1,
-        ], '/tmp/deck.pdf');
+        $arguments = PdfExportPolicy::deckTapeArguments(['visibility' => 'all', 'embed_url' => 'https://slides.com/vitormattos/public-deck/embed', 'width' => 0, 'height' => -1], '/tmp/deck.pdf');
         self::assertContains('320x180', $arguments);
     }
 
@@ -93,14 +72,11 @@ final class PdfExportPolicyTest extends TestCase
 
     public function testPdfFilenameUsesDeckSlug(): void
     {
-        self::assertSame(
-            'quem-controla-sua-tecnologia-controla-seu-futuro-ufpb.pdf',
-            PdfExportPolicy::pdfFilename(['id' => 123, 'slug' => 'Quem controla sua tecnologia controla seu futuro - UFPB']),
-        );
+        self::assertSame('quem-controla-sua-tecnologia-controla-seu-futuro-ufpb.pdf', PdfExportPolicy::pdfFilename(['id' => 123, 'slug' => 'Quem controla sua tecnologia controla seu futuro - UFPB']));
         self::assertSame('deck-123.pdf', PdfExportPolicy::pdfFilename(['id' => 123]));
     }
 
-    public function testSourceFingerprintChangesWhenAnyVersionedSourceArtifactChanges(): void
+    public function testSourceFingerprintChangesWhenAnyVersionedSourceArtifactOrGeneratorChanges(): void
     {
         $directory = $this->createDeckDirectory();
         try {
@@ -120,19 +96,13 @@ final class PdfExportPolicyTest extends TestCase
     public function testVersionedManifestAllowsReuseOnlyWhileSourcesGeneratorAndPdfMatch(): void
     {
         $directory = $this->createDeckDirectory();
-        $metadata = $this->publicDeckMetadata();
-        $metadata['slug'] = 'public-deck';
+        $metadata = ['id' => 123, 'slug' => 'public-deck'];
         $pdf = $directory . '/public-deck.pdf';
         $manifest = $directory . '/' . PdfExportPolicy::EXPORT_MANIFEST;
-
         try {
             file_put_contents($pdf, '%PDF-' . str_repeat('x', PdfExportPolicy::MINIMUM_PDF_BYTES));
-            file_put_contents(
-                $manifest,
-                json_encode(PdfExportPolicy::exportManifest($directory, $metadata, $pdf, 'generator-a'), JSON_THROW_ON_ERROR),
-            );
+            file_put_contents($manifest, json_encode(PdfExportPolicy::exportManifest($directory, $metadata, $pdf, 'generator-a'), JSON_THROW_ON_ERROR));
             self::assertTrue(PdfExportPolicy::manifestMatches($manifest, $directory, $metadata, 'generator-a'));
-
             file_put_contents($directory . '/deck.css', 'changed');
             self::assertFalse(PdfExportPolicy::manifestMatches($manifest, $directory, $metadata, 'generator-a'));
             file_put_contents($directory . '/deck.css', 'css');
@@ -144,53 +114,18 @@ final class PdfExportPolicyTest extends TestCase
         }
     }
 
-    public function testUnchangedDeckAndGeneratorReuseTheSameCacheKey(): void
+    public function testActionsCacheKeyUsesTheSameCompleteSourceFingerprint(): void
     {
-        $metadata = $this->publicDeckMetadata();
-        self::assertSame(PdfExportPolicy::deckFingerprint($metadata, 'generator-a'), PdfExportPolicy::deckFingerprint($metadata, 'generator-a'));
-    }
-
-    public function testDeckChangesThatAffectRenderingInvalidateTheCache(): void
-    {
-        $metadata = $this->publicDeckMetadata();
-        $original = PdfExportPolicy::deckFingerprint($metadata, 'generator-a');
-        foreach ([
-            ['updated_at' => '2026-09-15T00:00:00Z'],
-            ['url' => 'https://slides.com/vitormattos/renamed-deck'],
-            ['embed_url' => 'https://slides.com/vitormattos/renamed-deck/embed'],
-            ['width' => 1280],
-            ['height' => 720],
-            ['slide_count' => 25],
-        ] as $change) {
-            self::assertNotSame($original, PdfExportPolicy::deckFingerprint(array_replace($metadata, $change), 'generator-a'));
+        $directory = $this->createDeckDirectory();
+        try {
+            $metadata = ['id' => 123];
+            $path = PdfExportPolicy::cachePath('/tmp/slides-cache', $directory, $metadata, 'generator-a');
+            self::assertSame('/tmp/slides-cache/123-' . PdfExportPolicy::sourceFingerprint($directory, 'generator-a') . '.pdf', $path);
+            file_put_contents($directory . '/deck.html', '<section>changed</section>');
+            self::assertNotSame($path, PdfExportPolicy::cachePath('/tmp/slides-cache', $directory, $metadata, 'generator-a'));
+        } finally {
+            $this->removeDirectory($directory);
         }
-    }
-
-    public function testGeneratorChangeInvalidatesEveryDeckCacheKey(): void
-    {
-        $metadata = $this->publicDeckMetadata();
-        self::assertNotSame(PdfExportPolicy::deckFingerprint($metadata, 'generator-a'), PdfExportPolicy::deckFingerprint($metadata, 'generator-b'));
-    }
-
-    public function testCachePathIsScopedByDeckAndFingerprint(): void
-    {
-        $path = PdfExportPolicy::cachePath('/tmp/slides-cache', $this->publicDeckMetadata(), 'generator-a');
-        self::assertStringStartsWith('/tmp/slides-cache/123-', $path);
-        self::assertStringEndsWith('.pdf', $path);
-    }
-
-    private function publicDeckMetadata(): array
-    {
-        return [
-            'id' => 123,
-            'visibility' => 'all',
-            'url' => 'https://slides.com/vitormattos/public-deck',
-            'embed_url' => 'https://slides.com/vitormattos/public-deck/embed',
-            'width' => 960,
-            'height' => 540,
-            'slide_count' => 24,
-            'updated_at' => '2026-09-14T12:00:00Z',
-        ];
     }
 
     private function createDeckDirectory(): string
@@ -200,7 +135,6 @@ final class PdfExportPolicyTest extends TestCase
         file_put_contents($directory . '/deck.html', '<section>slide</section>');
         file_put_contents($directory . '/deck.css', 'css');
         file_put_contents($directory . '/metadata.json', '{}');
-
         return $directory;
     }
 
