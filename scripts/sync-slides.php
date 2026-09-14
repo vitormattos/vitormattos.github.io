@@ -145,7 +145,8 @@ foreach ($summaries as $summary) {
     $collection = $locale === 'pt-BR' ? 'source/_talks' : 'source/_talksEn';
     $managedPath = "{$collection}/{$managedName}.md";
     $expectedPaths[$managedPath] = true;
-    $embed = rtrim((string) $detail['url'], '/') . '/embed';
+    $publicUrl = rtrim((string) $detail['url'], '/');
+    $embed = $publicUrl . '/embed';
     $created = substr((string) ($detail['created_at'] ?? ''), 0, 10);
     $updated = substr((string) ($detail['updated_at'] ?? ''), 0, 10);
     $description = trim((string) ($detail['description'] ?? '')) ?: (string) $detail['title'];
@@ -158,7 +159,10 @@ foreach ($summaries as $summary) {
         ],
         'id' => $detail['id'],
         'slug' => $slug,
+        'title' => $detail['title'] ?? null,
         'visibility' => 'all',
+        'url' => $publicUrl,
+        'embed_url' => $embed,
         'thumbnail_url' => $detail['thumbnail_url'] ?? null,
         'slide_count' => $detail['slide_count'] ?? null,
         'width' => $detail['width'] ?? null,
@@ -199,7 +203,7 @@ foreach ($summaries as $summary) {
         . "slidesId: {$detail['id']}\n"
         . "presentation:\n"
         . "  type: slides.com\n"
-        . '  url: ' . yamlString((string) $detail['url']) . "\n"
+        . '  url: ' . yamlString($publicUrl) . "\n"
         . '  embed: ' . yamlString($embed) . "\n"
         . '  thumbnail: ' . yamlString((string) ($detail['thumbnail_url'] ?? '')) . "\n"
         . "  localHtml: /{$deckDir}/deck.html\n"
