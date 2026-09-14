@@ -1,9 +1,9 @@
 /* SPDX-FileCopyrightText: 2026 Vitor Mattos */
 /* SPDX-License-Identifier: AGPL-3.0-or-later */
 
-@import 'reveal.js/dist/reveal.css';
-@import 'reveal.js/dist/theme/white.css';
-@import 'reveal.js/plugin/highlight/monokai.css';
+@import '../../../node_modules/reveal.js/dist/reveal.css';
+@import '../../../node_modules/reveal.js/dist/theme/white.css';
+@import '../../../node_modules/reveal.js/plugin/highlight/monokai.css';
 
 .talk-list {
     display: grid;
@@ -70,6 +70,12 @@
     aspect-ratio: 16 / 9;
     min-height: 24rem;
     position: relative;
+
+    > iframe {
+        border: 0;
+        height: 100%;
+        width: 100%;
+    }
 }
 
 .presentation-toolbar {
