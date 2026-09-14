@@ -11,7 +11,7 @@ final class PdfExportPolicy
 {
     public const MINIMUM_PDF_BYTES = 10_000;
     public const DECKTAPE_VERSION = '3.16.1';
-    public const CACHE_SCHEMA_VERSION = 1;
+    public const CACHE_SCHEMA_VERSION = 2;
 
     public static function isValidPdf(string $path): bool
     {
@@ -55,6 +55,7 @@ final class PdfExportPolicy
         $relevant = [
             'id' => (string) ($metadata['id'] ?? ''),
             'url' => (string) ($metadata['url'] ?? ''),
+            'embed_url' => (string) ($metadata['embed_url'] ?? ''),
             'visibility' => (string) ($metadata['visibility'] ?? ''),
             'width' => (int) ($metadata['width'] ?? 0),
             'height' => (int) ($metadata['height'] ?? 0),
@@ -79,9 +80,9 @@ final class PdfExportPolicy
             throw new \InvalidArgumentException('Only public Slides.com decks may be exported.');
         }
 
-        $url = $metadata['url'] ?? null;
-        if (!SlidesDeckPolicy::isAllowedPublicUrl($url)) {
-            throw new \InvalidArgumentException('Deck URL is not an allowed public Slides.com URL.');
+        $embedUrl = $metadata['embed_url'] ?? null;
+        if (!SlidesDeckPolicy::isAllowedEmbedUrl($embedUrl)) {
+            throw new \InvalidArgumentException('Deck embed URL is not an allowed public Slides.com embed URL.');
         }
 
         return [
@@ -101,7 +102,7 @@ final class PdfExportPolicy
             '30000',
             '--chrome-arg=--no-sandbox',
             '--chrome-arg=--disable-dev-shm-usage',
-            $url,
+            $embedUrl,
             $output,
         ];
     }
