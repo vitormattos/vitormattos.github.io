@@ -3,7 +3,7 @@ extends: _layouts.content
 section: content
 locale: pt-BR
 alternateUrl: /articles/from-code-to-infrastructure/
-title: Do código à infraestrutura: o trabalho por trás de um software livre sustentável
+title: "Do código à infraestrutura: o trabalho por trás de um software livre sustentável"
 description: Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.
 date: 2026-09-14
 ---
