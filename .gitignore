@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+/vendor/
+/build_local/
+/build_production/
+.php-cs-fixer.cache
+.phpunit.cache/
