@@ -32,6 +32,16 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Jigsaw 1.8.8's `vite()` helper returns an absolute path beginning with `/assets/build/` and does not apply Jigsaw's `baseUrl`. In layouts, keep the pattern `{{ $page->baseUrl }}{{ vite(...) }}` so preview assets resolve under `/pr-preview/pr-N/`.
 - Preview builds use `PREVIEW_BASE_URL` and `NODE_ENV=preview`; production builds use the canonical root URL.
 
+## Theme architecture
+
+- The site supports light and dark themes without a framework.
+- Default behavior follows `prefers-color-scheme`; a user override is stored as `localStorage['theme']` with values `light` or `dark`.
+- The stored theme is applied inline in the `<head>` before CSS loads to avoid a flash of the wrong theme. Do not move initial theme application to a deferred bundle.
+- Explicit theme state lives on `<html data-theme="light|dark">`; when no `data-theme` exists, CSS follows the operating-system preference.
+- Theme colors are defined as CSS custom properties in `_base.scss`. Components should consume those tokens instead of hard-coding separate light/dark colors.
+- The shared toggle lives in `_partials/theme-toggle.blade.php`, is localized, keyboard accessible and exposes state through `aria-pressed` and `aria-label`.
+- The theme preference is presentation-only and must not affect canonical URLs, indexing, content, structured data or server-side builds.
+
 ## Presentation architecture
 
 - Reveal.js is the default renderer for native web slide decks. Keep it installed through npm and bundled by Vite; do not copy a vendored Reveal.js distribution into the repository.
