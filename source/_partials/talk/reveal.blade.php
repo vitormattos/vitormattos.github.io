@@ -21,7 +21,7 @@
             <button type="button" data-presentation-action="fullscreen">
                 {{ $isEnglish ? 'Fullscreen' : 'Tela cheia' }}
             </button>
-            <a href="{{ $sourceUrl }}">Markdown</a>
+            <a href="{{ $sourceUrl }}" rel="nofollow">Markdown</a>
             @if ($presentation['pdf'] ?? false)
                 <a href="{{ $page->baseUrl }}/{{ ltrim($presentation['pdf'], '/') }}">PDF</a>
             @endif
