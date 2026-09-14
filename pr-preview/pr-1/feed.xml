@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+    <title>Vitor Mattos</title>
+    <link>https://vitormattos.github.io/</link>
+    <description>Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.</description>
+    <language>en</language>
+    <atom:link href="https://vitormattos.github.io/feed.xml" rel="self" type="application/rss+xml" />
+            <lastBuildDate>Mon, 14 Sep 2026 00:00:00 +0000</lastBuildDate>
+                        <item>
+            <title>From Code to Infrastructure: The Work Behind Sustainable Free Software</title>
+            <link>https://vitormattos.github.io/articles/from-code-to-infrastructure</link>
+            <guid isPermaLink="true">https://vitormattos.github.io/articles/from-code-to-infrastructure</guid>
+            <pubDate>Mon, 14 Sep 2026 00:00:00 +0000</pubDate>
+            <description>Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.</description>
+        </item>
+    </channel>
+</rss>

@@ -3,30 +3,57 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Do código à infraestrutura: o trabalho por trás de um software livre sustentável · Vitor Mattos</title>
     <meta name="description" content="Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.">
-            <meta name="robots" content="noindex,nofollow,noarchive">
-        <title>Do código à infraestrutura: o trabalho por trás de um software livre sustentável · Vitor Mattos</title>
-            <link rel="alternate" hreflang="en" href="https://vitormattos.github.io/pr-preview/pr-1/articles/from-code-to-infrastructure/">
-            <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-1/assets/build/assets/main-B-0m8nC9.css">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura">
+    <link rel="alternate" hreflang="en" href="https://vitormattos.github.io/articles/from-code-to-infrastructure">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/articles/from-code-to-infrastructure">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Do código à infraestrutura: o trabalho por trás de um software livre sustentável · Vitor Mattos">
+<meta property="og:description" content="Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+    <meta property="article:published_time" content="2026-09-14T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Do código à infraestrutura: o trabalho por trás de um software livre sustentável · Vitor Mattos">
+<meta name="twitter:description" content="Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura#webpage","url":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura","name":"Do código à infraestrutura: o trabalho por trás de um software livre sustentável","description":"Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.","inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura#breadcrumb"}},{"@type":"Article","@id":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura#content","url":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura","name":"Do código à infraestrutura: o trabalho por trás de um software livre sustentável","headline":"Do código à infraestrutura: o trabalho por trás de um software livre sustentável","description":"Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.","inLanguage":"pt-BR","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura#webpage"},"datePublished":"2026-09-14T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://vitormattos.github.io/pt-BR"},{"@type":"ListItem","position":2,"name":"Artigos","item":"https://vitormattos.github.io/pt-BR/artigos"},{"@type":"ListItem","position":3,"name":"Do código à infraestrutura: o trabalho por trás de um software livre sustentável","item":"https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura"}]}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-1/assets/build/assets/main-DbdA6N4W.css">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
 <header class="site-header">
-    <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR/">Vitor Mattos</a>
+    <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR">Vitor Mattos</a>
     <nav aria-label="Principal">
-        <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR/#artigos">Artigos</a>
-        <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR/#palestras">Palestras</a>
-        <a href="https://github.com/vitormattos">GitHub</a>
-                    <a href="https://vitormattos.github.io/pr-preview/pr-1/articles/from-code-to-infrastructure/" hreflang="en">
+        <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR/artigos">Artigos</a>
+        <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR/palestras">Palestras</a>
+        <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+        <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                    <a href="https://vitormattos.github.io/pr-preview/pr-1/articles/from-code-to-infrastructure" hreflang="en">
                 English
             </a>
             </nav>
 </header>
-<main>
+<main id="main-content">
     <article class="content">
-    <p class="meta">14/09/2026</p>
-    <h1>Do código à infraestrutura: o trabalho por trás de um software livre sustentável</h1>
-            <p class="lead">Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.</p>
-        <!--
+    <header>
+                    <p class="meta">
+                <time datetime="2026-09-14">14/09/2026</time>
+            </p>
+                <h1>Do código à infraestrutura: o trabalho por trás de um software livre sustentável</h1>
+                    <p class="lead">Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.</p>
+                <p class="meta">
+            Por
+            <a href="https://vitormattos.github.io/pr-preview/pr-1/pt-BR" rel="author">Vitor Mattos</a>
+        </p>
+    </header>
+    <!--
 SPDX-FileCopyrightText: 2026 Vitor Mattos
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
@@ -48,6 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 </main>
 <footer>
     <p>Conteúdo e código publicados com transparência e controle de versão.</p>
+    <p><a href="https://vitormattos.github.io/pt-BR/feed.xml">RSS</a></p>
 </footer>
 </body>
 </html>
