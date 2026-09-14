@@ -128,9 +128,18 @@ for ($page = 2; $page <= $pages; ++$page) {
 
 $expectedPaths = [];
 foreach ($summaries as $summary) {
+    // The owned-decks endpoint may return private/team decks. If visibility is
+    // present in the summary, reject anything except explicitly public decks
+    // before requesting deck_html or any other detailed content.
+    if (array_key_exists('visibility', $summary) && ($summary['visibility'] ?? null) !== 'all') {
+        continue;
+    }
+
     usleep(REQUEST_DELAY_MICROSECONDS);
     $detail = request('/v1/decks/' . rawurlencode((string) $summary['id']) . '?include_deck_html=true')['data'];
 
+    // Defense in depth: a deck may change visibility between the list and
+    // detail requests. Only `all` is eligible for persistence or publication.
     if (($detail['visibility'] ?? null) !== 'all') {
         continue;
     }
@@ -154,7 +163,7 @@ foreach ($summaries as $summary) {
         ],
         'id' => $detail['id'],
         'slug' => $slug,
-        'visibility' => $detail['visibility'],
+        'visibility' => 'all',
         'thumbnail_url' => $detail['thumbnail_url'] ?? null,
         'slide_count' => $detail['slide_count'] ?? null,
         'width' => $detail['width'] ?? null,
