@@ -9,14 +9,24 @@ return [
     'baseUrl' => '',
     'production' => false,
     'siteName' => 'Vitor Mattos',
+    'defaultLocale' => 'pt-BR',
+    'locales' => ['pt-BR', 'en'],
     'siteDescription' => 'Software livre, PHP, LibreSign, pesquisa e palestras.',
     'collections' => [
         'articles' => [
             'path' => 'artigos/{filename}',
             'sort' => '-date',
         ],
+        'articlesEn' => [
+            'path' => 'en/articles/{filename}',
+            'sort' => '-date',
+        ],
         'talks' => [
             'path' => 'palestras/{filename}',
+            'sort' => '-date',
+        ],
+        'talksEn' => [
+            'path' => 'en/talks/{filename}',
             'sort' => '-date',
         ],
     ],
