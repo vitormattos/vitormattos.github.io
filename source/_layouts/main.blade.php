@@ -22,6 +22,7 @@
         <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#articles' : '/pt-BR/#artigos' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
         <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#talks' : '/pt-BR/#palestras' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
         <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
+        <a href="{{ $page->author['linkedin'] }}" rel="me">LinkedIn</a>
         @if ($page->alternateUrl ?? false)
             <a href="{{ $page->baseUrl }}{{ $page->alternateUrl }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
                 {{ $isEnglish ? 'Português' : 'English' }}
@@ -34,6 +35,7 @@
 </main>
 <footer>
     <p>{{ $isEnglish ? 'Content and code published with transparency and version control.' : 'Conteúdo e código publicados com transparência e controle de versão.' }}</p>
+    <p><a href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">RSS</a></p>
 </footer>
 </body>
 </html>
