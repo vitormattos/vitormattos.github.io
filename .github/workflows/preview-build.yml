@@ -38,6 +38,8 @@ jobs:
         if: github.event.action != 'closed'
         with:
           node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
       - name: Install PHP dependencies
         if: github.event.action != 'closed'
@@ -47,28 +49,13 @@ jobs:
         if: github.event.action != 'closed'
         run: vendor/bin/phpunit tests/Presentations
 
-      - name: Synchronize public Slides.com decks for preview
-        if: github.event.action != 'closed'
-        env:
-          SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
-        run: php scripts/sync-slides.php
-
-      - name: Restore presentation PDF cache
-        if: github.event.action != 'closed'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .cache/slides-pdf
-          key: slides-pdf-v1-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            slides-pdf-v1-${{ runner.os }}-
-
+      # Presentation synchronization and PDF rendering are content-generation
+      # jobs. They intentionally do not run for every PR preview: a CSS/template
+      # change must build the content already versioned in the branch instead of
+      # spending 20+ minutes calling Slides.com and rendering every PDF again.
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
-        run: npm install --no-audit --no-fund
-
-      - name: Generate presentation PDFs
-        if: github.event.action != 'closed'
-        run: php scripts/generate-slides-pdfs.php
+        run: npm ci --no-audit --no-fund
 
       - name: Build preview
         if: github.event.action != 'closed'
