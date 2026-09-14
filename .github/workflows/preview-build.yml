@@ -53,6 +53,8 @@ jobs:
 
       - name: Test preview build
         if: github.event.action != 'closed'
+        env:
+          SITE_BUILD_DIR: build_preview
         run: composer test
 
       - name: Deploy or remove preview
