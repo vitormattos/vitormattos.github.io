@@ -5,6 +5,7 @@ version = 1
 [[annotations]]
 path = [
     "composer.json",
+    "source/robots.txt.blade.php",
     "source/_articles/*.md",
     "source/_articlesEn/*.md",
     "source/_talks/*.md",
