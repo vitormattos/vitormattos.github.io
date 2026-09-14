@@ -3,7 +3,13 @@
 version = 1
 
 [[annotations]]
-path = ["composer.json", "source/_articles/*.md", "source/_talks/*.md"]
+path = [
+    "composer.json",
+    "source/_articles/*.md",
+    "source/_articles_en/*.md",
+    "source/_talks/*.md",
+    "source/_talks_en/*.md"
+]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Vitor Mattos"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
