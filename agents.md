@@ -28,6 +28,20 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Jigsaw 1.8.8's `vite()` helper returns an absolute path beginning with `/assets/build/` and does not apply Jigsaw's `baseUrl`. In layouts, keep the pattern `{{ $page->baseUrl }}{{ vite(...) }}` so preview assets resolve under `/pr-preview/pr-N/`.
 - Preview builds use `PREVIEW_BASE_URL` and `NODE_ENV=preview`; production builds use the canonical root URL.
 
+## Presentation architecture
+
+- Reveal.js is the default renderer for native web slide decks. Keep it installed through npm and bundled by Vite; do not copy a vendored Reveal.js distribution into the repository.
+- Presentation content lives outside the Jigsaw source tree under `presentations/<slug>/<locale>.md`. These files are ordinary Reveal.js Markdown and must not contain Blade, Jigsaw variables, collection paths or site layout logic.
+- `source/_talks*/*.md` contains the talk record and presentation metadata only. For Reveal decks use front matter such as `presentation.type: reveal` and `presentation.source: presentations/<slug>/<locale>.md`.
+- `App\Listeners\CopyPresentations` copies presentation source files unchanged into the generated site. This is deliberate: presentation Markdown remains independently reusable and directly inspectable.
+- Presentation rendering belongs in `_layouts/talk.blade.php` and `_partials/talk/*`. Add new presentation formats by extending the dispatcher rather than branching inside talk Markdown.
+- Supported architecture anticipates `reveal`, `slides.com`/`iframe`, `pdf` and generic external presentations. A talk can additionally expose PDF/video resources without changing its deck source.
+- Reveal detail pages expose overview thumbnails through Reveal's native overview mode, a compact scroll/reading mode, fullscreen mode and the raw Markdown source.
+- Talk-list thumbnails use embedded Reveal instances and are initialized lazily with `IntersectionObserver`. Do not replace this with CI screenshots/Chromium unless there is a demonstrated requirement; the current approach avoids a second rendering pipeline.
+- Reveal's external Markdown support requires HTTP serving. Local authoring should use the Vite/Jigsaw development server rather than opening generated HTML directly from `file://`.
+- Presentation URLs and Reveal assets are preview-aware and must use `baseUrl`. Canonical SEO URLs continue to use `siteUrl`.
+- Presentation source `.md` files still require explicit SPDX metadata, but the metadata must remain a plain Markdown/HTML comment that does not introduce Jigsaw coupling.
+
 ## URL and indexing model
 
 - `baseUrl` means where the current build is being served. It changes for previews.
@@ -77,7 +91,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Dependabot covers Composer, npm and GitHub Actions.
 - `SITE_BUILD_DIR` lets the same PHPUnit suite test `build_production` and `build_preview`. Do not hardcode production paths in tests that are also run by preview CI.
 - `EXPECTED_BASE_URL` is used to verify preview-aware asset URLs.
-- Tests enforce canonical URLs, hreflang, structured data, preview `noindex`, rich-preview directives on indexable pages, production robots rules, sitemap scope, feeds, `llms.txt`, 404/placeholder exclusion and the rule against exposing internal application-purpose language.
+- Tests enforce canonical URLs, hreflang, structured data, preview `noindex`, rich-preview directives on indexable pages, production robots rules, sitemap scope, feeds, `llms.txt`, 404/placeholder exclusion, presentation-source copying/preview URLs and the rule against exposing internal application-purpose language.
 - Add regression tests when fixing deployment, SEO or URL-generation bugs rather than relying only on visual inspection.
 - Prefer `npm ci` when a committed `package-lock.json` is present. Prefer reproducible Composer installs once `composer.lock` is committed.
 
