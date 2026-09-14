@@ -25,7 +25,8 @@ final class GenerateSitemap
             $page = is_object($pageData) ? ($pageData->page ?? $pageData) : null;
             $normalizedPath = $this->resolvePath($page, (string) $path);
 
-            if (! $this->isIndexableHtmlPath($normalizedPath)) {
+            if ((is_object($page) && ($page->indexable ?? true) === false)
+                || ! $this->isIndexableHtmlPath($normalizedPath)) {
                 return;
             }
 
