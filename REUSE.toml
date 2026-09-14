@@ -6,9 +6,9 @@ version = 1
 path = [
     "composer.json",
     "source/_articles/*.md",
-    "source/_articles_en/*.md",
+    "source/_articlesEn/*.md",
     "source/_talks/*.md",
-    "source/_talks_en/*.md"
+    "source/_talksEn/*.md"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Vitor Mattos"

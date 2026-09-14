@@ -1,5 +1,4 @@
 ---
-permalink: pt-BR/index.html
 locale: pt-BR
 alternateUrl: /
 ---

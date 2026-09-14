@@ -12,10 +12,10 @@ final class SiteBuildTest extends TestCase
     public function testProductionBuildContainsExpectedPages(): void
     {
         self::assertFileExists(__DIR__ . '/../build_production/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/articles/first-article/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/articles/from-code-to-infrastructure/index.html');
         self::assertFileExists(__DIR__ . '/../build_production/talks/free-software/index.html');
         self::assertFileExists(__DIR__ . '/../build_production/pt-BR/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/artigos/primeiro-artigo/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
         self::assertFileExists(__DIR__ . '/../build_production/pt-BR/palestras/software-livre/index.html');
     }
 
@@ -32,12 +32,12 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('hreflang="en"', $portuguese);
     }
 
-    public function testIntroductoryArticleIsRealContent(): void
+    public function testFirstArticleContainsSubstantiveContent(): void
     {
-        $article = file_get_contents(__DIR__ . '/../build_production/articles/first-article/index.html');
+        $article = file_get_contents(__DIR__ . '/../build_production/articles/from-code-to-infrastructure/index.html');
 
         self::assertIsString($article);
-        self::assertStringContainsString('Why this site exists', $article);
-        self::assertStringContainsString('English is the canonical language', $article);
+        self::assertStringContainsString('From Code to Infrastructure', $article);
+        self::assertStringContainsString('Free software does not mean that development and maintenance have no cost.', $article);
     }
 }
