@@ -7,7 +7,11 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [
         jigsaw({
-            input: ['source/_assets/scss/main.scss'],
+            input: [
+                'source/_assets/scss/main.scss',
+                'source/_assets/scss/presentations.scss',
+                'source/_assets/js/presentations.js',
+            ],
             refresh: true,
         }),
     ],
