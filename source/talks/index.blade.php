@@ -9,6 +9,14 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
 {{-- SPDX-License-Identifier: AGPL-3.0-or-later --}}
 @extends('_layouts.main')
 
+@push('head')
+    <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
+@endpush
+
+@push('scripts')
+    <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/presentations.js') }}"></script>
+@endpush
+
 @section('body')
 <section class="content" aria-labelledby="page-title">
     <header>
@@ -17,12 +25,10 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
         <p class="lead">Talks and presentations about free software, PHP, LibreSign, software engineering and community building.</p>
     </header>
 
-    @foreach ($talksEn as $talk)
-        <article>
-            <p class="meta"><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date('Y-m-d', $talk->date) }}</time></p>
-            <h2><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h2>
-            <p>{{ $talk->description }}</p>
-        </article>
-    @endforeach
+    <div class="talk-list">
+        @foreach ($talksEn as $talk)
+            @include('_partials.talk.card', ['talk' => $talk])
+        @endforeach
+    </div>
 </section>
 @endsection
