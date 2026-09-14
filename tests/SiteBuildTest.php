@@ -9,20 +9,28 @@ use PHPUnit\Framework\TestCase;
 
 final class SiteBuildTest extends TestCase
 {
-    public function testProductionBuildContainsExpectedPages(): void
+    private function buildDirectory(): string
     {
-        self::assertFileExists(__DIR__ . '/../build_production/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/articles/from-code-to-infrastructure/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/talks/free-software/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/palestras/software-livre/index.html');
+        return __DIR__ . '/../' . (getenv('SITE_BUILD_DIR') ?: 'build_production');
+    }
+
+    public function testBuildContainsExpectedPages(): void
+    {
+        $build = $this->buildDirectory();
+
+        self::assertFileExists($build . '/index.html');
+        self::assertFileExists($build . '/articles/from-code-to-infrastructure/index.html');
+        self::assertFileExists($build . '/talks/free-software/index.html');
+        self::assertFileExists($build . '/pt-BR/index.html');
+        self::assertFileExists($build . '/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
+        self::assertFileExists($build . '/pt-BR/palestras/software-livre/index.html');
     }
 
     public function testLocalizedPagesExposeCorrectLanguage(): void
     {
-        $english = file_get_contents(__DIR__ . '/../build_production/index.html');
-        $portuguese = file_get_contents(__DIR__ . '/../build_production/pt-BR/index.html');
+        $build = $this->buildDirectory();
+        $english = file_get_contents($build . '/index.html');
+        $portuguese = file_get_contents($build . '/pt-BR/index.html');
 
         self::assertIsString($english);
         self::assertIsString($portuguese);
@@ -34,7 +42,7 @@ final class SiteBuildTest extends TestCase
 
     public function testFirstArticleContainsSubstantiveContent(): void
     {
-        $article = file_get_contents(__DIR__ . '/../build_production/articles/from-code-to-infrastructure/index.html');
+        $article = file_get_contents($this->buildDirectory() . '/articles/from-code-to-infrastructure/index.html');
 
         self::assertIsString($article);
         self::assertStringContainsString('From Code to Infrastructure', $article);
