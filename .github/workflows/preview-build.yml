@@ -12,10 +12,10 @@ permissions:
   contents: write
   pull-requests: write
 
-# Production and previews both write to gh-pages. Use the same concurrency
-# group so obsolete writers are cancelled instead of racing or queueing.
+# A new commit makes an older preview of the same PR obsolete. Keep previews
+# for different PRs independent and never let a preview cancel production.
 concurrency:
-  group: github-pages-write
+  group: pr-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 env:
