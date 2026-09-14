@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Vitor Mattos
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-name: Preview Build
+name: PR Preview
 
 on:
   pull_request:
@@ -10,13 +10,14 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
-  group: preview-build-${{ github.event.pull_request.number }}
+  group: pr-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  build-preview:
+  preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -36,9 +37,15 @@ jobs:
         run: composer build
       - name: Test preview build
         run: composer test
-      - name: Upload preview artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - name: Deploy preview
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9 # v1
         with:
-          name: preview-build
-          path: build_production/
-          retention-days: 1
+          action: deploy
+          source-dir: ./build_production/
+          pr-number: ${{ github.event.pull_request.number }}
+          pages-base-url: vitormattos.github.io/site-preview
+          deploy-repository: vitormattos/site-preview
+          preview-branch: main
+          wait-for-pages-deployment: false
+          token: ${{ secrets.PREVIEW_TOKEN }}
