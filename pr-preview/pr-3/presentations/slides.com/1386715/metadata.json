@@ -1,0 +1,29 @@
+{
+    "_spdx": {
+        "copyright": "2026 Vitor Mattos",
+        "license": "CC-BY-SA-4.0"
+    },
+    "id": 1386715,
+    "slug": "senhas",
+    "visibility": "all",
+    "thumbnail_url": "https://media.slid.es/thumbnails/1858a160b002d204b87db21302880c09/thumb.jpg?1543690586",
+    "slide_count": 111,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2018-12-01T18:52:31.341Z",
+    "updated_at": "2018-12-21T11:12:30.913Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/senhas",
+        "fullscreen": "https://slides.com/vitormattos/senhas/fullscreen",
+        "edit": "https://slides.com/vitormattos/senhas/edit",
+        "present": "https://slides.com/vitormattos/senhas/live"
+    }
+}

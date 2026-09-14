@@ -1,0 +1,29 @@
+{
+    "_spdx": {
+        "copyright": "2026 Vitor Mattos",
+        "license": "CC-BY-SA-4.0"
+    },
+    "id": 3238741,
+    "slug": "libresign-ecidade",
+    "visibility": "all",
+    "thumbnail_url": "https://media.slid.es/thumbnails/70423a93fddac949c7f81a93c0aab189/thumb.jpg?1722459682",
+    "slide_count": 34,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-blue",
+    "language": "en",
+    "created_at": "2024-07-31T19:37:47.935Z",
+    "updated_at": "2024-07-31T23:03:10.016Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/libresign-ecidade",
+        "fullscreen": "https://slides.com/vitormattos/libresign-ecidade/fullscreen",
+        "edit": "https://slides.com/vitormattos/libresign-ecidade/edit",
+        "present": "https://slides.com/vitormattos/libresign-ecidade/live"
+    }
+}
