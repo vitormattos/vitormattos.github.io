@@ -6,4 +6,5 @@ declare(strict_types=1);
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /** @var $events \TightenCo\Jigsaw\Events\EventBus */
+$events->afterBuild(App\Listeners\CopyPresentations::class);
 $events->afterBuild(App\Listeners\GenerateSitemap::class);
