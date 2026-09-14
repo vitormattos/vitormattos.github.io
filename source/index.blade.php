@@ -7,18 +7,18 @@ alternateUrl: /pt-BR/
 @extends('_layouts.main')
 
 @section('body')
-<section class="hero">
+<section class="hero" aria-labelledby="page-title">
     <p class="eyebrow">Free software · PHP · research · community</p>
-    <h1>Vitor Mattos</h1>
+    <h1 id="page-title">Vitor Mattos</h1>
     <p>Software developer, CTO and worker-owner at LibreCode, LibreSign maintainer, and participant in free software communities.</p>
 </section>
 
-<section id="talks">
-    <h2>Talks</h2>
+<section id="talks" aria-labelledby="talks-title">
+    <h2 id="talks-title">Talks</h2>
     <div class="grid">
         @foreach ($talksEn as $talk)
             <article class="card">
-                <p class="meta">{{ date('Y-m-d', $talk->date) }}</p>
+                <p class="meta"><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date('Y-m-d', $talk->date) }}</time></p>
                 <h3><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h3>
                 <p>{{ $talk->description }}</p>
             </article>
@@ -26,12 +26,12 @@ alternateUrl: /pt-BR/
     </div>
 </section>
 
-<section id="articles">
-    <h2>Articles</h2>
+<section id="articles" aria-labelledby="articles-title">
+    <h2 id="articles-title">Articles</h2>
     <div class="grid">
         @foreach ($articlesEn as $article)
             <article class="card">
-                <p class="meta">{{ date('Y-m-d', $article->date) }}</p>
+                <p class="meta"><time datetime="{{ date('Y-m-d', $article->date) }}">{{ date('Y-m-d', $article->date) }}</time></p>
                 <h3><a href="{{ $article->getUrl() }}">{{ $article->title }}</a></h3>
                 <p>{{ $article->description }}</p>
             </article>
