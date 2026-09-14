@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>From Code to Infrastructure: The Work Behind Sustainable Free Software · Vitor Mattos</title>
+    <meta name="description" content="Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+<link rel="canonical" href="https://vitormattos.github.io/articles/from-code-to-infrastructure">
+<link rel="alternate" hreflang="en" href="https://vitormattos.github.io/articles/from-code-to-infrastructure">
+    <link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/articles/from-code-to-infrastructure">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Articles" href="https://vitormattos.github.io/feed.xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="From Code to Infrastructure: The Work Behind Sustainable Free Software · Vitor Mattos">
+<meta property="og:description" content="Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.">
+<meta property="og:url" content="https://vitormattos.github.io/articles/from-code-to-infrastructure">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="pt_BR">
+    <meta property="article:published_time" content="2026-09-14T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="From Code to Infrastructure: The Work Behind Sustainable Free Software · Vitor Mattos">
+<meta name="twitter:description" content="Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/articles/from-code-to-infrastructure#webpage","url":"https://vitormattos.github.io/articles/from-code-to-infrastructure","name":"From Code to Infrastructure: The Work Behind Sustainable Free Software","description":"Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.","inLanguage":"en","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/articles/from-code-to-infrastructure#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/articles/from-code-to-infrastructure#breadcrumb"}},{"@type":"Article","@id":"https://vitormattos.github.io/articles/from-code-to-infrastructure#content","url":"https://vitormattos.github.io/articles/from-code-to-infrastructure","name":"From Code to Infrastructure: The Work Behind Sustainable Free Software","headline":"From Code to Infrastructure: The Work Behind Sustainable Free Software","description":"Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.","inLanguage":"en","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/articles/from-code-to-infrastructure#webpage"},"datePublished":"2026-09-14T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/articles/from-code-to-infrastructure#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vitormattos.github.io/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://vitormattos.github.io/articles"},{"@type":"ListItem","position":3,"name":"From Code to Infrastructure: The Work Behind Sustainable Free Software","item":"https://vitormattos.github.io/articles/from-code-to-infrastructure"}]}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/assets/build/assets/main-fc-jdgRr.css">
+    </head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Main">
+            <a href="https://vitormattos.github.io/articles">Articles</a>
+            <a href="https://vitormattos.github.io/talks">Talks</a>
+            <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+            <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                            <a href="https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura" hreflang="pt-BR">
+                    Português
+                </a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Use light theme"
+    data-label-dark="Use dark theme"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Theme</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <article class="content">
+    <header>
+                    <p class="meta">
+                <time datetime="2026-09-14">2026-09-14</time>
+            </p>
+                <h1>From Code to Infrastructure: The Work Behind Sustainable Free Software</h1>
+                    <p class="lead">Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.</p>
+                <p class="meta">
+            By
+            <a href="https://vitormattos.github.io/" rel="author">Vitor Mattos</a>
+        </p>
+    </header>
+    <!--
+SPDX-FileCopyrightText: 2026 Vitor Mattos
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
+<p>Publishing source code is an important step, but it is not enough to make a software project sustainable.</p>
+
+<p>Free software becomes useful infrastructure when people can understand it, deploy it, maintain it, contribute to it and trust that the project will continue to evolve. That requires work that is easy to underestimate: reviewing contributions, documenting decisions, fixing regressions, organizing releases, supporting users, discussing architecture, building community and finding ways to finance maintenance without compromising software freedom.</p>
+
+<h2>Technical implementation is only part of the work</h2>
+
+<p>I have spent much of my professional life working around PHP, Linux and free software. In that time I have seen the same pattern repeatedly: the technical implementation matters, but the long-term value of a project depends just as much on the structures around the code.</p>
+
+<h2>Maintenance becomes part of the product</h2>
+
+<p>This is particularly visible in projects that organizations start to depend on. Once software becomes part of daily operations, maintenance stops being an optional activity. Compatibility, security, migration paths, documentation and governance become part of the product, even when they are not represented by a single feature or pull request.</p>
+
+<h2>Community is infrastructure too</h2>
+
+<p>Community also changes the nature of a project. A public repository without participation is still useful, but it is very different from a project where users report problems, contributors propose changes, maintainers review them and decisions are discussed openly. The code may be the visible artifact, but the surrounding collaboration is what allows it to remain alive.</p>
+
+<h2>Sustainable free software needs sustainable work</h2>
+
+<p>Sustainability matters for the same reason. Free software does not mean that development and maintenance have no cost. Projects need people with time to review issues, design solutions, write documentation, respond to security problems and plan future work. Building business models and institutional support around that work is not a contradiction of software freedom; in many cases it is what allows the project to remain independent and useful over time.</p>
+
+<h2>Making the work around the code visible</h2>
+
+<p>This site will document some of that work: technical decisions, talks, projects, research, community activity and lessons learned while maintaining free software in real environments. My intention is not to present code in isolation, but to make visible the engineering, collaboration and long-term maintenance that turn code into infrastructure.</p>
+</article>
+</main>
+<footer>
+    <p>Content and code published with transparency and version control.</p>
+    <p><a href="https://vitormattos.github.io/feed.xml">RSS</a></p>
+</footer>
+</body>
+</html>

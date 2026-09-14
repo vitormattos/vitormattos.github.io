@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>Vitor Mattos</title>
+    <meta name="description" content="Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR">
+    <link rel="alternate" hreflang="en" href="https://vitormattos.github.io/">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vitor Mattos">
+<meta property="og:description" content="Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vitor Mattos">
+<meta name="twitter:description" content="Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"ProfilePage","@id":"https://vitormattos.github.io/pt-BR#webpage","url":"https://vitormattos.github.io/pt-BR","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/#person"}}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/assets/build/assets/main-fc-jdgRr.css">
+    </head>
+<body>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/pt-BR">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Principal">
+            <a href="https://vitormattos.github.io/pt-BR/artigos">Artigos</a>
+            <a href="https://vitormattos.github.io/pt-BR/palestras">Palestras</a>
+            <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+            <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                            <a href="https://vitormattos.github.io/" hreflang="en">
+                    English
+                </a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Usar tema claro"
+    data-label-dark="Usar tema escuro"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Tema</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+    <p class="eyebrow">Software livre · PHP · pesquisa · comunidade</p>
+    <h1 id="page-title">Vitor Mattos</h1>
+    <p>Desenvolvedor de software, CTO e cooperado da LibreCode, mantenedor do LibreSign e participante de comunidades de software livre.</p>
+</section>
+
+<section id="palestras" aria-labelledby="talks-title">
+    <h2 id="talks-title">Palestras</h2>
+    <div class="grid">
+                    <article class="card">
+                <p class="meta"><time datetime="2022-11-25">25/11/2022</time></p>
+                <h3><a href="https://vitormattos.github.io/pt-BR/palestras/libresign-integracoes">LibreSign - Integrações</a></h3>
+                <p>Palestra sobre arquitetura do LibreSign, software livre, privacidade, Nextcloud, APIs, integração com GLPI e os desafios de sustentar um projeto de código aberto.</p>
+            </article>
+            </div>
+</section>
+
+<section id="artigos" aria-labelledby="articles-title">
+    <h2 id="articles-title">Artigos</h2>
+    <div class="grid">
+                    <article class="card">
+                <p class="meta"><time datetime="2026-09-14">14/09/2026</time></p>
+                <h3><a href="https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura">Do código à infraestrutura: o trabalho por trás de um software livre sustentável</a></h3>
+                <p>Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.</p>
+            </article>
+            </div>
+</section>
+</main>
+<footer>
+    <p>Conteúdo e código publicados com transparência e controle de versão.</p>
+    <p><a href="https://vitormattos.github.io/pt-BR/feed.xml">RSS</a></p>
+</footer>
+</body>
+</html>

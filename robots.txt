@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /pr-preview/
+Disallow: /presentations/
+Sitemap: https://vitormattos.github.io/sitemap.xml
