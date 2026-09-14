@@ -8,6 +8,11 @@ description: Why publishing source code is only the beginning of the work requir
 date: 2026-09-14
 ---
 
+<!--
+SPDX-FileCopyrightText: 2026 Vitor Mattos
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 Publishing source code is an important step, but it is not enough to make a software project sustainable.
 
 Free software becomes useful infrastructure when people can understand it, deploy it, maintain it, contribute to it and trust that the project will continue to evolve. That requires work that is easy to underestimate: reviewing contributions, documenting decisions, fixing regressions, organizing releases, supporting users, discussing architecture, building community and finding ways to finance maintenance without compromising software freedom.
