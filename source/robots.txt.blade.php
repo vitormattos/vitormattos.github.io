@@ -5,7 +5,7 @@ User-agent: *
 @if ($page->indexable ?? false)
 Allow: /
 Disallow: /pr-preview/
-Sitemap: {{ $page->baseUrl }}/sitemap.xml
+Sitemap: {{ rtrim($page->siteUrl, '/') }}/sitemap.xml
 @else
 Disallow: /
 @endif
