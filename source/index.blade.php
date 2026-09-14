@@ -1,5 +1,9 @@
 {{-- SPDX-FileCopyrightText: 2026 Vitor Mattos --}}
 {{-- SPDX-License-Identifier: AGPL-3.0-or-later --}}
+---
+locale: pt-BR
+alternateUrl: /en/
+---
 @extends('_layouts.main')
 
 @section('body')
