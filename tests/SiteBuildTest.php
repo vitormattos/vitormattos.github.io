@@ -9,9 +9,24 @@ use PHPUnit\Framework\TestCase;
 
 final class SiteBuildTest extends TestCase
 {
+    private const SITE_URL = 'https://vitormattos.github.io';
+
     private function buildDirectory(): string
     {
         return __DIR__ . '/../' . (getenv('SITE_BUILD_DIR') ?: 'build_production');
+    }
+
+    private function isPreview(): bool
+    {
+        return (getenv('SITE_BUILD_DIR') ?: 'build_production') === 'build_preview';
+    }
+
+    private function read(string $path): string
+    {
+        $contents = file_get_contents($this->buildDirectory() . '/' . ltrim($path, '/'));
+        self::assertIsString($contents);
+
+        return $contents;
     }
 
     public function testBuildContainsExpectedPages(): void
@@ -24,40 +39,124 @@ final class SiteBuildTest extends TestCase
         self::assertFileExists($build . '/pt-BR/index.html');
         self::assertFileExists($build . '/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/software-livre/index.html');
+        self::assertFileExists($build . '/feed.xml');
+        self::assertFileExists($build . '/pt-BR/feed.xml');
+        self::assertFileExists($build . '/llms.txt');
+        self::assertFileExists($build . '/robots.txt');
     }
 
-    public function testLocalizedPagesExposeCorrectLanguage(): void
+    public function testLocalizedPagesExposeCorrectLanguageAndHreflang(): void
     {
-        $build = $this->buildDirectory();
-        $english = file_get_contents($build . '/index.html');
-        $portuguese = file_get_contents($build . '/pt-BR/index.html');
+        $english = $this->read('index.html');
+        $portuguese = $this->read('pt-BR/index.html');
 
-        self::assertIsString($english);
-        self::assertIsString($portuguese);
         self::assertStringContainsString('<html lang="en">', $english);
         self::assertStringContainsString('<html lang="pt-BR">', $portuguese);
-        self::assertStringContainsString('hreflang="pt-BR"', $english);
-        self::assertStringContainsString('hreflang="en"', $portuguese);
+        self::assertStringContainsString('hreflang="en" href="' . self::SITE_URL . '/"', $english);
+        self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR/"', $english);
+        self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $english);
+        self::assertStringContainsString('hreflang="en" href="' . self::SITE_URL . '/"', $portuguese);
+        self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR/"', $portuguese);
+        self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $portuguese);
     }
 
     public function testFirstArticleContainsSubstantiveContent(): void
     {
-        $article = file_get_contents($this->buildDirectory() . '/articles/from-code-to-infrastructure/index.html');
+        $article = $this->read('articles/from-code-to-infrastructure/index.html');
 
-        self::assertIsString($article);
         self::assertStringContainsString('From Code to Infrastructure', $article);
         self::assertStringContainsString('Free software does not mean that development and maintenance have no cost.', $article);
     }
 
     public function testAssetsUseConfiguredBaseUrl(): void
     {
-        $index = file_get_contents($this->buildDirectory() . '/index.html');
-        $baseUrl = rtrim((string) (getenv('EXPECTED_BASE_URL') ?: 'https://vitormattos.github.io'), '/');
+        $index = $this->read('index.html');
+        $baseUrl = rtrim((string) (getenv('EXPECTED_BASE_URL') ?: self::SITE_URL), '/');
 
-        self::assertIsString($index);
         self::assertMatchesRegularExpression(
             '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/main-[^"\']+\.css#',
             $index,
         );
+    }
+
+    public function testCanonicalAndStructuredDataAlwaysUseProductionUrl(): void
+    {
+        $article = $this->read('articles/from-code-to-infrastructure/index.html');
+        $canonical = self::SITE_URL . '/articles/from-code-to-infrastructure/';
+
+        self::assertStringContainsString('<link rel="canonical" href="' . $canonical . '">', $article);
+        self::assertStringContainsString('"@type":"Article"', $article);
+        self::assertStringContainsString('"@type":"Person"', $article);
+        self::assertStringContainsString('"name":"Vitor Mattos"', $article);
+        self::assertStringContainsString('"url":"' . $canonical . '"', $article);
+        self::assertStringNotContainsString('/pr-preview/', $this->extractCanonicalLine($article));
+    }
+
+    public function testIndexingDirectivesMatchEnvironment(): void
+    {
+        $index = $this->read('index.html');
+        $robots = $this->read('robots.txt');
+
+        if ($this->isPreview()) {
+            self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $index);
+            self::assertStringContainsString("Disallow: /", $robots);
+            self::assertFileDoesNotExist($this->buildDirectory() . '/sitemap.xml');
+
+            return;
+        }
+
+        self::assertStringNotContainsString('noindex,nofollow,noarchive', $index);
+        self::assertStringContainsString('Disallow: /pr-preview/', $robots);
+        self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $robots);
+        self::assertFileExists($this->buildDirectory() . '/sitemap.xml');
+    }
+
+    public function testSitemapContainsOnlyCanonicalHtmlDocuments(): void
+    {
+        if ($this->isPreview()) {
+            self::markTestSkipped('Preview builds intentionally do not generate a sitemap.');
+        }
+
+        $sitemap = $this->read('sitemap.xml');
+
+        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure/', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura/', $sitemap);
+        self::assertStringNotContainsString('/pr-preview/', $sitemap);
+        self::assertStringNotContainsString('/feed.xml', $sitemap);
+        self::assertStringNotContainsString('/llms.txt', $sitemap);
+    }
+
+    public function testFeedsAndMachineReadableGuideUseCanonicalUrls(): void
+    {
+        $feed = $this->read('feed.xml');
+        $llms = $this->read('llms.txt');
+
+        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure/', $feed);
+        self::assertStringContainsString('# Vitor Mattos', $llms);
+        self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $llms);
+    }
+
+    public function testPublicBuildDoesNotExposeInternalApplicationPurpose(): void
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->buildDirectory(), FilesystemIterator::SKIP_DOTS),
+        );
+
+        foreach ($iterator as $file) {
+            if (! $file->isFile() || ! in_array($file->getExtension(), ['html', 'txt', 'xml'], true)) {
+                continue;
+            }
+
+            $contents = file_get_contents($file->getPathname());
+            self::assertIsString($contents);
+            self::assertStringNotContainsString('Global Talent', $contents, $file->getPathname());
+        }
+    }
+
+    private function extractCanonicalLine(string $html): string
+    {
+        preg_match('/<link rel="canonical"[^>]+>/', $html, $matches);
+
+        return $matches[0] ?? '';
     }
 }
