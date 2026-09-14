@@ -2,6 +2,7 @@
 extends: _layouts.content
 section: content
 locale: pt-BR
+schemaType: CreativeWork
 alternateUrl: /talks/free-software/
 title: Software livre como infraestrutura
 description: Estrutura inicial para registrar palestras, versões, eventos e materiais relacionados.
