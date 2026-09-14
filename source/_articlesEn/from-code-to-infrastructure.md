@@ -2,6 +2,7 @@
 extends: _layouts.content
 section: content
 locale: en
+schemaType: Article
 alternateUrl: /pt-BR/artigos/do-codigo-a-infraestrutura/
 title: "From Code to Infrastructure: The Work Behind Sustainable Free Software"
 description: Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.
