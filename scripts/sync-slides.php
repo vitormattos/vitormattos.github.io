@@ -5,6 +5,10 @@
 
 declare(strict_types=1);
 
+use App\Presentations\SlidesPublicTagsScraper;
+
+require __DIR__ . '/../vendor/autoload.php';
+
 const API_BASE = 'https://api.slides.com';
 const MANAGED_PREFIX = 'slides-com-';
 const MAX_RETRIES = 6;
@@ -84,6 +88,18 @@ function yamlString(?string $value): string
     return json_encode($value ?? '', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }
 
+function yamlList(array $values, string $indent = ''): string
+{
+    if ($values === []) {
+        return $indent . "[]\n";
+    }
+
+    return implode('', array_map(
+        static fn (string $value): string => $indent . '- ' . yamlString($value) . "\n",
+        $values,
+    ));
+}
+
 function safeSlug(string $slug): string
 {
     $slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9-]+/', '-', $slug), '-'));
@@ -126,7 +142,7 @@ for ($page = 2; $page <= $pages; ++$page) {
     array_push($summaries, ...(request("/v1/decks?per_page=100&page={$page}")['data'] ?? []));
 }
 
-$expectedPaths = [];
+$publicDecks = [];
 foreach ($summaries as $summary) {
     if (array_key_exists('visibility', $summary) && ($summary['visibility'] ?? null) !== 'all') {
         continue;
@@ -134,11 +150,24 @@ foreach ($summaries as $summary) {
 
     usleep(REQUEST_DELAY_MICROSECONDS);
     $detail = request('/v1/decks/' . rawurlencode((string) $summary['id']) . '?include_deck_html=true')['data'];
-
-    if (($detail['visibility'] ?? null) !== 'all') {
-        continue;
+    if (($detail['visibility'] ?? null) === 'all') {
+        $publicDecks[] = $detail;
     }
+}
 
+$publicUrls = array_values(array_filter(array_map(
+    static fn (array $deck): string => rtrim((string) ($deck['url'] ?? ''), '/'),
+    $publicDecks,
+)));
+$tagsByUrl = [];
+try {
+    $tagsByUrl = (new SlidesPublicTagsScraper('vitormattos'))->scrape($publicUrls);
+} catch (Throwable $exception) {
+    fwrite(STDERR, 'Slides.com tag scraping failed; continuing without tags: ' . $exception->getMessage() . "\n");
+}
+
+$expectedPaths = [];
+foreach ($publicDecks as $detail) {
     $slug = safeSlug((string) ($detail['slug'] ?? $detail['id']));
     $managedName = MANAGED_PREFIX . $detail['id'] . '-' . $slug;
     $locale = str_starts_with((string) ($detail['language'] ?? ''), 'pt') ? 'pt-BR' : 'en';
@@ -147,6 +176,7 @@ foreach ($summaries as $summary) {
     $expectedPaths[$managedPath] = true;
     $publicUrl = rtrim((string) $detail['url'], '/');
     $embed = $publicUrl . '/embed';
+    $tags = $tagsByUrl[$publicUrl] ?? [];
     $created = substr((string) ($detail['created_at'] ?? ''), 0, 10);
     $updated = substr((string) ($detail['updated_at'] ?? ''), 0, 10);
     $description = trim((string) ($detail['description'] ?? '')) ?: (string) $detail['title'];
@@ -163,6 +193,9 @@ foreach ($summaries as $summary) {
         'visibility' => 'all',
         'url' => $publicUrl,
         'embed_url' => $embed,
+        'tags' => [
+            'slides_com' => $tags,
+        ],
         'thumbnail_url' => $detail['thumbnail_url'] ?? null,
         'slide_count' => $detail['slide_count'] ?? null,
         'width' => $detail['width'] ?? null,
@@ -201,6 +234,8 @@ foreach ($summaries as $summary) {
         . "updated: {$updated}\n"
         . "managed: slides.com\n"
         . "slidesId: {$detail['id']}\n"
+        . "tags:\n"
+        . yamlList($tags, '  ')
         . "presentation:\n"
         . "  type: slides.com\n"
         . '  url: ' . yamlString($publicUrl) . "\n"
@@ -230,4 +265,4 @@ foreach (['source/_talks', 'source/_talksEn'] as $collection) {
     }
 }
 
-fwrite(STDOUT, 'Synchronized ' . count($expectedPaths) . " public Slides.com decks.\n");
+fwrite(STDOUT, 'Synchronized ' . count($expectedPaths) . " public Slides.com decks with public tag metadata.\n");
