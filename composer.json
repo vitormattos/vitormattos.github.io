@@ -18,8 +18,8 @@
     "build": "jigsaw build production",
     "serve": "jigsaw serve",
     "lint": "find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
-    "cs:check": "php-cs-fixer fix --dry-run --diff",
-    "cs:fix": "php-cs-fixer fix",
+    "cs:check": "php-cs-fixer fix --dry-run --diff --allow-risky=yes",
+    "cs:fix": "php-cs-fixer fix --allow-risky=yes",
     "test": "phpunit --colors=always --fail-on-warning --fail-on-risky"
   }
 }
