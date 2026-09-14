@@ -34,11 +34,16 @@ final class SiteBuildTest extends TestCase
         $build = $this->buildDirectory();
 
         self::assertFileExists($build . '/index.html');
+        self::assertFileExists($build . '/articles/index.html');
         self::assertFileExists($build . '/articles/from-code-to-infrastructure/index.html');
+        self::assertFileExists($build . '/talks/index.html');
         self::assertFileExists($build . '/talks/free-software/index.html');
         self::assertFileExists($build . '/pt-BR/index.html');
+        self::assertFileExists($build . '/pt-BR/artigos/index.html');
         self::assertFileExists($build . '/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
+        self::assertFileExists($build . '/pt-BR/palestras/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/software-livre/index.html');
+        self::assertFileExists($build . '/404.html');
         self::assertFileExists($build . '/feed.xml');
         self::assertFileExists($build . '/pt-BR/feed.xml');
         self::assertFileExists($build . '/llms.txt');
@@ -87,8 +92,10 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('<link rel="canonical" href="' . $canonical . '">', $article);
         self::assertStringContainsString('"@type":"Article"', $article);
         self::assertStringContainsString('"@type":"Person"', $article);
+        self::assertStringContainsString('"@type":"BreadcrumbList"', $article);
         self::assertStringContainsString('"name":"Vitor Mattos"', $article);
         self::assertStringContainsString('"url":"' . $canonical . '"', $article);
+        self::assertStringContainsString(self::SITE_URL . '/articles/', $article);
         self::assertStringNotContainsString('/pr-preview/', $this->extractCanonicalLine($article));
     }
 
@@ -96,6 +103,9 @@ final class SiteBuildTest extends TestCase
     {
         $index = $this->read('index.html');
         $robots = $this->read('robots.txt');
+        $notFound = $this->read('404.html');
+
+        self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $notFound);
 
         if ($this->isPreview()) {
             self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $index);
@@ -119,8 +129,10 @@ final class SiteBuildTest extends TestCase
 
         $sitemap = $this->read('sitemap.xml');
 
+        self::assertStringContainsString(self::SITE_URL . '/articles/', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure/', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura/', $sitemap);
+        self::assertStringNotContainsString('/404.html', $sitemap);
         self::assertStringNotContainsString('/pr-preview/', $sitemap);
         self::assertStringNotContainsString('/feed.xml', $sitemap);
         self::assertStringNotContainsString('/llms.txt', $sitemap);
