@@ -12,23 +12,32 @@ final class SiteBuildTest extends TestCase
     public function testProductionBuildContainsExpectedPages(): void
     {
         self::assertFileExists(__DIR__ . '/../build_production/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/artigos/primeiro-artigo/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/palestras/software-livre/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/en/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/en/articles/first-article/index.html');
-        self::assertFileExists(__DIR__ . '/../build_production/en/talks/free-software/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/articles/first-article/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/talks/free-software/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/artigos/primeiro-artigo/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/pt-BR/palestras/software-livre/index.html');
     }
 
     public function testLocalizedPagesExposeCorrectLanguage(): void
     {
-        $portuguese = file_get_contents(__DIR__ . '/../build_production/index.html');
-        $english = file_get_contents(__DIR__ . '/../build_production/en/index.html');
+        $english = file_get_contents(__DIR__ . '/../build_production/index.html');
+        $portuguese = file_get_contents(__DIR__ . '/../build_production/pt-BR/index.html');
 
-        self::assertIsString($portuguese);
         self::assertIsString($english);
-        self::assertStringContainsString('<html lang="pt-BR">', $portuguese);
+        self::assertIsString($portuguese);
         self::assertStringContainsString('<html lang="en">', $english);
-        self::assertStringContainsString('hreflang="en"', $portuguese);
+        self::assertStringContainsString('<html lang="pt-BR">', $portuguese);
         self::assertStringContainsString('hreflang="pt-BR"', $english);
+        self::assertStringContainsString('hreflang="en"', $portuguese);
+    }
+
+    public function testIntroductoryArticleIsRealContent(): void
+    {
+        $article = file_get_contents(__DIR__ . '/../build_production/articles/first-article/index.html');
+
+        self::assertIsString($article);
+        self::assertStringContainsString('Why this site exists', $article);
+        self::assertStringContainsString('English is the canonical language', $article);
     }
 }
