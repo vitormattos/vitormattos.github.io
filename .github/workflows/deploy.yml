@@ -6,6 +6,7 @@ name: Deploy GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -36,11 +37,25 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      # Production must contain the current public Slides.com catalog even before
+      # the scheduled archival/PDF synchronization PR has been merged. PDF
+      # rendering deliberately stays out of deploys because it is expensive.
+      - name: Synchronize public Slides.com decks
+        env:
+          SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
+        run: php scripts/sync-slides.php
+
       - name: Install frontend dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Lint SCSS
+        run: npm run lint:scss
+
       - name: Build production site
         run: composer build
+
+      - name: Test production build
+        run: composer test
 
       - name: Deploy production site
         uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4.9.0
