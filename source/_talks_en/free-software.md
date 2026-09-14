@@ -2,7 +2,7 @@
 extends: _layouts.content
 section: content
 locale: en
-alternateUrl: /palestras/software-livre/
+alternateUrl: /pt-BR/palestras/software-livre/
 title: Free software as infrastructure
 description: Initial structure to register talks, versions, events and related materials.
 date: 2026-09-13
