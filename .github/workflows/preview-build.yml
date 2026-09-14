@@ -53,6 +53,15 @@ jobs:
           SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
         run: php scripts/sync-slides.php
 
+      - name: Restore presentation PDF cache
+        if: github.event.action != 'closed'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/slides-pdf
+          key: slides-pdf-v1-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            slides-pdf-v1-${{ runner.os }}-
+
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
         run: npm install --no-audit --no-fund
