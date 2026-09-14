@@ -29,7 +29,7 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         $metadata = json_decode(file_get_contents($metadataPath), true, flags: JSON_THROW_ON_ERROR);
         $output = $deckDir . '/' . PdfExportPolicy::pdfFilename($metadata);
         $temporary = $output . '.tmp';
-        $cachePath = PdfExportPolicy::cachePath($cacheDirectory, $metadata, $generatorFingerprint);
+        $cachePath = PdfExportPolicy::cachePath($cacheDirectory, $deckDir, $metadata, $generatorFingerprint);
         $arguments = PdfExportPolicy::deckTapeArguments($metadata, $temporary);
     } catch (Throwable $exception) {
         fwrite(STDERR, "::warning::Skipping PDF for deck {$deckId}: {$exception->getMessage()}\n");
@@ -55,7 +55,6 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
 
     @unlink($temporary);
     fwrite(STDOUT, "Generating {$output} from public Slides.com deck {$deckId}\n");
-
     $command = implode(' ', array_map('escapeshellarg', $arguments));
     passthru($command, $exitCode);
 
@@ -71,18 +70,15 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
             @unlink($oldPdf);
         }
     }
-
     if (!rename($temporary, $output)) {
         @unlink($temporary);
         throw new RuntimeException("Could not publish generated PDF for deck {$deckId}.");
     }
 
     writeExportManifest($manifestPath, PdfExportPolicy::exportManifest($deckDir, $metadata, $output, $generatorFingerprint));
-
     if (!copy($output, $cachePath)) {
         throw new RuntimeException("Could not cache generated PDF for deck {$deckId}.");
     }
-
     ++$generated;
 }
 
