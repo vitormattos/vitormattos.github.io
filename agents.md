@@ -19,105 +19,82 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Pull-request previews are published by `rossjrw/pr-preview-action` to `gh-pages/pr-preview/pr-N/`.
 - Production deployment must preserve `pr-preview/` and must not force-push over active previews.
 - No separate preview repository and no custom preview PAT are required. Use the repository `GITHUB_TOKEN` with the workflow permissions already declared.
-- Preview concurrency is scoped per PR (`pr-preview-N`) with `cancel-in-progress: true`; a new commit should cancel only an obsolete preview of that same PR.
-- Production deployment has its own concurrency group with `cancel-in-progress: true`; a newer production commit should cancel only an obsolete production deployment.
-- Do not place production and preview in the same cancelling concurrency group: a PR update must never cancel a production release, and a production deploy must never cancel a PR preview merely because both ultimately write to `gh-pages`.
-- Every successful commit written to `gh-pages` can trigger GitHub's managed `pages build and deployment` workflow when Pages is configured to deploy from that branch. That managed workflow is separate from our YAML workflows and does not inherit their concurrency settings. Rapid preview publications can therefore leave several managed Pages runs visible even when obsolete PR Preview runs were correctly cancelled before deployment.
+- Preview concurrency is scoped per PR (`pr-preview-N`) with `cancel-in-progress: true`; production has a separate cancelling group. Never combine them.
+- Every successful commit written to `gh-pages` can trigger GitHub's managed Pages workflow; that workflow does not inherit repository workflow concurrency.
 
 ## Jigsaw, Vite and SCSS
 
 - Jigsaw is the static-site generator; Vite uses `@tighten/jigsaw-vite-plugin`.
-- SCSS source lives under `source/_assets/scss/`. Do not restore a second CSS source tree.
-- Vite emits hashed assets under `/assets/build/`.
-- Jigsaw 1.8.8's `vite()` helper returns an absolute path beginning with `/assets/build/` and does not apply Jigsaw's `baseUrl`. In layouts, keep the pattern `{{ $page->baseUrl }}{{ vite(...) }}` so preview assets resolve under `/pr-preview/pr-N/`.
-- Preview builds use `PREVIEW_BASE_URL` and `NODE_ENV=preview`; production builds use the canonical root URL.
+- SCSS source lives under `source/_assets/scss/`; Vite emits hashed assets under `/assets/build/`.
+- Jigsaw's `vite()` helper does not apply `baseUrl`; layouts must keep `{{ $page->baseUrl }}{{ vite(...) }}`.
+- Preview builds use `PREVIEW_BASE_URL`; canonical URLs always use production `siteUrl`.
 
 ## Theme architecture
 
-- The site supports light and dark themes without a framework.
-- Default behavior follows `prefers-color-scheme`; a user override is stored as `localStorage['theme']` with values `light` or `dark`.
-- The stored theme is applied inline in the `<head>` before CSS loads to avoid a flash of the wrong theme. Do not move initial theme application to a deferred bundle.
-- Explicit theme state lives on `<html data-theme="light|dark">`; when no `data-theme` exists, CSS follows the operating-system preference.
-- Theme colors are defined as CSS custom properties in `_base.scss`. Components should consume those tokens instead of hard-coding separate light/dark colors.
-- The shared toggle lives in `_partials/theme-toggle.blade.php`, is localized, keyboard accessible and exposes state through `aria-pressed` and `aria-label`.
-- The theme preference is presentation-only and must not affect canonical URLs, indexing, content, structured data or server-side builds.
+- Light/dark behavior follows `prefers-color-scheme`; explicit user choice is stored in `localStorage['theme']`.
+- Theme colors are CSS custom properties. Theme preference must never alter content, URLs, indexing or builds.
 
 ## Presentation architecture
 
-- Reveal.js is the default renderer for native web slide decks. Keep it installed through npm and bundled by Vite; do not copy a vendored Reveal.js distribution into the repository.
-- Presentation content lives outside the Jigsaw source tree under `presentations/<slug>/<locale>.md`. These files are ordinary Reveal.js Markdown and must not contain Blade, Jigsaw variables, collection paths or site layout logic.
-- `source/_talks*/*.md` contains the talk record and presentation metadata only. For Reveal decks use front matter such as `presentation.type: reveal` and `presentation.source: presentations/<slug>/<locale>.md`.
-- `App\Listeners\CopyPresentations` copies presentation source files unchanged into the generated site. This is deliberate: presentation Markdown remains independently reusable and directly inspectable.
-- Presentation rendering belongs in `_layouts/talk.blade.php` and `_partials/talk/*`. Add new presentation formats by extending the dispatcher rather than branching inside talk Markdown.
-- Supported architecture includes `reveal`, `slides.com`/`iframe`, `pdf` and generic external presentations. A talk can additionally expose PDF/video resources without changing its deck source.
-- The first real talk entry is `LibreSign - Integrações`, backed by the original Slides.com deck. Keep externally hosted historical decks in their original format when that preserves provenance better than converting them to Reveal.
-- Reveal detail pages expose overview thumbnails through Reveal's native overview mode, a compact scroll/reading mode, fullscreen mode and the raw Markdown source.
-- Talk-list thumbnails use embedded Reveal instances lazily via `IntersectionObserver`; Slides.com/iframe entries may use their own embed as a non-interactive 16:9 thumbnail. Do not replace this with CI screenshots/Chromium unless there is a demonstrated requirement.
-- Reveal's external Markdown support requires HTTP serving. Local authoring should use the Vite/Jigsaw development server rather than opening generated HTML directly from `file://`.
-- Presentation URLs and Reveal assets are preview-aware and must use `baseUrl`. Canonical SEO URLs continue to use `siteUrl`.
-- Presentation source `.md` files still require explicit SPDX metadata, but the metadata must remain a plain Markdown/HTML comment that does not introduce Jigsaw coupling.
+- Reveal.js is the default renderer for native web decks and is bundled from npm.
+- Native presentation content lives in `presentations/<slug>/<locale>.md`, outside Jigsaw, with matching metadata records in `source/_talks*`.
+- Native Markdown must remain independently reusable and must not contain Blade/Jigsaw coupling.
+- `App\Listeners\CopyPresentations` copies presentation source unchanged into the build.
+- Rendering belongs in `_layouts/talk.blade.php` and `_partials/talk/*`; formats include Reveal, Slides.com/iframe, PDF and generic external resources.
+- Presentation pages can expose overview, reading/scroll and fullscreen modes plus source/download resources.
+- Talk collection pages support grid and list views. The preference is presentation-only and stored as `localStorage['talk-gallery-view']`.
+
+### Slides.com synchronization
+
+- `.github/workflows/sync-slides.yml` synchronizes public owned decks using the read-only secret `SLIDES_API_TOKEN`. Never commit, print or otherwise persist the token.
+- The workflow runs daily or manually and opens/updates `automation/slides-com-sync`; synchronization reaches `main` only through a pull request.
+- `scripts/sync-slides.php` is the single owner of synchronized data. It imports only decks whose API `visibility` is `all`.
+- Generated talk records are prefixed `slides-com-` and carry `managed: slides.com`. The synchronizer may delete/replace only these managed records; it must never alter native presentation records.
+- Archived Slides.com material lives only under `presentations/slides.com/<deck-id>/`. Native decks must never be stored there.
+- Archive `deck_html`, deck CSS and API metadata so public presentations remain inspectable independently of the Slides.com iframe. Preserve the original Slides.com URL for provenance.
+- A read-only Slides.com key can list/fetch decks and `deck_html`, but creating PDF/ZIP exports requires a read-write key. Do not silently broaden the synchronization credential. Add export generation only as an explicit, separately reviewed capability.
+- The Slides.com API is an import source, not the canonical authoring system for native decks. Sync must never erase locally authored Reveal/Markdown presentations.
 
 ## URL and indexing model
 
-- `baseUrl` means where the current build is being served. It changes for previews.
-- `siteUrl` means the canonical production origin and must remain `https://vitormattos.github.io` even in previews.
-- Canonical URLs, hreflang and JSON-LD must use `siteUrl`, never the preview `baseUrl`.
-- Canonical path policy follows Jigsaw's generated URLs: `/` is the only canonical URL ending in `/`; all non-root canonical URLs omit the trailing slash (for example `/articles`, `/pt-BR`, `/articles/example`). Keep canonical, hreflang, Open Graph, JSON-LD, sitemap, RSS and crawlable internal links consistent with this rule.
-- Navigation and compiled asset URLs use `baseUrl` so preview links stay inside the preview.
-- Preview HTML must contain `noindex,nofollow,noarchive`.
-- Indexable pages explicitly allow unrestricted snippets, large image previews and unrestricted video previews. Do not weaken these directives unless there is a content-policy reason to do so.
-- The production root `robots.txt` must disallow `/pr-preview/`. A nested `robots.txt` inside a preview path is not authoritative under the robots exclusion standard.
-- Preview builds must not generate `sitemap.xml`; production builds do.
-- The custom `/404.html` is always `noindex` and must never enter the sitemap.
+- `baseUrl` is the current build location; `siteUrl` is the canonical production origin `https://vitormattos.github.io`.
+- Canonical, hreflang, Open Graph, JSON-LD, sitemap and RSS use `siteUrl`; navigation/assets use `baseUrl`.
+- `/` is the only canonical URL ending in `/`; non-root canonical URLs do not end in `/`.
+- Preview HTML is `noindex,nofollow,noarchive`; preview builds do not generate a sitemap.
+- Production root robots blocks `/pr-preview/` and `/presentations/`; raw presentation sources do not enter the sitemap.
+- `/404.html` is always noindex.
 
 ## Crawlable information architecture
 
-- English collection hubs: `/articles` and `/talks`.
-- Portuguese collection hubs: `/pt-BR/artigos` and `/pt-BR/palestras`.
-- Main navigation links to these real hub pages, not only to homepage fragments.
-- Detail pages should remain reachable from both the homepage and the corresponding collection hub.
-- Detail-page structured data includes breadcrumbs through the appropriate collection hub.
+- English hubs: `/articles`, `/talks`; Portuguese hubs: `/pt-BR/artigos`, `/pt-BR/palestras`.
+- Detail pages remain reachable from their collection hub and relevant homepage sections.
 
 ## SEO and answer-engine requirements
 
-- Keep one canonical URL for every indexable document.
-- Language pairs must expose self-referencing hreflang, reciprocal alternate hreflang and `x-default` pointing to the English canonical version.
-- Keep factual Schema.org JSON-LD for `WebSite`, `Person`, `ProfilePage`/`WebPage`, `CollectionPage`, `Article`, `CreativeWork` and `BreadcrumbList` as appropriate. Do not invent awards, credentials, employment, relationships or dates merely to enrich structured data.
-- Articles and talks should have useful `title`, `description`, `date`, `locale`, `alternateUrl` and `schemaType` front matter.
-- Placeholder, proof-of-concept or otherwise thin public pages must use `indexable: false` until they contain substantive, factual content. The sitemap generator must exclude them. Do not keep placeholder talks once a verified real talk can replace them.
-- Use optional `updated` front matter only when a substantive revision actually occurred. When present it drives Schema.org `dateModified`, Open Graph `article:modified_time` and sitemap `lastmod`; otherwise publication `date` is used where appropriate. Never use CI/build time as a fake modification date.
-- Content should answer its topic clearly near the beginning, use descriptive headings, and remain written for humans. Do not add keyword stuffing, hidden text or fake FAQ schema.
-- `sitemap.xml` should contain only canonical HTML pages and real publication/modification dates when available. Do not use build time as fake `lastmod` because that makes every URL appear changed on every build.
-- RSS feeds are available at `/feed.xml` and `/pt-BR/feed.xml`.
-- `/llms.txt` is a machine-readable discovery aid, not a guaranteed ranking or indexing mechanism. Keep it factual and synchronized with public content.
-- Open Graph and social metadata should reflect the same canonical title, description and URL as the page. Add social images only when real assets exist.
-- After production is live, submit the root sitemap to Google Search Console and Bing Webmaster Tools. Verification tokens are account-specific and should not be invented in source.
-- IndexNow is a valid future enhancement for notifying Bing and participating engines about changed URLs, but do not submit every URL on every CI run indiscriminately; integrate it only with a stable key and a changed-URL strategy.
+- Keep one canonical URL per indexable document and reciprocal language alternates when a real translation exists.
+- Structured data must remain factual; never invent awards, credentials, dates or relationships.
+- Thin/placeholder pages remain `indexable: false`.
+- Use real publication/modification dates; never use CI time as fake `lastmod`.
+- `/llms.txt` is a discovery aid, not a ranking guarantee.
 
 ## Content semantics and accessibility
 
-- Use semantic landmarks and elements (`main`, `article`, `header`, `nav`, `time`) rather than styling generic containers when semantics exist.
-- Keep the keyboard skip link functional.
-- The visible language switch uses preview-aware `baseUrl`; head hreflang uses canonical `siteUrl`.
+- Use semantic landmarks and elements; preserve keyboard navigation and the skip link.
+- Language switches use preview-aware `baseUrl`; hreflang uses canonical `siteUrl`.
 
 ## CI and tests
 
-- GitHub Actions must be pinned to immutable commit SHAs with an exact version comment beside the SHA.
-- Dependabot covers Composer, npm and GitHub Actions.
-- `SITE_BUILD_DIR` lets the same PHPUnit suite test `build_production` and `build_preview`. Do not hardcode production paths in tests that are also run by preview CI.
-- `EXPECTED_BASE_URL` is used to verify preview-aware asset URLs.
-- Tests enforce canonical URLs, hreflang, structured data, preview `noindex`, rich-preview directives on indexable pages, production robots rules, sitemap scope, feeds, `llms.txt`, real-talk rendering and the rule against exposing internal application-purpose language.
-- Add regression tests when fixing deployment, SEO or URL-generation bugs rather than relying only on visual inspection.
-- Prefer `npm ci` when a committed `package-lock.json` is present. Prefer reproducible Composer installs once `composer.lock` is committed.
+- GitHub Actions must be pinned to immutable commit SHAs with an exact version comment.
+- Dependabot covers Composer, npm and Actions.
+- `SITE_BUILD_DIR` and `EXPECTED_BASE_URL` make tests preview-aware.
+- Add regression tests for deployment, SEO, URL generation and presentation-gallery behavior.
 
 ## Licensing and REUSE
 
-- Software/configuration currently uses `AGPL-3.0-or-later` unless explicitly changed.
-- Keep SPDX metadata on source files.
-- Markdown content should carry SPDX metadata directly in the file after YAML front matter.
-- Files whose syntax cannot safely carry comments, or plain-text templates where a source comment would leak into output, may be covered by `REUSE.toml` instead.
-- Run/observe the REUSE CI whenever adding a new file type.
+- Software/configuration uses `AGPL-3.0-or-later` unless explicitly changed; presentation/editorial content may use `CC-BY-SA-4.0` when declared.
+- Keep SPDX metadata on every source/generated file, including synchronized presentation archives.
+- Files that cannot safely carry comments may be covered by `REUSE.toml`.
 
 ## Engineering style
 
-Keep the site understandable and lightweight. Prefer Jigsaw/Vite capabilities already in the project over introducing parallel build systems or infrastructure. Do not add elaborate secret-management, deployment or security architecture without a concrete requirement. When changing an established decision in this file, update this file in the same change.
+Keep the site understandable and lightweight. Prefer Jigsaw/Vite/Reveal capabilities already in the project over parallel systems. Public site copy must not expose internal application strategy. Update this file whenever architecture or invariants change.
