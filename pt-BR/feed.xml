@@ -6,13 +6,11 @@
     <description>Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.</description>
     <language>pt-BR</language>
     <atom:link href="https://vitormattos.github.io/pt-BR/feed.xml" rel="self" type="application/rss+xml" />
-            <lastBuildDate>Mon, 14 Sep 2026 00:00:00 +0000</lastBuildDate>
                         <item>
-            <title>Do código à infraestrutura: o trabalho por trás de um software livre sustentável</title>
-            <link>https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura</link>
-            <guid isPermaLink="true">https://vitormattos.github.io/pt-BR/artigos/do-codigo-a-infraestrutura</guid>
-            <pubDate>Mon, 14 Sep 2026 00:00:00 +0000</pubDate>
-            <description>Por que publicar o código-fonte é apenas o começo do trabalho necessário para construir software livre no qual pessoas e organizações possam confiar.</description>
+            <title>A comunhão dos santos frente aos dilemas da ética digital</title>
+            <link>https://vitormattos.github.io/pt-BR/artigos/comunhao-crista-etica-digital</link>
+            <guid isPermaLink="true">https://vitormattos.github.io/pt-BR/artigos/comunhao-crista-etica-digital</guid>
+                        <description>Uma abordagem bíblica sobre a gestão de dados sensíveis na igreja. Monografia de Bacharelado em Teologia apresentada ao Seminário Teológico Presbiteriano Rev. Ashbel Green Simonton, em 2025.</description>
         </item>
     </channel>
 </rss>

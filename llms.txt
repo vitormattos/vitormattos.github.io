@@ -25,7 +25,7 @@ Canonical site: https://vitormattos.github.io/
 
 ## Articles
 
-- [From Code to Infrastructure: The Work Behind Sustainable Free Software](https://vitormattos.github.io/articles/from-code-to-infrastructure): Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.
+- [The communion of saints in the face of digital ethics dilemmas](https://vitormattos.github.io/articles/communion-of-saints-digital-ethics): A biblical approach to managing sensitive data in the church. Theology bachelor&#039;s monograph submitted to Seminário Teológico Presbiteriano Rev. Ashbel Green Simonton in 2025.
 
 ## Talks
 

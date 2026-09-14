@@ -6,13 +6,11 @@
     <description>Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.</description>
     <language>en</language>
     <atom:link href="https://vitormattos.github.io/feed.xml" rel="self" type="application/rss+xml" />
-            <lastBuildDate>Mon, 14 Sep 2026 00:00:00 +0000</lastBuildDate>
                         <item>
-            <title>From Code to Infrastructure: The Work Behind Sustainable Free Software</title>
-            <link>https://vitormattos.github.io/articles/from-code-to-infrastructure</link>
-            <guid isPermaLink="true">https://vitormattos.github.io/articles/from-code-to-infrastructure</guid>
-            <pubDate>Mon, 14 Sep 2026 00:00:00 +0000</pubDate>
-            <description>Why publishing source code is only the beginning of the work required to build free software people and organizations can depend on.</description>
+            <title>The communion of saints in the face of digital ethics dilemmas</title>
+            <link>https://vitormattos.github.io/articles/communion-of-saints-digital-ethics</link>
+            <guid isPermaLink="true">https://vitormattos.github.io/articles/communion-of-saints-digital-ethics</guid>
+                        <description>A biblical approach to managing sensitive data in the church. Theology bachelor&#039;s monograph submitted to Seminário Teológico Presbiteriano Rev. Ashbel Green Simonton in 2025.</description>
         </item>
     </channel>
 </rss>
