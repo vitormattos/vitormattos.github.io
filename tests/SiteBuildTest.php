@@ -43,6 +43,8 @@ final class SiteBuildTest extends TestCase
         self::assertFileExists($build . '/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/software-livre/index.html');
+        self::assertFileExists($build . '/presentations/free-software/en.md');
+        self::assertFileExists($build . '/presentations/free-software/pt-BR.md');
         self::assertFileExists($build . '/404.html');
         self::assertFileExists($build . '/feed.xml');
         self::assertFileExists($build . '/pt-BR/feed.xml');
@@ -78,12 +80,34 @@ final class SiteBuildTest extends TestCase
     public function testAssetsUseConfiguredBaseUrl(): void
     {
         $index = $this->read('index.html');
+        $talk = $this->read('talks/free-software/index.html');
         $baseUrl = rtrim((string) (getenv('EXPECTED_BASE_URL') ?: self::SITE_URL), '/');
 
         self::assertMatchesRegularExpression(
             '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/main-[^"\']+\.css#',
             $index,
         );
+        self::assertStringContainsString($baseUrl . '/presentations/free-software/en.md', $talk);
+        self::assertMatchesRegularExpression(
+            '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/presentations-[^"\']+\.css#',
+            $talk,
+        );
+    }
+
+    public function testPresentationContentIsIndependentAndComponentized(): void
+    {
+        $source = $this->read('presentations/free-software/en.md');
+        $index = $this->read('talks/index.html');
+        $talk = $this->read('talks/free-software/index.html');
+
+        self::assertStringContainsString('# Free software as infrastructure', $source);
+        self::assertStringNotContainsString('Jigsaw', $source);
+        self::assertStringNotContainsString('Blade', $source);
+        self::assertStringContainsString('data-presentation-mode="thumbnail"', $index);
+        self::assertStringContainsString('data-presentation-mode="detail"', $talk);
+        self::assertStringContainsString('data-presentation-action="overview"', $talk);
+        self::assertStringContainsString('data-presentation-action="reading"', $talk);
+        self::assertStringContainsString('data-presentation-action="fullscreen"', $talk);
     }
 
     public function testCanonicalAndStructuredDataAlwaysUseProductionUrl(): void
@@ -145,6 +169,7 @@ final class SiteBuildTest extends TestCase
         self::assertStringNotContainsString('/pr-preview/', $sitemap);
         self::assertStringNotContainsString('/feed.xml', $sitemap);
         self::assertStringNotContainsString('/llms.txt', $sitemap);
+        self::assertStringNotContainsString('/presentations/', $sitemap);
     }
 
     public function testFeedsAndMachineReadableGuideUseCanonicalUrls(): void
