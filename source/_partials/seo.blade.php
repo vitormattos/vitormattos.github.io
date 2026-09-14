@@ -15,6 +15,7 @@
         ? $canonicalUrl
         : ($alternateCanonicalUrl ?? rtrim($page->siteUrl, '/') . '/');
     $schemaType = $page->schemaType ?? null;
+    $pageType = $page->pageType ?? (($path === '/' || $path === '/pt-BR/') ? 'ProfilePage' : 'WebPage');
     $personId = $page->author['id'];
     $websiteId = rtrim($page->siteUrl, '/') . '/#website';
     $webpageId = $canonicalUrl . '#webpage';
@@ -47,7 +48,7 @@
             ],
         ],
         [
-            '@type' => $path === '/' || $path === '/pt-BR/' ? 'ProfilePage' : 'WebPage',
+            '@type' => $pageType,
             '@id' => $webpageId,
             'url' => $canonicalUrl,
             'name' => $pageTitle,
@@ -58,7 +59,7 @@
         ],
     ];
 
-    if ($path === '/' || $path === '/pt-BR/') {
+    if ($pageType === 'ProfilePage') {
         $graph[2]['mainEntity'] = ['@id' => $personId];
     }
 
@@ -82,6 +83,41 @@
 
         $graph[] = $content;
         $graph[2]['mainEntity'] = ['@id' => $contentId];
+
+        $isArticle = $schemaType === 'Article';
+        $sectionPath = $isArticle
+            ? ($isEnglish ? '/articles/' : '/pt-BR/artigos/')
+            : ($isEnglish ? '/talks/' : '/pt-BR/palestras/');
+        $sectionName = $isArticle
+            ? ($isEnglish ? 'Articles' : 'Artigos')
+            : ($isEnglish ? 'Talks' : 'Palestras');
+        $breadcrumbId = $canonicalUrl . '#breadcrumb';
+
+        $graph[] = [
+            '@type' => 'BreadcrumbList',
+            '@id' => $breadcrumbId,
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => $isEnglish ? 'Home' : 'Início',
+                    'item' => rtrim($page->siteUrl, '/') . ($isEnglish ? '/' : '/pt-BR/'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => $sectionName,
+                    'item' => rtrim($page->siteUrl, '/') . $sectionPath,
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 3,
+                    'name' => $pageTitle,
+                    'item' => $canonicalUrl,
+                ],
+            ],
+        ];
+        $graph[2]['breadcrumb'] = ['@id' => $breadcrumbId];
     }
 
     $structuredData = [
