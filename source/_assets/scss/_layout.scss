@@ -1,0 +1,32 @@
+/* SPDX-FileCopyrightText: 2026 Vitor Mattos */
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+
+@use 'variables' as *;
+
+.site-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding-block: 1.5rem;
+}
+
+nav {
+    display: flex;
+    gap: 1rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+section,
+footer {
+    margin-block: $section-spacing;
+}
+
+.content {
+    max-width: $content-max-width;
+    margin: $section-spacing auto;
+}
