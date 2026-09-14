@@ -11,7 +11,8 @@ final class PdfExportPolicy
 {
     public const MINIMUM_PDF_BYTES = 10_000;
     public const DECKTAPE_VERSION = '3.16.1';
-    public const CACHE_SCHEMA_VERSION = 2;
+    public const CACHE_SCHEMA_VERSION = 3;
+    public const EXPORT_MANIFEST = 'export.json';
 
     public static function isValidPdf(string $path): bool
     {
@@ -28,6 +29,19 @@ final class PdfExportPolicy
         fclose($handle);
 
         return $header === '%PDF-';
+    }
+
+    public static function pdfFilename(array $metadata): string
+    {
+        $slug = strtolower((string) ($metadata['slug'] ?? ''));
+        $slug = trim((string) preg_replace('/[^a-z0-9]+/', '-', $slug), '-');
+
+        if ($slug === '') {
+            $id = preg_replace('/[^a-zA-Z0-9._-]/', '-', (string) ($metadata['id'] ?? 'deck'));
+            $slug = 'deck-' . $id;
+        }
+
+        return $slug . '.pdf';
     }
 
     public static function generatorFingerprint(): string
@@ -48,6 +62,90 @@ final class PdfExportPolicy
         }
 
         return hash_final($hash);
+    }
+
+    public static function sourceArtifacts(string $deckDirectory): array
+    {
+        $artifacts = [];
+        foreach (['deck.html', 'deck.css', 'metadata.json'] as $filename) {
+            $path = rtrim($deckDirectory, '/') . '/' . $filename;
+            if (!is_file($path)) {
+                throw new \RuntimeException("Required presentation artifact is missing: {$filename}");
+            }
+            $artifacts[$filename] = hash_file('sha256', $path);
+        }
+
+        return $artifacts;
+    }
+
+    public static function sourceFingerprint(string $deckDirectory, ?string $generatorFingerprint = null): string
+    {
+        $payload = [
+            'artifacts' => self::sourceArtifacts($deckDirectory),
+            'generator' => $generatorFingerprint ?? self::generatorFingerprint(),
+        ];
+
+        return hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
+    }
+
+    public static function exportManifest(
+        string $deckDirectory,
+        array $metadata,
+        string $pdfPath,
+        ?string $generatorFingerprint = null,
+    ): array {
+        $generator = $generatorFingerprint ?? self::generatorFingerprint();
+
+        return [
+            '_spdx' => [
+                'copyright' => '2026 Vitor Mattos',
+                'license' => 'CC-BY-SA-4.0',
+            ],
+            'schema' => self::CACHE_SCHEMA_VERSION,
+            'source' => [
+                'sha256' => self::sourceFingerprint($deckDirectory, $generator),
+                'artifacts' => self::sourceArtifacts($deckDirectory),
+            ],
+            'generator' => [
+                'sha256' => $generator,
+                'decktape' => self::DECKTAPE_VERSION,
+            ],
+            'pdf' => [
+                'file' => basename($pdfPath),
+                'sha256' => hash_file('sha256', $pdfPath),
+                'bytes' => filesize($pdfPath),
+            ],
+        ];
+    }
+
+    public static function manifestMatches(
+        string $manifestPath,
+        string $deckDirectory,
+        array $metadata,
+        ?string $generatorFingerprint = null,
+    ): bool {
+        if (!is_file($manifestPath)) {
+            return false;
+        }
+
+        try {
+            $manifest = json_decode(file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+        } catch (\Throwable) {
+            return false;
+        }
+
+        $pdfPath = rtrim($deckDirectory, '/') . '/' . self::pdfFilename($metadata);
+        if (!self::isValidPdf($pdfPath)) {
+            return false;
+        }
+
+        $generator = $generatorFingerprint ?? self::generatorFingerprint();
+
+        return ($manifest['schema'] ?? null) === self::CACHE_SCHEMA_VERSION
+            && ($manifest['source']['sha256'] ?? null) === self::sourceFingerprint($deckDirectory, $generator)
+            && ($manifest['generator']['sha256'] ?? null) === $generator
+            && ($manifest['pdf']['file'] ?? null) === basename($pdfPath)
+            && ($manifest['pdf']['sha256'] ?? null) === hash_file('sha256', $pdfPath);
     }
 
     public static function deckFingerprint(array $metadata, ?string $generatorFingerprint = null): string
