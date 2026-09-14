@@ -27,6 +27,13 @@
                     </div>
                 </div>
             </div>
+        @elseif (in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
+            <iframe
+                src="{{ $presentation['embed'] }}"
+                title=""
+                loading="lazy"
+                tabindex="-1"
+            ></iframe>
         @elseif ($presentation['thumbnail'] ?? false)
             <img src="{{ $presentation['thumbnail'] }}" alt="" loading="lazy">
         @else
