@@ -16,7 +16,7 @@
         @endif
         <p class="meta">
             {{ ($page->locale ?? 'en') === 'pt-BR' ? 'Por' : 'By' }}
-            <a href="{{ $page->baseUrl }}{{ ($page->locale ?? 'en') === 'pt-BR' ? '/pt-BR/' : '/' }}" rel="author">{{ $page->author['name'] }}</a>
+            <a href="{{ $page->baseUrl }}{{ ($page->locale ?? 'en') === 'pt-BR' ? '/pt-BR' : '/' }}" rel="author">{{ $page->author['name'] }}</a>
         </p>
     </header>
     @yield('content')
