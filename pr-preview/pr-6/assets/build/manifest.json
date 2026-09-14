@@ -1,0 +1,26 @@
+{
+  "source/_assets/js/presentations.js": {
+    "file": "assets/presentations-5hZ7N8CQ.js",
+    "name": "presentations",
+    "src": "source/_assets/js/presentations.js",
+    "isEntry": true
+  },
+  "source/_assets/scss/main.scss": {
+    "file": "assets/main-CKzBA8U0.css",
+    "name": "main",
+    "names": [
+      "main.css"
+    ],
+    "src": "source/_assets/scss/main.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/presentations.scss": {
+    "file": "assets/presentations-BejEjNuL.css",
+    "name": "presentations",
+    "names": [
+      "presentations.css"
+    ],
+    "src": "source/_assets/scss/presentations.scss",
+    "isEntry": true
+  }
+}

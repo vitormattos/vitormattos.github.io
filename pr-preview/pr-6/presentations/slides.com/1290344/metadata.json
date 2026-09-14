@@ -1,0 +1,35 @@
+{
+    "_spdx": {
+        "copyright": "2026 Vitor Mattos",
+        "license": "CC-BY-SA-4.0"
+    },
+    "id": 1290344,
+    "slug": "telegrambots-entre-nesta-onda",
+    "title": "TelegramBots:Entre nesta onda",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda",
+    "embed_url": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/embed",
+    "tags": {
+        "slides_com": []
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/c268010a8a2ed201b4671247f0cabbb0/thumb.jpg?1531083360",
+    "slide_count": 62,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "opensans",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2018-07-08T20:48:38.251Z",
+    "updated_at": "2021-09-12T15:00:56.804Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda",
+        "fullscreen": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/fullscreen",
+        "edit": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/edit",
+        "present": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/live"
+    }
+}
