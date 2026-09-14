@@ -28,16 +28,19 @@ jobs:
           php-version: '8.3'
           coverage: none
 
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Test presentation contracts
+        run: vendor/bin/phpunit tests/Presentations
+
       - name: Synchronize public decks
         env:
           SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
         run: php scripts/sync-slides.php
 
-      - name: Install pinned presentation runtime
-        run: npm ci
-
-      - name: Generate archival PDFs locally
-        run: bash scripts/generate-slides-pdfs.sh
+      - name: Generate archival PDFs
+        run: php scripts/generate-slides-pdfs.php
 
       - name: Detect changes
         id: changes
