@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+version = 1
+
+[[annotations]]
+path = [
+    "composer.json",
+    "package.json",
+    "source/robots.txt.blade.php"
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vitor Mattos"
+SPDX-License-Identifier = "AGPL-3.0-or-later"

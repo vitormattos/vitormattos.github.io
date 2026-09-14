@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+version: 2
+updates:
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - composer
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:10"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - npm
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:15"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - github-actions
