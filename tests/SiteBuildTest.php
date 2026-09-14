@@ -37,12 +37,12 @@ final class SiteBuildTest extends TestCase
 
         self::assertFileExists($build . '/index.html');
         self::assertFileExists($build . '/articles/index.html');
-        self::assertFileExists($build . '/articles/from-code-to-infrastructure/index.html');
+        self::assertFileExists($build . '/articles/communion-of-saints-digital-ethics/index.html');
         self::assertFileExists($build . '/talks/index.html');
         self::assertFileExists($build . '/talks/libresign-integrations/index.html');
         self::assertFileExists($build . '/pt-BR/index.html');
         self::assertFileExists($build . '/pt-BR/artigos/index.html');
-        self::assertFileExists($build . '/pt-BR/artigos/do-codigo-a-infraestrutura/index.html');
+        self::assertFileExists($build . '/pt-BR/artigos/comunhao-crista-etica-digital/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/index.html');
         self::assertFileExists($build . '/pt-BR/palestras/libresign-integracoes/index.html');
         self::assertFileExists($build . '/404.html');
@@ -81,14 +81,20 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('data-label-dark="Usar tema escuro"', $portuguese);
     }
 
-    public function testFirstArticleContainsSubstantiveContent(): void
+    public function testSimontonMonographUsesSourceRepositoryMetadata(): void
     {
-        $article = $this->read('articles/from-code-to-infrastructure/index.html');
+        $monograph = $this->read('pt-BR/artigos/comunhao-crista-etica-digital/index.html');
 
-        self::assertStringContainsString('From Code to Infrastructure', $article);
-        self::assertStringContainsString('Free software does not mean that development and maintenance have no cost.', $article);
-        self::assertStringContainsString('Technical implementation is only part of the work', $article);
-        self::assertStringContainsString('Community is infrastructure too', $article);
+        self::assertStringContainsString('A comunhão dos santos frente aos dilemas da ética digital', $monograph);
+        self::assertStringContainsString('Seminário Teológico Presbiteriano Rev. Ashbel Green Simonton', $monograph);
+        self::assertStringContainsString('Bacharel em Teologia', $monograph);
+        self::assertStringContainsString('Rev. André Luís Barros Monteiro', $monograph);
+        self::assertStringContainsString('Vitor Mattos de Souza', $monograph);
+        self::assertStringContainsString('https://github.com/vitormattos/monografia-teologia', $monograph);
+        self::assertStringContainsString('https://vitormattos.github.io/monografia-teologia/monografia.pdf', $monograph);
+        self::assertStringContainsString('centralidade da comunhão dos santos', $monograph);
+        self::assertStringContainsString('"@type":"ScholarlyArticle"', $monograph);
+        self::assertStringNotContainsString('Do código à infraestrutura', $monograph);
     }
 
     public function testAssetsUseConfiguredBaseUrl(): void
@@ -97,14 +103,8 @@ final class SiteBuildTest extends TestCase
         $talk = $this->read('talks/libresign-integrations/index.html');
         $baseUrl = rtrim((string) (getenv('EXPECTED_BASE_URL') ?: self::SITE_URL), '/');
 
-        self::assertMatchesRegularExpression(
-            '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/main-[^"\']+\.css#',
-            $index,
-        );
-        self::assertMatchesRegularExpression(
-            '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/presentations-[^"\']+\.css#',
-            $talk,
-        );
+        self::assertMatchesRegularExpression('#' . preg_quote($baseUrl, '#') . '/assets/build/assets/main-[^"\']+\.css#', $index);
+        self::assertMatchesRegularExpression('#' . preg_quote($baseUrl, '#') . '/assets/build/assets/presentations-[^"\']+\.css#', $talk);
     }
 
     public function testRealLibreSignTalkUsesSlidesComPresentation(): void
@@ -124,14 +124,13 @@ final class SiteBuildTest extends TestCase
 
     public function testCanonicalAndStructuredDataAlwaysUseProductionUrl(): void
     {
-        $article = $this->read('articles/from-code-to-infrastructure/index.html');
-        $canonical = self::SITE_URL . '/articles/from-code-to-infrastructure';
+        $article = $this->read('articles/communion-of-saints-digital-ethics/index.html');
+        $canonical = self::SITE_URL . '/articles/communion-of-saints-digital-ethics';
 
         self::assertStringContainsString('<link rel="canonical" href="' . $canonical . '">', $article);
-        self::assertStringContainsString('"@type":"Article"', $article);
+        self::assertStringContainsString('"@type":"ScholarlyArticle"', $article);
         self::assertStringContainsString('"@type":"Person"', $article);
         self::assertStringContainsString('"@type":"BreadcrumbList"', $article);
-        self::assertStringContainsString('"name":"Vitor Mattos"', $article);
         self::assertStringContainsString('"url":"' . $canonical . '"', $article);
         self::assertStringContainsString(self::SITE_URL . '/articles', $article);
         self::assertStringNotContainsString('/pr-preview/', $this->extractCanonicalLine($article));
@@ -173,10 +172,12 @@ final class SiteBuildTest extends TestCase
         $sitemap = $this->read('sitemap.xml');
 
         self::assertStringContainsString(self::SITE_URL . '/articles', $sitemap);
-        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure', $sitemap);
-        self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/articles/communion-of-saints-digital-ethics', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/comunhao-crista-etica-digital', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/talks/libresign-integrations', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/pt-BR/palestras/libresign-integracoes', $sitemap);
+        self::assertStringNotContainsString('/articles/from-code-to-infrastructure', $sitemap);
+        self::assertStringNotContainsString('/pt-BR/artigos/do-codigo-a-infraestrutura', $sitemap);
         self::assertStringNotContainsString('/404.html', $sitemap);
         self::assertStringNotContainsString('/pr-preview/', $sitemap);
         self::assertStringNotContainsString('/feed.xml', $sitemap);
@@ -189,16 +190,15 @@ final class SiteBuildTest extends TestCase
         $feed = $this->read('feed.xml');
         $llms = $this->read('llms.txt');
 
-        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure', $feed);
+        self::assertStringContainsString(self::SITE_URL . '/articles/communion-of-saints-digital-ethics', $feed);
+        self::assertStringContainsString('The communion of saints in the face of digital ethics dilemmas', $llms);
         self::assertStringContainsString('# Vitor Mattos', $llms);
         self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $llms);
     }
 
     public function testPublicBuildDoesNotExposeInternalApplicationPurpose(): void
     {
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($this->buildDirectory(), FilesystemIterator::SKIP_DOTS),
-        );
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->buildDirectory(), FilesystemIterator::SKIP_DOTS));
 
         foreach ($iterator as $file) {
             if (! $file->isFile() || ! in_array($file->getExtension(), ['html', 'txt', 'xml'], true)) {

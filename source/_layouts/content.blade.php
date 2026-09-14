@@ -9,6 +9,8 @@
             <p class="meta">
                 <time datetime="{{ date('Y-m-d', $page->date) }}">{{ date(($page->locale ?? 'en') === 'pt-BR' ? 'd/m/Y' : 'Y-m-d', $page->date) }}</time>
             </p>
+        @elseif ($page->year ?? false)
+            <p class="meta"><time datetime="{{ $page->year }}">{{ $page->year }}</time></p>
         @endif
         <h1>{{ $page->title }}</h1>
         @if ($page->description)
