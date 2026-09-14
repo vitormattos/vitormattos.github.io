@@ -18,7 +18,7 @@ function initializeDeck(root) {
         slideNumber: isThumbnail ? false : 'c/t',
         hash: false,
         history: false,
-        keyboard: isThumbnail ? false : true,
+        keyboard: !isThumbnail,
         keyboardCondition: isThumbnail ? null : 'focused',
         touch: !isThumbnail,
         overview: !isThumbnail,
@@ -100,6 +100,12 @@ function bindToolbar(toolbar) {
     });
 }
 
-const roots = [...document.querySelectorAll('.js-reveal-deck')];
-await Promise.all(roots.map(initializeWhenVisible));
-document.querySelectorAll('[data-presentation-for]').forEach(bindToolbar);
+for (const root of document.querySelectorAll('.js-reveal-deck')) {
+    initializeWhenVisible(root).then(() => {
+        const toolbar = document.querySelector(`[data-presentation-for="${root.id}"]`);
+
+        if (toolbar) {
+            bindToolbar(toolbar);
+        }
+    });
+}
