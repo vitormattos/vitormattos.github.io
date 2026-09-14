@@ -1,4 +1,10 @@
 {
+  "source/_assets/js/presentations.js": {
+    "file": "assets/presentations-BfnrS0K4.js",
+    "name": "presentations",
+    "src": "source/_assets/js/presentations.js",
+    "isEntry": true
+  },
   "source/_assets/scss/main.scss": {
     "file": "assets/main-DbdA6N4W.css",
     "name": "main",
@@ -6,6 +12,15 @@
       "main.css"
     ],
     "src": "source/_assets/scss/main.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/presentations.scss": {
+    "file": "assets/presentations-CUjnLpZM.css",
+    "name": "presentations",
+    "names": [
+      "presentations.css"
+    ],
+    "src": "source/_assets/scss/presentations.scss",
     "isEntry": true
   }
 }
