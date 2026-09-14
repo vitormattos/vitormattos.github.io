@@ -6,12 +6,20 @@
 .site-header {
     align-items: center;
     display: flex;
+    gap: 1rem;
     justify-content: space-between;
     padding-block: 1.5rem;
 }
 
+.site-header__actions {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+}
+
 nav {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
@@ -29,4 +37,12 @@ footer {
 .content {
     max-width: $content-max-width;
     margin: $section-spacing auto;
+}
+
+@media (max-width: 48rem) {
+    .site-header,
+    .site-header__actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 }
