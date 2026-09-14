@@ -58,10 +58,10 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('<html lang="en">', $english);
         self::assertStringContainsString('<html lang="pt-BR">', $portuguese);
         self::assertStringContainsString('hreflang="en" href="' . self::SITE_URL . '/"', $english);
-        self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR/"', $english);
+        self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR"', $english);
         self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $english);
         self::assertStringContainsString('hreflang="en" href="' . self::SITE_URL . '/"', $portuguese);
-        self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR/"', $portuguese);
+        self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR"', $portuguese);
         self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $portuguese);
     }
 
@@ -87,7 +87,7 @@ final class SiteBuildTest extends TestCase
     public function testCanonicalAndStructuredDataAlwaysUseProductionUrl(): void
     {
         $article = $this->read('articles/from-code-to-infrastructure/index.html');
-        $canonical = self::SITE_URL . '/articles/from-code-to-infrastructure/';
+        $canonical = self::SITE_URL . '/articles/from-code-to-infrastructure';
 
         self::assertStringContainsString('<link rel="canonical" href="' . $canonical . '">', $article);
         self::assertStringContainsString('"@type":"Article"', $article);
@@ -95,7 +95,7 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('"@type":"BreadcrumbList"', $article);
         self::assertStringContainsString('"name":"Vitor Mattos"', $article);
         self::assertStringContainsString('"url":"' . $canonical . '"', $article);
-        self::assertStringContainsString(self::SITE_URL . '/articles/', $article);
+        self::assertStringContainsString(self::SITE_URL . '/articles', $article);
         self::assertStringNotContainsString('/pr-preview/', $this->extractCanonicalLine($article));
     }
 
@@ -129,9 +129,9 @@ final class SiteBuildTest extends TestCase
 
         $sitemap = $this->read('sitemap.xml');
 
-        self::assertStringContainsString(self::SITE_URL . '/articles/', $sitemap);
-        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure/', $sitemap);
-        self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura/', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/articles', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure', $sitemap);
+        self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura', $sitemap);
         self::assertStringNotContainsString('/404.html', $sitemap);
         self::assertStringNotContainsString('/pr-preview/', $sitemap);
         self::assertStringNotContainsString('/feed.xml', $sitemap);
@@ -143,7 +143,7 @@ final class SiteBuildTest extends TestCase
         $feed = $this->read('feed.xml');
         $llms = $this->read('llms.txt');
 
-        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure/', $feed);
+        self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure', $feed);
         self::assertStringContainsString('# Vitor Mattos', $llms);
         self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $llms);
     }
