@@ -10,7 +10,10 @@
     if ($presentation['pdf'] ?? false) {
         $archivedPdf = $presentation['pdf'];
     } elseif ($page->slidesId ?? false) {
-        $candidatePdf = '/presentations/slides.com/' . $page->slidesId . '/deck.pdf';
+        $pdfSlug = strtolower((string) ($page->slug ?? ''));
+        $pdfSlug = trim((string) preg_replace('/[^a-z0-9]+/', '-', $pdfSlug), '-');
+        $pdfFilename = ($pdfSlug !== '' ? $pdfSlug : 'deck-' . $page->slidesId) . '.pdf';
+        $candidatePdf = '/presentations/slides.com/' . $page->slidesId . '/' . $pdfFilename;
         if (is_file(ltrim($candidatePdf, '/'))) {
             $archivedPdf = $candidatePdf;
             $archivedPdfIsLocal = true;
