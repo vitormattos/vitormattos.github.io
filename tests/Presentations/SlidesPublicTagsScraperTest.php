@@ -52,7 +52,7 @@ final class SlidesPublicTagsScraperTest extends TestCase
             'https://slides.com/vitormattos' => '<a href="/vitormattos/php">PHP</a>',
             'https://slides.com/vitormattos/php' => '<a href="/vitormattos/private-deck">Private</a><a href="/someone/deck">Other user</a>',
         ];
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn (string $url): string => $pages[$url]);
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $pages[$url]);
 
         self::assertSame([
             'https://slides.com/vitormattos/public-deck' => [],
