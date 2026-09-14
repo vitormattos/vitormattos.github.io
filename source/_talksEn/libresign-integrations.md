@@ -9,6 +9,10 @@ alternateUrl: /pt-BR/palestras/libresign-integracoes/
 title: "LibreSign - Integrações"
 description: A presentation about LibreSign architecture, free software, privacy, Nextcloud, APIs, GLPI integration and the challenges of sustaining an open source project.
 date: 2022-11-25
+tags:
+  - LibreSign
+  - Nextcloud
+  - Free Software
 presentation:
   type: slides.com
   embed: https://slides.com/vitormattos/libresign-integracao/embed
