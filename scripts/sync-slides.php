@@ -95,7 +95,7 @@ function yamlList(array $values, string $indent = ''): string
     }
 
     return implode('', array_map(
-        static fn (string $value): string => $indent . '- ' . yamlString($value) . "\n",
+        static fn(string $value): string => $indent . '- ' . yamlString($value) . "\n",
         $values,
     ));
 }
@@ -156,7 +156,7 @@ foreach ($summaries as $summary) {
 }
 
 $publicUrls = array_values(array_filter(array_map(
-    static fn (array $deck): string => rtrim((string) ($deck['url'] ?? ''), '/'),
+    static fn(array $deck): string => rtrim((string) ($deck['url'] ?? ''), '/'),
     $publicDecks,
 )));
 $tagsByUrl = [];
