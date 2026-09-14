@@ -5,6 +5,9 @@ import Reveal from 'reveal.js';
 import Markdown from 'reveal.js/plugin/markdown';
 import Highlight from 'reveal.js/plugin/highlight';
 import Notes from 'reveal.js/plugin/notes';
+import Search from 'reveal.js/plugin/search';
+import Zoom from 'reveal.js/plugin/zoom';
+import RevealMath from 'reveal.js/plugin/math';
 
 const decks = new Map();
 
@@ -25,7 +28,11 @@ function initializeDeck(root) {
         transition: isThumbnail ? 'none' : 'slide',
         backgroundTransition: isThumbnail ? 'none' : 'fade',
         scrollActivationWidth: isThumbnail ? 0 : 720,
-        plugins: isThumbnail ? [Markdown] : [Markdown, Highlight, Notes],
+        pdfMaxPagesPerSlide: 1,
+        pdfSeparateFragments: false,
+        plugins: isThumbnail
+            ? [Markdown]
+            : [Markdown, Highlight, Notes, Search, Zoom, RevealMath.KaTeX],
     });
 
     decks.set(root.id, deck);
@@ -57,6 +64,11 @@ function bindToolbar(toolbar) {
         const action = button.dataset.presentationAction;
 
         if (action === 'overview') return deck.toggleOverview();
+        if (action === 'search') {
+            const search = deck.getPlugin('search');
+            search?.open?.();
+            return;
+        }
         if (action === 'reading') {
             const isReading = button.getAttribute('aria-pressed') === 'true';
             deck.toggleOverview(false);
