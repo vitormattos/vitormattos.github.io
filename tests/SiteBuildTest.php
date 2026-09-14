@@ -11,8 +11,8 @@ final class SiteBuildTest extends TestCase
 {
     public function testProductionBuildContainsExpectedPages(): void
     {
-        self::assertFileExists(__DIR__.'/../build_production/index.html');
-        self::assertFileExists(__DIR__.'/../build_production/artigos/primeiro-artigo/index.html');
-        self::assertFileExists(__DIR__.'/../build_production/palestras/software-livre/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/artigos/primeiro-artigo/index.html');
+        self::assertFileExists(__DIR__ . '/../build_production/palestras/software-livre/index.html');
     }
 }
