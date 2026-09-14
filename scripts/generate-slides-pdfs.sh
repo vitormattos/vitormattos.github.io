@@ -4,10 +4,8 @@
 
 set -euo pipefail
 
-if [[ ! -x node_modules/.bin/decktape ]]; then
-    echo 'DeckTape is not installed. Run npm ci before generating PDFs.' >&2
-    exit 1
-fi
+DECKTAPE_VERSION='3.16.1'
+DECKTAPE=(npm exec --yes --package="decktape@${DECKTAPE_VERSION}" -- decktape)
 
 success_count=0
 failure_count=0
@@ -51,7 +49,7 @@ while IFS= read -r -d '' metadata; do
     rm -f "$tmp_output"
 
     echo "Generating $output from $public_url (${width}x${height}, ${expected_slides} slides expected)"
-    if ! node_modules/.bin/decktape reveal \
+    if ! "${DECKTAPE[@]}" reveal \
         --size "${width}x${height}" \
         --pause 250 \
         --load-pause 2000 \
