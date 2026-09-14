@@ -8,5 +8,6 @@
 /build_production/
 /source/assets/build/
 /source/hot
+/.cache/
 .php-cs-fixer.cache
 .phpunit.cache/
