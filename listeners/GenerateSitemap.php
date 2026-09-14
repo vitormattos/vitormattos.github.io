@@ -18,25 +18,27 @@ final class GenerateSitemap
             return;
         }
 
-        $baseUrl = rtrim((string) $jigsaw->getConfig('baseUrl'), '/');
+        $siteUrl = rtrim((string) $jigsaw->getConfig('siteUrl'), '/');
         $sitemap = new Sitemap($jigsaw->getDestinationPath() . '/sitemap.xml');
 
-        $jigsaw->getPages()->each(function ($pageData, $path) use ($baseUrl, $sitemap): void {
-            $normalizedPath = $this->normalizePath((string) $path);
+        $jigsaw->getPages()->each(function ($pageData, $path) use ($siteUrl, $sitemap): void {
+            $page = is_object($pageData) ? ($pageData->page ?? $pageData) : null;
+            $normalizedPath = $this->resolvePath($page, (string) $path);
 
-            if ($this->isAsset($normalizedPath) || $normalizedPath === '/robots.txt') {
+            if (! $this->isIndexableHtmlPath($normalizedPath)) {
                 return;
             }
 
-            $page = is_object($pageData) ? ($pageData->page ?? $pageData) : null;
-            $images = $this->resolveImages($baseUrl, $page);
+            $lastModified = is_object($page) && is_int($page->date ?? null)
+                ? $page->date
+                : null;
 
             $sitemap->addItem(
-                $baseUrl . ($normalizedPath === '/' ? '/' : $normalizedPath),
-                time(),
-                Sitemap::WEEKLY,
+                $siteUrl . ($normalizedPath === '/' ? '/' : $normalizedPath),
+                $lastModified,
                 null,
-                $images,
+                null,
+                $this->resolveImages($siteUrl, $page),
             );
         });
 
@@ -44,7 +46,7 @@ final class GenerateSitemap
     }
 
     /** @return list<string> */
-    private function resolveImages(string $baseUrl, mixed $page): array
+    private function resolveImages(string $siteUrl, mixed $page): array
     {
         if (! is_object($page)) {
             return [];
@@ -61,10 +63,19 @@ final class GenerateSitemap
                 return [$value];
             }
 
-            return [$baseUrl . '/' . ltrim($value, '/')];
+            return [$siteUrl . '/' . ltrim($value, '/')];
         }
 
         return [];
+    }
+
+    private function resolvePath(mixed $page, string $fallback): string
+    {
+        if (is_object($page) && method_exists($page, 'getPath')) {
+            return $this->normalizePath((string) $page->getPath());
+        }
+
+        return $this->normalizePath($fallback);
     }
 
     private function normalizePath(string $path): string
@@ -78,8 +89,16 @@ final class GenerateSitemap
         return $urlPath === '/' ? '/' : '/' . ltrim($urlPath, '/');
     }
 
-    private function isAsset(string $path): bool
+    private function isIndexableHtmlPath(string $path): bool
     {
-        return str_starts_with($path, '/assets/');
+        if (str_starts_with($path, '/assets/')) {
+            return false;
+        }
+
+        if (in_array($path, ['/robots.txt', '/llms.txt', '/feed.xml', '/pt-BR/feed.xml'], true)) {
+            return false;
+        }
+
+        return pathinfo($path, PATHINFO_EXTENSION) === '' || str_ends_with($path, '.html');
     }
 }
