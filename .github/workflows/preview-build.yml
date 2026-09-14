@@ -41,6 +41,12 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Synchronize public Slides.com decks for preview
+        if: github.event.action != 'closed'
+        env:
+          SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
+        run: php scripts/sync-slides.php
+
       - name: Install PHP dependencies
         if: github.event.action != 'closed'
         run: composer install --no-interaction --no-progress --prefer-dist
