@@ -12,7 +12,6 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
 @endpush
-
 @push('scripts')
     <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/presentations.js') }}"></script>
 @endpush
@@ -24,8 +23,13 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
         <h1 id="page-title">Palestras</h1>
         <p class="lead">Palestras e apresentações sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.</p>
     </header>
-
-    <div class="talk-list">
+    <div class="gallery-toolbar">
+        <div class="gallery-switcher" data-gallery-switcher aria-label="Layout das apresentações">
+            <button type="button" data-gallery-view="grid" aria-pressed="true">Grade</button>
+            <button type="button" data-gallery-view="list" aria-pressed="false">Lista</button>
+        </div>
+    </div>
+    <div class="talk-list" data-talk-gallery data-view="grid">
         @foreach ($talks as $talk)
             @include('_partials.talk.card', ['talk' => $talk])
         @endforeach
