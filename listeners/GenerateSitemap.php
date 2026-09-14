@@ -30,8 +30,8 @@ final class GenerateSitemap
                 return;
             }
 
-            $lastModified = is_object($page) && is_int($page->date ?? null)
-                ? $page->date
+            $lastModified = is_object($page)
+                ? ($this->resolveTimestamp($page->updated ?? null) ?? $this->resolveTimestamp($page->date ?? null))
                 : null;
 
             $sitemap->addItem(
@@ -83,11 +83,26 @@ final class GenerateSitemap
     {
         $urlPath = parse_url($path, PHP_URL_PATH);
 
-        if (! is_string($urlPath) || $urlPath === '') {
+        if (! is_string($urlPath) || $urlPath === '' || $urlPath === '/') {
             return '/';
         }
 
-        return $urlPath === '/' ? '/' : '/' . ltrim($urlPath, '/');
+        return '/' . trim($urlPath, '/');
+    }
+
+    private function resolveTimestamp(mixed $value): ?int
+    {
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        $timestamp = strtotime($value);
+
+        return $timestamp === false ? null : $timestamp;
     }
 
     private function isIndexableHtmlPath(string $path): bool
