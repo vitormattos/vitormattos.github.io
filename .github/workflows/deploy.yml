@@ -10,10 +10,10 @@ on:
 permissions:
   contents: write
 
-# Every workflow that writes to gh-pages shares this group. A newer site state
-# makes an older pending/running deployment obsolete, so keep only the latest.
+# Only the newest production deploy matters. Keep this group separate from
+# pull-request previews so a preview can never cancel a production release.
 concurrency:
-  group: github-pages-write
+  group: github-pages-production
   cancel-in-progress: true
 
 jobs:
