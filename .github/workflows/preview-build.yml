@@ -55,6 +55,10 @@ jobs:
         if: github.event.action != 'closed'
         run: npm install --no-audit --no-fund
 
+      - name: Generate presentation PDFs
+        if: github.event.action != 'closed'
+        run: bash scripts/generate-slides-pdfs.sh
+
       - name: Build preview
         if: github.event.action != 'closed'
         run: npm run preview
