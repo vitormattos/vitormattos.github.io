@@ -3,6 +3,14 @@
 @php
     $locale = $page->locale ?? $page->defaultLocale;
     $isEnglish = $locale === 'en';
+    $homePath = $isEnglish ? '/' : '/pt-BR';
+    $articlesPath = $isEnglish ? '/articles' : '/pt-BR/artigos';
+    $talksPath = $isEnglish ? '/talks' : '/pt-BR/palestras';
+    $alternatePath = null;
+    if ($page->alternateUrl ?? false) {
+        $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
+        $alternatePath = $rawAlternatePath === '/' ? '/' : rtrim($rawAlternatePath, '/');
+    }
 @endphp
 <!doctype html>
 <html lang="{{ $locale }}">
@@ -17,14 +25,14 @@
 <body>
 <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
 <header class="site-header">
-    <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/' : '/pt-BR/' }}">Vitor Mattos</a>
+    <a href="{{ $page->baseUrl }}{{ $homePath }}">Vitor Mattos</a>
     <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
-        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/articles/' : '/pt-BR/artigos/' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
-        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/talks/' : '/pt-BR/palestras/' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
+        <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
+        <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
         <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
         <a href="{{ $page->author['linkedin'] }}" rel="me">LinkedIn</a>
-        @if ($page->alternateUrl ?? false)
-            <a href="{{ $page->baseUrl }}{{ $page->alternateUrl }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
+        @if ($alternatePath !== null)
+            <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
                 {{ $isEnglish ? 'Português' : 'English' }}
             </a>
         @endif
