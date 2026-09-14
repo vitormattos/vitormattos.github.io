@@ -29,7 +29,7 @@ Canonical site: https://vitormattos.github.io/
 
 ## Talks
 
-- [Free software as infrastructure](https://vitormattos.github.io/talks/free-software): Initial structure to register talks, versions, events and related materials.
+- [LibreSign - Integrações](https://vitormattos.github.io/talks/libresign-integrations): A presentation about LibreSign architecture, free software, privacy, Nextcloud, APIs, GLPI integration and the challenges of sustaining an open source project.
 
 ## Language versions
 
