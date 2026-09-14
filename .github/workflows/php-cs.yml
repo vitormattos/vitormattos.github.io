@@ -6,7 +6,7 @@ name: PHP coding standards
 on:
   pull_request:
   push:
-    branches: [master]
+    branches: [main]
 
 permissions:
   contents: read
