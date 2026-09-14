@@ -47,28 +47,37 @@ jobs:
         if: github.event.action != 'closed'
         run: vendor/bin/phpunit tests/Presentations
 
-      - name: Synchronize public Slides.com decks for preview
+      # Imported presentations are not yet versioned on main. Until the first
+      # synchronization PR is merged, hydrate preview content from Slides.com.
+      # This never renders PDFs: PDF generation remains exclusive to the sync
+      # workflow because it is the expensive part of the pipeline.
+      - name: Compute Slides.com preview cache key
+        id: slides-cache-key
         if: github.event.action != 'closed'
+        run: echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore synchronized Slides.com preview content
+        id: slides-preview-cache
+        if: github.event.action != 'closed'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            source/_talks
+            source/_talksEn
+            presentations/slides.com
+          key: slides-preview-v1-pr-${{ github.event.pull_request.number }}-${{ steps.slides-cache-key.outputs.day }}-${{ hashFiles('scripts/sync-slides.php') }}
+          restore-keys: |
+            slides-preview-v1-pr-${{ github.event.pull_request.number }}-
+
+      - name: Synchronize public Slides.com decks for preview
+        if: github.event.action != 'closed' && steps.slides-preview-cache.outputs.cache-hit != 'true'
         env:
           SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
         run: php scripts/sync-slides.php
 
-      - name: Restore presentation PDF cache
-        if: github.event.action != 'closed'
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: .cache/slides-pdf
-          key: slides-pdf-v1-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            slides-pdf-v1-${{ runner.os }}-
-
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
         run: npm install --no-audit --no-fund
-
-      - name: Generate presentation PDFs
-        if: github.event.action != 'closed'
-        run: php scripts/generate-slides-pdfs.php
 
       - name: Build preview
         if: github.event.action != 'closed'
