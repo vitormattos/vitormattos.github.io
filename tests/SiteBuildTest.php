@@ -67,6 +67,20 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $portuguese);
     }
 
+    public function testThemeToggleIsAvailableInBothLanguages(): void
+    {
+        $english = $this->read('index.html');
+        $portuguese = $this->read('pt-BR/index.html');
+
+        self::assertStringContainsString('data-theme-toggle', $english);
+        self::assertStringContainsString('data-label-light="Use light theme"', $english);
+        self::assertStringContainsString('data-label-dark="Use dark theme"', $english);
+        self::assertStringContainsString("localStorage.getItem('theme')", $english);
+        self::assertStringContainsString('data-theme-toggle', $portuguese);
+        self::assertStringContainsString('data-label-light="Usar tema claro"', $portuguese);
+        self::assertStringContainsString('data-label-dark="Usar tema escuro"', $portuguese);
+    }
+
     public function testFirstArticleContainsSubstantiveContent(): void
     {
         $article = $this->read('articles/from-code-to-infrastructure/index.html');
@@ -133,7 +147,6 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString(self::NOINDEX_ROBOTS, $notFound);
 
         if ($this->isPreview()) {
-            // Preview policy overrides the page-level indexable flag for every page.
             self::assertStringContainsString(self::NOINDEX_ROBOTS, $index);
             self::assertStringContainsString(self::NOINDEX_ROBOTS, $realTalk);
             self::assertStringNotContainsString(self::INDEXABLE_ROBOTS, $realTalk);
