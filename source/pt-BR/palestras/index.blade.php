@@ -17,6 +17,16 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
 @endpush
 
 @section('body')
+@php
+    $tagCounts = [];
+    foreach ($talks as $talk) {
+        foreach ((array) ($talk->tags ?? []) as $tag) {
+            $tag = (string) $tag;
+            $tagCounts[$tag] = ($tagCounts[$tag] ?? 0) + 1;
+        }
+    }
+    ksort($tagCounts, SORT_NATURAL | SORT_FLAG_CASE);
+@endphp
 <section class="content talks-catalog" aria-labelledby="page-title">
     <header class="talks-catalog__header">
         <div>
@@ -39,10 +49,20 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
             </div>
         </div>
     </header>
+    @if ($tagCounts !== [])
+        <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filtrar palestras por tópico">
+            <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/" data-talk-tag="" aria-current="true">Todas <span>{{ count($talks) }}</span></a>
+            @foreach ($tagCounts as $tag => $count)
+                <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/?tag={{ rawurlencode($tag) }}" data-talk-tag="{{ $tag }}">{{ $tag }} <span>{{ $count }}</span></a>
+            @endforeach
+        </nav>
+    @endif
+    <p class="talk-filter-status" data-talk-filter-status aria-live="polite"></p>
     <div class="talk-list" data-talk-gallery data-view="grid">
         @foreach ($talks as $talk)
             @include('_partials.talk.card', ['talk' => $talk])
         @endforeach
     </div>
+    <p class="talk-filter-empty" data-talk-filter-empty hidden>Nenhuma palestra foi encontrada para esta tag.</p>
 </section>
 @endsection
