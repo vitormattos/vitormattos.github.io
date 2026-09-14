@@ -4,7 +4,18 @@
     $presentation = $page->presentation ?? [];
     $type = $presentation['type'] ?? 'external';
     $isEnglish = ($page->locale ?? 'en') === 'en';
-    $archivedPdf = $presentation['pdf'] ?? (($page->slidesId ?? false) ? '/presentations/slides.com/' . $page->slidesId . '/deck.pdf' : null);
+    $archivedPdf = null;
+    $archivedPdfIsLocal = false;
+
+    if ($presentation['pdf'] ?? false) {
+        $archivedPdf = $presentation['pdf'];
+    } elseif ($page->slidesId ?? false) {
+        $candidatePdf = '/presentations/slides.com/' . $page->slidesId . '/deck.pdf';
+        if (is_file(ltrim($candidatePdf, '/'))) {
+            $archivedPdf = $candidatePdf;
+            $archivedPdfIsLocal = true;
+        }
+    }
 @endphp
 @if ($type === 'reveal')
     @include('_partials.talk.reveal')
@@ -33,7 +44,7 @@
                         </summary>
                         <div class="presentation-action-menu__panel">
                             @if ($archivedPdf)
-                                <a href="{{ $page->baseUrl }}{{ $archivedPdf }}" download>
+                                <a href="{{ $archivedPdfIsLocal ? $page->baseUrl . $archivedPdf : $archivedPdf }}" download>
                                     <strong>PDF</strong>
                                     <small>{{ $isEnglish ? 'Portable document' : 'Documento portátil' }}</small>
                                 </a>
