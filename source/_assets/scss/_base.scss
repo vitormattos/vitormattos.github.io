@@ -1,0 +1,17 @@
+/* SPDX-FileCopyrightText: 2026 Vitor Mattos */
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+
+@use 'variables' as *;
+
+:root {
+    color-scheme: light dark;
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+}
+
+body {
+    margin: 0;
+    max-width: $site-max-width;
+    padding: 0 $page-gutter;
+    margin-inline: auto;
+}
