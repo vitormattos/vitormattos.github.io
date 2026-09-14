@@ -4,6 +4,7 @@ section: content
 locale: en
 schemaType: CreativeWork
 indexable: true
+slug: libresign-integrations
 alternateUrl: /pt-BR/palestras/libresign-integracoes/
 title: "LibreSign - Integrações"
 description: A presentation about LibreSign architecture, free software, privacy, Nextcloud, APIs, GLPI integration and the challenges of sustaining an open source project.
