@@ -10,6 +10,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ $page->description ?? $page->siteDescription }}">
+    @if (! ($page->indexable ?? false))
+        <meta name="robots" content="noindex,nofollow,noarchive">
+    @endif
     <title>{{ $page->title ? $page->title.' · ' : '' }}{{ $page->siteName }}</title>
     @if ($page->alternateUrl ?? false)
         <link rel="alternate" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}" href="{{ $page->baseUrl }}{{ $page->alternateUrl }}">
