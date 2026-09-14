@@ -6,6 +6,8 @@
     $needsReveal = ($presentation['type'] ?? null) === 'reveal' || (bool) ($presentation['localHtml'] ?? false);
     $isEnglish = ($page->locale ?? 'en') === 'en';
     $showAbout = $page->showAbout ?? true;
+    $tags = array_values(array_filter(array_map('strval', (array) ($page->tags ?? []))));
+    $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
 @endphp
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
@@ -21,6 +23,13 @@
         @if ($page->date ?? false)<p class="meta"><time datetime="{{ date('Y-m-d', $page->date) }}">{{ date($isEnglish ? 'Y-m-d' : 'd/m/Y', $page->date) }}</time></p>@endif
         <h1>{{ $page->title }}</h1>
         @if ($page->description ?? false)<p class="lead">{{ $page->description }}</p>@endif
+        @if ($tags !== [])
+            <nav class="talk-detail__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
+                @foreach ($tags as $tag)
+                    <a class="talk-tag" href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($tag) }}">{{ $tag }}</a>
+                @endforeach
+            </nav>
+        @endif
     </header>
     @include('_partials.talk.presentation')
     @if (($presentation['slideCount'] ?? 0) || ($presentation['language'] ?? false) || ($presentation['themeColor'] ?? false))
