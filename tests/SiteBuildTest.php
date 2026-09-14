@@ -71,6 +71,8 @@ final class SiteBuildTest extends TestCase
 
         self::assertStringContainsString('From Code to Infrastructure', $article);
         self::assertStringContainsString('Free software does not mean that development and maintenance have no cost.', $article);
+        self::assertStringContainsString('Technical implementation is only part of the work', $article);
+        self::assertStringContainsString('Community is infrastructure too', $article);
     }
 
     public function testAssetsUseConfiguredBaseUrl(): void
@@ -104,8 +106,10 @@ final class SiteBuildTest extends TestCase
         $index = $this->read('index.html');
         $robots = $this->read('robots.txt');
         $notFound = $this->read('404.html');
+        $placeholderTalk = $this->read('talks/free-software/index.html');
 
         self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $notFound);
+        self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $placeholderTalk);
 
         if ($this->isPreview()) {
             self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $index);
@@ -115,7 +119,10 @@ final class SiteBuildTest extends TestCase
             return;
         }
 
-        self::assertStringNotContainsString('noindex,nofollow,noarchive', $index);
+        self::assertStringContainsString(
+            '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">',
+            $index,
+        );
         self::assertStringContainsString('Disallow: /pr-preview/', $robots);
         self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $robots);
         self::assertFileExists($this->buildDirectory() . '/sitemap.xml');
@@ -133,6 +140,8 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString(self::SITE_URL . '/articles/from-code-to-infrastructure', $sitemap);
         self::assertStringContainsString(self::SITE_URL . '/pt-BR/artigos/do-codigo-a-infraestrutura', $sitemap);
         self::assertStringNotContainsString('/404.html', $sitemap);
+        self::assertStringNotContainsString('/talks/free-software', $sitemap);
+        self::assertStringNotContainsString('/pt-BR/palestras/software-livre', $sitemap);
         self::assertStringNotContainsString('/pr-preview/', $sitemap);
         self::assertStringNotContainsString('/feed.xml', $sitemap);
         self::assertStringNotContainsString('/llms.txt', $sitemap);
