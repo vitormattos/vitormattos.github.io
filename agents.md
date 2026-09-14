@@ -55,6 +55,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Language pairs must expose self-referencing hreflang, reciprocal alternate hreflang and `x-default` pointing to the English canonical version.
 - Keep factual Schema.org JSON-LD for `WebSite`, `Person`, `ProfilePage`/`WebPage`, `CollectionPage`, `Article`, `CreativeWork` and `BreadcrumbList` as appropriate. Do not invent awards, credentials, employment, relationships or dates merely to enrich structured data.
 - Articles and talks should have useful `title`, `description`, `date`, `locale`, `alternateUrl` and `schemaType` front matter.
+- Placeholder, proof-of-concept or otherwise thin public pages must use `indexable: false` until they contain substantive, factual content. The sitemap generator must exclude them. The current placeholder talk pages intentionally follow this rule.
 - Use optional `updated` front matter only when a substantive revision actually occurred. When present it drives Schema.org `dateModified`, Open Graph `article:modified_time` and sitemap `lastmod`; otherwise publication `date` is used where appropriate. Never use CI/build time as a fake modification date.
 - Content should answer its topic clearly near the beginning, use descriptive headings, and remain written for humans. Do not add keyword stuffing, hidden text or fake FAQ schema.
 - `sitemap.xml` should contain only canonical HTML pages and real publication/modification dates when available. Do not use build time as fake `lastmod` because that makes every URL appear changed on every build.
@@ -76,7 +77,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Dependabot covers Composer, npm and GitHub Actions.
 - `SITE_BUILD_DIR` lets the same PHPUnit suite test `build_production` and `build_preview`. Do not hardcode production paths in tests that are also run by preview CI.
 - `EXPECTED_BASE_URL` is used to verify preview-aware asset URLs.
-- Tests enforce canonical URLs, hreflang, structured data, preview `noindex`, production robots rules, sitemap scope, feeds, `llms.txt`, 404 exclusion and the rule against exposing internal application-purpose language.
+- Tests enforce canonical URLs, hreflang, structured data, preview `noindex`, rich-preview directives on indexable pages, production robots rules, sitemap scope, feeds, `llms.txt`, 404/placeholder exclusion and the rule against exposing internal application-purpose language.
 - Add regression tests when fixing deployment, SEO or URL-generation bugs rather than relying only on visual inspection.
 - Prefer `npm ci` when a committed `package-lock.json` is present. Prefer reproducible Composer installs once `composer.lock` is committed.
 
