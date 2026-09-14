@@ -3,21 +3,29 @@
 @php
     $locale = $page->locale ?? $page->defaultLocale;
     $isEnglish = $locale === 'en';
-    $path = '/' . ltrim($page->getPath(), '/');
-    $canonicalUrl = rtrim($page->siteUrl, '/') . ($path === '/' ? '/' : $path);
+    $siteUrl = rtrim($page->siteUrl, '/');
+    $rawPath = '/' . ltrim($page->getPath(), '/');
+    $path = $rawPath === '/' ? '/' : rtrim($rawPath, '/');
+    $canonicalUrl = $siteUrl . ($path === '/' ? '/' : $path);
     $description = $page->description ?? $page->siteDescription;
     $pageTitle = $page->title ?? $page->siteName;
     $documentTitle = $page->title ? $page->title . ' · ' . $page->siteName : $page->siteName;
-    $alternateCanonicalUrl = ($page->alternateUrl ?? false)
-        ? rtrim($page->siteUrl, '/') . $page->alternateUrl
+    $alternatePath = null;
+    if ($page->alternateUrl ?? false) {
+        $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
+        $alternatePath = $rawAlternatePath === '/' ? '/' : rtrim($rawAlternatePath, '/');
+    }
+    $alternateCanonicalUrl = $alternatePath !== null
+        ? $siteUrl . ($alternatePath === '/' ? '/' : $alternatePath)
         : null;
     $englishCanonicalUrl = $isEnglish
         ? $canonicalUrl
-        : ($alternateCanonicalUrl ?? rtrim($page->siteUrl, '/') . '/');
+        : ($alternateCanonicalUrl ?? $siteUrl . '/');
     $schemaType = $page->schemaType ?? null;
-    $pageType = $page->pageType ?? (($path === '/' || $path === '/pt-BR/') ? 'ProfilePage' : 'WebPage');
+    $isProfilePage = in_array($path, ['/', '/pt-BR'], true);
+    $pageType = $page->pageType ?? ($isProfilePage ? 'ProfilePage' : 'WebPage');
     $personId = $page->author['id'];
-    $websiteId = rtrim($page->siteUrl, '/') . '/#website';
+    $websiteId = $siteUrl . '/#website';
     $webpageId = $canonicalUrl . '#webpage';
     $contentId = $canonicalUrl . '#content';
     $sameAs = array_values(array_filter([
@@ -29,7 +37,7 @@
         [
             '@type' => 'WebSite',
             '@id' => $websiteId,
-            'url' => rtrim($page->siteUrl, '/') . '/',
+            'url' => $siteUrl . '/',
             'name' => $page->siteName,
             'description' => $page->siteDescription,
             'inLanguage' => $page->locales,
@@ -38,7 +46,7 @@
             '@type' => 'Person',
             '@id' => $personId,
             'name' => $page->author['name'],
-            'url' => rtrim($page->siteUrl, '/') . '/',
+            'url' => $siteUrl . '/',
             'sameAs' => $sameAs,
             'knowsAbout' => $page->author['knowsAbout'],
             'worksFor' => [
@@ -86,8 +94,8 @@
 
         $isArticle = $schemaType === 'Article';
         $sectionPath = $isArticle
-            ? ($isEnglish ? '/articles/' : '/pt-BR/artigos/')
-            : ($isEnglish ? '/talks/' : '/pt-BR/palestras/');
+            ? ($isEnglish ? '/articles' : '/pt-BR/artigos')
+            : ($isEnglish ? '/talks' : '/pt-BR/palestras');
         $sectionName = $isArticle
             ? ($isEnglish ? 'Articles' : 'Artigos')
             : ($isEnglish ? 'Talks' : 'Palestras');
@@ -101,13 +109,13 @@
                     '@type' => 'ListItem',
                     'position' => 1,
                     'name' => $isEnglish ? 'Home' : 'Início',
-                    'item' => rtrim($page->siteUrl, '/') . ($isEnglish ? '/' : '/pt-BR/'),
+                    'item' => $siteUrl . ($isEnglish ? '/' : '/pt-BR'),
                 ],
                 [
                     '@type' => 'ListItem',
                     'position' => 2,
                     'name' => $sectionName,
-                    'item' => rtrim($page->siteUrl, '/') . $sectionPath,
+                    'item' => $siteUrl . $sectionPath,
                 ],
                 [
                     '@type' => 'ListItem',
@@ -136,7 +144,7 @@
     <link rel="alternate" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}" href="{{ $alternateCanonicalUrl }}">
 @endif
 <link rel="alternate" hreflang="x-default" href="{{ $englishCanonicalUrl }}">
-<link rel="alternate" type="application/rss+xml" title="{{ $page->siteName }} — {{ $isEnglish ? 'Articles' : 'Artigos' }}" href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
+<link rel="alternate" type="application/rss+xml" title="{{ $page->siteName }} — {{ $isEnglish ? 'Articles' : 'Artigos' }}" href="{{ $siteUrl }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
 <meta property="og:type" content="{{ $schemaType === 'Article' ? 'article' : 'website' }}">
 <meta property="og:title" content="{{ $documentTitle }}">
 <meta property="og:description" content="{{ $description }}">
