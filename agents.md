@@ -19,6 +19,10 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Pull-request previews are published by `rossjrw/pr-preview-action` to `gh-pages/pr-preview/pr-N/`.
 - Production deployment must preserve `pr-preview/` and must not force-push over active previews.
 - No separate preview repository and no custom preview PAT are required. Use the repository `GITHUB_TOKEN` with the workflow permissions already declared.
+- Preview concurrency is scoped per PR (`pr-preview-N`) with `cancel-in-progress: true`; a new commit should cancel only an obsolete preview of that same PR.
+- Production deployment has its own concurrency group with `cancel-in-progress: true`; a newer production commit should cancel only an obsolete production deployment.
+- Do not place production and preview in the same cancelling concurrency group: a PR update must never cancel a production release, and a production deploy must never cancel a PR preview merely because both ultimately write to `gh-pages`.
+- Every successful commit written to `gh-pages` can trigger GitHub's managed `pages build and deployment` workflow when Pages is configured to deploy from that branch. That managed workflow is separate from our YAML workflows and does not inherit their concurrency settings. Rapid preview publications can therefore leave several managed Pages runs visible even when obsolete PR Preview runs were correctly cancelled before deployment.
 
 ## Jigsaw, Vite and SCSS
 
