@@ -24,7 +24,10 @@ if [[ ! -f node_modules/reveal.js/dist/reveal.js ]]; then
     exit 1
 fi
 
-work_dir=".build/slides-pdf"
+# Keep this directory non-hidden. PHP's built-in server does not reliably serve
+# hidden paths in all runner environments, which made the render probe fail
+# before Chromium was even started.
+work_dir="build-slides-pdf"
 rm -rf "$work_dir"
 mkdir -p "$work_dir"
 
@@ -50,6 +53,7 @@ done
 
 if ! curl --fail --silent http://127.0.0.1:8765/package.json >/dev/null; then
     echo 'Could not start local HTTP server for PDF generation.' >&2
+    cat "$work_dir/server.log" >&2 || true
     exit 1
 fi
 
@@ -71,8 +75,6 @@ find presentations/slides.com -mindepth 2 -maxdepth 2 -name deck.html -print0 | 
         expected_slides="$(php -r '$m=json_decode(file_get_contents($argv[1]), true, flags: JSON_THROW_ON_ERROR); echo (int)($m["slide_count"] ?? 0);' "$metadata")"
     fi
 
-    # deck.html is a Reveal slide fragment from the Slides.com API. Wrap that
-    # fragment in a minimal standalone Reveal document using our pinned runtime.
     {
         cat <<'HTML'
 <!doctype html>
@@ -116,8 +118,15 @@ HTML
     } > "$print_file"
 
     print_url="http://127.0.0.1:8765/${print_file}?print-pdf"
-    if ! curl --fail --silent "$print_url" | grep -q 'class="reveal"'; then
-        echo "Local print document is not being served correctly for $deck_id." >&2
+    probe_file="$work_dir/${deck_id}.probe.html"
+    http_code="$(curl --silent --show-error --output "$probe_file" --write-out '%{http_code}' "$print_url" || true)"
+    if [[ "$http_code" != "200" ]] || ! grep -q 'class="reveal"' "$probe_file"; then
+        echo "Local print document probe failed for $deck_id (HTTP $http_code)." >&2
+        echo "Requested: $print_url" >&2
+        echo 'Server log:' >&2
+        cat "$work_dir/server.log" >&2 || true
+        echo 'Response preview:' >&2
+        head -n 20 "$probe_file" >&2 || true
         exit 1
     fi
 
