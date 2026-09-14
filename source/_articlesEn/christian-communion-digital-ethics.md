@@ -25,8 +25,8 @@ academic:
 ---
 
 <!--
-SPDX-FileCopyrightText: 2025 Vitor Mattos de Souza
-SPDX-License-Identifier: CC-BY-SA-4.0
+SPDX-FileCopyrightText: 2026 Vitor Mattos
+SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
 ## Bachelor's monograph in Theology
