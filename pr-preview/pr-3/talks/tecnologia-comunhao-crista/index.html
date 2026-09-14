@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>Tecnologia e privacidade no contexto da comunhão cristã · Vitor Mattos</title>
+    <meta name="description" content="Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/talks/tecnologia-comunhao-crista">
+<link rel="alternate" hreflang="en" href="https://vitormattos.github.io/talks/tecnologia-comunhao-crista">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/talks/tecnologia-comunhao-crista">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Articles" href="https://vitormattos.github.io/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tecnologia e privacidade no contexto da comunhão cristã · Vitor Mattos">
+<meta property="og:description" content="Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.">
+<meta property="og:url" content="https://vitormattos.github.io/talks/tecnologia-comunhao-crista">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tecnologia e privacidade no contexto da comunhão cristã · Vitor Mattos">
+<meta name="twitter:description" content="Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista#webpage","url":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista","name":"Tecnologia e privacidade no contexto da comunhão cristã","description":"Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.","inLanguage":"en","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista#breadcrumb"}},{"@type":"CreativeWork","@id":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista#content","url":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista","name":"Tecnologia e privacidade no contexto da comunhão cristã","headline":"Tecnologia e privacidade no contexto da comunhão cristã","description":"Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.","inLanguage":"en","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista#webpage"},"datePublished":"2025-02-05T00:00:00+00:00","dateModified":"2025-04-24T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vitormattos.github.io/"},{"@type":"ListItem","position":2,"name":"Talks","item":"https://vitormattos.github.io/talks"},{"@type":"ListItem","position":3,"name":"Tecnologia e privacidade no contexto da comunhão cristã","item":"https://vitormattos.github.io/talks/tecnologia-comunhao-crista"}]}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-3/assets/build/assets/main-fc-jdgRr.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-3/assets/build/assets/presentations-Cj8I8RZq.css">
+    <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-3/presentations/slides.com/3347164/deck.css"></head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/pr-preview/pr-3/">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Main">
+            <a href="https://vitormattos.github.io/pr-preview/pr-3/articles">Articles</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-3/talks">Talks</a>
+            <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+            <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Use light theme"
+    data-label-dark="Use dark theme"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Theme</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <article class="content talk-detail">
+    <header>
+        <p class="eyebrow">Talk</p>
+        <p class="meta"><time datetime="2025-02-05">2025-02-05</time></p>        <h1>Tecnologia e privacidade no contexto da comunhão cristã</h1>
+        <p class="lead">Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.</p>    </header>
+    <div class="presentation-frame">
+        <div class="presentation-toolbar">
+            <span>Archived web presentation</span>
+            <div class="presentation-toolbar__actions">
+                <a href="https://slides.com/vitormattos/tecnologia-comunhao-crista" rel="external">Original</a>                <a href="https://vitormattos.github.io/pr-preview/pr-3/presentations/slides.com/3347164/deck.html" download>Download HTML</a>
+                <a href="https://vitormattos.github.io/pr-preview/pr-3/presentations/slides.com/3347164/deck.css" download>CSS</a>                <a href="https://vitormattos.github.io/pr-preview/pr-3/presentations/slides.com/3347164/metadata.json" download>JSON</a>                <a href="https://vitormattos.github.io/pr-preview/pr-3/presentations/slides.com/3347164/deck.pdf" download>PDF</a>            </div>
+        </div>
+        <div class="presentation-stage">
+            <iframe src="https://slides.com/vitormattos/tecnologia-comunhao-crista/embed" title="Tecnologia e privacidade no contexto da comunhão cristã" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+    </div>
+            <dl class="presentation-metadata">
+            <div><dt>Slides</dt><dd>28</dd></div>            <div><dt>Language</dt><dd>en</dd></div>            <div><dt>Theme</dt><dd>black-mint</dd></div>            <div><dt>Canvas</dt><dd>1024 × 576</dd></div>        </dl>
+        <section aria-labelledby="talk-about-title"><h2 id="talk-about-title">About this talk</h2><p><!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 --></p>
+
+<p>Esta pesquisa investiga os desafios críticos e as responsabilidades das igrejas no uso da tecnologia, com foco na proteção de dados sensíveis e na privacidade no contexto da comunhão cristã. Partindo de princípios bíblicos sobre ética cristã, o estudo explora como a fidelidade às Escrituras deve orientar uma gestão segura das informações no ambiente eclesiástico. Abordam-se os riscos que o uso inadequado da tecnologia ao realizar a gestão de dados e imagens, pode resultar em vazamentos, processos judiciais e, principalmente, na destruição da confiança e da comunhão entre os membros. A pesquisa examina a relação entre ética, tecnologia e comunhão cristã, apontando como a omissão às leis não só expõe as igrejas a penalidades legais, mas também viola princípios bíblicos, como o amor ao próximo. Reforça-se que o compromisso cristão deve abranger todos os aspectos da vida, incluindo tecnológicos. Por fim, propõem-se diretrizes para uma governança digital ética, visando proteger a privacidade, fortalecer a comunhão conforme a Confissão de Fé de Westminster cap. XXVI e preservar o testemunho cristão em um mundo cada vez mais tecnológico que nos leva a refletir na urgência deste tema onde sem ações imediatas, as igrejas arriscam não apenas sua credibilidade, mas também sua missão de proclamar o evangelho com integridade.</p>
+
+<p>Synced from the public Slides.com deck. The archived HTML, CSS and metadata are kept in this repository so the presentation remains independently inspectable and reusable.</p>
+</section>
+</article>
+</main>
+<footer>
+    <p>Content and code published with transparency and version control.</p>
+    <p><a href="https://vitormattos.github.io/feed.xml">RSS</a></p>
+</footer>
+<script type="module" src="https://vitormattos.github.io/pr-preview/pr-3/assets/build/assets/presentations-5hZ7N8CQ.js"></script></body>
+</html>
