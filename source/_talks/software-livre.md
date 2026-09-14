@@ -8,4 +8,9 @@ description: Estrutura inicial para registrar palestras, versões, eventos e mat
 date: 2026-09-13
 ---
 
+<!--
+SPDX-FileCopyrightText: 2026 Vitor Mattos
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 Esta página é a prova de conceito da entidade **palestra**. Ela poderá apontar para slides HTML, PDF, fonte, vídeo, evento, fotos e avaliações.
