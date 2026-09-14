@@ -10,6 +10,7 @@
     $description = $page->description ?? $page->siteDescription;
     $pageTitle = $page->title ?? $page->siteName;
     $documentTitle = $page->title ? $page->title . ' · ' . $page->siteName : $page->siteName;
+    $effectiveIndexable = ($page->production ?? false) && ($page->indexable ?? false);
     $alternatePath = null;
     if ($page->alternateUrl ?? false) {
         $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
@@ -144,7 +145,7 @@
 @endphp
 <meta name="description" content="{{ $description }}">
 <meta name="author" content="{{ $page->author['name'] }}">
-@if (! ($page->indexable ?? false))
+@if (! $effectiveIndexable)
     <meta name="robots" content="noindex,nofollow,noarchive">
 @else
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
