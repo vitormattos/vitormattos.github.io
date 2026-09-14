@@ -4,7 +4,8 @@ version = 1
 
 [[annotations]]
 path = [
-    "composer.json"
+    "composer.json",
+    "package.json"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Vitor Mattos"
