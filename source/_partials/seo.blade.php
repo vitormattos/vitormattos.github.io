@@ -32,6 +32,12 @@
         $page->author['github'] ?? null,
         $page->author['linkedin'] ?? null,
     ]));
+    $updatedAt = null;
+    if ($page->updated ?? false) {
+        $updatedAt = is_int($page->updated)
+            ? $page->updated
+            : (strtotime((string) $page->updated) ?: null);
+    }
 
     $graph = [
         [
@@ -88,6 +94,9 @@
         if ($page->date ?? false) {
             $content['datePublished'] = date(DATE_ATOM, $page->date);
         }
+        if ($updatedAt !== null) {
+            $content['dateModified'] = date(DATE_ATOM, $updatedAt);
+        }
 
         $graph[] = $content;
         $graph[2]['mainEntity'] = ['@id' => $contentId];
@@ -137,6 +146,8 @@
 <meta name="author" content="{{ $page->author['name'] }}">
 @if (! ($page->indexable ?? false))
     <meta name="robots" content="noindex,nofollow,noarchive">
+@else
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 @endif
 <link rel="canonical" href="{{ $canonicalUrl }}">
 <link rel="alternate" hreflang="{{ $locale }}" href="{{ $canonicalUrl }}">
@@ -154,6 +165,9 @@
 <meta property="og:locale:alternate" content="{{ $isEnglish ? 'pt_BR' : 'en_US' }}">
 @if ($schemaType === 'Article' && ($page->date ?? false))
     <meta property="article:published_time" content="{{ date(DATE_ATOM, $page->date) }}">
+@endif
+@if ($schemaType === 'Article' && $updatedAt !== null)
+    <meta property="article:modified_time" content="{{ date(DATE_ATOM, $updatedAt) }}">
 @endif
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{{ $documentTitle }}">
