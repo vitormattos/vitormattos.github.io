@@ -29,6 +29,17 @@ final class SlidesDeckPolicy
             && str_starts_with($parts['path'], '/vitormattos/');
     }
 
+    public static function isAllowedEmbedUrl(?string $url): bool
+    {
+        if (!self::isAllowedPublicUrl($url)) {
+            return false;
+        }
+
+        $path = (string) (parse_url((string) $url, PHP_URL_PATH) ?? '');
+
+        return preg_match('#^/vitormattos/[^/]+/embed/?$#', $path) === 1;
+    }
+
     public static function viewport(array $deck): string
     {
         $width = max(320, (int) ($deck['width'] ?? 1280));
