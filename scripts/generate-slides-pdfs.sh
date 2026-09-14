@@ -45,7 +45,7 @@ while IFS= read -r -d '' metadata; do
         height=720
     fi
 
-    tmp_output="$deck_dir/.deck.pdf.tmp"
+    tmp_output="$deck_dir/.deck.tmp.pdf"
     rm -f "$tmp_output"
 
     echo "Generating $output from $public_url (${width}x${height}, ${expected_slides} slides expected)"
