@@ -17,7 +17,8 @@
     @if ($page->alternateUrl ?? false)
         <link rel="alternate" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}" href="{{ $page->baseUrl }}{{ $page->alternateUrl }}">
     @endif
-    <link rel="stylesheet" href="{{ $page->baseUrl }}/assets/css/main.css">
+    @viteRefresh()
+    <link rel="stylesheet" href="{{ vite('source/_assets/scss/main.scss') }}">
 </head>
 <body>
 <header class="site-header">
