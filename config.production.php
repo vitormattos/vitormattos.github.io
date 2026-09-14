@@ -8,4 +8,5 @@ declare(strict_types=1);
 return [
     'baseUrl' => 'https://vitormattos.github.io',
     'production' => true,
+    'indexable' => true,
 ];
