@@ -8,6 +8,7 @@ declare(strict_types=1);
 return [
     'baseUrl' => '',
     'production' => false,
+    'indexable' => false,
     'siteName' => 'Vitor Mattos',
     'defaultLocale' => 'en',
     'locales' => ['en', 'pt-BR'],
