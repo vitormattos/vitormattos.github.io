@@ -5,7 +5,8 @@ version = 1
 [[annotations]]
 path = [
     "composer.json",
-    "package.json"
+    "package.json",
+    "source/robots.txt.blade.php"
 ]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Vitor Mattos"
