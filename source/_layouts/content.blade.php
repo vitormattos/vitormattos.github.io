@@ -4,11 +4,18 @@
 
 @section('body')
 <article class="content">
-    <p class="meta">{{ date('d/m/Y', $page->date) }}</p>
-    <h1>{{ $page->title }}</h1>
-    @if ($page->description)
-        <p class="lead">{{ $page->description }}</p>
-    @endif
+    <header>
+        @if ($page->date ?? false)
+            <p class="meta">
+                <time datetime="{{ date('Y-m-d', $page->date) }}">{{ date(($page->locale ?? 'en') === 'pt-BR' ? 'd/m/Y' : 'Y-m-d', $page->date) }}</time>
+            </p>
+        @endif
+        <h1>{{ $page->title }}</h1>
+        @if ($page->description)
+            <p class="lead">{{ $page->description }}</p>
+        @endif
+        <p class="meta">{{ ($page->locale ?? 'en') === 'pt-BR' ? 'Por' : 'By' }} {{ $page->author['name'] }}</p>
+    </header>
     @yield('content')
 </article>
 @endsection
