@@ -7,7 +7,9 @@ permalink: /pt-BR/feed.xml
     $siteUrl = rtrim($page->siteUrl, '/');
     $latestDate = null;
     foreach ($articles as $article) {
-        $latestDate ??= $article->date;
+        if ($article->date ?? false) {
+            $latestDate ??= $article->date;
+        }
     }
 @endphp
 {!! '<?xml version="1.0" encoding="UTF-8"?>' !!}
@@ -27,7 +29,9 @@ permalink: /pt-BR/feed.xml
             <title>{{ $article->title }}</title>
             <link>{{ $url }}</link>
             <guid isPermaLink="true">{{ $url }}</guid>
-            <pubDate>{{ date(DATE_RSS, $article->date) }}</pubDate>
+            @if ($article->date ?? false)
+                <pubDate>{{ date(DATE_RSS, $article->date) }}</pubDate>
+            @endif
             <description>{{ $article->description }}</description>
         </item>
     @endforeach
