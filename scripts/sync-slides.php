@@ -128,9 +128,6 @@ for ($page = 2; $page <= $pages; ++$page) {
 
 $expectedPaths = [];
 foreach ($summaries as $summary) {
-    // The owned-decks endpoint may return private/team decks. If visibility is
-    // present in the summary, reject anything except explicitly public decks
-    // before requesting deck_html or any other detailed content.
     if (array_key_exists('visibility', $summary) && ($summary['visibility'] ?? null) !== 'all') {
         continue;
     }
@@ -138,8 +135,6 @@ foreach ($summaries as $summary) {
     usleep(REQUEST_DELAY_MICROSECONDS);
     $detail = request('/v1/decks/' . rawurlencode((string) $summary['id']) . '?include_deck_html=true')['data'];
 
-    // Defense in depth: a deck may change visibility between the list and
-    // detail requests. Only `all` is eligible for persistence or publication.
     if (($detail['visibility'] ?? null) !== 'all') {
         continue;
     }
@@ -194,6 +189,7 @@ foreach ($summaries as $summary) {
         . "locale: {$locale}\n"
         . "schemaType: CreativeWork\n"
         . "indexable: true\n"
+        . "showAbout: false\n"
         . 'slug: ' . yamlString($slug) . "\n"
         . 'title: ' . yamlString((string) $detail['title']) . "\n"
         . 'description: ' . yamlString($description) . "\n"
@@ -217,9 +213,7 @@ foreach ($summaries as $summary) {
         . '  themeFont: ' . yamlString((string) ($detail['theme_font'] ?? '')) . "\n"
         . '  themeColor: ' . yamlString((string) ($detail['theme_color'] ?? '')) . "\n"
         . "---\n"
-        . spdxHtmlHeader()
-        . "\n{$description}\n\n"
-        . "Synced from the public Slides.com deck. The archived HTML, CSS and metadata are kept in this repository so the presentation remains independently inspectable and reusable.\n";
+        . spdxHtmlHeader();
 
     writeIfChanged($managedPath, $frontMatter);
 }
