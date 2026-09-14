@@ -10,9 +10,11 @@ on:
 permissions:
   contents: write
 
+# Every workflow that writes to gh-pages shares this group. A newer site state
+# makes an older pending/running deployment obsolete, so keep only the latest.
 concurrency:
-  group: github-pages
-  cancel-in-progress: false
+  group: github-pages-write
+  cancel-in-progress: true
 
 jobs:
   deploy:
