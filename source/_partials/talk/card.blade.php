@@ -6,8 +6,11 @@
     $isEnglish = ($talk->locale ?? 'en') === 'en';
     $sourcePath = isset($presentation['source']) ? '/' . ltrim($presentation['source'], '/') : null;
     $thumbnailId = $sourcePath ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
+    $tags = array_values(array_filter(array_map('strval', (array) ($talk->tags ?? []))));
+    $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
+    $encodedTags = htmlspecialchars(json_encode($tags, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
 @endphp
-<article class="talk-card">
+<article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
         @if ($presentation['thumbnail'] ?? false)
             <img src="{{ $presentation['thumbnail'] }}" alt="" loading="lazy">
@@ -35,6 +38,14 @@
                 <span>{{ $presentation['language'] }}</span>
             @endif
         </div>
+
+        @if ($tags !== [])
+            <nav class="talk-card__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
+                @foreach ($tags as $tag)
+                    <a class="talk-tag" href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($tag) }}">{{ $tag }}</a>
+                @endforeach
+            </nav>
+        @endif
 
         <div class="talk-card__footer">
             <div class="talk-card__formats" aria-label="{{ $isEnglish ? 'Available formats' : 'Formatos disponíveis' }}">
