@@ -57,7 +57,7 @@ final class PdfExportPolicyTest extends TestCase
             'height' => 540,
         ], '/tmp/deck.pdf');
 
-        self::assertSame('decktape@3.16.1', $arguments[2]);
+        self::assertSame('decktape@' . PdfExportPolicy::DECKTAPE_VERSION, $arguments[2]);
         self::assertSame('reveal', $arguments[3]);
         self::assertContains('960x540', $arguments);
         self::assertSame('https://slides.com/vitormattos/public-deck', $arguments[count($arguments) - 2]);
@@ -93,5 +93,65 @@ final class PdfExportPolicyTest extends TestCase
         } finally {
             @unlink($path);
         }
+    }
+
+    public function testUnchangedDeckAndGeneratorReuseTheSameCacheKey(): void
+    {
+        $metadata = $this->publicDeckMetadata();
+
+        self::assertSame(
+            PdfExportPolicy::deckFingerprint($metadata, 'generator-a'),
+            PdfExportPolicy::deckFingerprint($metadata, 'generator-a'),
+        );
+    }
+
+    public function testDeckChangesThatAffectRenderingInvalidateTheCache(): void
+    {
+        $metadata = $this->publicDeckMetadata();
+        $original = PdfExportPolicy::deckFingerprint($metadata, 'generator-a');
+
+        foreach ([
+            ['updated_at' => '2026-09-15T00:00:00Z'],
+            ['url' => 'https://slides.com/vitormattos/renamed-deck'],
+            ['width' => 1280],
+            ['height' => 720],
+            ['slide_count' => 25],
+        ] as $change) {
+            self::assertNotSame(
+                $original,
+                PdfExportPolicy::deckFingerprint(array_replace($metadata, $change), 'generator-a'),
+            );
+        }
+    }
+
+    public function testGeneratorChangeInvalidatesEveryDeckCacheKey(): void
+    {
+        $metadata = $this->publicDeckMetadata();
+
+        self::assertNotSame(
+            PdfExportPolicy::deckFingerprint($metadata, 'generator-a'),
+            PdfExportPolicy::deckFingerprint($metadata, 'generator-b'),
+        );
+    }
+
+    public function testCachePathIsScopedByDeckAndFingerprint(): void
+    {
+        $path = PdfExportPolicy::cachePath('/tmp/slides-cache', $this->publicDeckMetadata(), 'generator-a');
+
+        self::assertStringStartsWith('/tmp/slides-cache/123-', $path);
+        self::assertStringEndsWith('.pdf', $path);
+    }
+
+    private function publicDeckMetadata(): array
+    {
+        return [
+            'id' => 123,
+            'visibility' => 'all',
+            'url' => 'https://slides.com/vitormattos/public-deck',
+            'width' => 960,
+            'height' => 540,
+            'slide_count' => 24,
+            'updated_at' => '2026-09-14T12:00:00Z',
+        ];
     }
 }
