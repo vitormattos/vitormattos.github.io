@@ -9,24 +9,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ $page->description ?? $page->siteDescription }}">
-    @if (! ($page->indexable ?? false))
-        <meta name="robots" content="noindex,nofollow,noarchive">
-    @endif
     <title>{{ $page->title ? $page->title.' · ' : '' }}{{ $page->siteName }}</title>
-    @if ($page->alternateUrl ?? false)
-        <link rel="alternate" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}" href="{{ $page->baseUrl }}{{ $page->alternateUrl }}">
-    @endif
+    @include('_partials.seo')
     @viteRefresh()
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/main.scss') }}">
 </head>
 <body>
+<a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
 <header class="site-header">
     <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/' : '/pt-BR/' }}">Vitor Mattos</a>
     <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
         <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#articles' : '/pt-BR/#artigos' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
         <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#talks' : '/pt-BR/#palestras' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
-        <a href="https://github.com/vitormattos">GitHub</a>
+        <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
         @if ($page->alternateUrl ?? false)
             <a href="{{ $page->baseUrl }}{{ $page->alternateUrl }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
                 {{ $isEnglish ? 'Português' : 'English' }}
@@ -34,7 +29,7 @@
         @endif
     </nav>
 </header>
-<main>
+<main id="main-content">
     @yield('body')
 </main>
 <footer>
