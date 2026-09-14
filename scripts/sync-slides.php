@@ -139,7 +139,6 @@ foreach ($summaries as $summary) {
     $managedName = MANAGED_PREFIX . $detail['id'] . '-' . $slug;
     $locale = str_starts_with((string) ($detail['language'] ?? ''), 'pt') ? 'pt-BR' : 'en';
     $collection = $locale === 'pt-BR' ? 'source/_talks' : 'source/_talksEn';
-    $publicPath = $locale === 'pt-BR' ? '/pt-BR/palestras/' . $slug : '/talks/' . $slug;
     $managedPath = "{$collection}/{$managedName}.md";
     $expectedPaths[$managedPath] = true;
     $embed = rtrim((string) $detail['url'], '/') . '/embed';
@@ -173,29 +172,24 @@ foreach ($summaries as $summary) {
         'urls' => $detail['urls'] ?? [],
     ];
 
-    writeIfChanged(
-        "{$deckDir}/deck.html",
-        spdxHtmlHeader() . ($detail['deck_html'] ?? '') . "\n",
-    );
-    writeIfChanged(
-        "{$deckDir}/deck.css",
-        spdxCssHeader() . ($detail['css'] ?? '') . "\n",
-    );
+    writeIfChanged("{$deckDir}/deck.html", spdxHtmlHeader() . ($detail['deck_html'] ?? '') . "\n");
+    writeIfChanged("{$deckDir}/deck.css", spdxCssHeader() . ($detail['css'] ?? '') . "\n");
     writeIfChanged(
         "{$deckDir}/metadata.json",
         json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
     );
 
     $frontMatter = "---\n"
+        . "extends: _layouts.talk\n"
+        . "section: content\n"
+        . "locale: {$locale}\n"
+        . "schemaType: CreativeWork\n"
+        . "indexable: true\n"
+        . 'slug: ' . yamlString($slug) . "\n"
         . 'title: ' . yamlString((string) $detail['title']) . "\n"
         . 'description: ' . yamlString($description) . "\n"
         . "date: {$created}\n"
         . "updated: {$updated}\n"
-        . "locale: {$locale}\n"
-        . 'permalink: ' . yamlString($publicPath) . "\n"
-        . "layout: talk\n"
-        . "schemaType: CreativeWork\n"
-        . "indexable: true\n"
         . "managed: slides.com\n"
         . "slidesId: {$detail['id']}\n"
         . "presentation:\n"
