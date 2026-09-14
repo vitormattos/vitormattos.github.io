@@ -1,0 +1,26 @@
+/* SPDX-FileCopyrightText: 2026 Vitor Mattos */
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+
+@use 'variables' as *;
+
+.hero {
+    padding-block: 5rem;
+
+    h1 {
+        font-size: clamp(3rem, 8vw, 6rem);
+        line-height: 1;
+        margin-block: .25rem 1rem;
+    }
+}
+
+.eyebrow,
+.meta {
+    opacity: .7;
+}
+
+.card,
+.content {
+    border: 1px solid currentColor;
+    border-radius: $card-radius;
+    padding: 1.5rem;
+}
