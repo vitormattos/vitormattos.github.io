@@ -10,6 +10,17 @@
     @include('_partials.talk.reveal')
 @elseif (in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
     <div class="presentation-frame">
+        <div class="presentation-toolbar">
+            <span>{{ $isEnglish ? 'Presentation' : 'Apresentação' }}</span>
+            <div class="presentation-toolbar__actions">
+                @if ($presentation['url'] ?? false)
+                    <a href="{{ $presentation['url'] }}" rel="external">{{ $isEnglish ? 'Open original' : 'Abrir original' }}</a>
+                @endif
+                @if ($presentation['video'] ?? false)
+                    <a href="{{ $presentation['video'] }}" rel="external">{{ $isEnglish ? 'Video' : 'Vídeo' }}</a>
+                @endif
+            </div>
+        </div>
         <div class="presentation-stage">
             <iframe
                 src="{{ $presentation['embed'] }}"
