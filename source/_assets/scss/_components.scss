@@ -3,6 +3,17 @@
 
 @use 'variables' as *;
 
+.skip-link {
+    left: 1rem;
+    position: absolute;
+    top: -10rem;
+    z-index: 100;
+
+    &:focus {
+        top: 1rem;
+    }
+}
+
 .hero {
     padding-block: 5rem;
 
