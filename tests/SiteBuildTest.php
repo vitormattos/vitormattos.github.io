@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 final class SiteBuildTest extends TestCase
 {
     private const SITE_URL = 'https://vitormattos.github.io';
+    private const INDEXABLE_ROBOTS = '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">';
+    private const NOINDEX_ROBOTS = '<meta name="robots" content="noindex,nofollow,noarchive">';
 
     private function buildDirectory(): string
     {
@@ -128,25 +130,22 @@ final class SiteBuildTest extends TestCase
         $notFound = $this->read('404.html');
         $realTalk = $this->read('talks/libresign-integrations/index.html');
 
-        self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $notFound);
+        self::assertStringContainsString(self::NOINDEX_ROBOTS, $notFound);
 
         if ($this->isPreview()) {
-            self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $index);
-            self::assertStringContainsString('<meta name="robots" content="noindex,nofollow,noarchive">', $realTalk);
+            // Preview policy overrides the page-level indexable flag for every page.
+            self::assertStringContainsString(self::NOINDEX_ROBOTS, $index);
+            self::assertStringContainsString(self::NOINDEX_ROBOTS, $realTalk);
+            self::assertStringNotContainsString(self::INDEXABLE_ROBOTS, $realTalk);
             self::assertStringContainsString("Disallow: /", $robots);
             self::assertFileDoesNotExist($this->buildDirectory() . '/sitemap.xml');
 
             return;
         }
 
-        self::assertStringContainsString(
-            '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">',
-            $index,
-        );
-        self::assertStringContainsString(
-            '<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">',
-            $realTalk,
-        );
+        self::assertStringContainsString(self::INDEXABLE_ROBOTS, $index);
+        self::assertStringContainsString(self::INDEXABLE_ROBOTS, $realTalk);
+        self::assertStringNotContainsString(self::NOINDEX_ROBOTS, $realTalk);
         self::assertStringContainsString('Disallow: /pr-preview/', $robots);
         self::assertStringContainsString('Sitemap: ' . self::SITE_URL . '/sitemap.xml', $robots);
         self::assertFileExists($this->buildDirectory() . '/sitemap.xml');
