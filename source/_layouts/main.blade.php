@@ -18,10 +18,10 @@
 </head>
 <body>
 <header class="site-header">
-    <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/en/' : '/' }}">Vitor Mattos</a>
+    <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/' : '/pt-BR/' }}">Vitor Mattos</a>
     <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
-        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/en/#articles' : '/#artigos' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
-        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/en/#talks' : '/#palestras' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
+        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#articles' : '/pt-BR/#artigos' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
+        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#talks' : '/pt-BR/#palestras' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
         <a href="https://github.com/vitormattos">GitHub</a>
         @if ($page->alternateUrl ?? false)
             <a href="{{ $page->baseUrl }}{{ $page->alternateUrl }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
