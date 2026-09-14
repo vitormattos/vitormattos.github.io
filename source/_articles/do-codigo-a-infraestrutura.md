@@ -8,6 +8,11 @@ description: Por que publicar o código-fonte é apenas o começo do trabalho ne
 date: 2026-09-14
 ---
 
+<!--
+SPDX-FileCopyrightText: 2026 Vitor Mattos
+SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+
 Publicar o código-fonte é um passo importante, mas não é suficiente para tornar um projeto de software sustentável.
 
 Software livre se torna infraestrutura útil quando as pessoas conseguem compreendê-lo, implantá-lo, mantê-lo, contribuir com ele e confiar que o projeto continuará evoluindo. Isso exige um trabalho que é fácil subestimar: revisar contribuições, documentar decisões, corrigir regressões, organizar lançamentos, apoiar usuários, discutir arquitetura, construir comunidade e encontrar formas de financiar a manutenção sem comprometer a liberdade do software.
