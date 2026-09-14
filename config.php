@@ -7,28 +7,53 @@ declare(strict_types=1);
 
 return [
     'baseUrl' => '',
+    'siteUrl' => 'https://vitormattos.github.io',
     'production' => false,
     'indexable' => false,
     'siteName' => 'Vitor Mattos',
     'defaultLocale' => 'en',
     'locales' => ['en', 'pt-BR'],
-    'siteDescription' => 'Free software, PHP, LibreSign, research and talks.',
+    'siteDescription' => 'Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.',
+    'author' => [
+        'name' => 'Vitor Mattos',
+        'id' => 'https://vitormattos.github.io/#person',
+        'github' => 'https://github.com/vitormattos',
+        'linkedin' => 'https://www.linkedin.com/in/vitormattos/',
+        'organization' => [
+            'name' => 'LibreCode',
+            'url' => 'https://librecode.coop/',
+        ],
+        'knowsAbout' => [
+            'Free software',
+            'PHP',
+            'Linux',
+            'LibreSign',
+            'Electronic signatures',
+            'Digital signatures',
+            'Software engineering',
+            'Open source communities',
+        ],
+    ],
     'collections' => [
         'articles' => [
             'path' => 'pt-BR/artigos/{filename}',
             'sort' => '-date',
+            'schemaType' => 'Article',
         ],
         'articlesEn' => [
             'path' => 'articles/{filename}',
             'sort' => '-date',
+            'schemaType' => 'Article',
         ],
         'talks' => [
             'path' => 'pt-BR/palestras/{filename}',
             'sort' => '-date',
+            'schemaType' => 'CreativeWork',
         ],
         'talksEn' => [
             'path' => 'talks/{filename}',
             'sort' => '-date',
+            'schemaType' => 'CreativeWork',
         ],
     ],
 ];
