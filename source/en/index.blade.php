@@ -1,5 +1,6 @@
 ---
-locale: en
+permalink: pt-BR/index.html
+locale: pt-BR
 alternateUrl: /
 ---
 {{-- SPDX-FileCopyrightText: 2026 Vitor Mattos --}}
@@ -8,17 +9,17 @@ alternateUrl: /
 
 @section('body')
 <section class="hero">
-    <p class="eyebrow">Free software · PHP · research · community</p>
+    <p class="eyebrow">Software livre · PHP · pesquisa · comunidade</p>
     <h1>Vitor Mattos</h1>
-    <p>Software developer, CTO and worker-owner at LibreCode, LibreSign maintainer, and participant in free software communities.</p>
+    <p>Desenvolvedor de software, CTO e cooperado da LibreCode, mantenedor do LibreSign e participante de comunidades de software livre.</p>
 </section>
 
-<section id="talks">
-    <h2>Talks</h2>
+<section id="palestras">
+    <h2>Palestras</h2>
     <div class="grid">
-        @foreach ($talksEn as $talk)
+        @foreach ($talks as $talk)
             <article class="card">
-                <p class="meta">{{ date('Y-m-d', $talk->date) }}</p>
+                <p class="meta">{{ date('d/m/Y', $talk->date) }}</p>
                 <h3><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h3>
                 <p>{{ $talk->description }}</p>
             </article>
@@ -26,12 +27,12 @@ alternateUrl: /
     </div>
 </section>
 
-<section id="articles">
-    <h2>Articles</h2>
+<section id="artigos">
+    <h2>Artigos</h2>
     <div class="grid">
-        @foreach ($articlesEn as $article)
+        @foreach ($articles as $article)
             <article class="card">
-                <p class="meta">{{ date('Y-m-d', $article->date) }}</p>
+                <p class="meta">{{ date('d/m/Y', $article->date) }}</p>
                 <h3><a href="{{ $article->getUrl() }}">{{ $article->title }}</a></h3>
                 <p>{{ $article->description }}</p>
             </article>
