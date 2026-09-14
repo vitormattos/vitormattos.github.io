@@ -34,13 +34,22 @@ jobs:
           php-version: '8.3'
           coverage: none
 
-      - name: Install dependencies
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: github.event.action != 'closed'
+        with:
+          node-version: '24'
+
+      - name: Install PHP dependencies
         if: github.event.action != 'closed'
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Install frontend dependencies
+        if: github.event.action != 'closed'
+        run: npm install --no-audit --no-fund
+
       - name: Build preview
         if: github.event.action != 'closed'
-        run: vendor/bin/jigsaw build preview
+        run: npm run preview
 
       - name: Test preview build
         if: github.event.action != 'closed'
