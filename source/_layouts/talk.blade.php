@@ -5,6 +5,7 @@
     $presentation = $page->presentation ?? [];
     $needsReveal = ($presentation['type'] ?? null) === 'reveal' || (bool) ($presentation['localHtml'] ?? false);
     $isEnglish = ($page->locale ?? 'en') === 'en';
+    $showAbout = $page->showAbout ?? true;
 @endphp
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
@@ -30,6 +31,8 @@
             @if (($presentation['width'] ?? 0) && ($presentation['height'] ?? 0))<div><dt>{{ $isEnglish ? 'Canvas' : 'Tela' }}</dt><dd>{{ $presentation['width'] }} × {{ $presentation['height'] }}</dd></div>@endif
         </dl>
     @endif
-    <section aria-labelledby="talk-about-title"><h2 id="talk-about-title">{{ $isEnglish ? 'About this talk' : 'Sobre esta palestra' }}</h2>@yield('content')</section>
+    @if ($showAbout)
+        <section aria-labelledby="talk-about-title"><h2 id="talk-about-title">{{ $isEnglish ? 'About this talk' : 'Sobre esta palestra' }}</h2>@yield('content')</section>
+    @endif
 </article>
 @endsection
