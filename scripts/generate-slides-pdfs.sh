@@ -57,12 +57,18 @@ find presentations/slides.com -mindepth 2 -maxdepth 2 -name deck.html -print0 | 
     deck_dir="$(dirname "$deck_html")"
     deck_id="$(basename "$deck_dir")"
     deck_css="$deck_dir/deck.css"
+    metadata="$deck_dir/metadata.json"
     output="$deck_dir/deck.pdf"
     print_file="$work_dir/${deck_id}.html"
 
     if [[ ! -f "$deck_css" ]]; then
         echo "Skipping $deck_dir: deck.css is missing." >&2
         continue
+    fi
+
+    expected_slides=0
+    if [[ -f "$metadata" ]]; then
+        expected_slides="$(php -r '$m=json_decode(file_get_contents($argv[1]), true, flags: JSON_THROW_ON_ERROR); echo (int)($m["slide_count"] ?? 0);' "$metadata")"
     fi
 
     # deck.html is a Reveal slide fragment from the Slides.com API. Wrap that
@@ -109,7 +115,13 @@ Reveal.initialize({
 HTML
     } > "$print_file"
 
-    echo "Generating $output from local archived deck $deck_id"
+    print_url="http://127.0.0.1:8765/${print_file}?print-pdf"
+    if ! curl --fail --silent "$print_url" | grep -q 'class="reveal"'; then
+        echo "Local print document is not being served correctly for $deck_id." >&2
+        exit 1
+    fi
+
+    echo "Generating $output from local archived deck $deck_id (${expected_slides} slides expected)"
     "$chrome" \
         --headless=new \
         --no-sandbox \
@@ -117,10 +129,18 @@ HTML
         --virtual-time-budget=15000 \
         --print-to-pdf-no-header \
         --print-to-pdf="$output" \
-        "http://127.0.0.1:8765/${print_file}?print-pdf"
+        "$print_url"
 
     if [[ ! -s "$output" ]]; then
-        echo "PDF generation failed for $deck_id." >&2
+        echo "PDF generation produced no output for $deck_id." >&2
         exit 1
     fi
+
+    pdf_size="$(stat -c '%s' "$output")"
+    if (( pdf_size < 10000 )); then
+        echo "PDF generation produced a suspiciously small file for $deck_id: ${pdf_size} bytes (${expected_slides} slides expected)." >&2
+        echo 'Treating this as a failed render instead of publishing a broken download.' >&2
+        exit 1
+    fi
+
 done
