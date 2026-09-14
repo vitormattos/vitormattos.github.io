@@ -10,6 +10,8 @@ namespace App\Presentations;
 final class PdfExportPolicy
 {
     public const MINIMUM_PDF_BYTES = 10_000;
+    public const DECKTAPE_VERSION = '3.16.1';
+    public const CACHE_SCHEMA_VERSION = 1;
 
     public static function isValidPdf(string $path): bool
     {
@@ -28,6 +30,49 @@ final class PdfExportPolicy
         return $header === '%PDF-';
     }
 
+    public static function generatorFingerprint(): string
+    {
+        $files = [
+            __FILE__,
+            __DIR__ . '/SlidesDeckPolicy.php',
+            dirname(__DIR__, 2) . '/scripts/generate-slides-pdfs.php',
+        ];
+        $hash = hash_init('sha256');
+        hash_update($hash, 'cache-schema:' . self::CACHE_SCHEMA_VERSION . "\n");
+        hash_update($hash, 'decktape:' . self::DECKTAPE_VERSION . "\n");
+
+        foreach ($files as $file) {
+            hash_update($hash, basename($file) . ':');
+            hash_update_file($hash, $file);
+            hash_update($hash, "\n");
+        }
+
+        return hash_final($hash);
+    }
+
+    public static function deckFingerprint(array $metadata, ?string $generatorFingerprint = null): string
+    {
+        $relevant = [
+            'id' => (string) ($metadata['id'] ?? ''),
+            'url' => (string) ($metadata['url'] ?? ''),
+            'visibility' => (string) ($metadata['visibility'] ?? ''),
+            'width' => (int) ($metadata['width'] ?? 0),
+            'height' => (int) ($metadata['height'] ?? 0),
+            'slide_count' => (int) ($metadata['slide_count'] ?? 0),
+            'updated_at' => (string) ($metadata['updated_at'] ?? ''),
+            'generator' => $generatorFingerprint ?? self::generatorFingerprint(),
+        ];
+
+        return hash('sha256', json_encode($relevant, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
+    }
+
+    public static function cachePath(string $cacheDirectory, array $metadata, ?string $generatorFingerprint = null): string
+    {
+        $deckId = preg_replace('/[^a-zA-Z0-9._-]/', '-', (string) ($metadata['id'] ?? 'deck'));
+
+        return rtrim($cacheDirectory, '/') . '/' . $deckId . '-' . self::deckFingerprint($metadata, $generatorFingerprint) . '.pdf';
+    }
+
     public static function deckTapeArguments(array $metadata, string $output): array
     {
         if (!SlidesDeckPolicy::isPublic($metadata)) {
@@ -42,7 +87,7 @@ final class PdfExportPolicy
         return [
             'npx',
             '--yes',
-            'decktape@3.16.1',
+            'decktape@' . self::DECKTAPE_VERSION,
             'reveal',
             '--size',
             SlidesDeckPolicy::viewport($metadata),
