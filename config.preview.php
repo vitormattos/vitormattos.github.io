@@ -8,4 +8,5 @@ declare(strict_types=1);
 return [
     'baseUrl' => getenv('PREVIEW_BASE_URL') ?: '',
     'production' => false,
+    'indexable' => false,
 ];
