@@ -90,19 +90,52 @@ function initializeGallery() {
     const switcher = document.querySelector('[data-gallery-switcher]');
     if (!gallery || !switcher) return;
 
+    const trigger = switcher.querySelector('[data-gallery-menu-trigger]');
+    const menu = switcher.querySelector('[data-gallery-menu]');
+    const current = switcher.querySelector('[data-gallery-current]');
+
+    const closeMenu = () => {
+        if (!menu || !trigger) return;
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+    };
+
     const apply = (view) => {
         const normalized = view === 'list' ? 'list' : 'grid';
         gallery.dataset.view = normalized;
         localStorage.setItem('talk-gallery-view', normalized);
         for (const button of switcher.querySelectorAll('[data-gallery-view]')) {
-            button.setAttribute('aria-pressed', String(button.dataset.galleryView === normalized));
+            const selected = button.dataset.galleryView === normalized;
+            button.setAttribute('aria-pressed', String(selected));
+            if (selected && current) {
+                current.textContent = button.querySelector('strong')?.textContent ?? normalized;
+            }
         }
+        closeMenu();
     };
 
     apply(localStorage.getItem('talk-gallery-view') ?? 'grid');
+
+    trigger?.addEventListener('click', () => {
+        const opening = menu?.hidden ?? false;
+        if (menu) menu.hidden = !opening;
+        trigger.setAttribute('aria-expanded', String(opening));
+    });
+
     switcher.addEventListener('click', (event) => {
         const button = event.target.closest('[data-gallery-view]');
         if (button) apply(button.dataset.galleryView);
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!switcher.contains(event.target)) closeMenu();
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeMenu();
+            trigger?.focus();
+        }
     });
 }
 
