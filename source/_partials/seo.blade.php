@@ -78,7 +78,7 @@
         $graph[2]['mainEntity'] = ['@id' => $personId];
     }
 
-    if (in_array($schemaType, ['Article', 'CreativeWork'], true)) {
+    if (in_array($schemaType, ['Article', 'ScholarlyArticle', 'CreativeWork'], true)) {
         $content = [
             '@type' => $schemaType,
             '@id' => $contentId,
@@ -94,15 +94,35 @@
 
         if ($page->date ?? false) {
             $content['datePublished'] = date(DATE_ATOM, $page->date);
+        } elseif ($page->year ?? false) {
+            $content['datePublished'] = (string) $page->year;
         }
         if ($updatedAt !== null) {
             $content['dateModified'] = date(DATE_ATOM, $updatedAt);
+        }
+        if ($schemaType === 'ScholarlyArticle' && ($page->academic ?? false)) {
+            $academic = $page->academic;
+            $content['author'] = [
+                '@type' => 'Person',
+                '@id' => $personId,
+                'name' => $academic['author'] ?? $page->author['name'],
+                'url' => $siteUrl . '/',
+            ];
+            if ($academic['institution'] ?? false) {
+                $content['sourceOrganization'] = [
+                    '@type' => 'EducationalOrganization',
+                    'name' => $academic['institution'],
+                ];
+            }
+            if ($academic['keywords'] ?? false) {
+                $content['keywords'] = $academic['keywords'];
+            }
         }
 
         $graph[] = $content;
         $graph[2]['mainEntity'] = ['@id' => $contentId];
 
-        $isArticle = $schemaType === 'Article';
+        $isArticle = in_array($schemaType, ['Article', 'ScholarlyArticle'], true);
         $sectionPath = $isArticle
             ? ($isEnglish ? '/articles' : '/pt-BR/artigos')
             : ($isEnglish ? '/talks' : '/pt-BR/palestras');
@@ -144,7 +164,7 @@
     ];
 @endphp
 <meta name="description" content="{{ $description }}">
-<meta name="author" content="{{ $page->author['name'] }}">
+<meta name="author" content="{{ $page->academic['author'] ?? $page->author['name'] }}">
 @if (! $effectiveIndexable)
     <meta name="robots" content="noindex,nofollow,noarchive">
 @else
@@ -157,17 +177,17 @@
 @endif
 <link rel="alternate" hreflang="x-default" href="{{ $englishCanonicalUrl }}">
 <link rel="alternate" type="application/rss+xml" title="{{ $page->siteName }} — {{ $isEnglish ? 'Articles' : 'Artigos' }}" href="{{ $siteUrl }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
-<meta property="og:type" content="{{ $schemaType === 'Article' ? 'article' : 'website' }}">
+<meta property="og:type" content="{{ in_array($schemaType, ['Article', 'ScholarlyArticle'], true) ? 'article' : 'website' }}">
 <meta property="og:title" content="{{ $documentTitle }}">
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:url" content="{{ $canonicalUrl }}">
 <meta property="og:site_name" content="{{ $page->siteName }}">
 <meta property="og:locale" content="{{ $isEnglish ? 'en_US' : 'pt_BR' }}">
 <meta property="og:locale:alternate" content="{{ $isEnglish ? 'pt_BR' : 'en_US' }}">
-@if ($schemaType === 'Article' && ($page->date ?? false))
+@if (in_array($schemaType, ['Article', 'ScholarlyArticle'], true) && ($page->date ?? false))
     <meta property="article:published_time" content="{{ date(DATE_ATOM, $page->date) }}">
 @endif
-@if ($schemaType === 'Article' && $updatedAt !== null)
+@if (in_array($schemaType, ['Article', 'ScholarlyArticle'], true) && $updatedAt !== null)
     <meta property="article:modified_time" content="{{ date(DATE_ATOM, $updatedAt) }}">
 @endif
 <meta name="twitter:card" content="summary">
