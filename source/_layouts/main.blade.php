@@ -19,8 +19,8 @@
 <header class="site-header">
     <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/' : '/pt-BR/' }}">Vitor Mattos</a>
     <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
-        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#articles' : '/pt-BR/#artigos' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
-        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/#talks' : '/pt-BR/#palestras' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
+        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/articles/' : '/pt-BR/artigos/' }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
+        <a href="{{ $page->baseUrl }}{{ $isEnglish ? '/talks/' : '/pt-BR/palestras/' }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
         <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
         <a href="{{ $page->author['linkedin'] }}" rel="me">LinkedIn</a>
         @if ($page->alternateUrl ?? false)
