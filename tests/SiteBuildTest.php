@@ -48,4 +48,16 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('From Code to Infrastructure', $article);
         self::assertStringContainsString('Free software does not mean that development and maintenance have no cost.', $article);
     }
+
+    public function testAssetsUseConfiguredBaseUrl(): void
+    {
+        $index = file_get_contents($this->buildDirectory() . '/index.html');
+        $baseUrl = rtrim((string) (getenv('EXPECTED_BASE_URL') ?: 'https://vitormattos.github.io'), '/');
+
+        self::assertIsString($index);
+        self::assertMatchesRegularExpression(
+            '#' . preg_quote($baseUrl, '#') . '/assets/build/assets/main-[^"\']+\.css#',
+            $index,
+        );
+    }
 }
