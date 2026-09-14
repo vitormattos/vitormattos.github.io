@@ -306,14 +306,14 @@
     border-radius: 0;
 }
 
-.presentation-frame:fullscreen .presentation-stage {
-    height: calc(100vh - 3.5rem);
-}
-
 .presentation-stage {
     position: relative;
     min-height: 24rem;
     aspect-ratio: 16 / 9;
+}
+
+.presentation-frame:fullscreen .presentation-stage {
+    height: calc(100vh - 3.5rem);
 }
 
 .presentation-stage > iframe {
