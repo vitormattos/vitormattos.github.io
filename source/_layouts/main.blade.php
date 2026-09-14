@@ -17,6 +17,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
     <title>{{ $page->title ? $page->title.' · ' : '' }}{{ $page->siteName }}</title>
     @include('_partials.seo')
     @viteRefresh()
@@ -27,17 +39,20 @@
 <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
 <header class="site-header">
     <a href="{{ $page->baseUrl }}{{ $homePath }}">Vitor Mattos</a>
-    <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
-        <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
-        <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
-        <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
-        <a href="{{ $page->author['linkedin'] }}" rel="me">LinkedIn</a>
-        @if ($alternatePath !== null)
-            <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
-                {{ $isEnglish ? 'Português' : 'English' }}
-            </a>
-        @endif
-    </nav>
+    <div class="site-header__actions">
+        <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
+            <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
+            <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
+            <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
+            <a href="{{ $page->author['linkedin'] }}" rel="me">LinkedIn</a>
+            @if ($alternatePath !== null)
+                <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
+                    {{ $isEnglish ? 'Português' : 'English' }}
+                </a>
+            @endif
+        </nav>
+        @include('_partials.theme-toggle')
+    </div>
 </header>
 <main id="main-content">
     @yield('body')
