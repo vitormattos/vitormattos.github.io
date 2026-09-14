@@ -37,18 +37,29 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Preview HTML must contain `noindex,nofollow,noarchive`.
 - The production root `robots.txt` must disallow `/pr-preview/`. A nested `robots.txt` inside a preview path is not authoritative under the robots exclusion standard.
 - Preview builds must not generate `sitemap.xml`; production builds do.
+- The custom `/404.html` is always `noindex` and must never enter the sitemap.
+
+## Crawlable information architecture
+
+- English collection hubs: `/articles/` and `/talks/`.
+- Portuguese collection hubs: `/pt-BR/artigos/` and `/pt-BR/palestras/`.
+- Main navigation links to these real hub pages, not only to homepage fragments.
+- Detail pages should remain reachable from both the homepage and the corresponding collection hub.
+- Detail-page structured data includes breadcrumbs through the appropriate collection hub.
 
 ## SEO and answer-engine requirements
 
 - Keep one canonical URL for every indexable document.
 - Language pairs must expose self-referencing hreflang, reciprocal alternate hreflang and `x-default` pointing to the English canonical version.
-- Keep factual Schema.org JSON-LD for `WebSite`, `Person`, `ProfilePage`/`WebPage`, `Article` and `CreativeWork` as appropriate. Do not invent awards, credentials, employment, relationships or dates merely to enrich structured data.
+- Keep factual Schema.org JSON-LD for `WebSite`, `Person`, `ProfilePage`/`WebPage`, `CollectionPage`, `Article`, `CreativeWork` and `BreadcrumbList` as appropriate. Do not invent awards, credentials, employment, relationships or dates merely to enrich structured data.
 - Articles and talks should have useful `title`, `description`, `date`, `locale`, `alternateUrl` and `schemaType` front matter.
 - Content should answer its topic clearly near the beginning, use descriptive headings, and remain written for humans. Do not add keyword stuffing, hidden text or fake FAQ schema.
 - `sitemap.xml` should contain only canonical HTML pages and real publication dates when available. Do not use build time as fake `lastmod` because that makes every URL appear changed on every build.
 - RSS feeds are available at `/feed.xml` and `/pt-BR/feed.xml`.
 - `/llms.txt` is a machine-readable discovery aid, not a guaranteed ranking or indexing mechanism. Keep it factual and synchronized with public content.
 - Open Graph and social metadata should reflect the same canonical title, description and URL as the page. Add social images only when real assets exist.
+- After production is live, submit the root sitemap to Google Search Console and Bing Webmaster Tools. Verification tokens are account-specific and should not be invented in source.
+- IndexNow is a valid future enhancement for notifying Bing and participating engines about changed URLs, but do not submit every URL on every CI run indiscriminately; integrate it only with a stable key and a changed-URL strategy.
 
 ## Content semantics and accessibility
 
@@ -62,6 +73,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Dependabot covers Composer, npm and GitHub Actions.
 - `SITE_BUILD_DIR` lets the same PHPUnit suite test `build_production` and `build_preview`. Do not hardcode production paths in tests that are also run by preview CI.
 - `EXPECTED_BASE_URL` is used to verify preview-aware asset URLs.
+- Tests enforce canonical URLs, hreflang, structured data, preview `noindex`, production robots rules, sitemap scope, feeds, `llms.txt`, 404 exclusion and the rule against exposing internal application-purpose language.
 - Add regression tests when fixing deployment, SEO or URL-generation bugs rather than relying only on visual inspection.
 - Prefer `npm ci` when a committed `package-lock.json` is present. Prefer reproducible Composer installs once `composer.lock` is committed.
 
