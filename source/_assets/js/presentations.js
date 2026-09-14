@@ -85,10 +85,73 @@ function bindToolbar(toolbar) {
     });
 }
 
+function readTags(card) {
+    try {
+        return JSON.parse(card.dataset.talkTags ?? '[]');
+    } catch {
+        return [];
+    }
+}
+
+function initializeTagFilter(gallery) {
+    const filter = document.querySelector('[data-talk-tag-filter]');
+    if (!filter) return;
+
+    const cards = [...gallery.querySelectorAll('.talk-card')];
+    const status = document.querySelector('[data-talk-filter-status]');
+    const empty = document.querySelector('[data-talk-filter-empty]');
+
+    const applyTag = (tag, updateHistory = false) => {
+        const normalized = tag.trim();
+        let visible = 0;
+
+        for (const card of cards) {
+            const matches = normalized === '' || readTags(card).includes(normalized);
+            card.hidden = !matches;
+            if (matches) visible += 1;
+        }
+
+        for (const link of filter.querySelectorAll('[data-talk-tag]')) {
+            const selected = link.dataset.talkTag === normalized;
+            if (selected) link.setAttribute('aria-current', 'true');
+            else link.removeAttribute('aria-current');
+        }
+
+        if (status) {
+            status.textContent = normalized === ''
+                ? ''
+                : `${visible} ${visible === 1 ? 'presentation' : 'presentations'} · ${normalized}`;
+        }
+        if (empty) empty.hidden = visible !== 0;
+
+        if (updateHistory) {
+            const url = new URL(window.location.href);
+            if (normalized === '') url.searchParams.delete('tag');
+            else url.searchParams.set('tag', normalized);
+            window.history.pushState({}, '', url);
+        }
+    };
+
+    filter.addEventListener('click', (event) => {
+        const link = event.target.closest('[data-talk-tag]');
+        if (!link) return;
+        event.preventDefault();
+        applyTag(link.dataset.talkTag ?? '', true);
+    });
+
+    window.addEventListener('popstate', () => {
+        applyTag(new URL(window.location.href).searchParams.get('tag') ?? '');
+    });
+
+    applyTag(new URL(window.location.href).searchParams.get('tag') ?? '');
+}
+
 function initializeGallery() {
     const gallery = document.querySelector('[data-talk-gallery]');
     const switcher = document.querySelector('[data-gallery-switcher]');
     if (!gallery || !switcher) return;
+
+    initializeTagFilter(gallery);
 
     const trigger = switcher.querySelector('[data-gallery-menu-trigger]');
     const menu = switcher.querySelector('[data-gallery-menu]');
