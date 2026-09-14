@@ -36,6 +36,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Canonical path policy follows Jigsaw's generated URLs: `/` is the only canonical URL ending in `/`; all non-root canonical URLs omit the trailing slash (for example `/articles`, `/pt-BR`, `/articles/example`). Keep canonical, hreflang, Open Graph, JSON-LD, sitemap, RSS and crawlable internal links consistent with this rule.
 - Navigation and compiled asset URLs use `baseUrl` so preview links stay inside the preview.
 - Preview HTML must contain `noindex,nofollow,noarchive`.
+- Indexable pages explicitly allow unrestricted snippets, large image previews and unrestricted video previews. Do not weaken these directives unless there is a content-policy reason to do so.
 - The production root `robots.txt` must disallow `/pr-preview/`. A nested `robots.txt` inside a preview path is not authoritative under the robots exclusion standard.
 - Preview builds must not generate `sitemap.xml`; production builds do.
 - The custom `/404.html` is always `noindex` and must never enter the sitemap.
@@ -54,8 +55,9 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Language pairs must expose self-referencing hreflang, reciprocal alternate hreflang and `x-default` pointing to the English canonical version.
 - Keep factual Schema.org JSON-LD for `WebSite`, `Person`, `ProfilePage`/`WebPage`, `CollectionPage`, `Article`, `CreativeWork` and `BreadcrumbList` as appropriate. Do not invent awards, credentials, employment, relationships or dates merely to enrich structured data.
 - Articles and talks should have useful `title`, `description`, `date`, `locale`, `alternateUrl` and `schemaType` front matter.
+- Use optional `updated` front matter only when a substantive revision actually occurred. When present it drives Schema.org `dateModified`, Open Graph `article:modified_time` and sitemap `lastmod`; otherwise publication `date` is used where appropriate. Never use CI/build time as a fake modification date.
 - Content should answer its topic clearly near the beginning, use descriptive headings, and remain written for humans. Do not add keyword stuffing, hidden text or fake FAQ schema.
-- `sitemap.xml` should contain only canonical HTML pages and real publication dates when available. Do not use build time as fake `lastmod` because that makes every URL appear changed on every build.
+- `sitemap.xml` should contain only canonical HTML pages and real publication/modification dates when available. Do not use build time as fake `lastmod` because that makes every URL appear changed on every build.
 - RSS feeds are available at `/feed.xml` and `/pt-BR/feed.xml`.
 - `/llms.txt` is a machine-readable discovery aid, not a guaranteed ranking or indexing mechanism. Keep it factual and synchronized with public content.
 - Open Graph and social metadata should reflect the same canonical title, description and URL as the page. Add social images only when real assets exist.
