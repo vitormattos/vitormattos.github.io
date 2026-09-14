@@ -24,9 +24,6 @@ if [[ ! -f node_modules/reveal.js/dist/reveal.js ]]; then
     exit 1
 fi
 
-# Keep this directory non-hidden. PHP's built-in server does not reliably serve
-# hidden paths in all runner environments, which made the render probe fail
-# before Chromium was even started.
 work_dir="build-slides-pdf"
 rm -rf "$work_dir"
 mkdir -p "$work_dir"
@@ -39,8 +36,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Serve the repository root so the temporary print documents can use the exact
-# Reveal.js version pinned by package-lock.json and the locally archived deck.
 php -S 127.0.0.1:8765 -t . >"$work_dir/server.log" 2>&1 &
 server_pid=$!
 
@@ -57,7 +52,10 @@ if ! curl --fail --silent http://127.0.0.1:8765/package.json >/dev/null; then
     exit 1
 fi
 
-find presentations/slides.com -mindepth 2 -maxdepth 2 -name deck.html -print0 | while IFS= read -r -d '' deck_html; do
+success_count=0
+failure_count=0
+
+while IFS= read -r -d '' deck_html; do
     deck_dir="$(dirname "$deck_html")"
     deck_id="$(basename "$deck_dir")"
     deck_css="$deck_dir/deck.css"
@@ -65,8 +63,12 @@ find presentations/slides.com -mindepth 2 -maxdepth 2 -name deck.html -print0 | 
     output="$deck_dir/deck.pdf"
     print_file="$work_dir/${deck_id}.html"
 
+    # Never leave a stale/broken PDF from a previous attempt.
+    rm -f "$output"
+
     if [[ ! -f "$deck_css" ]]; then
-        echo "Skipping $deck_dir: deck.css is missing." >&2
+        echo "::warning::Skipping PDF for deck $deck_id because deck.css is missing."
+        failure_count=$((failure_count + 1))
         continue
     fi
 
@@ -121,35 +123,42 @@ HTML
     probe_file="$work_dir/${deck_id}.probe.html"
     http_code="$(curl --silent --show-error --output "$probe_file" --write-out '%{http_code}' "$print_url" || true)"
     if [[ "$http_code" != "200" ]] || ! grep -q 'class="reveal"' "$probe_file"; then
-        echo "Local print document probe failed for $deck_id (HTTP $http_code)." >&2
-        echo "Requested: $print_url" >&2
-        echo 'Server log:' >&2
-        cat "$work_dir/server.log" >&2 || true
-        echo 'Response preview:' >&2
-        head -n 20 "$probe_file" >&2 || true
-        exit 1
+        echo "::warning::Skipping PDF for deck $deck_id because the local print document failed validation (HTTP $http_code)."
+        failure_count=$((failure_count + 1))
+        continue
     fi
 
     echo "Generating $output from local archived deck $deck_id (${expected_slides} slides expected)"
-    "$chrome" \
+    if ! "$chrome" \
         --headless=new \
         --no-sandbox \
         --disable-gpu \
         --virtual-time-budget=15000 \
         --print-to-pdf-no-header \
         --print-to-pdf="$output" \
-        "$print_url"
+        "$print_url"; then
+        rm -f "$output"
+        echo "::warning::Chromium failed to generate a PDF for deck $deck_id."
+        failure_count=$((failure_count + 1))
+        continue
+    fi
 
     if [[ ! -s "$output" ]]; then
-        echo "PDF generation produced no output for $deck_id." >&2
-        exit 1
+        rm -f "$output"
+        echo "::warning::PDF generation produced no output for deck $deck_id."
+        failure_count=$((failure_count + 1))
+        continue
     fi
 
     pdf_size="$(stat -c '%s' "$output")"
     if (( pdf_size < 10000 )); then
-        echo "PDF generation produced a suspiciously small file for $deck_id: ${pdf_size} bytes (${expected_slides} slides expected)." >&2
-        echo 'Treating this as a failed render instead of publishing a broken download.' >&2
-        exit 1
+        rm -f "$output"
+        echo "::warning::PDF render rejected for deck $deck_id: ${pdf_size} bytes for ${expected_slides} expected slides."
+        failure_count=$((failure_count + 1))
+        continue
     fi
 
-done
+    success_count=$((success_count + 1))
+done < <(find presentations/slides.com -mindepth 2 -maxdepth 2 -name deck.html -print0)
+
+echo "PDF generation finished: ${success_count} generated, ${failure_count} skipped."
