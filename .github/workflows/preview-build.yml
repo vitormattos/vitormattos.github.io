@@ -38,8 +38,6 @@ jobs:
         if: github.event.action != 'closed'
         with:
           node-version: '24'
-          cache: npm
-          cache-dependency-path: package-lock.json
 
       - name: Install PHP dependencies
         if: github.event.action != 'closed'
@@ -55,7 +53,7 @@ jobs:
       # spending 20+ minutes calling Slides.com and rendering every PDF again.
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
 
       - name: Build preview
         if: github.event.action != 'closed'
