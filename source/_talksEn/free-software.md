@@ -2,6 +2,7 @@
 extends: _layouts.content
 section: content
 locale: en
+schemaType: CreativeWork
 alternateUrl: /pt-BR/palestras/software-livre/
 title: Free software as infrastructure
 description: Initial structure to register talks, versions, events and related materials.
