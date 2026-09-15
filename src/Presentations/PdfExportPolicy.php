@@ -88,13 +88,15 @@ final class PdfExportPolicy
 
     public static function sourceArtifacts(string $deckDirectory): array
     {
-        $artifacts = [];
-        foreach (['deck.html', 'deck.css'] as $filename) {
-            $path = rtrim($deckDirectory, '/') . '/' . $filename;
-            if (!is_file($path)) {
-                throw new \RuntimeException("Required presentation artifact is missing: {$filename}");
-            }
-            $artifacts[$filename] = hash_file('sha256', $path);
+        $htmlPath = rtrim($deckDirectory, '/') . '/deck.html';
+        if (!is_file($htmlPath)) {
+            throw new \RuntimeException('Required presentation artifact is missing: deck.html');
+        }
+
+        $artifacts = ['deck.html' => hash_file('sha256', $htmlPath)];
+        $cssPath = rtrim($deckDirectory, '/') . '/deck.css';
+        if (is_file($cssPath)) {
+            $artifacts['deck.css'] = hash_file('sha256', $cssPath);
         }
 
         return $artifacts;
@@ -135,7 +137,6 @@ final class PdfExportPolicy
         $generator = $generatorFingerprint ?? self::generatorFingerprint();
 
         return [
-            '_spdx' => ['copyright' => '2026 Vitor Mattos', 'license' => 'CC-BY-SA-4.0'],
             'schema' => self::MANIFEST_SCHEMA_VERSION,
             'source' => [
                 'sha256' => $sourceFingerprint,
