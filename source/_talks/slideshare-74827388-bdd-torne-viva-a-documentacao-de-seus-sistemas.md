@@ -5,7 +5,7 @@ locale: pt-BR
 schemaType: CreativeWork
 indexable: true
 showAbout: false
-slug: "bdd-torne-viva-a-documentacao-de-seus-sistemas"
+slug: "bdd-torne-viva-a-documentao-de-seus-sistemas"
 title: "BDD: torne viva a documentação de seus sistemas"
 description: "Uma visão prática sobre quais são os papéis de um Programador e um Tester dentro do time de desenvolvimento ágil e como ambos podem trabalhar juntos para minimizar o desperdício na hora de planejar e executar os testes necessários para garantir a qualidade do produto."
 date: 2017-04-10
