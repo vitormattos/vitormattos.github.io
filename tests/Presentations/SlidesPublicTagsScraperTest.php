@@ -9,140 +9,95 @@ namespace Tests\Presentations;
 
 use App\Presentations\SlidesPublicTagsScraper;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 final class SlidesPublicTagsScraperTest extends TestCase
 {
-    public function testItAssociatesPublicTagsWithKnownPublicDecks(): void
+    public function testItAssociatesProfileTagsWithKnownPublicDeckIds(): void
     {
-        $pages = [
-            'https://slides.com/vitormattos' => <<<'HTML'
-                <nav>
-                  <a href="/vitormattos">All decks</a>
-                  <a href="/vitormattos/php">PHP</a>
-                  <a href="/vitormattos/software-livre">Software Livre</a>
-                  <a href="/vitormattos/deck-a">Deck A</a>
-                </nav>
-                HTML,
-            'https://slides.com/vitormattos/php' => <<<'HTML'
-                <a href="/vitormattos/deck-a">Deck A</a>
-                <a href="/vitormattos/deck-b">Deck B</a>
-                HTML,
-            'https://slides.com/vitormattos/software-livre' => <<<'HTML'
-                <a href="https://slides.com/vitormattos/deck-a">Deck A</a>
-                HTML,
-        ];
+        $html = <<<'HTML'
+            <script>
+            var SLDeckTags = [
+                {"id":285656,"name":"testes","slug":"testes","tag_type":"deck","decks":[2401021,1772784,1507067]},
+                {"id":285655,"name":"Carreira","slug":"carreira","tag_type":"deck","decks":[1931499,1442266]},
+                {"id":137010,"name":"php","slug":"php","tag_type":"deck","decks":[2401021,1772784,1442266]}
+            ];
+            </script>
+            HTML;
 
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static function (string $url) use ($pages): string {
-            return $pages[$url] ?? throw new RuntimeException("Unexpected URL: {$url}");
-        });
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $html);
 
         self::assertSame([
-            'https://slides.com/vitormattos/deck-a' => ['PHP', 'Software Livre'],
-            'https://slides.com/vitormattos/deck-b' => ['PHP'],
+            'https://slides.com/vitormattos/deck-a' => ['php', 'testes'],
+            'https://slides.com/vitormattos/deck-b' => ['Carreira', 'php'],
         ], $scraper->scrape([
-            'https://slides.com/vitormattos/deck-a',
-            'https://slides.com/vitormattos/deck-b',
+            'https://slides.com/vitormattos/deck-a' => 2401021,
+            'https://slides.com/vitormattos/deck-b' => 1442266,
         ]));
     }
 
-    public function testItDiscoversTagRoutesFromSerializedProfileData(): void
+    public function testItNeverImportsUnknownDeckIds(): void
     {
-        $pages = [
-            'https://slides.com/vitormattos' => <<<'HTML'
-                <script>
-                window.__PROFILE__ = {"filters":["\/vitormattos\/software-livre"],"decks":["\/vitormattos\/deck-a"]};
-                </script>
-                HTML,
-            'https://slides.com/vitormattos/software-livre' => <<<'HTML'
-                <a href="/vitormattos/deck-a">Deck A</a>
-                HTML,
-        ];
+        $html = <<<'HTML'
+            <script>
+            var SLDeckTags = [{"id":1,"name":"php","tag_type":"deck","decks":[9999999]}];
+            </script>
+            HTML;
 
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static function (string $url) use ($pages): string {
-            return $pages[$url] ?? throw new RuntimeException("Unexpected URL: {$url}");
-        });
-
-        self::assertSame([
-            'https://slides.com/vitormattos/deck-a' => ['Software Livre'],
-        ], $scraper->scrape(['https://slides.com/vitormattos/deck-a']));
-    }
-
-    public function testSerializedDeckDataDoesNotInflateTagMembership(): void
-    {
-        $pages = [
-            'https://slides.com/vitormattos' => '<a href="/vitormattos/php">PHP</a>',
-            'https://slides.com/vitormattos/php' => <<<'HTML'
-                <a href="/vitormattos/deck-a">Deck A</a>
-                <script>
-                window.__PROFILE__ = {"decks":["\/vitormattos\/deck-a","\/vitormattos\/deck-b"]};
-                </script>
-                HTML,
-        ];
-
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $pages[$url]);
-
-        self::assertSame([
-            'https://slides.com/vitormattos/deck-a' => ['PHP'],
-            'https://slides.com/vitormattos/deck-b' => [],
-        ], $scraper->scrape([
-            'https://slides.com/vitormattos/deck-a',
-            'https://slides.com/vitormattos/deck-b',
-        ]));
-    }
-
-    public function testItNormalizesDeckUrlsBeforeMatchingTags(): void
-    {
-        $pages = [
-            'https://slides.com/vitormattos' => '<a href="/vitormattos/php">PHP</a>',
-            'https://slides.com/vitormattos/php' => '<a href="http://slides.com/vitormattos/deck-a?foo=bar#slide-1">Deck A</a>',
-        ];
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $pages[$url]);
-
-        self::assertSame([
-            'https://slides.com/vitormattos/deck-a' => ['PHP'],
-        ], $scraper->scrape(['https://slides.com/vitormattos/deck-a?utm_source=api']));
-    }
-
-    public function testItNeverInventsOrImportsUnknownDecks(): void
-    {
-        $pages = [
-            'https://slides.com/vitormattos' => '<a href="/vitormattos/php">PHP</a>',
-            'https://slides.com/vitormattos/php' => '<a href="/vitormattos/private-deck">Private</a><a href="/someone/deck">Other user</a>',
-        ];
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $pages[$url]);
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $html);
 
         self::assertSame([
             'https://slides.com/vitormattos/public-deck' => [],
-        ], $scraper->scrape(['https://slides.com/vitormattos/public-deck']));
+        ], $scraper->scrape([
+            'https://slides.com/vitormattos/public-deck' => 123,
+        ]));
     }
 
-    public function testBrokenCandidatePageDoesNotBreakSynchronization(): void
+    public function testItIgnoresNonDeckTags(): void
     {
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static function (string $url): string {
-            if ($url === 'https://slides.com/vitormattos') {
-                return '<a href="/vitormattos/php">PHP</a>';
-            }
+        $html = <<<'HTML'
+            <script>
+            var SLDeckTags = [
+                {"id":1,"name":"team-tag","tag_type":"team","decks":[123]},
+                {"id":2,"name":"php","tag_type":"deck","decks":[123]}
+            ];
+            </script>
+            HTML;
 
-            throw new RuntimeException('temporary failure');
-        });
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $html);
 
         self::assertSame([
-            'https://slides.com/vitormattos/deck-a' => [],
-        ], $scraper->scrape(['https://slides.com/vitormattos/deck-a']));
+            'https://slides.com/vitormattos/public-deck' => ['php'],
+        ], $scraper->scrape([
+            'https://slides.com/vitormattos/public-deck' => 123,
+        ]));
     }
 
-    public function testExternalLinksAreNeverConsideredTagPages(): void
+    public function testItReturnsEmptyTagsWhenProfileHasNoSLDeckTags(): void
     {
-        $requested = [];
-        $scraper = new SlidesPublicTagsScraper('vitormattos', static function (string $url) use (&$requested): string {
-            $requested[] = $url;
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => '<html></html>');
 
-            return '<a href="https://example.com/php">PHP</a>';
-        });
+        self::assertSame([
+            'https://slides.com/vitormattos/public-deck' => [],
+        ], $scraper->scrape([
+            'https://slides.com/vitormattos/public-deck' => 123,
+        ]));
+    }
 
-        $scraper->scrape(['https://slides.com/vitormattos/deck-a']);
+    public function testItHandlesBracketsInsideJsonStrings(): void
+    {
+        $html = <<<'HTML'
+            <script>
+            var SLDeckTags = [{"id":1,"name":"PHP [legacy]","tag_type":"deck","decks":[123]}];
+            var anotherVariable = [1,2,3];
+            </script>
+            HTML;
 
-        self::assertSame(['https://slides.com/vitormattos'], $requested);
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $html);
+
+        self::assertSame([
+            'https://slides.com/vitormattos/public-deck' => ['PHP [legacy]'],
+        ], $scraper->scrape([
+            'https://slides.com/vitormattos/public-deck' => 123,
+        ]));
     }
 }
