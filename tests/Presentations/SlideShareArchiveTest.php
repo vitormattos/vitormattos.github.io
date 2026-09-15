@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 final class SlideShareArchiveTest extends TestCase
 {
-    public function testImportedMetadataUsesExplicitPrivacyAllowlist(): void
+    public function testImportedMetadataUsesExplicitPrivacyAllowlistAndUniqueRoutes(): void
     {
         $files = glob(dirname(__DIR__, 2) . '/presentations/slideshare/*/metadata.json') ?: [];
         self::assertCount(16, $files);
@@ -26,6 +26,7 @@ final class SlideShareArchiveTest extends TestCase
             'country', 'facebook', 'linkedin', 'twitter', 'following_users', 'contact_details',
             'account_registration',
         ];
+        $routes = [];
 
         foreach ($files as $file) {
             $metadata = json_decode((string) file_get_contents($file), true, flags: JSON_THROW_ON_ERROR);
@@ -33,6 +34,11 @@ final class SlideShareArchiveTest extends TestCase
             self::assertSame('public', $metadata['visibility'] ?? null, $file);
             self::assertNotEmpty($metadata['published_at'] ?? null, $file);
             self::assertSame([], array_values(array_diff(array_keys($metadata), $allowed)), $file);
+
+            $route = (str_starts_with((string) $metadata['language'], 'pt') ? '/pt-BR/palestras/' : '/talks/')
+                . (string) $metadata['slug'];
+            self::assertArrayNotHasKey($route, $routes, 'Duplicate generated route: ' . $route);
+            $routes[$route] = (string) $metadata['id'];
 
             $serialized = json_encode($metadata, JSON_THROW_ON_ERROR);
             foreach ($forbidden as $field) {
