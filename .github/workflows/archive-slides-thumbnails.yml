@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: Archive Slides.com thumbnails
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slides-com-thumbnail-archive
+  cancel-in-progress: true
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: true
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Archive thumbnails from existing metadata
+        run: php scripts/archive-slides-thumbnails.php
+
+      - name: Commit archived thumbnails
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add presentations/slides.com source/_talks source/_talksEn
+
+          if git diff --cached --quiet; then
+            echo 'Presentation thumbnails are already archived.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'content: archive Slides.com thumbnails'
+          git pull --rebase origin main
+          git push origin HEAD:main

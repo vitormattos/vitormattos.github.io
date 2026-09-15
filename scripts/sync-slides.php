@@ -181,13 +181,24 @@ foreach ($publicDecks as $detail) {
     $updated = substr((string) ($detail['updated_at'] ?? ''), 0, 10);
     $description = trim((string) ($detail['description'] ?? '')) ?: (string) $detail['title'];
     $deckDir = "presentations/slides.com/{$detail['id']}";
+    $metadataPath = "{$deckDir}/metadata.json";
     $css = (string) ($detail['css'] ?? '');
     $hasCss = trim($css) !== '';
+
+    $existingMetadata = [];
+    if (is_file($metadataPath)) {
+        try {
+            $existingMetadata = json_decode((string) file_get_contents($metadataPath), true, flags: JSON_THROW_ON_ERROR);
+        } catch (Throwable) {
+            $existingMetadata = [];
+        }
+    }
 
     $meta = [
         'id' => $detail['id'],
         'slug' => $slug,
         'title' => $detail['title'] ?? null,
+        'description' => $description,
         'visibility' => 'all',
         'url' => $publicUrl,
         'embed_url' => $embed,
@@ -211,6 +222,12 @@ foreach ($publicDecks as $detail) {
         'urls' => $detail['urls'] ?? [],
     ];
 
+    foreach (['thumbnail_path', 'thumbnail_source_url'] as $preservedKey) {
+        if (isset($existingMetadata[$preservedKey]) && $existingMetadata[$preservedKey] !== '') {
+            $meta[$preservedKey] = $existingMetadata[$preservedKey];
+        }
+    }
+
     writeIfChanged("{$deckDir}/deck.html", (string) ($detail['deck_html'] ?? '') . "\n");
     if ($hasCss) {
         writeIfChanged("{$deckDir}/deck.css", $css . "\n");
@@ -218,10 +235,11 @@ foreach ($publicDecks as $detail) {
         unlink("{$deckDir}/deck.css");
     }
     writeIfChanged(
-        "{$deckDir}/metadata.json",
+        $metadataPath,
         json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
     );
 
+    $thumbnail = (string) ($meta['thumbnail_path'] ?? $detail['thumbnail_url'] ?? '');
     $frontMatter = "---\n"
         . "extends: _layouts.talk\n"
         . "section: content\n"
@@ -242,7 +260,7 @@ foreach ($publicDecks as $detail) {
         . "  type: slides.com\n"
         . '  url: ' . yamlString($publicUrl) . "\n"
         . '  embed: ' . yamlString($embed) . "\n"
-        . '  thumbnail: ' . yamlString((string) ($detail['thumbnail_url'] ?? '')) . "\n"
+        . '  thumbnail: ' . yamlString($thumbnail) . "\n"
         . "  localHtml: /{$deckDir}/deck.html\n"
         . ($hasCss ? "  localCss: /{$deckDir}/deck.css\n" : '')
         . "  metadata: /{$deckDir}/metadata.json\n"

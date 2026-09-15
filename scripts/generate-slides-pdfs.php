@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 use App\Presentations\PdfExportPolicy;
+use App\Presentations\SlidesReleaseMetadata;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -46,14 +47,17 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         continue;
     }
 
-    if (PdfExportPolicy::manifestMatchesSource($manifestPath, $deckDir, $metadata)
-        && releaseAssetExists($repository, $releaseTag, $assetName)) {
+    $assetExists = releaseAssetExists($repository, $releaseTag, $assetName);
+
+    if (PdfExportPolicy::manifestMatchesSource($manifestPath, $deckDir, $metadata) && $assetExists) {
+        synchronizeRelease($repository, $releaseTag, $metadata);
         fwrite(STDOUT, "Reused release PDF for deck {$deckId}: {$assetName}\n");
         ++$reused;
         continue;
     }
 
-    if (releaseAssetExists($repository, $releaseTag, $assetName)) {
+    if ($assetExists) {
+        synchronizeRelease($repository, $releaseTag, $metadata);
         fwrite(STDOUT, "Recovered existing release PDF for deck {$deckId}: {$assetName}\n");
         if (is_file($cachePath)) {
             writeExportManifest($manifestPath, PdfExportPolicy::exportManifest(
@@ -84,7 +88,7 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
 
         if ($exitCode !== 0 || !PdfExportPolicy::isValidPdf($temporary)) {
             @unlink($temporary);
-            fwrite(STDERR, "::warning::DeckTape did not produce a valid PDF for deck {$deckId}; preserving the previous release asset.\n");
+            fwrite(STDERR, "::warning::DeckTape did not produce a valid PDF for deck {$deckId}; preserving previous release assets.\n");
             ++$skipped;
             continue;
         }
@@ -96,7 +100,7 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         ++$generated;
     }
 
-    ensureRelease($repository, $releaseTag, (string) ($metadata['title'] ?? "Slides.com deck {$deckId}"));
+    synchronizeRelease($repository, $releaseTag, $metadata);
     uploadReleaseAsset($repository, $releaseTag, $cachePath, $assetName);
 
     writeExportManifest($manifestPath, PdfExportPolicy::exportManifest(
@@ -124,30 +128,52 @@ function releaseAssetExists(string $repository, string $releaseTag, string $asse
     return $exitCode === 0 && in_array($assetName, $output, true);
 }
 
-function ensureRelease(string $repository, string $releaseTag, string $title): void
+function synchronizeRelease(string $repository, string $releaseTag, array $metadata): void
 {
+    $title = SlidesReleaseMetadata::title($metadata);
+    $body = SlidesReleaseMetadata::body($metadata, $repository);
+
     $view = sprintf(
-        'gh release view %s --repo %s >/dev/null 2>&1',
+        'gh release view %s --repo %s --json name,body 2>/dev/null',
         escapeshellarg($releaseTag),
         escapeshellarg($repository),
     );
-    exec($view, $_, $exitCode);
-    if ($exitCode === 0) {
+    exec($view, $output, $exitCode);
+
+    if ($exitCode !== 0) {
+        $create = sprintf(
+            'gh release create %s --repo %s --title %s --notes %s',
+            escapeshellarg($releaseTag),
+            escapeshellarg($repository),
+            escapeshellarg($title),
+            escapeshellarg($body),
+        );
+        passthru($create, $createExitCode);
+        if ($createExitCode !== 0) {
+            throw new RuntimeException("Could not create release {$releaseTag}.");
+        }
+        fwrite(STDOUT, "Created release metadata for {$releaseTag}.\n");
+
         return;
     }
 
-    $notes = 'Archived PDF exports for this Slides.com presentation. Assets are append-only and content-addressed by the archived presentation source.';
-    $create = sprintf(
-        'gh release create %s --repo %s --title %s --notes %s',
+    $release = json_decode(implode("\n", $output), true, flags: JSON_THROW_ON_ERROR);
+    if (($release['name'] ?? '') === $title && ($release['body'] ?? '') === $body) {
+        return;
+    }
+
+    $edit = sprintf(
+        'gh release edit %s --repo %s --title %s --notes %s',
         escapeshellarg($releaseTag),
         escapeshellarg($repository),
         escapeshellarg($title),
-        escapeshellarg($notes),
+        escapeshellarg($body),
     );
-    passthru($create, $exitCode);
-    if ($exitCode !== 0) {
-        throw new RuntimeException("Could not create release {$releaseTag}.");
+    passthru($edit, $editExitCode);
+    if ($editExitCode !== 0) {
+        throw new RuntimeException("Could not update release {$releaseTag} metadata.");
     }
+    fwrite(STDOUT, "Updated release metadata for {$releaseTag}.\n");
 }
 
 function uploadReleaseAsset(string $repository, string $releaseTag, string $pdfPath, string $assetName): void

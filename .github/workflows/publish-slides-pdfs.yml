@@ -11,6 +11,7 @@ on:
       - 'scripts/generate-slides-pdfs.php'
       - 'scripts/slides/decktape-reveal.js'
       - 'src/Presentations/PdfExportPolicy.php'
+      - 'src/Presentations/SlidesReleaseMetadata.php'
   workflow_run:
     workflows:
       - Sync Slides.com
@@ -60,7 +61,7 @@ jobs:
           restore-keys: |
             slides-pdf-v2-${{ runner.os }}-
 
-      - name: Publish archival PDFs
+      - name: Publish archival PDFs and synchronize release metadata
         env:
           GH_TOKEN: ${{ github.token }}
         run: php scripts/generate-slides-pdfs.php
