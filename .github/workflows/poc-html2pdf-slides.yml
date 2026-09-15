@@ -60,6 +60,14 @@ jobs:
           benchmark raster \
             node scripts/poc-slides-pdf.mjs "$url" artifacts/raster.pdf
 
+          benchmark decktape-fast \
+            npx decktape \
+              --chrome-arg=--no-sandbox \
+              --chrome-arg=--disable-dev-shm-usage \
+              --size 1280x720 \
+              --pause 0 \
+              reveal "$url" artifacts/decktape-fast.pdf
+
           benchmark decktape \
             npx decktape \
               --chrome-arg=--no-sandbox \
