@@ -14,7 +14,7 @@ SPDX-FileCopyrightText = "2026 Vitor Mattos"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
 
 [[annotations]]
-path = ["presentations/slides.com/**/*.json"]
+path = ["presentations/slides.com/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Vitor Mattos"
 SPDX-License-Identifier = "CC-BY-SA-4.0"
