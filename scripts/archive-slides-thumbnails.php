@@ -22,8 +22,10 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
 
     try {
         $metadata = json_decode((string) file_get_contents($metadataPath), true, flags: JSON_THROW_ON_ERROR);
+        $metadata = enrichFromManagedTalk($metadata, $deckId);
         $thumbnailUrl = trim((string) ($metadata['thumbnail_url'] ?? ''));
         if ($thumbnailUrl === '') {
+            writeMetadata($metadataPath, $metadata);
             ++$skipped;
             continue;
         }
@@ -34,6 +36,7 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         $existingSource = trim((string) ($metadata['thumbnail_source_url'] ?? ''));
         if ($existingPath !== '' && $existingSource === $thumbnailUrl && is_file($existingPath)) {
             updateTalkThumbnail($deckId, '/' . $existingPath);
+            writeMetadata($metadataPath, $metadata);
             ++$reused;
             continue;
         }
@@ -56,10 +59,7 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         $localPath = '/' . $target;
         $metadata['thumbnail_path'] = $localPath;
         $metadata['thumbnail_source_url'] = $thumbnailUrl;
-        file_put_contents(
-            $metadataPath,
-            json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n",
-        );
+        writeMetadata($metadataPath, $metadata);
 
         updateTalkThumbnail($deckId, $localPath);
         ++$archived;
@@ -70,6 +70,52 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
 }
 
 fwrite(STDOUT, "Thumbnail archive finished: {$archived} archived, {$reused} reused, {$skipped} skipped.\n");
+
+function enrichFromManagedTalk(array $metadata, string $deckId): array
+{
+    foreach (['source/_talks', 'source/_talksEn'] as $collection) {
+        $matches = glob("{$collection}/slides-com-{$deckId}-*.md") ?: [];
+        if ($matches === []) {
+            continue;
+        }
+
+        $content = (string) file_get_contents($matches[0]);
+        foreach (['slug', 'title', 'description'] as $key) {
+            if (trim((string) ($metadata[$key] ?? '')) !== '') {
+                continue;
+            }
+            if (preg_match('/^' . preg_quote($key, '/') . ':\s*(.+)$/m', $content, $match) === 1) {
+                $decoded = json_decode(trim($match[1]), true);
+                $metadata[$key] = is_string($decoded) ? $decoded : trim($match[1], " \t\n\r\0\x0B\"");
+            }
+        }
+
+        $existingTags = (array) ($metadata['tags']['slides_com'] ?? []);
+        if ($existingTags === [] && preg_match('/^tags:\R(?<tags>(?:  - .+\R)*)^presentation:/m', $content, $match) === 1) {
+            $tags = [];
+            foreach (preg_split('/\R/', trim($match['tags'])) ?: [] as $line) {
+                if (preg_match('/^\s*-\s*(.+)$/', $line, $tagMatch) !== 1) {
+                    continue;
+                }
+                $decoded = json_decode(trim($tagMatch[1]), true);
+                $tags[] = is_string($decoded) ? $decoded : trim($tagMatch[1], " \t\n\r\0\x0B\"");
+            }
+            $metadata['tags']['slides_com'] = array_values(array_filter($tags));
+        }
+
+        break;
+    }
+
+    return $metadata;
+}
+
+function writeMetadata(string $path, array $metadata): void
+{
+    $content = json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n";
+    if (!is_file($path) || file_get_contents($path) !== $content) {
+        file_put_contents($path, $content);
+    }
+}
 
 function assertAllowedThumbnailUrl(string $url): void
 {
