@@ -8,8 +8,8 @@ showAbout: false
 slug: "xdebug-seus-problemas-acabaram-tdc-phpeste"
 title: "Xdebug   seus problemas acabaram - TDC - PHPeste"
 description: "Você leva horas, dias para encontrar um bug? Não conhece o framework que trabalha ou leva dias encontrando como implementar algo? Seus problemas acabaram! Aprenda a debugar suas aplicações com Xdebug!"
-date: 2016-09-30
-updated: 2016-09-30
+date: 2016-10-05
+updated: 2016-10-05
 managed: slideshare
 slidesId: 66766200
 tags: ["php", "xdebug", "debug", "profiling", "testing", "software testing", "eclipse", "code coverage"]

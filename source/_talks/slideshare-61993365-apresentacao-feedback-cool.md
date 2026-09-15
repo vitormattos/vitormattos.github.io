@@ -8,8 +8,8 @@ showAbout: false
 slug: "apresentacao-feedback-cool"
 title: "Apresentação feedback cool"
 description: "FeedbackCoolBot"
-date: 2016-05-10
-updated: 2016-05-10
+date: 2016-05-13
+updated: 2016-05-13
 managed: slideshare
 slidesId: 61993365
 tags: []

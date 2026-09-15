@@ -8,8 +8,8 @@ showAbout: false
 slug: "seja-subversivo-faca-testes"
 title: "Seja subversivo, faça testes"
 description: "Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não."
-date: 2016-07-09
-updated: 2016-07-09
+date: 2016-07-17
+updated: 2016-07-17
 managed: slideshare
 slidesId: 64103619
 tags: ["subversividade", "criatividade", "tdd", "bdd", "ddd", "test", "testing", "software testing", "behavior", "comportamento", "feedback"]

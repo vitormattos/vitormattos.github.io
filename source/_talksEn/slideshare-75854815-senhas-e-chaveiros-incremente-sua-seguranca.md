@@ -8,8 +8,8 @@ showAbout: false
 slug: "senhas-e-chaveiros-incremente-sua-seguranca"
 title: "Senhas e chaveiros incremente sua seguranca"
 description: "Segurança de dados de acesso sempre são questões super importantes principalmente nos dias de hoje com tudo conectado a internet. Nesta breve apresentação serão apresentadas algumas dicas de como melhorar a segurança de seus dados de acesso e o quanto que a maioria das pessoas cometem atos que as tornam vulneráveis na internet."
-date: 2017-05-09
-updated: 2017-05-09
+date: 2017-05-10
+updated: 2017-05-10
 managed: slideshare
 slidesId: 75854815
 tags: ["keepass", "security", "2fa", "password", "keychain"]
