@@ -16,6 +16,7 @@ final class SlidesReleaseMetadataTest extends TestCase
     {
         $metadata = [
             'id' => 3629052,
+            'slug' => 'quem-controla-sua-tecnologia-controla-seu-futuro',
             'title' => 'Quem controla sua tecnologia, controla seu futuro',
             'description' => 'Uma apresentação sobre autonomia tecnológica.',
             'url' => 'https://slides.com/vitormattos/example',
@@ -35,10 +36,24 @@ final class SlidesReleaseMetadataTest extends TestCase
         $body = SlidesReleaseMetadata::body($metadata, 'vitormattos/vitormattos.github.io');
         self::assertStringContainsString('Uma apresentação sobre autonomia tecnológica.', $body);
         self::assertStringContainsString('https://slides.com/vitormattos/example', $body);
+        self::assertStringContainsString('https://vitormattos.github.io/pt-BR/palestras/quem-controla-sua-tecnologia-controla-seu-futuro', $body);
+        self::assertStringContainsString('**Website:** https://vitormattos.github.io', $body);
         self::assertStringContainsString('**Language:** pt-BR', $body);
         self::assertStringContainsString('**Slides:** 76', $body);
         self::assertStringContainsString('**Tags:** software livre, privacidade', $body);
         self::assertStringContainsString('thumbnail.jpg', $body);
+    }
+
+    public function testEnglishPresentationUsesEnglishPortfolioPath(): void
+    {
+        $metadata = [
+            'id' => 123,
+            'slug' => 'example-talk',
+            'language' => 'en',
+        ];
+
+        $body = SlidesReleaseMetadata::body($metadata, 'vitormattos/vitormattos.github.io');
+        self::assertStringContainsString('https://vitormattos.github.io/talks/example-talk', $body);
     }
 
     public function testReleaseMetadataWorksWithoutOptionalPortfolioFields(): void
@@ -48,6 +63,7 @@ final class SlidesReleaseMetadataTest extends TestCase
         self::assertSame('Slides.com presentation 123', SlidesReleaseMetadata::title($metadata));
         $body = SlidesReleaseMetadata::body($metadata, 'vitormattos/vitormattos.github.io');
         self::assertStringNotContainsString('Presentation thumbnail', $body);
+        self::assertStringNotContainsString('**Presentation page:**', $body);
         self::assertStringContainsString('immutable Slides.com deck ID', $body);
     }
 }
