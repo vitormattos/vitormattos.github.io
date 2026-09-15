@@ -135,19 +135,20 @@ final class SlidesPublicTagsScraper
     /** @return list<string> */
     private function ownedRoutesInHtml(string $html): array
     {
+        $normalizedHtml = html_entity_decode(str_replace('\\/', '/', $html), ENT_QUOTES | ENT_HTML5);
         $username = preg_quote($this->username, '~');
         $patterns = [
-            '~https?:(?:\\?/){2}slides\.com(?:\\?/)' . $username . '(?:\\?/)[a-zA-Z0-9][a-zA-Z0-9_-]*~',
-            '~(?:\\?/)' . $username . '(?:\\?/)[a-zA-Z0-9][a-zA-Z0-9_-]*~',
+            '~https?://slides\.com/' . $username . '/[a-zA-Z0-9][a-zA-Z0-9_-]*~',
+            '~/' . $username . '/[a-zA-Z0-9][a-zA-Z0-9_-]*~',
         ];
         $routes = [];
 
         foreach ($patterns as $pattern) {
-            if (preg_match_all($pattern, $html, $matches) !== false) {
-                foreach ($matches[0] as $match) {
-                    $routes[] = str_replace('\\/', '/', $match);
-                }
+            if (preg_match_all($pattern, $normalizedHtml, $matches) === false) {
+                continue;
             }
+
+            array_push($routes, ...$matches[0]);
         }
 
         return array_values(array_unique($routes));
