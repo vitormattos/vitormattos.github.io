@@ -46,4 +46,33 @@ final class TalkTopicsTest extends TestCase
         self::assertSame('PHP', $catalog['topics']['php']['label']);
         self::assertSame(1, $catalog['topics']['testing']['count']);
     }
+
+    public function testMergeCatalogIncludesFallbackLocaleAndPrefersCurrentLocale(): void
+    {
+        $preferred = [
+            (object) [
+                'title' => 'English variant',
+                'date' => 100,
+                'presentation' => ['metadata' => '/presentations/example/1/metadata.json'],
+            ],
+        ];
+        $fallback = [
+            (object) [
+                'title' => 'Portuguese variant',
+                'date' => 100,
+                'presentation' => ['metadata' => '/presentations/example/1/metadata.json'],
+            ],
+            (object) [
+                'title' => 'SlideShare only',
+                'date' => 200,
+                'presentation' => ['metadata' => '/presentations/slideshare/2/metadata.json'],
+            ],
+        ];
+
+        $merged = TalkTopics::mergeCatalog($preferred, $fallback);
+
+        self::assertCount(2, $merged);
+        self::assertSame('SlideShare only', $merged[0]->title);
+        self::assertSame('English variant', $merged[1]->title);
+    }
 }
