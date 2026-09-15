@@ -1,0 +1,32 @@
+{
+    "id": 3260552,
+    "slug": "cooperacao-e-inovacao",
+    "title": "Cooperação e inovação tecnológica",
+    "description": "Conheça os benefícios do trabalho colaborativo, as limitações do não colaborativo, princípios do software livre e casos de sucesso. Saiba mais sobre o papel do cooperativismo como conhecimento colaborativo e apresenta exemplos de empreendimentos baseados em cooperativas de plataforma, destacando os sete princípios do cooperativismo.",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/cooperacao-e-inovacao",
+    "embed_url": "https://slides.com/vitormattos/cooperacao-e-inovacao/embed",
+    "tags": {
+        "slides_com": []
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/68c23366193c171270c15dc58ce98686/thumb.jpg?1725311267",
+    "slide_count": 60,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "opensans",
+    "theme_color": "black-blue",
+    "language": "en",
+    "created_at": "2024-09-02T20:47:34.337Z",
+    "updated_at": "2024-09-05T17:06:29.439Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/cooperacao-e-inovacao",
+        "fullscreen": "https://slides.com/vitormattos/cooperacao-e-inovacao/fullscreen",
+        "edit": "https://slides.com/vitormattos/cooperacao-e-inovacao/edit",
+        "present": "https://slides.com/vitormattos/cooperacao-e-inovacao/live"
+    }
+}

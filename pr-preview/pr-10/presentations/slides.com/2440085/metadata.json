@@ -1,0 +1,32 @@
+{
+    "id": 2440085,
+    "slug": "cloud-privacity",
+    "title": "Privacy and security in cloud systems",
+    "description": "https://youtu.be/1Ofuy9CMDXw Temos realmente privacidade na web? Tenha total controle sobre os seus dados, conheça o Nextcloud, a melhor solução para para armazenamento, sincronização e compartilhamento de arquivos integrando ferramentas para escritório online como editores de texto, planilha, slides e muito mais e 100% feita em PHP e melhor: Você pode ter seu servidor totalmente privado rodando em sua nuvem ou em seu escritório ou até mesmo em sua casa.",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/cloud-privacity",
+    "embed_url": "https://slides.com/vitormattos/cloud-privacity/embed",
+    "tags": {
+        "slides_com": []
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/1375e7c2db43b0e9d633bfe28cd3aaba/thumb.jpg?1659631598",
+    "slide_count": 110,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2022-08-03T14:17:22.850Z",
+    "updated_at": "2024-04-20T14:38:03.434Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/cloud-privacity",
+        "fullscreen": "https://slides.com/vitormattos/cloud-privacity/fullscreen",
+        "edit": "https://slides.com/vitormattos/cloud-privacity/edit",
+        "present": "https://slides.com/vitormattos/cloud-privacity/live"
+    }
+}

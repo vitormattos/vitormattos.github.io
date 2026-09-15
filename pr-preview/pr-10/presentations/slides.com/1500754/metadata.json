@@ -1,0 +1,35 @@
+{
+    "id": 1500754,
+    "slug": "data-detox",
+    "title": "Data detox",
+    "description": "Um dos pilares da segurança de dados é a confidencialidade, será que ainda a temos ou a podemos resgatar em uma sociedade cada vez mais digital? Conheça um pouco dos grandes riscos que corremos na atualidade pela excessiva exposição de dados e veja que há um caminho para resgatarmos a nossa confidencialidade.",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/data-detox",
+    "embed_url": "https://slides.com/vitormattos/data-detox/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "segurança"
+        ]
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/42814192bae24dab19784d4ddb9787bc/thumb.jpg?1557753303",
+    "slide_count": 80,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2019-05-13T11:39:44.284Z",
+    "updated_at": "2019-05-18T11:26:41.391Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/data-detox",
+        "fullscreen": "https://slides.com/vitormattos/data-detox/fullscreen",
+        "edit": "https://slides.com/vitormattos/data-detox/edit",
+        "present": "https://slides.com/vitormattos/data-detox/live"
+    }
+}

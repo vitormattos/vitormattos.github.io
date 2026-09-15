@@ -1,0 +1,32 @@
+{
+    "id": 2384412,
+    "slug": "nextcloud-app",
+    "title": "Nextcloud app tutorial",
+    "description": "A simple Nextcloud app tutorial",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/nextcloud-app",
+    "embed_url": "https://slides.com/vitormattos/nextcloud-app/embed",
+    "tags": {
+        "slides_com": []
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/305c63907ae5d1f5699690989fba2cf3/thumb.jpg?1650647683",
+    "slide_count": 70,
+    "width": 960,
+    "height": 700,
+    "margin": 0.05,
+    "transition": "none",
+    "background_transition": "none",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "helvetica",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2022-04-22T17:13:41.912Z",
+    "updated_at": "2023-12-08T18:27:44.202Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/nextcloud-app",
+        "fullscreen": "https://slides.com/vitormattos/nextcloud-app/fullscreen",
+        "edit": "https://slides.com/vitormattos/nextcloud-app/edit",
+        "present": "https://slides.com/vitormattos/nextcloud-app/live"
+    }
+}

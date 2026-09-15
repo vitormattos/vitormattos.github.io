@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>Palestras · Vitor Mattos</title>
+    <meta name="description" content="Palestras e apresentações de Vitor Mattos sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR/palestras">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/palestras">
+    <link rel="alternate" hreflang="en" href="https://vitormattos.github.io/talks">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/talks">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Palestras · Vitor Mattos">
+<meta property="og:description" content="Palestras e apresentações de Vitor Mattos sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR/palestras">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Palestras · Vitor Mattos">
+<meta name="twitter:description" content="Palestras e apresentações de Vitor Mattos sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"CollectionPage","@id":"https://vitormattos.github.io/pt-BR/palestras#webpage","url":"https://vitormattos.github.io/pt-BR/palestras","name":"Palestras","description":"Palestras e apresentações de Vitor Mattos sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.","inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"}}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-10/assets/build/assets/main-CKzBA8U0.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-10/assets/build/assets/presentations-BejEjNuL.css">
+    <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-10/assets/build/assets/talks-catalog-DjMmDDMV.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Principal">
+            <a href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/artigos">Artigos</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras">Palestras</a>
+            <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+            <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                            <a href="https://vitormattos.github.io/pr-preview/pr-10/talks" hreflang="en">
+                    English
+                </a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Usar tema claro"
+    data-label-dark="Usar tema escuro"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Tema</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <div class="talks-browser">
+    <aside class="talks-sidebar" aria-label="Palestrante e tópicos">
+        <div class="talks-profile">
+            <div>
+                <p class="talks-profile__name">Vitor Mattos</p>
+                <p class="talks-profile__summary">CTO da LibreCode. Software livre, privacidade, PHP, assinaturas digitais e comunidades sustentáveis de software.</p>
+            </div>
+            <img class="talks-profile__avatar" src="https://github.com/vitormattos.png?size=112" alt="" width="56" height="56">
+            <div class="talks-profile__links">
+                <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+                <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+            </div>
+        </div>
+
+                    <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filtrar palestras por tópico">
+                <p class="talk-tag-filter__label">Tópicos</p>
+                <a class="talk-tag talk-tag--filter" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/" data-talk-tag="" aria-current="true"><span>Todas</span><span>3</span></a>
+                                    <a class="talk-tag talk-tag--filter" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/?tag=LibreSign" data-talk-tag="LibreSign"><span>LibreSign</span><span>1</span></a>
+                                    <a class="talk-tag talk-tag--filter" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/?tag=Nextcloud" data-talk-tag="Nextcloud"><span>Nextcloud</span><span>1</span></a>
+                                    <a class="talk-tag talk-tag--filter" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/?tag=Software%20Livre" data-talk-tag="Software Livre"><span>Software Livre</span><span>1</span></a>
+                            </nav>
+            </aside>
+
+    <section class="content talks-catalog" aria-labelledby="page-title">
+        <header class="talks-catalog__header">
+            <div>
+                <p class="eyebrow">Apresentações</p>
+                <h1 id="page-title">Palestras</h1>
+                <p class="lead">Palestras e apresentações sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.</p>
+            </div>
+            <div class="gallery-switcher" data-gallery-switcher>
+                <button class="gallery-switcher__trigger" type="button" data-gallery-menu-trigger aria-expanded="false" aria-haspopup="true">
+                    <span>Layout:</span> <strong data-gallery-current>Grade</strong><span aria-hidden="true">⌄</span>
+                </button>
+                <div class="gallery-switcher__menu" data-gallery-menu hidden role="group" aria-label="Selecionar layout">
+                    <strong class="gallery-switcher__title">Selecionar layout</strong>
+                    <button type="button" data-gallery-view="grid" aria-pressed="true">
+                        <span><strong>Grade</strong><small>Imagens grandes e informações concisas</small></span><span class="gallery-switcher__check" aria-hidden="true">✓</span>
+                    </button>
+                    <button type="button" data-gallery-view="list" aria-pressed="false">
+                        <span><strong>Lista</strong><small>Imagens pequenas e descrição da apresentação</small></span><span class="gallery-switcher__check" aria-hidden="true">✓</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+        <div class="talks-catalog__toolbar">
+            <p class="talk-filter-status" data-talk-filter-status aria-live="polite"></p>
+        </div>
+        <div class="talk-list" data-talk-gallery data-view="grid">
+                            <article class="talk-card" data-talk-tags="[]">
+    <a class="talk-card__preview" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/ia-mudou-trabalho" aria-label="A IA já mudou o seu trabalho, você só ainda não percebeu">
+                    <img src="https://media.slid.es/thumbnails/248882f8ab8347161a2b9acc48ff8d93/thumb.jpg?1774566494" alt="" loading="lazy">
+            </a>
+
+    <div class="talk-card__body">
+        <h2 class="talk-card__title"><a href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/ia-mudou-trabalho">A IA já mudou o seu trabalho, você só ainda não percebeu</a></h2>
+        <p class="talk-card__description">A inteligência artificial não substituiu o desenvolvedor, mas mudou consideravelmente o seu trabalho. Hoje, produtividade deixou de ser o principal desafio. O novo desafio é manter qualidade, consistência e controle em um cenário onde tudo acontece muito mais rápido. Nesta palestra, uma visão prática e sem romantização: como a IA está impactando o dia a dia de desenvolvimento, por que escrever código deixou de ser o principal trabalho e como evitar transformar velocidade em dívida técnica. A mudança já começou. A pergunta é: você está acompanhando, ou ficando para trás?</p>
+
+        <div class="talk-card__meta-line">
+                            <span><time datetime="2026-03-23">23/03/2026</time></span>
+                                        <span>66 slides</span>
+                                        <span>pt</span>
+                    </div>
+
+        
+        <div class="talk-card__footer">
+            <div class="talk-card__formats" aria-label="Formatos disponíveis">
+                <span class="format-badge">slides.com</span>
+                <span class="format-badge">HTML</span>                                            </div>
+                            <span class="talk-card__theme">black-blue</span>
+                    </div>
+    </div>
+</article>
+                            <article class="talk-card" data-talk-tags="[]">
+    <a class="talk-card__preview" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/mediawiki-oficina" aria-label="MediaWiki: Oficina de criação de conteúdo">
+                    <img src="https://media.slid.es/thumbnails/08e718b73ceadf9fbdb15de500fc21da/thumb.jpg?1720182004" alt="" loading="lazy">
+            </a>
+
+    <div class="talk-card__body">
+        <h2 class="talk-card__title"><a href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/mediawiki-oficina">MediaWiki: Oficina de criação de conteúdo</a></h2>
+        <p class="talk-card__description">Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.</p>
+
+        <div class="talk-card__meta-line">
+                            <span><time datetime="2024-07-04">04/07/2024</time></span>
+                                        <span>20 slides</span>
+                                        <span>pt</span>
+                    </div>
+
+        
+        <div class="talk-card__footer">
+            <div class="talk-card__formats" aria-label="Formatos disponíveis">
+                <span class="format-badge">slides.com</span>
+                <span class="format-badge">HTML</span>                                            </div>
+                            <span class="talk-card__theme">white-blue</span>
+                    </div>
+    </div>
+</article>
+                            <article class="talk-card" data-talk-tags="[&quot;LibreSign&quot;,&quot;Nextcloud&quot;,&quot;Software Livre&quot;]">
+    <a class="talk-card__preview" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/libresign-integracoes" aria-label="LibreSign - Integrações">
+                    <iframe src="https://slides.com/vitormattos/libresign-integracao/embed" title="" loading="lazy" tabindex="-1" aria-hidden="true"></iframe>
+            </a>
+
+    <div class="talk-card__body">
+        <h2 class="talk-card__title"><a href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/libresign-integracoes">LibreSign - Integrações</a></h2>
+        <p class="talk-card__description">Palestra sobre arquitetura do LibreSign, software livre, privacidade, Nextcloud, APIs, integração com GLPI e os desafios de sustentar um projeto de código aberto.</p>
+
+        <div class="talk-card__meta-line">
+                            <span><time datetime="2022-11-25">25/11/2022</time></span>
+                                                    <span>pt-BR</span>
+                    </div>
+
+                    <nav class="talk-card__tags" aria-label="Tópicos">
+                                    <a class="talk-tag" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/?tag=LibreSign">LibreSign</a>
+                                    <a class="talk-tag" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/?tag=Nextcloud">Nextcloud</a>
+                                    <a class="talk-tag" href="https://vitormattos.github.io/pr-preview/pr-10/pt-BR/palestras/?tag=Software%20Livre">Software Livre</a>
+                            </nav>
+        
+        <div class="talk-card__footer">
+            <div class="talk-card__formats" aria-label="Formatos disponíveis">
+                <span class="format-badge">slides.com</span>
+                                                <span class="format-badge">vídeo</span>            </div>
+                    </div>
+    </div>
+</article>
+                    </div>
+        <p class="talk-filter-empty" data-talk-filter-empty hidden>Nenhuma palestra foi encontrada para este tópico.</p>
+    </section>
+</div>
+</main>
+<footer>
+    <p>Conteúdo e código publicados com transparência e controle de versão.</p>
+    <p><a href="https://vitormattos.github.io/pt-BR/feed.xml">RSS</a></p>
+</footer>
+    <script type="module" src="https://vitormattos.github.io/pr-preview/pr-10/assets/build/assets/presentations-CW0kgApR.js"></script>
+</body>
+</html>
