@@ -9,6 +9,13 @@
     "visibility": "all",
     "url": "https://slides.com/vitormattos/nextcloud",
     "embed_url": "https://slides.com/vitormattos/nextcloud/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php",
+            "segurança"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/4ce717c57009ef7600a13cfb66c5448a/thumb.jpg?1644444469",
     "slide_count": 65,
     "width": 1024,

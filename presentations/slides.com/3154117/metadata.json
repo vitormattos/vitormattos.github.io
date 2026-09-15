@@ -9,6 +9,9 @@
     "visibility": "all",
     "url": "https://slides.com/vitormattos/docker-dev-to-prod",
     "embed_url": "https://slides.com/vitormattos/docker-dev-to-prod/embed",
+    "tags": {
+        "slides_com": []
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/36828ca2b728e8c884891983ffc457cb/thumb.jpg?1711488685",
     "slide_count": 45,
     "width": 1024,

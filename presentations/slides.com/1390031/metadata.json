@@ -9,6 +9,11 @@
     "visibility": "all",
     "url": "https://slides.com/vitormattos/distribuicoes-linux",
     "embed_url": "https://slides.com/vitormattos/distribuicoes-linux/embed",
+    "tags": {
+        "slides_com": [
+            "opensource"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/53c425e8663410e5689f64fe05d397b0/thumb.jpg?1544032792",
     "slide_count": 24,
     "width": 1024,

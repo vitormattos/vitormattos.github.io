@@ -1,6 +1,6 @@
 {
   "source/_assets/js/presentations.js": {
-    "file": "assets/presentations-5hZ7N8CQ.js",
+    "file": "assets/presentations-CW0kgApR.js",
     "name": "presentations",
     "src": "source/_assets/js/presentations.js",
     "isEntry": true
@@ -21,6 +21,15 @@
       "presentations.css"
     ],
     "src": "source/_assets/scss/presentations.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/talks-catalog.scss": {
+    "file": "assets/talks-catalog-DjMmDDMV.css",
+    "name": "talks-catalog",
+    "names": [
+      "talks-catalog.css"
+    ],
+    "src": "source/_assets/scss/talks-catalog.scss",
     "isEntry": true
   }
 }

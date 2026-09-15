@@ -9,6 +9,12 @@
     "visibility": "all",
     "url": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre",
     "embed_url": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre/embed",
+    "tags": {
+        "slides_com": [
+            "Carreira",
+            "opensource"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/673fae153f47c0447018c9e7e9f400ab/thumb.jpg?1550106129",
     "slide_count": 62,
     "width": 1024,

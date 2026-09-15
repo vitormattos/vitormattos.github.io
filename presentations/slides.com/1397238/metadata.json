@@ -9,6 +9,12 @@
     "visibility": "all",
     "url": "https://slides.com/vitormattos/php-primeiros-passos",
     "embed_url": "https://slides.com/vitormattos/php-primeiros-passos/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/16b0abc81c8453f9f5dcbe1ce1837062/thumb.jpg?1558136725",
     "slide_count": 118,
     "width": 1024,

@@ -9,6 +9,13 @@
     "visibility": "all",
     "url": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda",
     "embed_url": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php",
+            "segurança"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/c268010a8a2ed201b4671247f0cabbb0/thumb.jpg?1531083360",
     "slide_count": 62,
     "width": 1024,
