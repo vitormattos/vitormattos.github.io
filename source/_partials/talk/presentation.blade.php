@@ -10,13 +10,14 @@
     if ($presentation['pdf'] ?? false) {
         $archivedPdf = $presentation['pdf'];
     } elseif ($page->slidesId ?? false) {
-        $pdfSlug = strtolower((string) ($page->slug ?? ''));
-        $pdfSlug = trim((string) preg_replace('/[^a-z0-9]+/', '-', $pdfSlug), '-');
-        $pdfFilename = ($pdfSlug !== '' ? $pdfSlug : 'deck-' . $page->slidesId) . '.pdf';
-        $candidatePdf = '/presentations/slides.com/' . $page->slidesId . '/' . $pdfFilename;
-        if (is_file(ltrim($candidatePdf, '/'))) {
-            $archivedPdf = $candidatePdf;
-            $archivedPdfIsLocal = true;
+        $manifestPath = 'presentations/slides.com/' . $page->slidesId . '/export.json';
+        if (is_file($manifestPath)) {
+            try {
+                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+                $archivedPdf = $manifest['pdf']['url'] ?? null;
+            } catch (Throwable) {
+                $archivedPdf = null;
+            }
         }
     }
 @endphp
@@ -47,9 +48,9 @@
                         </summary>
                         <div class="presentation-action-menu__panel">
                             @if ($archivedPdf)
-                                <a href="{{ $archivedPdfIsLocal ? $page->baseUrl . $archivedPdf : $archivedPdf }}" download>
+                                <a href="{{ $archivedPdf }}" rel="external">
                                     <strong>PDF</strong>
-                                    <small>{{ $isEnglish ? 'Portable document' : 'Documento portátil' }}</small>
+                                    <small>{{ $isEnglish ? 'Archived PDF snapshot' : 'Snapshot PDF arquivado' }}</small>
                                 </a>
                             @endif
                             @if ($presentation['video'] ?? false)
