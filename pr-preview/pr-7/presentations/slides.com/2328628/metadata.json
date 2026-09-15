@@ -1,0 +1,38 @@
+{
+    "_spdx": {
+        "copyright": "2026 Vitor Mattos",
+        "license": "CC-BY-SA-4.0"
+    },
+    "id": 2328628,
+    "slug": "libresign-integracao",
+    "title": "LibreSign - Integrações",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/libresign-integracao",
+    "embed_url": "https://slides.com/vitormattos/libresign-integracao/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/90f260fed145ed6f5dd20065d43f9e77/thumb.jpg?1643224419",
+    "slide_count": 53,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2022-01-26T19:10:27.003Z",
+    "updated_at": "2022-11-25T14:03:12.383Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/libresign-integracao",
+        "fullscreen": "https://slides.com/vitormattos/libresign-integracao/fullscreen",
+        "edit": "https://slides.com/vitormattos/libresign-integracao/edit",
+        "present": "https://slides.com/vitormattos/libresign-integracao/live"
+    }
+}

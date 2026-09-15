@@ -1,0 +1,8 @@
+/* SPDX-FileCopyrightText: 2026 Vitor Mattos */
+/* SPDX-License-Identifier: CC-BY-SA-4.0 */
+.reveal .monospace-font h1,
+.reveal .monospace-font h2,
+.reveal .monospace-font h3 {
+  font-family: monospace;
+}
+
