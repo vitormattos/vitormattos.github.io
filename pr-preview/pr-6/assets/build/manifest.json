@@ -22,5 +22,14 @@
     ],
     "src": "source/_assets/scss/presentations.scss",
     "isEntry": true
+  },
+  "source/_assets/scss/talks-catalog.scss": {
+    "file": "assets/talks-catalog-BODmKuNU.css",
+    "name": "talks-catalog",
+    "names": [
+      "talks-catalog.css"
+    ],
+    "src": "source/_assets/scss/talks-catalog.scss",
+    "isEntry": true
   }
 }
