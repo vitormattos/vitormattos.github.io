@@ -13,132 +13,44 @@ if (!input || !output) {
 
 const width = 960;
 const height = 540;
-const browser = await puppeteer.launch({
-  headless: true,
-  args: ['--no-sandbox', '--disable-dev-shm-usage'],
-});
+const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
 
 try {
   const page = await browser.newPage();
   await page.setViewport({ width, height, deviceScaleFactor: 1 });
   await page.goto(input, { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForFunction(() => typeof Reveal !== 'undefined' && Reveal.isReady(), { timeout: 30_000 });
-
   await page.evaluate(async () => {
     await document.fonts.ready;
-    await Promise.all(Array.from(document.images).map((image) => {
-      if (image.complete) return Promise.resolve();
-      return new Promise((resolve) => {
-        image.addEventListener('load', resolve, { once: true });
-        image.addEventListener('error', resolve, { once: true });
-      });
-    }));
+    await Promise.all(Array.from(document.images).map((image) => image.complete ? Promise.resolve() : new Promise((resolve) => {
+      image.addEventListener('load', resolve, { once: true });
+      image.addEventListener('error', resolve, { once: true });
+    })));
   });
-
-  const before = await page.evaluate(() => {
-    const rect = (selector) => {
-      const el = document.querySelector(selector);
-      if (!el) return null;
-      const r = el.getBoundingClientRect();
-      return { x: r.x, y: r.y, width: r.width, height: r.height };
-    };
-    return {
-      config: Reveal.getConfig(),
-      reveal: rect('.reveal'),
-      slides: rect('.reveal .slides'),
-      backgrounds: rect('.reveal .backgrounds'),
-      bodyChildren: Array.from(document.body.children).map((el) => ({
-        tag: el.tagName.toLowerCase(),
-        id: el.id,
-        className: typeof el.className === 'string' ? el.className : '',
-        rect: (() => {
-          const r = el.getBoundingClientRect();
-          return { x: r.x, y: r.y, width: r.width, height: r.height };
-        })(),
-      })),
-    };
-  });
-  console.log('Layout before cleanup:', JSON.stringify(before));
 
   const setup = await page.evaluate(() => {
-    Reveal.configure({
-      margin: 0,
-      transition: 'none',
-      backgroundTransition: 'none',
-      transitionSpeed: 'fastest',
-      controls: false,
-      progress: false,
-      slideNumber: false,
-    });
-
+    Reveal.configure({ margin: 0, transition: 'none', backgroundTransition: 'none', transitionSpeed: 'fastest', controls: false, progress: false, slideNumber: false });
     document.querySelectorAll('.embed-footer, footer').forEach((el) => el.remove());
-
     const style = document.createElement('style');
     style.dataset.pocPdf = 'true';
     style.textContent = `
-      html, body, .reveal-viewport {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 960px !important;
-        height: 540px !important;
-        min-height: 540px !important;
-        max-height: 540px !important;
-        overflow: hidden !important;
-      }
-      .reveal {
-        position: absolute !important;
-        inset: 0 !important;
-        width: 960px !important;
-        height: 540px !important;
-        margin: 0 !important;
-      }
-      .controls, .progress, .slide-number, .speaker-notes, .playback, .pause-overlay {
-        display: none !important;
-      }
-      *, *::before, *::after {
-        transition-duration: 0s !important;
-        transition-delay: 0s !important;
-        animation-duration: 0s !important;
-        animation-delay: 0s !important;
-      }
+      html, body, .reveal-viewport { margin:0!important; padding:0!important; width:960px!important; height:540px!important; min-height:540px!important; max-height:540px!important; overflow:hidden!important; }
+      .reveal { position:absolute!important; inset:0!important; width:960px!important; height:540px!important; margin:0!important; }
+      .controls,.progress,.slide-number,.speaker-notes,.playback,.pause-overlay { display:none!important; }
+      *,*::before,*::after { transition-duration:0s!important; transition-delay:0s!important; animation-duration:0s!important; animation-delay:0s!important; }
     `;
     document.head.appendChild(style);
-
     Reveal.layout();
-
-    const rect = (selector) => {
-      const el = document.querySelector(selector);
-      if (!el) return null;
-      const r = el.getBoundingClientRect();
-      return { x: r.x, y: r.y, width: r.width, height: r.height };
-    };
-
-    return {
-      config: Reveal.getConfig(),
-      reveal: rect('.reveal'),
-      slides: rect('.reveal .slides'),
-      backgrounds: rect('.reveal .backgrounds'),
-      indices: Reveal.getSlides().map((slide) => Reveal.getIndices(slide)),
-    };
+    return { config: Reveal.getConfig(), indices: Reveal.getSlides().map((slide) => Reveal.getIndices(slide)) };
   });
 
-  console.log('Layout after cleanup:', JSON.stringify({
-    config: {
-      width: setup.config.width,
-      height: setup.config.height,
-      margin: setup.config.margin,
-    },
-    reveal: setup.reveal,
-    slides: setup.slides,
-    backgrounds: setup.backgrounds,
-  }));
+  console.log('Deck config:', JSON.stringify({ width: setup.config.width, height: setup.config.height, margin: setup.config.margin }));
   console.log(`Slides discovered: ${setup.indices.length}`);
-
   const pdf = await PDFDocument.create();
   let pageNumber = 0;
 
   for (const index of setup.indices) {
-    await page.evaluate(({ h, v }) => {
+    const diagnostics = await page.evaluate(({ h, v }) => {
       Reveal.slide(h, v);
       Reveal.sync();
       const current = Reveal.getCurrentSlide();
@@ -146,22 +58,31 @@ try {
         fragment.classList.add('visible');
         fragment.classList.remove('current-fragment');
       });
+      if (h !== 0 || v !== 0) return null;
+      const describe = (el) => el ? {
+        tag: el.tagName,
+        className: el.className,
+        color: getComputedStyle(el).color,
+        opacity: getComputedStyle(el).opacity,
+        filter: getComputedStyle(el).filter,
+        transform: getComputedStyle(el).transform,
+      } : null;
+      return {
+        current: describe(current),
+        parent: describe(current?.parentElement),
+        h1: describe(current?.querySelector('h1')),
+        content: describe(current?.querySelector('.sl-block-content')),
+        reveal: describe(document.querySelector('.reveal')),
+      };
     }, { h: index.h, v: index.v ?? 0 });
 
+    if (diagnostics) console.log('First slide styles:', JSON.stringify(diagnostics));
     await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-
-    const buffer = await page.screenshot({
-      type: 'png',
-      fullPage: false,
-      captureBeyondViewport: false,
-      clip: { x: 0, y: 0, width, height },
-    });
-
+    const buffer = await page.screenshot({ type: 'png', fullPage: false, captureBeyondViewport: false, clip: { x: 0, y: 0, width, height } });
     const image = await pdf.embedPng(buffer);
     const pdfPage = pdf.addPage([width, height]);
     pdfPage.drawImage(image, { x: 0, y: 0, width, height });
     pageNumber += 1;
-    console.log(`Captured ${pageNumber}/${setup.indices.length}: h=${index.h} v=${index.v ?? 0}`);
   }
 
   const bytes = await pdf.save();
