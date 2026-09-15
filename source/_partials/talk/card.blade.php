@@ -8,7 +8,7 @@
     $thumbnailId = $sourcePath ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
     $topics = \App\Presentations\TalkTopics::resolve($talk);
     $topicKeys = array_keys($topics);
-    $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
+    $tagIndexPath = $tagIndexPath ?? ($isEnglish ? '/talks/' : '/pt-BR/palestras/');
     $encodedTags = htmlspecialchars(json_encode($topicKeys, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
 
     $thumbnail = $presentation['thumbnail'] ?? null;
