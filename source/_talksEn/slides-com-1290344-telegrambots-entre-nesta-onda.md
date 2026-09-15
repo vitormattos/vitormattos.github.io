@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/embed"
   thumbnail: "https://media.slid.es/thumbnails/c268010a8a2ed201b4671247f0cabbb0/thumb.jpg?1531083360"
   localHtml: /presentations/slides.com/1290344/deck.html
-  localCss: /presentations/slides.com/1290344/deck.css
   metadata: /presentations/slides.com/1290344/metadata.json
   language: "en"
   slideCount: 62

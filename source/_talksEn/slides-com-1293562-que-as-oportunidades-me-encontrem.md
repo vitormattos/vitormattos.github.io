@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/que-as-oportunidades-me-encontrem/embed"
   thumbnail: "https://media.slid.es/thumbnails/30d001514911c6eac6de2046e9e89e85/thumb.jpg?1538329417"
   localHtml: /presentations/slides.com/1293562/deck.html
-  localCss: /presentations/slides.com/1293562/deck.css
   metadata: /presentations/slides.com/1293562/metadata.json
   language: "en"
   slideCount: 40

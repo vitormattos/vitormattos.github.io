@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/caminhos-na-area-de-ti-ea0342/embed"
   thumbnail: "https://media.slid.es/thumbnails/3abf4d03ca51a6360fdd610317cf8b77/thumb.jpg?1600881105"
   localHtml: /presentations/slides.com/1931499/deck.html
-  localCss: /presentations/slides.com/1931499/deck.css
   metadata: /presentations/slides.com/1931499/metadata.json
   language: "en"
   slideCount: 53

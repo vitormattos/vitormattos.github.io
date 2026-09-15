@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/apagao-digital/embed"
   thumbnail: "https://media.slid.es/thumbnails/3f8c0a98d3931a022c529a42422e5063/thumb.jpg?1773337608"
   localHtml: /presentations/slides.com/3548627/deck.html
-  localCss: /presentations/slides.com/3548627/deck.css
   metadata: /presentations/slides.com/3548627/metadata.json
   language: "en"
   slideCount: 100

@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/data-detox/embed"
   thumbnail: "https://media.slid.es/thumbnails/42814192bae24dab19784d4ddb9787bc/thumb.jpg?1557753303"
   localHtml: /presentations/slides.com/1500754/deck.html
-  localCss: /presentations/slides.com/1500754/deck.css
   metadata: /presentations/slides.com/1500754/metadata.json
   language: "en"
   slideCount: 80

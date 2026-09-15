@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/composer/embed"
   thumbnail: "https://media.slid.es/thumbnails/0698c2d0ecc3f3db2da7b2a6d342e85c/thumb.jpg?1531501486"
   localHtml: /presentations/slides.com/1293276/deck.html
-  localCss: /presentations/slides.com/1293276/deck.css
   metadata: /presentations/slides.com/1293276/metadata.json
   language: "en"
   slideCount: 80

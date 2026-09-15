@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/php-primeiros-passos/embed"
   thumbnail: "https://media.slid.es/thumbnails/16b0abc81c8453f9f5dcbe1ce1837062/thumb.jpg?1558136725"
   localHtml: /presentations/slides.com/1397238/deck.html
-  localCss: /presentations/slides.com/1397238/deck.css
   metadata: /presentations/slides.com/1397238/metadata.json
   language: "en"
   slideCount: 118

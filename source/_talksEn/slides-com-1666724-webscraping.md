@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/webscraping/embed"
   thumbnail: "https://media.slid.es/thumbnails/cf3b66f626d3868c48772ff36bb1bda5/thumb.jpg?1582827773"
   localHtml: /presentations/slides.com/1666724/deck.html
-  localCss: /presentations/slides.com/1666724/deck.css
   metadata: /presentations/slides.com/1666724/metadata.json
   language: "en"
   slideCount: 56

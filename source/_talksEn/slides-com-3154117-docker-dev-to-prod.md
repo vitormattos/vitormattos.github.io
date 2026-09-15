@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/docker-dev-to-prod/embed"
   thumbnail: "https://media.slid.es/thumbnails/36828ca2b728e8c884891983ffc457cb/thumb.jpg?1711488685"
   localHtml: /presentations/slides.com/3154117/deck.html
-  localCss: /presentations/slides.com/3154117/deck.css
   metadata: /presentations/slides.com/3154117/metadata.json
   language: "en"
   slideCount: 45

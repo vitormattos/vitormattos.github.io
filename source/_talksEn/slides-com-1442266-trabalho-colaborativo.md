@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/trabalho-colaborativo/embed"
   thumbnail: "https://media.slid.es/thumbnails/a02e9e802ad39ce0f043293ea8029ec6/thumb.jpg?1551281600"
   localHtml: /presentations/slides.com/1442266/deck.html
-  localCss: /presentations/slides.com/1442266/deck.css
   metadata: /presentations/slides.com/1442266/metadata.json
   language: "en"
   slideCount: 75

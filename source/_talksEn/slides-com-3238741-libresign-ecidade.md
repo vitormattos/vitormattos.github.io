@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/libresign-ecidade/embed"
   thumbnail: "https://media.slid.es/thumbnails/70423a93fddac949c7f81a93c0aab189/thumb.jpg?1722459682"
   localHtml: /presentations/slides.com/3238741/deck.html
-  localCss: /presentations/slides.com/3238741/deck.css
   metadata: /presentations/slides.com/3238741/metadata.json
   language: "en"
   slideCount: 34

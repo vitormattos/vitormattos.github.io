@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/bdd/embed"
   thumbnail: "https://media.slid.es/thumbnails/36c3ddff45d7895c588fb28657ebd8f0/thumb.jpg?1619701934"
   localHtml: /presentations/slides.com/1659891/deck.html
-  localCss: /presentations/slides.com/1659891/deck.css
   metadata: /presentations/slides.com/1659891/metadata.json
   language: "en"
   slideCount: 113

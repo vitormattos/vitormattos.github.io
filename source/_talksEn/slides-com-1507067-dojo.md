@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/dojo/embed"
   thumbnail: "https://media.slid.es/thumbnails/0d3c7e17cc8c2d0c48b9ac10bb10bd26/thumb.jpg?1571836754"
   localHtml: /presentations/slides.com/1507067/deck.html
-  localCss: /presentations/slides.com/1507067/deck.css
   metadata: /presentations/slides.com/1507067/metadata.json
   language: "en"
   slideCount: 24

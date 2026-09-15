@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/nextcloud/embed"
   thumbnail: "https://media.slid.es/thumbnails/4ce717c57009ef7600a13cfb66c5448a/thumb.jpg?1644444469"
   localHtml: /presentations/slides.com/1664806/deck.html
-  localCss: /presentations/slides.com/1664806/deck.css
   metadata: /presentations/slides.com/1664806/metadata.json
   language: "en"
   slideCount: 65

@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/libresign-latinoware-2023/embed"
   thumbnail: "https://media.slid.es/thumbnails/10c30bb876fc39d88fade53fd77ab974/thumb.jpg?1697634672"
   localHtml: /presentations/slides.com/3038098/deck.html
-  localCss: /presentations/slides.com/3038098/deck.css
   metadata: /presentations/slides.com/3038098/metadata.json
   language: "en"
   slideCount: 62

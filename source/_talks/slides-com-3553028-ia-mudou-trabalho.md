@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/ia-mudou-trabalho/embed"
   thumbnail: "https://media.slid.es/thumbnails/248882f8ab8347161a2b9acc48ff8d93/thumb.jpg?1774566494"
   localHtml: /presentations/slides.com/3553028/deck.html
-  localCss: /presentations/slides.com/3553028/deck.css
   metadata: /presentations/slides.com/3553028/metadata.json
   language: "pt"
   slideCount: 66

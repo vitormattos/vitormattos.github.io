@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/libresign-integracoes/embed"
   thumbnail: "https://media.slid.es/thumbnails/90f260fed145ed6f5dd20065d43f9e77/thumb.jpg?1643224419"
   localHtml: /presentations/slides.com/2508353/deck.html
-  localCss: /presentations/slides.com/2508353/deck.css
   metadata: /presentations/slides.com/2508353/metadata.json
   language: "en"
   slideCount: 67

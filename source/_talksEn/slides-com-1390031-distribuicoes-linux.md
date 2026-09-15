@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/distribuicoes-linux/embed"
   thumbnail: "https://media.slid.es/thumbnails/53c425e8663410e5689f64fe05d397b0/thumb.jpg?1544032792"
   localHtml: /presentations/slides.com/1390031/deck.html
-  localCss: /presentations/slides.com/1390031/deck.css
   metadata: /presentations/slides.com/1390031/metadata.json
   language: "en"
   slideCount: 24

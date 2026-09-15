@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/cloud-privacity/embed"
   thumbnail: "https://media.slid.es/thumbnails/1375e7c2db43b0e9d633bfe28cd3aaba/thumb.jpg?1659631598"
   localHtml: /presentations/slides.com/2440085/deck.html
-  localCss: /presentations/slides.com/2440085/deck.css
   metadata: /presentations/slides.com/2440085/metadata.json
   language: "en"
   slideCount: 110

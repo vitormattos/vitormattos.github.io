@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/senhas/embed"
   thumbnail: "https://media.slid.es/thumbnails/1858a160b002d204b87db21302880c09/thumb.jpg?1543690586"
   localHtml: /presentations/slides.com/1386715/deck.html
-  localCss: /presentations/slides.com/1386715/deck.css
   metadata: /presentations/slides.com/1386715/metadata.json
   language: "en"
   slideCount: 111

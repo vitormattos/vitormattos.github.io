@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/igrejas-digitais/embed"
   thumbnail: "https://media.slid.es/thumbnails/447d058293ff8a30405167149063e36e/thumb.jpg?1747340388"
   localHtml: /presentations/slides.com/3401779/deck.html
-  localCss: /presentations/slides.com/3401779/deck.css
   metadata: /presentations/slides.com/3401779/metadata.json
   language: "en"
   slideCount: 14

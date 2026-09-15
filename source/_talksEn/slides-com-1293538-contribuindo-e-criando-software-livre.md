@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/contribuindo-e-criando-software-livre/embed"
   thumbnail: "https://media.slid.es/thumbnails/673fae153f47c0447018c9e7e9f400ab/thumb.jpg?1550106129"
   localHtml: /presentations/slides.com/1293538/deck.html
-  localCss: /presentations/slides.com/1293538/deck.css
   metadata: /presentations/slides.com/1293538/metadata.json
   language: "en"
   slideCount: 62

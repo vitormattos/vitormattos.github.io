@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/celular_floss/embed"
   thumbnail: "https://media.slid.es/thumbnails/ad43adc0eb969e9789724d793077154a/thumb.jpg?1597964110"
   localHtml: /presentations/slides.com/1906989/deck.html
-  localCss: /presentations/slides.com/1906989/deck.css
   metadata: /presentations/slides.com/1906989/metadata.json
   language: "en"
   slideCount: 64

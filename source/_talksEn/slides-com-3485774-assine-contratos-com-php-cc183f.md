@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/assine-contratos-com-php-cc183f/embed"
   thumbnail: "https://media.slid.es/thumbnails/dd66a27eceda35198b352f613b811744/thumb.jpg?1759495266"
   localHtml: /presentations/slides.com/3485774/deck.html
-  localCss: /presentations/slides.com/3485774/deck.css
   metadata: /presentations/slides.com/3485774/metadata.json
   language: "en"
   slideCount: 35

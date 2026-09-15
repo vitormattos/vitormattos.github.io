@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/tecnologia-comunhao-crista/embed"
   thumbnail: "https://media.slid.es/thumbnails/d77bee3dff55daa7c181d61c92e21a2d/thumb.jpg?1745460198"
   localHtml: /presentations/slides.com/3347164/deck.html
-  localCss: /presentations/slides.com/3347164/deck.css
   metadata: /presentations/slides.com/3347164/metadata.json
   language: "en"
   slideCount: 28

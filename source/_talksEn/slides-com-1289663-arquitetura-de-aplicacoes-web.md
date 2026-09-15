@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/embed"
   thumbnail: "https://media.slid.es/thumbnails/6f9b1d1381a5e25fccc97933c02f22c4/thumb.jpg?1530982198"
   localHtml: /presentations/slides.com/1289663/deck.html
-  localCss: /presentations/slides.com/1289663/deck.css
   metadata: /presentations/slides.com/1289663/metadata.json
   language: "en"
   slideCount: 80

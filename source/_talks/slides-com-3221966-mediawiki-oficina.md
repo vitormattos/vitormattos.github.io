@@ -18,7 +18,6 @@ presentation:
   embed: "https://slides.com/vitormattos/mediawiki-oficina/embed"
   thumbnail: "https://media.slid.es/thumbnails/08e718b73ceadf9fbdb15de500fc21da/thumb.jpg?1720182004"
   localHtml: /presentations/slides.com/3221966/deck.html
-  localCss: /presentations/slides.com/3221966/deck.css
   metadata: /presentations/slides.com/3221966/metadata.json
   language: "pt"
   slideCount: 20
