@@ -32,12 +32,11 @@ try {
     Reveal.configure({ margin: 0, transition: 'none', backgroundTransition: 'none', transitionSpeed: 'fastest', controls: false, progress: false, slideNumber: false });
     document.querySelectorAll('.embed-footer, footer').forEach((el) => el.remove());
     const style = document.createElement('style');
-    style.dataset.pocPdf = 'true';
     style.textContent = `
-      html, body, .reveal-viewport { margin:0!important; padding:0!important; width:960px!important; height:540px!important; min-height:540px!important; max-height:540px!important; overflow:hidden!important; }
-      .reveal { position:absolute!important; inset:0!important; width:960px!important; height:540px!important; margin:0!important; }
-      .controls,.progress,.slide-number,.speaker-notes,.playback,.pause-overlay { display:none!important; }
-      *,*::before,*::after { transition-duration:0s!important; transition-delay:0s!important; animation-duration:0s!important; animation-delay:0s!important; }
+      html,body,.reveal-viewport{margin:0!important;padding:0!important;width:960px!important;height:540px!important;min-height:540px!important;max-height:540px!important;overflow:hidden!important}
+      .reveal{position:absolute!important;inset:0!important;width:960px!important;height:540px!important;margin:0!important}
+      .controls,.progress,.slide-number,.speaker-notes,.playback,.pause-overlay{display:none!important}
+      *,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation-duration:0s!important;animation-delay:0s!important}
     `;
     document.head.appendChild(style);
     Reveal.layout();
@@ -45,11 +44,10 @@ try {
   });
 
   console.log('Deck config:', JSON.stringify({ width: setup.config.width, height: setup.config.height, margin: setup.config.margin }));
-  console.log(`Slides discovered: ${setup.indices.length}`);
   const pdf = await PDFDocument.create();
-  let pageNumber = 0;
 
-  for (const index of setup.indices) {
+  for (let pageNumber = 0; pageNumber < setup.indices.length; pageNumber++) {
+    const index = setup.indices[pageNumber];
     const diagnostics = await page.evaluate(({ h, v }) => {
       Reveal.slide(h, v);
       Reveal.sync();
@@ -59,35 +57,26 @@ try {
         fragment.classList.remove('current-fragment');
       });
       if (h !== 0 || v !== 0) return null;
-      const describe = (el) => el ? {
-        tag: el.tagName,
-        className: el.className,
-        color: getComputedStyle(el).color,
-        opacity: getComputedStyle(el).opacity,
-        filter: getComputedStyle(el).filter,
-        transform: getComputedStyle(el).transform,
-      } : null;
-      return {
-        current: describe(current),
-        parent: describe(current?.parentElement),
-        h1: describe(current?.querySelector('h1')),
-        content: describe(current?.querySelector('.sl-block-content')),
-        reveal: describe(document.querySelector('.reveal')),
-      };
+      const chain = [];
+      let el = current?.querySelector('h1');
+      while (el && el !== document.documentElement) {
+        const s = getComputedStyle(el);
+        chain.push({ tag: el.tagName, className: typeof el.className === 'string' ? el.className : '', opacity: s.opacity, color: s.color, filter: s.filter, visibility: s.visibility, mixBlendMode: s.mixBlendMode });
+        el = el.parentElement;
+      }
+      return chain;
     }, { h: index.h, v: index.v ?? 0 });
-
-    if (diagnostics) console.log('First slide styles:', JSON.stringify(diagnostics));
+    if (diagnostics) console.log('First slide ancestor chain:', JSON.stringify(diagnostics));
     await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     const buffer = await page.screenshot({ type: 'png', fullPage: false, captureBeyondViewport: false, clip: { x: 0, y: 0, width, height } });
     const image = await pdf.embedPng(buffer);
     const pdfPage = pdf.addPage([width, height]);
     pdfPage.drawImage(image, { x: 0, y: 0, width, height });
-    pageNumber += 1;
   }
 
   const bytes = await pdf.save();
   await writeFile(output, bytes);
-  console.log(`Generated ${pageNumber} pages, ${bytes.length} bytes -> ${output}`);
+  console.log(`Generated ${setup.indices.length} pages, ${bytes.length} bytes -> ${output}`);
 } finally {
   await browser.close();
 }
