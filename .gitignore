@@ -7,7 +7,8 @@
 /build_preview/
 /build_production/
 /source/assets/build/
-/source/hot
+/source/hot/
 /.cache/
 .php-cs-fixer.cache
 .phpunit.cache/
+/presentations/slides.com/**/*.pdf
