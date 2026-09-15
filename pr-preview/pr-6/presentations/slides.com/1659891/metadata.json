@@ -10,7 +10,11 @@
     "url": "https://slides.com/vitormattos/bdd",
     "embed_url": "https://slides.com/vitormattos/bdd/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "php",
+            "testes"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/36c3ddff45d7895c588fb28657ebd8f0/thumb.jpg?1619701934",
     "slide_count": 113,

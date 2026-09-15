@@ -10,7 +10,10 @@
     "url": "https://slides.com/vitormattos/libresign-integracoes",
     "embed_url": "https://slides.com/vitormattos/libresign-integracoes/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/90f260fed145ed6f5dd20065d43f9e77/thumb.jpg?1643224419",
     "slide_count": 67,

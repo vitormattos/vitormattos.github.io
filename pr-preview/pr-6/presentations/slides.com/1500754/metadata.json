@@ -10,7 +10,10 @@
     "url": "https://slides.com/vitormattos/data-detox",
     "embed_url": "https://slides.com/vitormattos/data-detox/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "segurança"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/42814192bae24dab19784d4ddb9787bc/thumb.jpg?1557753303",
     "slide_count": 80,

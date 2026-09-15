@@ -10,7 +10,10 @@
     "url": "https://slides.com/vitormattos/composer",
     "embed_url": "https://slides.com/vitormattos/composer/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/0698c2d0ecc3f3db2da7b2a6d342e85c/thumb.jpg?1531501486",
     "slide_count": 80,

@@ -10,7 +10,11 @@
     "url": "https://slides.com/vitormattos/seguranca",
     "embed_url": "https://slides.com/vitormattos/seguranca/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "php",
+            "segurança"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/a58c2c301adbbc7fd31f27a311e6547d/thumb.jpg?1543786464",
     "slide_count": 118,

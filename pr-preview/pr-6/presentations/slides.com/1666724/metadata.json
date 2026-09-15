@@ -10,7 +10,10 @@
     "url": "https://slides.com/vitormattos/webscraping",
     "embed_url": "https://slides.com/vitormattos/webscraping/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/cf3b66f626d3868c48772ff36bb1bda5/thumb.jpg?1582827773",
     "slide_count": 56,

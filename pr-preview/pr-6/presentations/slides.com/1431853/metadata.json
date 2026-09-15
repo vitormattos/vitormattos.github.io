@@ -10,7 +10,9 @@
     "url": "https://slides.com/vitormattos/porque-fazer-testes",
     "embed_url": "https://slides.com/vitormattos/porque-fazer-testes/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "testes"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/79cda77b63dd05a0230eee8728ca6c80/thumb.jpg?1550188702",
     "slide_count": 43,

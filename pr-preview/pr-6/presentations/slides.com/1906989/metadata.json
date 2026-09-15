@@ -10,7 +10,10 @@
     "url": "https://slides.com/vitormattos/celular_floss",
     "embed_url": "https://slides.com/vitormattos/celular_floss/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "segurança"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/ad43adc0eb969e9789724d793077154a/thumb.jpg?1597964110",
     "slide_count": 64,

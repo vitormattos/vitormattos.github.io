@@ -10,7 +10,11 @@
     "url": "https://slides.com/vitormattos/testes-api",
     "embed_url": "https://slides.com/vitormattos/testes-api/embed",
     "tags": {
-        "slides_com": []
+        "slides_com": [
+            "opensource",
+            "php",
+            "testes"
+        ]
     },
     "thumbnail_url": "https://media.slid.es/thumbnails/e75865de41f3bfe5bf85d9a1fc21d470/thumb.jpg?1653062560",
     "slide_count": 39,
