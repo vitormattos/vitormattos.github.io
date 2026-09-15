@@ -19,13 +19,29 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
 
 @section('body')
 @php
+    $talkItems = [];
     $tagCounts = [];
+    $tagLabels = [];
+
     foreach ($talks as $talk) {
+        $talkItems[] = $talk;
+
         foreach ((array) ($talk->tags ?? []) as $tag) {
-            $tag = (string) $tag;
-            $tagCounts[$tag] = ($tagCounts[$tag] ?? 0) + 1;
+            $tag = trim((string) $tag);
+            if ($tag === '') {
+                continue;
+            }
+
+            $key = strtolower($tag);
+            $tagCounts[$key] = ($tagCounts[$key] ?? 0) + 1;
+
+            if (!isset($tagLabels[$key])
+                || ($tagLabels[$key] === strtolower($tagLabels[$key]) && $tag !== strtolower($tag))) {
+                $tagLabels[$key] = $tag;
+            }
         }
     }
+
     ksort($tagCounts, SORT_NATURAL | SORT_FLAG_CASE);
 @endphp
 <div class="talks-browser">
@@ -45,9 +61,9 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
         @if ($tagCounts !== [])
             <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filtrar palestras por tópico">
                 <p class="talk-tag-filter__label">Tópicos</p>
-                <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/" data-talk-tag="" aria-current="true"><span>Todas</span><span>{{ count($talks) }}</span></a>
+                <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/" data-talk-tag="" aria-current="true"><span>Todas</span><span>{{ count($talkItems) }}</span></a>
                 @foreach ($tagCounts as $tag => $count)
-                    <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/?tag={{ rawurlencode($tag) }}" data-talk-tag="{{ $tag }}"><span>{{ $tag }}</span><span>{{ $count }}</span></a>
+                    <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/?tag={{ rawurlencode($tag) }}" data-talk-tag="{{ $tag }}"><span>{{ $tagLabels[$tag] }}</span><span>{{ $count }}</span></a>
                 @endforeach
             </nav>
         @endif
@@ -79,7 +95,7 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
             <p class="talk-filter-status" data-talk-filter-status aria-live="polite"></p>
         </div>
         <div class="talk-list" data-talk-gallery data-view="grid">
-            @foreach ($talks as $talk)
+            @foreach ($talkItems as $talk)
                 @include('_partials.talk.card', ['talk' => $talk])
             @endforeach
         </div>
