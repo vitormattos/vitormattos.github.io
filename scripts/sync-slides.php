@@ -266,7 +266,7 @@ foreach ($publicDecks as $detail) {
 foreach (['source/_talks', 'source/_talksEn'] as $collection) {
     foreach (glob("{$collection}/" . MANAGED_PREFIX . '*.md') ?: [] as $file) {
         if (!isset($expectedPaths[$file])) {
-            unlink($file);
+            fwrite(STDOUT, "Preserving archived presentation no longer returned as public by Slides.com: {$file}\n");
         }
     }
 }

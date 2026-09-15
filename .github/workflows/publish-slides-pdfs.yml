@@ -5,12 +5,17 @@ name: Publish Slides.com PDFs
 on:
   push:
     branches:
-      - automation/slides-com-sync
+      - main
     paths:
       - 'presentations/slides.com/**'
       - 'scripts/generate-slides-pdfs.php'
       - 'scripts/slides/decktape-reveal.js'
       - 'src/Presentations/PdfExportPolicy.php'
+  workflow_run:
+    workflows:
+      - Sync Slides.com
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -22,10 +27,14 @@ concurrency:
 
 jobs:
   publish:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: main
           persist-credentials: true
 
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
@@ -60,11 +69,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- presentations/slides.com; then
+          git add presentations/slides.com/*/export.json
+
+          if git diff --cached --quiet; then
+            echo 'Release manifests are already up to date.'
             exit 0
           fi
+
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add presentations/slides.com/*/export.json
           git commit -m 'content: update presentation PDF release manifests'
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
