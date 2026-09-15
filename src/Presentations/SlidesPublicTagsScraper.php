@@ -7,16 +7,13 @@ declare(strict_types=1);
 
 namespace App\Presentations;
 
-use DOMDocument;
-use DOMElement;
-use DOMXPath;
+use JsonException;
 use RuntimeException;
-use Throwable;
 
 final class SlidesPublicTagsScraper
 {
     private const BASE_URL = 'https://slides.com';
-    private const MAX_CANDIDATE_TAG_PAGES = 80;
+    private const TAGS_VARIABLE = 'SLDeckTags';
 
     /** @var callable(string): string */
     private $fetchHtml;
@@ -29,215 +26,159 @@ final class SlidesPublicTagsScraper
     }
 
     /**
-     * @param list<string> $deckUrls
+     * @param array<string, int|string> $deckIdsByUrl Map of public deck URL to Slides.com deck ID.
      *
      * @return array<string, list<string>> Map of canonical deck URL to public Slides.com tags.
      */
-    public function scrape(array $deckUrls): array
+    public function scrape(array $deckIdsByUrl): array
     {
-        $knownDecks = [];
-        foreach ($deckUrls as $deckUrl) {
+        $knownDecksById = [];
+        $tagsByUrl = [];
+
+        foreach ($deckIdsByUrl as $deckUrl => $deckId) {
             $canonical = $this->canonicalOwnedUrl($deckUrl);
-            if ($canonical !== null) {
-                $knownDecks[$canonical] = [];
+            if ($canonical === null) {
+                continue;
             }
+
+            $knownDecksById[(string) $deckId] = $canonical;
+            $tagsByUrl[$canonical] = [];
         }
 
-        if ($knownDecks === []) {
+        if ($knownDecksById === []) {
             return [];
         }
 
         $profileUrl = self::BASE_URL . '/' . rawurlencode($this->username);
         $profileHtml = ($this->fetchHtml)($profileUrl);
-        $candidates = $this->discoverTagCandidates($profileHtml, array_keys($knownDecks));
+        $deckTags = $this->extractDeckTags($profileHtml);
 
-        $this->debug('known decks: ' . count($knownDecks));
-        $this->debug('tag candidates: ' . count($candidates));
-        foreach (array_slice($candidates, 0, self::MAX_CANDIDATE_TAG_PAGES, true) as $candidateUrl => $tagName) {
-            $this->debug('candidate: ' . $tagName . ' => ' . $candidateUrl);
-            try {
-                $html = ($this->fetchHtml)($candidateUrl);
-            } catch (Throwable $exception) {
-                $this->debug('candidate fetch failed: ' . $exception->getMessage());
+        $this->debug('known decks: ' . count($knownDecksById));
+        $this->debug('profile tags: ' . count($deckTags));
+
+        foreach ($deckTags as $tag) {
+            if (($tag['tag_type'] ?? 'deck') !== 'deck') {
                 continue;
             }
 
-            $renderedOwnedLinks = $this->renderedOwnedLinks($html);
-            $this->debug('rendered owned links: ' . json_encode(array_slice($renderedOwnedLinks, 0, 30), JSON_UNESCAPED_SLASHES));
-
-            $matchedDecks = $this->extractRenderedKnownDeckUrls($html, array_keys($knownDecks));
-            $this->debug('matched decks: ' . json_encode($matchedDecks, JSON_UNESCAPED_SLASHES));
-            if ($matchedDecks === []) {
+            $tagName = trim((string) ($tag['name'] ?? ''));
+            if ($tagName === '') {
                 continue;
             }
 
-            foreach ($matchedDecks as $deckUrl) {
-                $knownDecks[$deckUrl][] = $tagName;
+            $deckIds = $tag['decks'] ?? [];
+            if (!is_array($deckIds)) {
+                continue;
             }
+
+            $matched = 0;
+            foreach ($deckIds as $deckId) {
+                $deckUrl = $knownDecksById[(string) $deckId] ?? null;
+                if ($deckUrl === null) {
+                    continue;
+                }
+
+                $tagsByUrl[$deckUrl][] = $tagName;
+                ++$matched;
+            }
+
+            $this->debug(sprintf('tag: %s (%d known decks)', $tagName, $matched));
         }
 
-        foreach ($knownDecks as &$tags) {
+        foreach ($tagsByUrl as &$tags) {
             $tags = array_values(array_unique(array_filter(array_map('trim', $tags))));
             natcasesort($tags);
             $tags = array_values($tags);
         }
         unset($tags);
 
-        return $knownDecks;
+        return $tagsByUrl;
     }
 
     /**
-     * Tag routes can be present in serialized profile data even when they are
-     * not rendered as anchors. Serialized data is therefore used only for tag
-     * discovery. Deck membership is determined from rendered links on the tag
-     * page so profile-wide hydration data cannot inflate tag counts.
-     *
-     * @param list<string> $knownDeckUrls
-     *
-     * @return array<string, string>
+     * @return list<array<string, mixed>>
      */
-    private function discoverTagCandidates(string $html, array $knownDeckUrls): array
+    private function extractDeckTags(string $html): array
     {
-        $known = array_fill_keys($knownDeckUrls, true);
-        $profileUrl = self::BASE_URL . '/' . $this->username;
-        $candidates = [];
+        $markerPosition = strpos($html, self::TAGS_VARIABLE);
+        if ($markerPosition === false) {
+            $this->debug(self::TAGS_VARIABLE . ' not found in profile HTML');
 
-        foreach ($this->anchors($html) as [$href, $text]) {
-            $this->addCandidate($candidates, $known, $profileUrl, $href, $text);
-        }
-
-        foreach ($this->ownedRoutesInHtml($html) as $route) {
-            $this->addCandidate($candidates, $known, $profileUrl, $route, '');
-        }
-
-        return $candidates;
-    }
-
-    /**
-     * @param array<string, string> $candidates
-     * @param array<string, true> $known
-     */
-    private function addCandidate(array &$candidates, array $known, string $profileUrl, string $url, string $label): void
-    {
-        $canonical = $this->canonicalOwnedUrl($this->resolveUrl(html_entity_decode($url, ENT_QUOTES | ENT_HTML5)));
-        if ($canonical === null
-            || $canonical === $profileUrl
-            || isset($known[$canonical])
-            || $this->isDeckUtilityRoute($canonical)
-        ) {
-            return;
-        }
-
-        $tagName = trim(preg_replace('/\s+/', ' ', $label) ?? $label);
-        if ($tagName === '' || strcasecmp($tagName, 'All decks') === 0) {
-            $tagName = $this->labelFromUrl($canonical);
-        }
-        if ($tagName === '') {
-            return;
-        }
-
-        $candidates[$canonical] ??= $tagName;
-    }
-
-    /** @return list<string> */
-    private function ownedRoutesInHtml(string $html): array
-    {
-        $normalizedHtml = html_entity_decode(str_replace('\\/', '/', $html), ENT_QUOTES | ENT_HTML5);
-        $username = preg_quote($this->username, '~');
-        $patterns = [
-            '~https?://slides\.com/' . $username . '/[a-zA-Z0-9][a-zA-Z0-9_-]*~',
-            '~/' . $username . '/[a-zA-Z0-9][a-zA-Z0-9_-]*~',
-        ];
-        $routes = [];
-
-        foreach ($patterns as $pattern) {
-            if (preg_match_all($pattern, $normalizedHtml, $matches) === false) {
-                continue;
-            }
-
-            array_push($routes, ...$matches[0]);
-        }
-
-        return array_values(array_unique($routes));
-    }
-
-    /**
-     * @param list<string> $knownDeckUrls
-     *
-     * @return list<string>
-     */
-    private function extractRenderedKnownDeckUrls(string $html, array $knownDeckUrls): array
-    {
-        $known = array_fill_keys($knownDeckUrls, true);
-        $matches = [];
-
-        foreach ($this->anchors($html) as [$href]) {
-            $canonical = $this->canonicalOwnedUrl($this->resolveUrl($href));
-            if ($canonical !== null && isset($known[$canonical])) {
-                $matches[$canonical] = true;
-            }
-        }
-
-        return array_keys($matches);
-    }
-
-    /** @return list<string> */
-    private function renderedOwnedLinks(string $html): array
-    {
-        $links = [];
-        foreach ($this->anchors($html) as [$href, $text]) {
-            $canonical = $this->canonicalOwnedUrl($this->resolveUrl($href));
-            if ($canonical === null) {
-                continue;
-            }
-            $links[] = $canonical . ($text !== '' ? ' [' . $text . ']' : '');
-        }
-
-        return array_values(array_unique($links));
-    }
-
-    /** @return list<array{0: string, 1: string}> */
-    private function anchors(string $html): array
-    {
-        $document = new DOMDocument();
-        $previous = libxml_use_internal_errors(true);
-        try {
-            $loaded = $document->loadHTML($html, LIBXML_NONET | LIBXML_NOWARNING | LIBXML_NOERROR);
-        } finally {
-            libxml_clear_errors();
-            libxml_use_internal_errors($previous);
-        }
-
-        if (!$loaded) {
             return [];
         }
 
-        $anchors = [];
-        $xpath = new DOMXPath($document);
-        foreach ($xpath->query('//a[@href]') ?: [] as $node) {
-            if (!$node instanceof DOMElement) {
-                continue;
-            }
-            $anchors[] = [$node->getAttribute('href'), trim($node->textContent)];
+        $assignmentPosition = strpos($html, '=', $markerPosition + strlen(self::TAGS_VARIABLE));
+        if ($assignmentPosition === false) {
+            return [];
         }
 
-        return $anchors;
+        $arrayStart = strpos($html, '[', $assignmentPosition + 1);
+        if ($arrayStart === false) {
+            return [];
+        }
+
+        $json = $this->extractJsonArray($html, $arrayStart);
+        if ($json === null) {
+            throw new RuntimeException(self::TAGS_VARIABLE . ' contains an unterminated JSON array.');
+        }
+
+        try {
+            $decoded = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new RuntimeException(self::TAGS_VARIABLE . ' contains invalid JSON.', previous: $exception);
+        }
+
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        return array_values(array_filter($decoded, 'is_array'));
     }
 
-    private function resolveUrl(string $href): string
+    private function extractJsonArray(string $source, int $start): ?string
     {
-        $href = trim(str_replace('\\/', '/', $href));
-        if ($href === '') {
-            return '';
-        }
-        if (str_starts_with($href, '//')) {
-            return 'https:' . $href;
-        }
-        if (str_starts_with($href, '/')) {
-            return self::BASE_URL . $href;
+        $depth = 0;
+        $inString = false;
+        $escaped = false;
+        $length = strlen($source);
+
+        for ($position = $start; $position < $length; ++$position) {
+            $character = $source[$position];
+
+            if ($inString) {
+                if ($escaped) {
+                    $escaped = false;
+                    continue;
+                }
+                if ($character === '\\') {
+                    $escaped = true;
+                    continue;
+                }
+                if ($character === '"') {
+                    $inString = false;
+                }
+                continue;
+            }
+
+            if ($character === '"') {
+                $inString = true;
+                continue;
+            }
+            if ($character === '[') {
+                ++$depth;
+                continue;
+            }
+            if ($character !== ']') {
+                continue;
+            }
+
+            --$depth;
+            if ($depth === 0) {
+                return substr($source, $start, $position - $start + 1);
+            }
         }
 
-        return $href;
+        return null;
     }
 
     private function canonicalOwnedUrl(string $url): ?string
@@ -252,34 +193,11 @@ final class SlidesPublicTagsScraper
 
         $path = rtrim((string) ($parts['path'] ?? ''), '/');
         $prefix = '/' . $this->username;
-        if ($path !== $prefix && !str_starts_with($path, $prefix . '/')) {
+        if ($path === $prefix || !str_starts_with($path, $prefix . '/')) {
             return null;
         }
 
         return self::BASE_URL . $path;
-    }
-
-    private function isDeckUtilityRoute(string $url): bool
-    {
-        foreach (['/embed', '/fullscreen', '/live', '/edit'] as $suffix) {
-            if (str_ends_with($url, $suffix)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function labelFromUrl(string $url): string
-    {
-        $path = trim((string) parse_url($url, PHP_URL_PATH), '/');
-        $segments = explode('/', $path);
-        $slug = end($segments);
-        if (!is_string($slug) || $slug === '') {
-            return '';
-        }
-
-        return ucwords(str_replace(['-', '_'], ' ', $slug));
     }
 
     private function debug(string $message): void
