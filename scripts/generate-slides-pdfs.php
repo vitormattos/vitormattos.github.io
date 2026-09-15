@@ -41,23 +41,31 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         $releaseTag = PdfExportPolicy::releaseTag($metadata);
         $assetName = PdfExportPolicy::releaseAssetName($sourceFingerprint, $metadata);
         $cachePath = PdfExportPolicy::cachePath($cacheDirectory, $deckDir, $metadata);
+        $pdfAssetUrl = PdfExportPolicy::releaseAssetUrl($repository, $sourceFingerprint, $metadata);
+        [$thumbnailPath, $thumbnailAssetName, $thumbnailAssetUrl] = releaseThumbnail($repository, $releaseTag, $deckDir);
     } catch (Throwable $exception) {
         fwrite(STDERR, "::warning::Skipping PDF for deck {$deckId}: {$exception->getMessage()}\n");
         ++$skipped;
         continue;
     }
 
+    synchronizeRelease($repository, $releaseTag, $metadata, $thumbnailAssetUrl, $pdfAssetUrl);
+
+    if ($thumbnailPath !== null && $thumbnailAssetName !== null
+        && !releaseAssetExists($repository, $releaseTag, $thumbnailAssetName)) {
+        uploadReleaseAsset($repository, $releaseTag, $thumbnailPath, $thumbnailAssetName);
+        fwrite(STDOUT, "Published release thumbnail for deck {$deckId}: {$thumbnailAssetName}\n");
+    }
+
     $assetExists = releaseAssetExists($repository, $releaseTag, $assetName);
 
     if (PdfExportPolicy::manifestMatchesSource($manifestPath, $deckDir, $metadata) && $assetExists) {
-        synchronizeRelease($repository, $releaseTag, $metadata);
         fwrite(STDOUT, "Reused release PDF for deck {$deckId}: {$assetName}\n");
         ++$reused;
         continue;
     }
 
     if ($assetExists) {
-        synchronizeRelease($repository, $releaseTag, $metadata);
         fwrite(STDOUT, "Recovered existing release PDF for deck {$deckId}: {$assetName}\n");
         if (is_file($cachePath)) {
             writeExportManifest($manifestPath, PdfExportPolicy::exportManifest(
@@ -100,7 +108,6 @@ foreach (glob('presentations/slides.com/*/metadata.json') ?: [] as $metadataPath
         ++$generated;
     }
 
-    synchronizeRelease($repository, $releaseTag, $metadata);
     uploadReleaseAsset($repository, $releaseTag, $cachePath, $assetName);
 
     writeExportManifest($manifestPath, PdfExportPolicy::exportManifest(
@@ -128,10 +135,15 @@ function releaseAssetExists(string $repository, string $releaseTag, string $asse
     return $exitCode === 0 && in_array($assetName, $output, true);
 }
 
-function synchronizeRelease(string $repository, string $releaseTag, array $metadata): void
-{
+function synchronizeRelease(
+    string $repository,
+    string $releaseTag,
+    array $metadata,
+    ?string $thumbnailAssetUrl,
+    ?string $pdfAssetUrl,
+): void {
     $title = SlidesReleaseMetadata::title($metadata);
-    $body = SlidesReleaseMetadata::body($metadata, $repository);
+    $body = SlidesReleaseMetadata::body($metadata, $repository, $thumbnailAssetUrl, $pdfAssetUrl);
 
     $view = sprintf(
         'gh release view %s --repo %s --json name,body 2>/dev/null',
@@ -176,19 +188,56 @@ function synchronizeRelease(string $repository, string $releaseTag, array $metad
     fwrite(STDOUT, "Updated release metadata for {$releaseTag}.\n");
 }
 
-function uploadReleaseAsset(string $repository, string $releaseTag, string $pdfPath, string $assetName): void
+function releaseThumbnail(string $repository, string $releaseTag, string $deckDir): array
 {
-    if (basename($pdfPath) !== $assetName) {
-        throw new RuntimeException("Release asset path must already use the content-addressed filename {$assetName}.");
+    $candidates = glob($deckDir . '/thumbnail.*') ?: [];
+    if ($candidates === []) {
+        return [null, null, null];
+    }
+
+    $path = $candidates[0];
+    $extension = strtolower((string) pathinfo($path, PATHINFO_EXTENSION));
+    $hash = hash_file('sha256', $path);
+    if ($hash === false) {
+        throw new RuntimeException("Could not hash release thumbnail {$path}.");
+    }
+
+    $assetName = 'thumbnail-' . substr($hash, 0, 12) . '.' . $extension;
+    $url = sprintf(
+        'https://github.com/%s/releases/download/%s/%s',
+        trim($repository, '/'),
+        rawurlencode($releaseTag),
+        rawurlencode($assetName),
+    );
+
+    return [$path, $assetName, $url];
+}
+
+function uploadReleaseAsset(string $repository, string $releaseTag, string $assetPath, string $assetName): void
+{
+    $uploadPath = $assetPath;
+    $temporaryPath = null;
+
+    if (basename($assetPath) !== $assetName) {
+        $temporaryPath = sys_get_temp_dir() . '/' . $assetName;
+        if (!copy($assetPath, $temporaryPath)) {
+            throw new RuntimeException("Could not prepare release asset {$assetName}.");
+        }
+        $uploadPath = $temporaryPath;
     }
 
     $upload = sprintf(
         'gh release upload %s %s --repo %s',
         escapeshellarg($releaseTag),
-        escapeshellarg($pdfPath),
+        escapeshellarg($uploadPath),
         escapeshellarg($repository),
     );
     passthru($upload, $exitCode);
+
+    if ($temporaryPath !== null) {
+        @unlink($temporaryPath);
+    }
+
     if ($exitCode !== 0) {
         throw new RuntimeException("Could not upload {$assetName} to release {$releaseTag}.");
     }
