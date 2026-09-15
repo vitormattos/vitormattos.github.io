@@ -35,14 +35,27 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
 
         $tag = 'slideshare-' . safeId((string) $metadata['id']);
         $releaseUrl = "https://github.com/{$repository}/releases/tag/{$tag}";
-        $pageHtml = downloadText((string) $metadata['source_url']);
-        $thumbnail = archiveThumbnail($directory, $pageHtml);
+
+        $pageHtml = tryDownloadText((string) $metadata['source_url'], $id);
         $original = downloadOriginal($metadata, $cacheDirectory);
         $pdf = buildPdf($original, $cacheDirectory, $id);
+        $thumbnail = archiveThumbnail($directory, $pageHtml);
+        if ($thumbnail === null && $pdf !== null) {
+            $thumbnail = thumbnailFromPdf($directory, $pdf);
+        }
 
-        $thumbnailAsset = $thumbnail ? contentAddressedAsset($repository, $tag, $thumbnail, 'thumbnail') : null;
-        $originalAsset = $original ? contentAddressedAsset($repository, $tag, $original, 'slideshare-' . $id . '-original') : null;
-        $pdfAsset = $pdf ? contentAddressedAsset($repository, $tag, $pdf, 'slideshare-' . $id) : null;
+        $thumbnailAsset = $thumbnail !== null
+            ? contentAddressedAsset($repository, $tag, $thumbnail, 'thumbnail')
+            : null;
+        $originalAsset = $original !== null
+            ? contentAddressedAsset($repository, $tag, $original, 'slideshare-' . $id . '-original')
+            : null;
+        $pdfAsset = null;
+        if ($pdf !== null) {
+            $pdfAsset = $pdf === $original && $originalAsset !== null
+                ? $originalAsset
+                : contentAddressedAsset($repository, $tag, $pdf, 'slideshare-' . $id);
+        }
 
         $releaseMetadata = $metadata;
         if ($thumbnail !== null) {
@@ -53,23 +66,22 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
             }
         }
 
-        ensureRelease(
+        $body = PresentationReleaseMetadata::body(
+            $releaseMetadata,
             $repository,
-            $tag,
-            PresentationReleaseMetadata::title($releaseMetadata),
-            PresentationReleaseMetadata::body(
-                $releaseMetadata,
-                $repository,
-                $thumbnailAsset['url'] ?? null,
-                $pdfAsset['url'] ?? null,
-                $originalAsset['url'] ?? null,
-            ),
+            $thumbnailAsset['url'] ?? null,
+            $pdfAsset['url'] ?? null,
+            $originalAsset['url'] ?? null,
         );
+        ensureRelease($repository, $tag, PresentationReleaseMetadata::title($releaseMetadata), $body);
 
+        $seenAssets = [];
         foreach ([$thumbnailAsset, $originalAsset, $pdfAsset] as $asset) {
-            if ($asset !== null) {
-                uploadAssetIfMissing($repository, $tag, $asset['path'], $asset['name']);
+            if ($asset === null || isset($seenAssets[$asset['name']])) {
+                continue;
             }
+            uploadAssetIfMissing($repository, $tag, $asset['path'], $asset['name']);
+            $seenAssets[$asset['name']] = true;
         }
 
         $manifest = [
@@ -100,7 +112,7 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
 
         updateManagedTalk(
             (string) $metadata['id'],
-            $thumbnail ? '/' . $thumbnail : null,
+            $thumbnail !== null ? '/' . $thumbnail : null,
             $pdfAsset['url'] ?? null,
             $originalAsset['url'] ?? null,
         );
@@ -154,14 +166,19 @@ function safeId(string $id): string
     return $safe !== '' ? $safe : 'presentation';
 }
 
-function downloadText(string $url): string
+function tryDownloadText(string $url, string $id): ?string
 {
-    [$bytes, $status] = httpGet($url, 'text/html,application/xhtml+xml');
-    if ($status < 200 || $status >= 300) {
-        throw new RuntimeException("SlideShare page returned HTTP {$status}.");
+    try {
+        [$bytes, $status] = httpGet($url, 'text/html,application/xhtml+xml');
+        if ($status >= 200 && $status < 300) {
+            return $bytes;
+        }
+        fwrite(STDERR, "::warning::SlideShare page {$id} returned HTTP {$status}; continuing without page metadata.\n");
+    } catch (Throwable $exception) {
+        fwrite(STDERR, "::warning::Could not fetch SlideShare page {$id}: {$exception->getMessage()}; continuing with exported metadata.\n");
     }
 
-    return $bytes;
+    return null;
 }
 
 function httpGet(string $url, string $accept = '*/*'): array
@@ -191,8 +208,12 @@ function httpGet(string $url, string $accept = '*/*'): array
     return [$bytes, $status];
 }
 
-function archiveThumbnail(string $directory, string $html): ?string
+function archiveThumbnail(string $directory, ?string $html): ?string
 {
+    if ($html === null) {
+        return existingThumbnail($directory);
+    }
+
     $url = null;
     foreach ([
         '/<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']/i',
@@ -208,8 +229,14 @@ function archiveThumbnail(string $directory, string $html): ?string
         return existingThumbnail($directory);
     }
 
-    validateUrl($url, ['slidesharecdn.com', 'slideshare.net', 'licdn.com']);
-    [$bytes, $status] = httpGet($url, 'image/*');
+    try {
+        validateUrl($url, ['slidesharecdn.com', 'slideshare.net', 'licdn.com']);
+        [$bytes, $status] = httpGet($url, 'image/*');
+    } catch (Throwable $exception) {
+        fwrite(STDERR, "::warning::Could not archive SlideShare thumbnail: {$exception->getMessage()}\n");
+        return existingThumbnail($directory);
+    }
+
     if ($status < 200 || $status >= 300 || $bytes === '') {
         return existingThumbnail($directory);
     }
@@ -226,6 +253,31 @@ function archiveThumbnail(string $directory, string $html): ?string
         return existingThumbnail($directory);
     }
 
+    return writeThumbnail($directory, $bytes, $extension);
+}
+
+function thumbnailFromPdf(string $directory, string $pdf): ?string
+{
+    $prefix = sys_get_temp_dir() . '/slideshare-thumbnail-' . basename($directory);
+    $command = sprintf(
+        'pdftoppm -f 1 -singlefile -png -scale-to-x 1280 -scale-to-y -1 %s %s >/dev/null 2>&1',
+        escapeshellarg($pdf),
+        escapeshellarg($prefix),
+    );
+    exec($command, $output, $exitCode);
+    $generated = $prefix . '.png';
+    if ($exitCode !== 0 || !is_file($generated)) {
+        return existingThumbnail($directory);
+    }
+
+    $bytes = (string) file_get_contents($generated);
+    @unlink($generated);
+
+    return $bytes !== '' ? writeThumbnail($directory, $bytes, 'png') : existingThumbnail($directory);
+}
+
+function writeThumbnail(string $directory, string $bytes, string $extension): string
+{
     $target = $directory . '/thumbnail.' . $extension;
     file_put_contents($target, $bytes);
     foreach (glob($directory . '/thumbnail.*') ?: [] as $candidate) {
@@ -251,23 +303,23 @@ function downloadOriginal(array $metadata, string $cacheDirectory): ?string
         return null;
     }
 
-    [$bytes, $status] = httpGet($url, 'application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.oasis.opendocument.presentation,*/*;q=0.5');
-    if ($status < 200 || $status >= 300 || $bytes === '') {
+    try {
+        [$bytes, $status] = httpGet($url, 'application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.oasis.opendocument.presentation,*/*;q=0.5');
+    } catch (Throwable $exception) {
+        fwrite(STDERR, "::warning::Could not download original SlideShare file {$metadata['id']}: {$exception->getMessage()}\n");
         return null;
     }
 
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime = (string) $finfo->buffer($bytes);
-    $extension = match ($mime) {
-        'application/pdf' => 'pdf',
-        'application/vnd.ms-powerpoint', 'application/mspowerpoint' => 'ppt',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
-        'application/vnd.oasis.opendocument.presentation' => 'odp',
-        default => null,
-    };
+    if ($status < 200 || $status >= 300 || $bytes === '') {
+        fwrite(STDERR, "::warning::SlideShare original download {$metadata['id']} returned HTTP {$status}.\n");
+        return null;
+    }
 
+    $extension = detectPresentationExtension($bytes);
     if ($extension === null) {
-        fwrite(STDERR, "::warning::SlideShare download for {$metadata['id']} returned unsupported MIME {$mime}; original file was not archived.\n");
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mime = (string) $finfo->buffer($bytes);
+        fwrite(STDERR, "::warning::SlideShare download {$metadata['id']} returned unsupported MIME {$mime}; original file was not archived.\n");
         return null;
     }
 
@@ -275,6 +327,37 @@ function downloadOriginal(array $metadata, string $cacheDirectory): ?string
     file_put_contents($path, $bytes);
 
     return $path;
+}
+
+function detectPresentationExtension(string $bytes): ?string
+{
+    if (str_starts_with($bytes, '%PDF-')) {
+        return 'pdf';
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = (string) $finfo->buffer($bytes);
+    $extension = match ($mime) {
+        'application/pdf' => 'pdf',
+        'application/vnd.ms-powerpoint', 'application/mspowerpoint', 'application/x-mspowerpoint' => 'ppt',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx',
+        'application/vnd.oasis.opendocument.presentation' => 'odp',
+        default => null,
+    };
+    if ($extension !== null) {
+        return $extension;
+    }
+
+    if (str_starts_with($bytes, "PK\x03\x04")) {
+        if (str_contains($bytes, 'ppt/presentation.xml')) {
+            return 'pptx';
+        }
+        if (str_contains($bytes, 'application/vnd.oasis.opendocument.presentation')) {
+            return 'odp';
+        }
+    }
+
+    return null;
 }
 
 function buildPdf(?string $original, string $cacheDirectory, string $id): ?string
@@ -288,8 +371,8 @@ function buildPdf(?string $original, string $cacheDirectory, string $id): ?strin
     }
 
     $outputDirectory = rtrim($cacheDirectory, '/') . '/converted-' . safeId($id);
-    if (!is_dir($outputDirectory)) {
-        mkdir($outputDirectory, 0777, true);
+    if (!is_dir($outputDirectory) && !mkdir($outputDirectory, 0777, true) && !is_dir($outputDirectory)) {
+        return null;
     }
 
     $command = sprintf(
@@ -299,6 +382,7 @@ function buildPdf(?string $original, string $cacheDirectory, string $id): ?strin
     );
     exec($command, $output, $exitCode);
     if ($exitCode !== 0) {
+        fwrite(STDERR, "::warning::LibreOffice could not convert SlideShare presentation {$id} to PDF.\n");
         return null;
     }
 
@@ -388,7 +472,9 @@ function uploadAssetIfMissing(string $repository, string $tag, string $path, str
     $temporary = null;
     if (basename($path) !== $assetName) {
         $temporary = sys_get_temp_dir() . '/' . $assetName;
-        copy($path, $temporary);
+        if (!copy($path, $temporary)) {
+            throw new RuntimeException("Could not prepare release asset {$assetName}.");
+        }
         $uploadPath = $temporary;
     }
 
@@ -435,9 +521,8 @@ function updateManagedTalk(string $id, ?string $thumbnail, ?string $pdf, ?string
                 continue;
             }
 
-            $content = preg_replace('/^  (thumbnail|pdf|original): .*\R/m', '', $content);
-            $anchor = '/(^  metadata: .*\R)/m';
-            $updated = preg_replace($anchor, '$1' . implode("\n", $lines) . "\n", $content, 1);
+            $content = preg_replace('/^  (thumbnail|pdf|original): .*\R/m', '', $content) ?? $content;
+            $updated = preg_replace('/(^  metadata: .*\R)/m', '$1' . implode("\n", $lines) . "\n", $content, 1);
             if (is_string($updated) && $updated !== $content) {
                 file_put_contents($path, $updated);
             }
