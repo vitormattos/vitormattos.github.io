@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>Page not found · Vitor Mattos</title>
+    <meta name="description" content="The requested page could not be found on Vitor Mattos&#039;s site.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/404">
+<link rel="alternate" hreflang="en" href="https://vitormattos.github.io/404">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/404">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Articles" href="https://vitormattos.github.io/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Page not found · Vitor Mattos">
+<meta property="og:description" content="The requested page could not be found on Vitor Mattos&#039;s site.">
+<meta property="og:url" content="https://vitormattos.github.io/404">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Page not found · Vitor Mattos">
+<meta name="twitter:description" content="The requested page could not be found on Vitor Mattos&#039;s site.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/404#webpage","url":"https://vitormattos.github.io/404","name":"Page not found","description":"The requested page could not be found on Vitor Mattos's site.","inLanguage":"en","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"}}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-15/assets/build/assets/main-CKzBA8U0.css">
+    </head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/pr-preview/pr-15/">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Main">
+            <a href="https://vitormattos.github.io/pr-preview/pr-15/articles">Articles</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-15/talks">Talks</a>
+            <a href="https://github.com/vitormattos" rel="me">GitHub</a>
+            <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Use light theme"
+    data-label-dark="Use dark theme"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Theme</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <section class="content" aria-labelledby="page-title">
+    <h1 id="page-title">Page not found</h1>
+    <p>The requested page could not be found.</p>
+    <p><a href="https://vitormattos.github.io/pr-preview/pr-15/">Return to the homepage</a> · <a href="https://vitormattos.github.io/pr-preview/pr-15/pt-BR/">Ir para a página em português</a></p>
+</section>
+</main>
+<footer>
+    <p>Content and code published with transparency and version control.</p>
+    <p><a href="https://vitormattos.github.io/feed.xml">RSS</a></p>
+</footer>
+</body>
+</html>
