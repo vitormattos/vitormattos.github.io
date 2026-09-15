@@ -36,14 +36,19 @@ final class PdfExportPolicyTest extends TestCase
         }
     }
 
-    public function testExportCommandUsesEmbedAndPreservesDeckDimensions(): void
+    public function testExportCommandUsesInstalledDeckTapeWithoutArtificialPause(): void
     {
         $arguments = PdfExportPolicy::deckTapeArguments([
-            'visibility' => 'all', 'embed_url' => 'https://slides.com/vitormattos/public-deck/embed', 'width' => 960, 'height' => 540,
+            'visibility' => 'all',
+            'embed_url' => 'https://slides.com/vitormattos/public-deck/embed',
+            'width' => 960,
+            'height' => 540,
         ], '/tmp/deck.pdf');
-        self::assertSame('decktape@' . PdfExportPolicy::DECKTAPE_VERSION, $arguments[2]);
-        self::assertSame('reveal', $arguments[3]);
+
+        self::assertSame('node_modules/.bin/decktape', $arguments[0]);
+        self::assertSame('reveal', $arguments[1]);
         self::assertContains('960x540', $arguments);
+        self::assertContains('0', $arguments);
         self::assertSame('https://slides.com/vitormattos/public-deck/embed', $arguments[count($arguments) - 2]);
         self::assertSame('/tmp/deck.pdf', $arguments[count($arguments) - 1]);
     }
@@ -70,62 +75,110 @@ final class PdfExportPolicyTest extends TestCase
         }
     }
 
-    public function testPdfFilenameUsesDeckSlug(): void
+    public function testReleaseIdentityUsesStableSlidesDeckId(): void
     {
-        self::assertSame('quem-controla-sua-tecnologia-controla-seu-futuro-ufpb.pdf', PdfExportPolicy::pdfFilename(['id' => 123, 'slug' => 'Quem controla sua tecnologia controla seu futuro - UFPB']));
-        self::assertSame('deck-123.pdf', PdfExportPolicy::pdfFilename(['id' => 123]));
+        $metadata = ['id' => 3629052, 'slug' => 'title-may-change'];
+        self::assertSame('slides-com-3629052', PdfExportPolicy::releaseTag($metadata));
+        self::assertSame('slides-com-3629052-abcdef123456.pdf', PdfExportPolicy::releaseAssetName('abcdef1234567890', $metadata));
     }
 
-    public function testSourceFingerprintChangesWhenAnyVersionedSourceArtifactOrGeneratorChanges(): void
+    public function testSourceFingerprintChangesOnlyForRenderRelevantSource(): void
     {
         $directory = $this->createDeckDirectory();
+        $metadata = $this->metadata();
         try {
-            $original = PdfExportPolicy::sourceFingerprint($directory, 'generator-a');
-            foreach (['deck.html', 'deck.css', 'metadata.json'] as $filename) {
+            $original = PdfExportPolicy::sourceFingerprint($directory, $metadata);
+
+            foreach (['deck.html', 'deck.css'] as $filename) {
                 $before = file_get_contents($directory . '/' . $filename);
                 file_put_contents($directory . '/' . $filename, $before . "\nchanged");
-                self::assertNotSame($original, PdfExportPolicy::sourceFingerprint($directory, 'generator-a'));
+                self::assertNotSame($original, PdfExportPolicy::sourceFingerprint($directory, $metadata));
                 file_put_contents($directory . '/' . $filename, $before);
             }
-            self::assertNotSame($original, PdfExportPolicy::sourceFingerprint($directory, 'generator-b'));
+
+            $changedRenderMetadata = $metadata;
+            $changedRenderMetadata['width'] = 1280;
+            self::assertNotSame($original, PdfExportPolicy::sourceFingerprint($directory, $changedRenderMetadata));
+
+            $changedNonRenderMetadata = $metadata;
+            $changedNonRenderMetadata['title'] = 'A new title';
+            $changedNonRenderMetadata['tags'] = ['slides_com' => ['new-tag']];
+            self::assertSame($original, PdfExportPolicy::sourceFingerprint($directory, $changedNonRenderMetadata));
         } finally {
             $this->removeDirectory($directory);
         }
     }
 
-    public function testVersionedManifestAllowsReuseOnlyWhileSourcesGeneratorAndPdfMatch(): void
+    public function testGeneratorVersionDoesNotInvalidateSourceFingerprint(): void
     {
         $directory = $this->createDeckDirectory();
-        $metadata = ['id' => 123, 'slug' => 'public-deck'];
-        $pdf = $directory . '/public-deck.pdf';
+        try {
+            $metadata = $this->metadata();
+            $fingerprint = PdfExportPolicy::sourceFingerprint($directory, $metadata);
+            self::assertSame($fingerprint, PdfExportPolicy::sourceFingerprint($directory, $metadata));
+            self::assertNotSame('', PdfExportPolicy::generatorFingerprint());
+        } finally {
+            $this->removeDirectory($directory);
+        }
+    }
+
+    public function testCachePathIsContentAddressedByPresentationSource(): void
+    {
+        $directory = $this->createDeckDirectory();
+        try {
+            $metadata = $this->metadata();
+            $fingerprint = PdfExportPolicy::sourceFingerprint($directory, $metadata);
+            self::assertSame(
+                '/tmp/slides-cache/slides-com-123-' . substr($fingerprint, 0, 12) . '.pdf',
+                PdfExportPolicy::cachePath('/tmp/slides-cache', $directory, $metadata),
+            );
+        } finally {
+            $this->removeDirectory($directory);
+        }
+    }
+
+    public function testManifestMatchesSourceWithoutDependingOnGeneratorVersionOrLocalPdf(): void
+    {
+        $directory = $this->createDeckDirectory();
+        $metadata = $this->metadata();
+        $pdf = $directory . '/generated.pdf';
         $manifest = $directory . '/' . PdfExportPolicy::EXPORT_MANIFEST;
+
         try {
             file_put_contents($pdf, '%PDF-' . str_repeat('x', PdfExportPolicy::MINIMUM_PDF_BYTES));
-            file_put_contents($manifest, json_encode(PdfExportPolicy::exportManifest($directory, $metadata, $pdf, 'generator-a'), JSON_THROW_ON_ERROR));
-            self::assertTrue(PdfExportPolicy::manifestMatches($manifest, $directory, $metadata, 'generator-a'));
+            file_put_contents($manifest, json_encode(PdfExportPolicy::exportManifest(
+                $directory,
+                $metadata,
+                $pdf,
+                'vitormattos/vitormattos.github.io',
+                'generator-a',
+            ), JSON_THROW_ON_ERROR));
+
+            @unlink($pdf);
+            self::assertTrue(PdfExportPolicy::manifestMatchesSource($manifest, $directory, $metadata));
+
             file_put_contents($directory . '/deck.css', 'changed');
-            self::assertFalse(PdfExportPolicy::manifestMatches($manifest, $directory, $metadata, 'generator-a'));
-            file_put_contents($directory . '/deck.css', 'css');
-            self::assertFalse(PdfExportPolicy::manifestMatches($manifest, $directory, $metadata, 'generator-b'));
-            file_put_contents($pdf, '%PDF-' . str_repeat('y', PdfExportPolicy::MINIMUM_PDF_BYTES));
-            self::assertFalse(PdfExportPolicy::manifestMatches($manifest, $directory, $metadata, 'generator-a'));
+            self::assertFalse(PdfExportPolicy::manifestMatchesSource($manifest, $directory, $metadata));
         } finally {
             $this->removeDirectory($directory);
         }
     }
 
-    public function testActionsCacheKeyUsesTheSameCompleteSourceFingerprint(): void
+    private function metadata(): array
     {
-        $directory = $this->createDeckDirectory();
-        try {
-            $metadata = ['id' => 123];
-            $path = PdfExportPolicy::cachePath('/tmp/slides-cache', $directory, $metadata, 'generator-a');
-            self::assertSame('/tmp/slides-cache/123-' . PdfExportPolicy::sourceFingerprint($directory, 'generator-a') . '.pdf', $path);
-            file_put_contents($directory . '/deck.html', '<section>changed</section>');
-            self::assertNotSame($path, PdfExportPolicy::cachePath('/tmp/slides-cache', $directory, $metadata, 'generator-a'));
-        } finally {
-            $this->removeDirectory($directory);
-        }
+        return [
+            'id' => 123,
+            'slug' => 'public-deck',
+            'width' => 960,
+            'height' => 540,
+            'margin' => 0.04,
+            'transition' => 'slide',
+            'background_transition' => 'fade',
+            'rtl' => false,
+            'loop' => false,
+            'theme_font' => 'montserrat',
+            'theme_color' => 'black',
+        ];
     }
 
     private function createDeckDirectory(): string
@@ -135,6 +188,7 @@ final class PdfExportPolicyTest extends TestCase
         file_put_contents($directory . '/deck.html', '<section>slide</section>');
         file_put_contents($directory . '/deck.css', 'css');
         file_put_contents($directory . '/metadata.json', '{}');
+
         return $directory;
     }
 
