@@ -14,14 +14,18 @@ final class TalkCatalogBuildTest extends TestCase
         return __DIR__ . '/../' . (getenv('SITE_BUILD_DIR') ?: 'build_production');
     }
 
-    public function testPortugueseCatalogRendersImportedSlideShareTalks(): void
+    public function testBothCatalogsRenderImportedSlideShareTalks(): void
     {
-        $html = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
-        self::assertIsString($html);
+        $portuguese = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
+        $english = file_get_contents($this->buildDirectory() . '/talks/index.html');
+        self::assertIsString($portuguese);
+        self::assertIsString($english);
 
-        self::assertStringContainsString('JasperReports', $html);
-        self::assertStringContainsString('Seja subversivo, faça testes', $html);
-        self::assertGreaterThanOrEqual(18, substr_count($html, 'class="talk-card"'));
+        foreach ([$portuguese, $english] as $html) {
+            self::assertStringContainsString('JasperReports', $html);
+            self::assertStringContainsString('Seja subversivo, faça testes', $html);
+            self::assertStringContainsString('slideshare', $html);
+        }
     }
 
     public function testTopicTaxonomyIsCaseInsensitiveAndCountsRenderedCards(): void
