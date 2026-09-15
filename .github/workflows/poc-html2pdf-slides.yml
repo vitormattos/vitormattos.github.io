@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 Vitor Mattos
 # SPDX-License-Identifier: AGPL-3.0-or-later
-name: POC html2pdf-slides
+name: POC Slides PDF renderer
 
 on:
   push:
@@ -22,27 +22,31 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Install POC dependencies
+        run: npm install --no-save puppeteer@24.7.2 pdf-lib@1.17.1
+
       - name: Export one Slides.com deck
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p artifacts
           start=$(date +%s)
-          npx --yes html2pdf-slides@1.1.0 \
+          node scripts/poc-slides-pdf.mjs \
             'https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro/embed' \
-            --output artifacts/quem-controla-sua-tecnologia-html2pdf-slides.pdf \
-            --wait 300 \
-            --parallel 2
+            artifacts/quem-controla-sua-tecnologia-focused.pdf
           end=$(date +%s)
           elapsed=$((end - start))
-          bytes=$(stat -c '%s' artifacts/quem-controla-sua-tecnologia-html2pdf-slides.pdf)
+          bytes=$(stat -c '%s' artifacts/quem-controla-sua-tecnologia-focused.pdf)
           printf 'elapsed_seconds=%s\n' "$elapsed" | tee artifacts/benchmark.txt
           printf 'pdf_bytes=%s\n' "$bytes" | tee -a artifacts/benchmark.txt
+          pdfinfo artifacts/quem-controla-sua-tecnologia-focused.pdf \
+            | grep -E 'Pages|Page size|File size|Creator|Producer' \
+            | tee artifacts/pdfinfo.txt
 
       - name: Upload POC result
         uses: actions/upload-artifact@v4
         with:
-          name: html2pdf-slides-poc
+          name: slides-pdf-focused-poc
           path: artifacts/
           if-no-files-found: error
           retention-days: 7
