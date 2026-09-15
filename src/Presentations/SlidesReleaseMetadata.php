@@ -43,7 +43,7 @@ final class SlidesReleaseMetadata
 
         $thumbnailUrl = $thumbnailAssetUrl ?? self::thumbnailUrl($metadata, $repository);
         if ($thumbnailUrl !== null) {
-            $lines[] = '![Presentation thumbnail](' . $thumbnailUrl . ')';
+            $lines[] = self::thumbnailHtml($metadata, $thumbnailUrl);
             $lines[] = '';
         }
 
@@ -82,6 +82,29 @@ final class SlidesReleaseMetadata
         $lines[] = 'The release is keyed by the immutable Slides.com deck ID. New PDF and thumbnail snapshots may be added when the archived presentation changes; previous PDF assets are preserved.';
 
         return rtrim(implode("\n", $lines)) . "\n";
+    }
+
+    private static function thumbnailHtml(array $metadata, string $thumbnailUrl): string
+    {
+        $width = max(1, (int) ($metadata['width'] ?? 0));
+        $height = max(1, (int) ($metadata['height'] ?? 0));
+        $title = self::title($metadata);
+
+        if ($width > 0 && $height > 0) {
+            return sprintf(
+                '<img src="%s" alt="%s" width="%d" height="%d">',
+                htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                $width,
+                $height,
+            );
+        }
+
+        return sprintf(
+            '<img src="%s" alt="%s">',
+            htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+        );
     }
 
     private static function thumbnailUrl(array $metadata, string $repository): ?string
