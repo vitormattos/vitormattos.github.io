@@ -9,11 +9,31 @@
     $tags = array_values(array_filter(array_map('strval', (array) ($talk->tags ?? []))));
     $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
     $encodedTags = htmlspecialchars(json_encode($tags, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
+
+    $thumbnail = $presentation['thumbnail'] ?? null;
+    $hasArchivedPdf = false;
+    if ($talk->slidesId ?? false) {
+        $deckDir = 'presentations/slides.com/' . $talk->slidesId;
+        $localThumbnails = glob($deckDir . '/thumbnail.*') ?: [];
+        if ($localThumbnails !== []) {
+            $thumbnail = '/' . $localThumbnails[0];
+        }
+
+        $manifestPath = $deckDir . '/export.json';
+        if (is_file($manifestPath)) {
+            try {
+                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+                $hasArchivedPdf = isset($manifest['pdf']['url']) && $manifest['pdf']['url'] !== '';
+            } catch (Throwable) {
+                $hasArchivedPdf = false;
+            }
+        }
+    }
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
-        @if ($presentation['thumbnail'] ?? false)
-            <img src="{{ $presentation['thumbnail'] }}" alt="" loading="lazy">
+        @if ($thumbnail)
+            <img src="{{ str_starts_with($thumbnail, '/') ? $page->baseUrl . $thumbnail : $thumbnail }}" alt="" loading="lazy">
         @elseif ($type === 'reveal' && $sourcePath)
             <div class="presentation-thumbnail" aria-hidden="true"><div class="reveal js-reveal-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail"><div class="slides"><section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}" data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$" data-separator-notes="^Notes?:"></section></div></div></div>
         @elseif (in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
@@ -51,7 +71,7 @@
             <div class="talk-card__formats" aria-label="{{ $isEnglish ? 'Available formats' : 'Formatos disponíveis' }}">
                 <span class="format-badge">{{ $type }}</span>
                 @if ($presentation['localHtml'] ?? false)<span class="format-badge">HTML</span>@endif
-                @if (($presentation['localPdf'] ?? false) || ($presentation['pdf'] ?? false))<span class="format-badge">PDF</span>@endif
+                @if ($hasArchivedPdf || ($presentation['localPdf'] ?? false) || ($presentation['pdf'] ?? false))<span class="format-badge">PDF</span>@endif
                 @if ($presentation['video'] ?? false)<span class="format-badge">{{ $isEnglish ? 'video' : 'vídeo' }}</span>@endif
             </div>
             @if ($presentation['themeColor'] ?? false)
