@@ -86,25 +86,23 @@ final class SlidesReleaseMetadata
 
     private static function thumbnailHtml(array $metadata, string $thumbnailUrl): string
     {
-        $width = max(1, (int) ($metadata['width'] ?? 0));
-        $height = max(1, (int) ($metadata['height'] ?? 0));
+        $width = (int) ($metadata['width'] ?? 0);
+        $height = (int) ($metadata['height'] ?? 0);
         $title = self::title($metadata);
+        $src = htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $alt = htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
         if ($width > 0 && $height > 0) {
             return sprintf(
                 '<img src="%s" alt="%s" width="%d" height="%d">',
-                htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-                htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+                $src,
+                $alt,
                 $width,
                 $height,
             );
         }
 
-        return sprintf(
-            '<img src="%s" alt="%s">',
-            htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-            htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-        );
+        return sprintf('<img src="%s" alt="%s">', $src, $alt);
     }
 
     private static function thumbnailUrl(array $metadata, string $repository): ?string
