@@ -39,10 +39,7 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
         $pageHtml = tryDownloadText((string) $metadata['source_url'], $id);
         $original = downloadOriginal($metadata, $cacheDirectory);
         $pdf = buildPdf($original, $cacheDirectory, $id);
-        $thumbnail = archiveThumbnail($directory, $pageHtml);
-        if ($thumbnail === null && $pdf !== null) {
-            $thumbnail = thumbnailFromPdf($directory, $pdf);
-        }
+        $thumbnail = archiveRemoteThumbnail($pageHtml, $cacheDirectory, $id);
 
         $thumbnailAsset = $thumbnail !== null
             ? contentAddressedAsset($repository, $tag, $thumbnail, 'thumbnail')
@@ -80,6 +77,7 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
             if ($asset === null || isset($seenAssets[$asset['name']])) {
                 continue;
             }
+
             uploadAssetIfMissing($repository, $tag, $asset['path'], $asset['name']);
             $seenAssets[$asset['name']] = true;
         }
@@ -112,7 +110,7 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
 
         updateManagedTalk(
             (string) $metadata['id'],
-            $thumbnail !== null ? '/' . $thumbnail : null,
+            $thumbnailAsset['url'] ?? null,
             $pdfAsset['url'] ?? null,
             $originalAsset['url'] ?? null,
         );
@@ -208,10 +206,10 @@ function httpGet(string $url, string $accept = '*/*'): array
     return [$bytes, $status];
 }
 
-function archiveThumbnail(string $directory, ?string $html): ?string
+function archiveRemoteThumbnail(?string $html, string $cacheDirectory, string $id): ?string
 {
     if ($html === null) {
-        return existingThumbnail($directory);
+        return null;
     }
 
     $url = null;
@@ -226,7 +224,7 @@ function archiveThumbnail(string $directory, ?string $html): ?string
     }
 
     if ($url === null) {
-        return existingThumbnail($directory);
+        return null;
     }
 
     try {
@@ -234,11 +232,11 @@ function archiveThumbnail(string $directory, ?string $html): ?string
         [$bytes, $status] = httpGet($url, 'image/*');
     } catch (Throwable $exception) {
         fwrite(STDERR, "::warning::Could not archive SlideShare thumbnail: {$exception->getMessage()}\n");
-        return existingThumbnail($directory);
+        return null;
     }
 
     if ($status < 200 || $status >= 300 || $bytes === '') {
-        return existingThumbnail($directory);
+        return null;
     }
 
     $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -250,50 +248,13 @@ function archiveThumbnail(string $directory, ?string $html): ?string
         default => null,
     };
     if ($extension === null) {
-        return existingThumbnail($directory);
+        return null;
     }
 
-    return writeThumbnail($directory, $bytes, $extension);
-}
+    $path = rtrim($cacheDirectory, '/') . '/slideshare-' . safeId($id) . '-thumbnail.' . $extension;
+    file_put_contents($path, $bytes);
 
-function thumbnailFromPdf(string $directory, string $pdf): ?string
-{
-    $prefix = sys_get_temp_dir() . '/slideshare-thumbnail-' . basename($directory);
-    $command = sprintf(
-        'pdftoppm -f 1 -singlefile -png -scale-to-x 1280 -scale-to-y -1 %s %s >/dev/null 2>&1',
-        escapeshellarg($pdf),
-        escapeshellarg($prefix),
-    );
-    exec($command, $output, $exitCode);
-    $generated = $prefix . '.png';
-    if ($exitCode !== 0 || !is_file($generated)) {
-        return existingThumbnail($directory);
-    }
-
-    $bytes = (string) file_get_contents($generated);
-    @unlink($generated);
-
-    return $bytes !== '' ? writeThumbnail($directory, $bytes, 'png') : existingThumbnail($directory);
-}
-
-function writeThumbnail(string $directory, string $bytes, string $extension): string
-{
-    $target = $directory . '/thumbnail.' . $extension;
-    file_put_contents($target, $bytes);
-    foreach (glob($directory . '/thumbnail.*') ?: [] as $candidate) {
-        if ($candidate !== $target && is_file($candidate)) {
-            unlink($candidate);
-        }
-    }
-
-    return $target;
-}
-
-function existingThumbnail(string $directory): ?string
-{
-    $matches = glob($directory . '/thumbnail.*') ?: [];
-
-    return $matches[0] ?? null;
+    return $path;
 }
 
 function downloadOriginal(array $metadata, string $cacheDirectory): ?string
