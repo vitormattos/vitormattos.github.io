@@ -85,9 +85,13 @@ function bindToolbar(toolbar) {
     });
 }
 
+function normalizeTag(tag) {
+    return String(tag ?? '').trim().toLocaleLowerCase();
+}
+
 function readTags(card) {
     try {
-        return JSON.parse(card.dataset.talkTags ?? '[]');
+        return JSON.parse(card.dataset.talkTags ?? '[]').map(normalizeTag);
     } catch {
         return [];
     }
@@ -102,7 +106,7 @@ function initializeTagFilter(gallery) {
     const empty = document.querySelector('[data-talk-filter-empty]');
 
     const applyTag = (tag, updateHistory = false) => {
-        const normalized = tag.trim();
+        const normalized = normalizeTag(tag);
         let visible = 0;
 
         for (const card of cards) {
@@ -112,7 +116,7 @@ function initializeTagFilter(gallery) {
         }
 
         for (const link of filter.querySelectorAll('[data-talk-tag]')) {
-            const selected = link.dataset.talkTag === normalized;
+            const selected = normalizeTag(link.dataset.talkTag) === normalized;
             if (selected) link.setAttribute('aria-current', 'true');
             else link.removeAttribute('aria-current');
         }
@@ -120,7 +124,7 @@ function initializeTagFilter(gallery) {
         if (status) {
             status.textContent = normalized === ''
                 ? ''
-                : `${visible} ${visible === 1 ? 'presentation' : 'presentations'} · ${normalized}`;
+                : `${visible} ${visible === 1 ? 'presentation' : 'presentations'} · ${tag.trim()}`;
         }
         if (empty) empty.hidden = visible !== 0;
 
