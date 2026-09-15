@@ -34,7 +34,7 @@ try {
     const style = document.createElement('style');
     style.textContent = `
       html,body,.reveal-viewport{margin:0!important;padding:0!important;width:960px!important;height:540px!important;min-height:540px!important;max-height:540px!important;overflow:hidden!important}
-      .reveal{position:absolute!important;inset:0!important;width:960px!important;height:540px!important;margin:0!important}
+      .reveal{position:absolute!important;inset:0!important;width:960px!important;height:540px!important;margin:0!important;opacity:1!important}
       .controls,.progress,.slide-number,.speaker-notes,.playback,.pause-overlay{display:none!important}
       *,*::before,*::after{transition-duration:0s!important;transition-delay:0s!important;animation-duration:0s!important;animation-delay:0s!important}
     `;
@@ -46,9 +46,8 @@ try {
   console.log('Deck config:', JSON.stringify({ width: setup.config.width, height: setup.config.height, margin: setup.config.margin }));
   const pdf = await PDFDocument.create();
 
-  for (let pageNumber = 0; pageNumber < setup.indices.length; pageNumber++) {
-    const index = setup.indices[pageNumber];
-    const diagnostics = await page.evaluate(({ h, v }) => {
+  for (const index of setup.indices) {
+    await page.evaluate(({ h, v }) => {
       Reveal.slide(h, v);
       Reveal.sync();
       const current = Reveal.getCurrentSlide();
@@ -56,17 +55,7 @@ try {
         fragment.classList.add('visible');
         fragment.classList.remove('current-fragment');
       });
-      if (h !== 0 || v !== 0) return null;
-      const chain = [];
-      let el = current?.querySelector('h1');
-      while (el && el !== document.documentElement) {
-        const s = getComputedStyle(el);
-        chain.push({ tag: el.tagName, className: typeof el.className === 'string' ? el.className : '', opacity: s.opacity, color: s.color, filter: s.filter, visibility: s.visibility, mixBlendMode: s.mixBlendMode });
-        el = el.parentElement;
-      }
-      return chain;
     }, { h: index.h, v: index.v ?? 0 });
-    if (diagnostics) console.log('First slide ancestor chain:', JSON.stringify(diagnostics));
     await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     const buffer = await page.screenshot({ type: 'png', fullPage: false, captureBeyondViewport: false, clip: { x: 0, y: 0, width, height } });
     const image = await pdf.embedPng(buffer);
