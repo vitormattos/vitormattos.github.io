@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/porque-fazer-testes/fullscreen",
         "edit": "https://slides.com/vitormattos/porque-fazer-testes/edit",
         "present": "https://slides.com/vitormattos/porque-fazer-testes/live"
-    }
+    },
+    "description": "Muitas pessoas desconhecem a importância de se escrever testes automatizados para seus sistemas. Neste workshop veremos na prática a importância de escrita de tests automatizados e como criá-los, boas práticas para escrita de testes e muito mais.",
+    "thumbnail_path": "/presentations/slides.com/1431853/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/79cda77b63dd05a0230eee8728ca6c80/thumb.jpg?1550188702"
 }

@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/fullscreen",
         "edit": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/edit",
         "present": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/live"
-    }
+    },
+    "description": "Vivemos em um mundo onde praticamente tudo tem alguma relação com a web mas como funcionam estas ferramentas que de alguma forma necessitam de um ecossistema web? Compreenda um pouco mais da arquitetura de aplicações web, desde um simples site até uma aplicação embarcada ou mobile.",
+    "thumbnail_path": "/presentations/slides.com/1289663/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/6f9b1d1381a5e25fccc97933c02f22c4/thumb.jpg?1530982198"
 }

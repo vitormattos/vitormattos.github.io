@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/nextcloud-app/fullscreen",
         "edit": "https://slides.com/vitormattos/nextcloud-app/edit",
         "present": "https://slides.com/vitormattos/nextcloud-app/live"
-    }
+    },
+    "description": "A simple Nextcloud app tutorial",
+    "thumbnail_path": "/presentations/slides.com/2384412/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/305c63907ae5d1f5699690989fba2cf3/thumb.jpg?1650647683"
 }

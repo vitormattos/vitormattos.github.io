@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/php-primeiros-passos/fullscreen",
         "edit": "https://slides.com/vitormattos/php-primeiros-passos/edit",
         "present": "https://slides.com/vitormattos/php-primeiros-passos/live"
-    }
+    },
+    "description": "PHP: Primeiros passos",
+    "thumbnail_path": "/presentations/slides.com/1397238/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/16b0abc81c8453f9f5dcbe1ce1837062/thumb.jpg?1558136725"
 }

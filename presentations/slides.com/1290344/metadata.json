@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/fullscreen",
         "edit": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/edit",
         "present": "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/live"
-    }
+    },
+    "description": "Conheça um pouco mais sobre o que é o Teleram, uma ótima ferramenta de mensagens instantâneas com recursos super úteis para devs, sobre os recursos de usa api de bots e as possibilidades de uso destes recursos.",
+    "thumbnail_path": "/presentations/slides.com/1290344/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/c268010a8a2ed201b4671247f0cabbb0/thumb.jpg?1531083360"
 }
