@@ -1,11 +1,12 @@
 # SPDX-FileCopyrightText: 2026 Vitor Mattos
 # SPDX-License-Identifier: AGPL-3.0-or-later
-name: Deploy after Slides.com publishing
+name: Deploy after presentation publishing
 
 on:
   workflow_run:
     workflows:
       - Publish Slides.com PDFs
+      - Publish SlideShare archive
     types:
       - completed
 
