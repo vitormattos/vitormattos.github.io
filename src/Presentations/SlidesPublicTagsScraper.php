@@ -58,7 +58,7 @@ final class SlidesPublicTagsScraper
                 continue;
             }
 
-            $matchedDecks = $this->extractKnownDeckUrls($html, array_keys($knownDecks));
+            $matchedDecks = $this->extractRenderedKnownDeckUrls($html, array_keys($knownDecks));
             if ($matchedDecks === []) {
                 continue;
             }
@@ -79,11 +79,10 @@ final class SlidesPublicTagsScraper
     }
 
     /**
-     * Slides currently renders part of the profile navigation from serialized
-     * client-side data, so tag routes are not guaranteed to exist as <a>
-     * elements in the initial HTML. We collect owned routes from both anchors
-     * and the raw document, then verify every candidate by checking whether its
-     * page actually contains one of the public decks returned by the API.
+     * Tag routes can be present in serialized profile data even when they are
+     * not rendered as anchors. Serialized data is therefore used only for tag
+     * discovery. Deck membership is determined from rendered links on the tag
+     * page so profile-wide hydration data cannot inflate tag counts.
      *
      * @param list<string> $knownDeckUrls
      *
@@ -154,10 +153,12 @@ final class SlidesPublicTagsScraper
         return array_values(array_unique($routes));
     }
 
-    /** @param list<string> $knownDeckUrls
-     *  @return list<string>
+    /**
+     * @param list<string> $knownDeckUrls
+     *
+     * @return list<string>
      */
-    private function extractKnownDeckUrls(string $html, array $knownDeckUrls): array
+    private function extractRenderedKnownDeckUrls(string $html, array $knownDeckUrls): array
     {
         $known = array_fill_keys($knownDeckUrls, true);
         $matches = [];
@@ -166,14 +167,6 @@ final class SlidesPublicTagsScraper
             $canonical = $this->canonicalOwnedUrl($this->resolveUrl($href));
             if ($canonical !== null && isset($known[$canonical])) {
                 $matches[$canonical] = true;
-            }
-        }
-
-        $normalizedHtml = html_entity_decode(str_replace('\\/', '/', $html), ENT_QUOTES | ENT_HTML5);
-        foreach ($knownDeckUrls as $deckUrl) {
-            $path = (string) parse_url($deckUrl, PHP_URL_PATH);
-            if (str_contains($normalizedHtml, $deckUrl) || ($path !== '' && str_contains($normalizedHtml, $path))) {
-                $matches[$deckUrl] = true;
             }
         }
 
