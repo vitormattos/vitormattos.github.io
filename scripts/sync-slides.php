@@ -155,13 +155,19 @@ foreach ($summaries as $summary) {
     }
 }
 
-$publicUrls = array_values(array_filter(array_map(
-    static fn(array $deck): string => rtrim((string) ($deck['url'] ?? ''), '/'),
-    $publicDecks,
-)));
+$publicDeckIdsByUrl = [];
+foreach ($publicDecks as $deck) {
+    $url = rtrim((string) ($deck['url'] ?? ''), '/');
+    if ($url === '') {
+        continue;
+    }
+
+    $publicDeckIdsByUrl[$url] = (string) $deck['id'];
+}
+
 $tagsByUrl = [];
 try {
-    $tagsByUrl = (new SlidesPublicTagsScraper('vitormattos'))->scrape($publicUrls);
+    $tagsByUrl = (new SlidesPublicTagsScraper('vitormattos'))->scrape($publicDeckIdsByUrl);
 } catch (Throwable $exception) {
     fwrite(STDERR, 'Slides.com tag scraping failed; continuing without tags: ' . $exception->getMessage() . "\n");
 }
