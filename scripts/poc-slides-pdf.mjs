@@ -35,29 +35,38 @@ try {
     }));
   });
 
-  const bottomElements = await page.evaluate(() => Array.from(document.querySelectorAll('body *'))
-    .map((el) => {
-      const rect = el.getBoundingClientRect();
-      const style = getComputedStyle(el);
-      return {
+  const before = await page.evaluate(() => {
+    const rect = (selector) => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { x: r.x, y: r.y, width: r.width, height: r.height };
+    };
+    return {
+      config: Reveal.getConfig(),
+      reveal: rect('.reveal'),
+      slides: rect('.reveal .slides'),
+      backgrounds: rect('.reveal .backgrounds'),
+      bodyChildren: Array.from(document.body.children).map((el) => ({
         tag: el.tagName.toLowerCase(),
         id: el.id,
         className: typeof el.className === 'string' ? el.className : '',
-        x: Math.round(rect.x),
-        y: Math.round(rect.y),
-        width: Math.round(rect.width),
-        height: Math.round(rect.height),
-        position: style.position,
-        zIndex: style.zIndex,
-      };
-    })
-    .filter((item) => item.height > 0 && item.width > 0 && item.y + item.height > window.innerHeight - 35)
-    .filter((item) => ['fixed', 'absolute'].includes(item.position) || item.height <= 50)
-    .slice(0, 40));
-  console.log('Bottom DOM candidates:', JSON.stringify(bottomElements));
+        rect: (() => {
+          const r = el.getBoundingClientRect();
+          return { x: r.x, y: r.y, width: r.width, height: r.height };
+        })(),
+      })),
+    };
+  });
+  console.log('Layout before cleanup:', JSON.stringify(before));
 
   const setup = await page.evaluate(() => {
     Reveal.configure({
+      width: 960,
+      height: 540,
+      margin: 0,
+      minScale: 1,
+      maxScale: 1,
       transition: 'none',
       backgroundTransition: 'none',
       transitionSpeed: 'fastest',
@@ -67,32 +76,27 @@ try {
     });
 
     const selectors = [
-      '.controls',
-      '.progress',
-      '.slide-number',
-      '.speaker-notes',
-      '.playback',
-      '.pause-overlay',
-      '.sl-block-controls',
-      '.sl-menu',
-      '.sl-watermark',
-      '.sl-footer',
-      '.sl-deck-footer',
-      '.deck-footer',
-      'footer',
+      '.controls', '.progress', '.slide-number', '.speaker-notes', '.playback',
+      '.pause-overlay', '.sl-block-controls', '.sl-menu', '.sl-watermark',
+      '.sl-footer', '.sl-deck-footer', '.deck-footer', '.sl-embed-footer',
+      '.embed-footer', '[class*="footer"]', 'footer',
     ];
-    document.querySelectorAll(selectors.join(',')).forEach((el) => {
-      el.style.setProperty('display', 'none', 'important');
-    });
+    document.querySelectorAll(selectors.join(',')).forEach((el) => el.remove());
 
     const style = document.createElement('style');
     style.dataset.pocPdf = 'true';
     style.textContent = `
-      html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; height: 100% !important; overflow: hidden !important; }
-      .reveal { width: 100vw !important; height: 100vh !important; margin: 0 !important; }
-      .controls, .progress, .slide-number, .speaker-notes, .playback, .pause-overlay,
-      .sl-block-controls, .sl-menu, .sl-watermark, .sl-footer, .sl-deck-footer,
-      .deck-footer, footer { display: none !important; }
+      html, body, .reveal-viewport, .reveal {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 960px !important;
+        height: 540px !important;
+        min-height: 540px !important;
+        max-height: 540px !important;
+        overflow: hidden !important;
+      }
+      .reveal { position: absolute !important; inset: 0 !important; }
+      .reveal .backgrounds { width: 960px !important; height: 540px !important; }
       *, *::before, *::after {
         transition-duration: 0s !important;
         transition-delay: 0s !important;
@@ -103,16 +107,27 @@ try {
     document.head.appendChild(style);
 
     Reveal.layout();
-    const reveal = document.querySelector('.reveal');
-    const rect = reveal?.getBoundingClientRect();
-    const indices = Reveal.getSlides().map((slide) => Reveal.getIndices(slide));
+
+    const rect = (selector) => {
+      const el = document.querySelector(selector);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      return { x: r.x, y: r.y, width: r.width, height: r.height };
+    };
+
     return {
-      revealRect: rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null,
-      indices,
+      reveal: rect('.reveal'),
+      slides: rect('.reveal .slides'),
+      backgrounds: rect('.reveal .backgrounds'),
+      indices: Reveal.getSlides().map((slide) => Reveal.getIndices(slide)),
     };
   });
 
-  console.log('Reveal rect after cleanup:', JSON.stringify(setup.revealRect));
+  console.log('Layout after cleanup:', JSON.stringify({
+    reveal: setup.reveal,
+    slides: setup.slides,
+    backgrounds: setup.backgrounds,
+  }));
   console.log(`Slides discovered: ${setup.indices.length}`);
 
   const pdf = await PDFDocument.create();
@@ -129,18 +144,16 @@ try {
       Reveal.sync();
     }, { h: index.h, v: index.v ?? 0 });
 
-    // Two animation frames are enough after transitions are disabled while still
-    // allowing browser layout/paint to settle without a fixed per-slide delay.
     await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 
     const buffer = await page.screenshot({
-      type: 'jpeg',
-      quality: 92,
+      type: 'png',
       fullPage: false,
       captureBeyondViewport: false,
+      clip: { x: 0, y: 0, width, height },
     });
 
-    const image = await pdf.embedJpg(buffer);
+    const image = await pdf.embedPng(buffer);
     const pdfPage = pdf.addPage([width, height]);
     pdfPage.drawImage(image, { x: 0, y: 0, width, height });
     pageNumber += 1;
