@@ -9,6 +9,10 @@ alternateUrl: /talks/libresign-integrations/
 title: "LibreSign - Integrações"
 description: Palestra sobre arquitetura do LibreSign, software livre, privacidade, Nextcloud, APIs, integração com GLPI e os desafios de sustentar um projeto de código aberto.
 date: 2022-11-25
+tags:
+  - LibreSign
+  - Nextcloud
+  - Software Livre
 presentation:
   type: slides.com
   embed: https://slides.com/vitormattos/libresign-integracao/embed

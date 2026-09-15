@@ -54,7 +54,9 @@ jobs:
       - name: Compute Slides.com preview cache key
         id: slides-cache-key
         if: github.event.action != 'closed'
-        run: echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "day=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+          echo "generator=${{ hashFiles('scripts/sync-slides.php', 'src/Presentations/SlidesPublicTagsScraper.php') }}" >> "$GITHUB_OUTPUT"
 
       - name: Restore synchronized Slides.com preview content
         id: slides-preview-cache
@@ -65,14 +67,15 @@ jobs:
             source/_talks
             source/_talksEn
             presentations/slides.com
-          key: slides-preview-v1-pr-${{ github.event.pull_request.number }}-${{ steps.slides-cache-key.outputs.day }}-${{ hashFiles('scripts/sync-slides.php') }}
+          key: slides-preview-v2-pr-${{ github.event.pull_request.number }}-${{ steps.slides-cache-key.outputs.day }}-${{ steps.slides-cache-key.outputs.generator }}
           restore-keys: |
-            slides-preview-v1-pr-${{ github.event.pull_request.number }}-
+            slides-preview-v2-pr-${{ github.event.pull_request.number }}-
 
       - name: Synchronize public Slides.com decks for preview
         if: github.event.action != 'closed' && steps.slides-preview-cache.outputs.cache-hit != 'true'
         env:
           SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
+          SLIDES_TAGS_DEBUG: '1'
         run: php scripts/sync-slides.php
 
       - name: Install frontend dependencies

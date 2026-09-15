@@ -10,6 +10,7 @@ export default defineConfig({
             input: [
                 'source/_assets/scss/main.scss',
                 'source/_assets/scss/presentations.scss',
+                'source/_assets/scss/talks-catalog.scss',
                 'source/_assets/js/presentations.js',
             ],
             refresh: true,
