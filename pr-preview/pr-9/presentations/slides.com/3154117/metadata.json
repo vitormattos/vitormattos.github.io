@@ -1,0 +1,35 @@
+{
+    "_spdx": {
+        "copyright": "2026 Vitor Mattos",
+        "license": "CC-BY-SA-4.0"
+    },
+    "id": 3154117,
+    "slug": "docker-dev-to-prod",
+    "title": "Containers docker",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/docker-dev-to-prod",
+    "embed_url": "https://slides.com/vitormattos/docker-dev-to-prod/embed",
+    "tags": {
+        "slides_com": []
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/36828ca2b728e8c884891983ffc457cb/thumb.jpg?1711488685",
+    "slide_count": 45,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "none",
+    "background_transition": "none",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "helvetica",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2024-03-26T15:25:35.797Z",
+    "updated_at": "2024-08-31T18:34:38.620Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/docker-dev-to-prod",
+        "fullscreen": "https://slides.com/vitormattos/docker-dev-to-prod/fullscreen",
+        "edit": "https://slides.com/vitormattos/docker-dev-to-prod/edit",
+        "present": "https://slides.com/vitormattos/docker-dev-to-prod/live"
+    }
+}
