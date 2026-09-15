@@ -34,16 +34,12 @@ final class SlideShareArchiveTest extends TestCase
             self::assertSame('public', $metadata['visibility'] ?? null, $file);
             self::assertNotEmpty($metadata['published_at'] ?? null, $file);
             self::assertSame([], array_values(array_diff(array_keys($metadata), $allowed)), $file);
+            self::assertNoForbiddenKeys($metadata, $forbidden, $file);
 
             $route = (str_starts_with((string) $metadata['language'], 'pt') ? '/pt-BR/palestras/' : '/talks/')
                 . (string) $metadata['slug'];
             self::assertArrayNotHasKey($route, $routes, 'Duplicate generated route: ' . $route);
             $routes[$route] = (string) $metadata['id'];
-
-            $serialized = json_encode($metadata, JSON_THROW_ON_ERROR);
-            foreach ($forbidden as $field) {
-                self::assertStringNotContainsString('"' . $field . '"', $serialized, $file);
-            }
         }
     }
 
@@ -77,5 +73,17 @@ final class SlideShareArchiveTest extends TestCase
         self::assertStringContainsString('**SlideShare:** https://pt.slideshare.net/slideshow/jasperreports/10406513', $body);
         self::assertStringContainsString('**Archived PDF:** https://example.invalid/archive.pdf', $body);
         self::assertStringContainsString('**Original archived file:** https://example.invalid/original.ppt', $body);
+    }
+
+    private static function assertNoForbiddenKeys(array $value, array $forbidden, string $file): void
+    {
+        foreach ($value as $key => $nested) {
+            if (is_string($key)) {
+                self::assertNotContains($key, $forbidden, $file . ': forbidden metadata key ' . $key);
+            }
+            if (is_array($nested)) {
+                self::assertNoForbiddenKeys($nested, $forbidden, $file);
+            }
+        }
     }
 }
