@@ -46,6 +46,41 @@ final class SlidesPublicTagsScraperTest extends TestCase
         ]));
     }
 
+    public function testItDiscoversTagsFromSerializedProfileData(): void
+    {
+        $pages = [
+            'https://slides.com/vitormattos' => <<<'HTML'
+                <script>
+                window.__PROFILE__ = {"filters":["\/vitormattos\/software-livre"],"decks":["\/vitormattos\/deck-a"]};
+                </script>
+                HTML,
+            'https://slides.com/vitormattos/software-livre' => <<<'HTML'
+                <script>window.__DECKS__=["https:\/\/slides.com\/vitormattos\/deck-a"];</script>
+                HTML,
+        ];
+
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static function (string $url) use ($pages): string {
+            return $pages[$url] ?? throw new RuntimeException("Unexpected URL: {$url}");
+        });
+
+        self::assertSame([
+            'https://slides.com/vitormattos/deck-a' => ['Software Livre'],
+        ], $scraper->scrape(['https://slides.com/vitormattos/deck-a']));
+    }
+
+    public function testItNormalizesDeckUrlsBeforeMatchingTags(): void
+    {
+        $pages = [
+            'https://slides.com/vitormattos' => '<a href="/vitormattos/php">PHP</a>',
+            'https://slides.com/vitormattos/php' => '<a href="http://slides.com/vitormattos/deck-a?foo=bar#slide-1">Deck A</a>',
+        ];
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $pages[$url]);
+
+        self::assertSame([
+            'https://slides.com/vitormattos/deck-a' => ['PHP'],
+        ], $scraper->scrape(['https://slides.com/vitormattos/deck-a?utm_source=api']));
+    }
+
     public function testItNeverInventsOrImportsUnknownDecks(): void
     {
         $pages = [
