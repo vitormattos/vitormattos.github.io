@@ -109,6 +109,20 @@ final class PdfExportPolicyTest extends TestCase
         }
     }
 
+    public function testSourceArtifactsAllowMissingOptionalCss(): void
+    {
+        $directory = $this->createDeckDirectory();
+        try {
+            unlink($directory . '/deck.css');
+            $artifacts = PdfExportPolicy::sourceArtifacts($directory);
+            self::assertArrayHasKey('deck.html', $artifacts);
+            self::assertArrayNotHasKey('deck.css', $artifacts);
+            self::assertNotSame('', PdfExportPolicy::sourceFingerprint($directory, $this->metadata()));
+        } finally {
+            $this->removeDirectory($directory);
+        }
+    }
+
     public function testGeneratorVersionDoesNotInvalidateSourceFingerprint(): void
     {
         $directory = $this->createDeckDirectory();
