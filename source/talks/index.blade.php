@@ -19,7 +19,8 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
 
 @section('body')
 @php
-    $catalog = \App\Presentations\TalkTopics::taxonomy($talksEn);
+    $mergedTalks = \App\Presentations\TalkTopics::mergeCatalog($talksEn, $talks);
+    $catalog = \App\Presentations\TalkTopics::taxonomy($mergedTalks);
     $talkItems = $catalog['items'];
     $topics = $catalog['topics'];
 @endphp
@@ -75,7 +76,7 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
         </div>
         <div class="talk-list" data-talk-gallery data-view="grid">
             @foreach ($talkItems as $talk)
-                @include('_partials.talk.card', ['talk' => $talk])
+                @include('_partials.talk.card', ['talk' => $talk, 'tagIndexPath' => '/talks/'])
             @endforeach
         </div>
         <p class="talk-filter-empty" data-talk-filter-empty hidden>No talks were found for this topic.</p>
