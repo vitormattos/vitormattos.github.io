@@ -62,8 +62,6 @@ try {
 
   const setup = await page.evaluate(() => {
     Reveal.configure({
-      // Slides.com native PDF export fills the 16:9 page. Keep the deck's logical
-      // 1280x720 geometry, but remove reveal.js presentation margin.
       margin: 0,
       transition: 'none',
       backgroundTransition: 'none',
@@ -142,6 +140,7 @@ try {
   for (const index of setup.indices) {
     await page.evaluate(({ h, v }) => {
       Reveal.slide(h, v);
+      Reveal.sync();
       const current = Reveal.getCurrentSlide();
       current?.querySelectorAll('.fragment').forEach((fragment) => {
         fragment.classList.add('visible');
