@@ -19,7 +19,8 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
 
 @section('body')
 @php
-    $catalog = \App\Presentations\TalkTopics::taxonomy($talks);
+    $mergedTalks = \App\Presentations\TalkTopics::mergeCatalog($talks, $talksEn);
+    $catalog = \App\Presentations\TalkTopics::taxonomy($mergedTalks);
     $talkItems = $catalog['items'];
     $topics = $catalog['topics'];
 @endphp
@@ -75,7 +76,7 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
         </div>
         <div class="talk-list" data-talk-gallery data-view="grid">
             @foreach ($talkItems as $talk)
-                @include('_partials.talk.card', ['talk' => $talk])
+                @include('_partials.talk.card', ['talk' => $talk, 'tagIndexPath' => '/pt-BR/palestras/'])
             @endforeach
         </div>
         <p class="talk-filter-empty" data-talk-filter-empty hidden>Nenhuma palestra foi encontrada para este tópico.</p>
