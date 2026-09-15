@@ -11,9 +11,11 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 $cacheDirectory = getenv('SLIDES_PDF_CACHE_DIR') ?: '.cache/slides-pdf';
 $repository = getenv('GITHUB_REPOSITORY') ?: '';
+$ghToken = getenv('GH_TOKEN') ?: '';
 
-if ($repository === '') {
-    throw new RuntimeException('GITHUB_REPOSITORY is required to publish presentation PDFs.');
+if ($repository === '' || $ghToken === '') {
+    fwrite(STDOUT, "PDF publication deferred: GITHUB_REPOSITORY and GH_TOKEN are required.\n");
+    exit(0);
 }
 
 if (!is_dir($cacheDirectory) && !mkdir($cacheDirectory, 0777, true) && !is_dir($cacheDirectory)) {
@@ -150,10 +152,14 @@ function ensureRelease(string $repository, string $releaseTag, string $title): v
 
 function uploadReleaseAsset(string $repository, string $releaseTag, string $pdfPath, string $assetName): void
 {
+    if (basename($pdfPath) !== $assetName) {
+        throw new RuntimeException("Release asset path must already use the content-addressed filename {$assetName}.");
+    }
+
     $upload = sprintf(
         'gh release upload %s %s --repo %s',
         escapeshellarg($releaseTag),
-        escapeshellarg($pdfPath . '#' . $assetName),
+        escapeshellarg($pdfPath),
         escapeshellarg($repository),
     );
     passthru($upload, $exitCode);
