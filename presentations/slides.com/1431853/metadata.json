@@ -2,15 +2,9 @@
     "id": 1431853,
     "slug": "porque-fazer-testes",
     "title": "Porque fazer testes?",
-    "description": "Muitas pessoas desconhecem a importância de se escrever testes automatizados para seus sistemas. Neste workshop veremos na prática a importância de escrita de tests automatizados e como criá-los, boas práticas para escrita de testes e muito mais.",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/porque-fazer-testes",
     "embed_url": "https://slides.com/vitormattos/porque-fazer-testes/embed",
-    "tags": {
-        "slides_com": [
-            "testes"
-        ]
-    },
     "thumbnail_url": "https://media.slid.es/thumbnails/79cda77b63dd05a0230eee8728ca6c80/thumb.jpg?1550188702",
     "slide_count": 43,
     "width": 1024,

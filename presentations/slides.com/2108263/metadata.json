@@ -2,16 +2,9 @@
     "id": 2108263,
     "slug": "libresign",
     "title": "LibreSign",
-    "description": "https://youtu.be/WJpe_NnmW8o Revolucione a maneira de assinar documentos",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/libresign",
     "embed_url": "https://slides.com/vitormattos/libresign/embed",
-    "tags": {
-        "slides_com": [
-            "opensource",
-            "php"
-        ]
-    },
     "thumbnail_url": "https://media.slid.es/thumbnails/ceb17c9080d20f367a272376e09fbd71/thumb.jpg?1669385101",
     "slide_count": 42,
     "width": 1024,

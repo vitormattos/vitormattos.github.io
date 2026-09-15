@@ -2,13 +2,9 @@
     "id": 3154117,
     "slug": "docker-dev-to-prod",
     "title": "Containers docker",
-    "description": "Using Docker containers for development and production, know the benefits and importance of Docker in the development process, about agility, reproducibility, and the use of different versions for an efficient development environment.",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/docker-dev-to-prod",
     "embed_url": "https://slides.com/vitormattos/docker-dev-to-prod/embed",
-    "tags": {
-        "slides_com": []
-    },
     "thumbnail_url": "https://media.slid.es/thumbnails/36828ca2b728e8c884891983ffc457cb/thumb.jpg?1711488685",
     "slide_count": 45,
     "width": 1024,

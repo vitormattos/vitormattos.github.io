@@ -2,13 +2,9 @@
     "id": 2384412,
     "slug": "nextcloud-app",
     "title": "Nextcloud app tutorial",
-    "description": "A simple Nextcloud app tutorial",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/nextcloud-app",
     "embed_url": "https://slides.com/vitormattos/nextcloud-app/embed",
-    "tags": {
-        "slides_com": []
-    },
     "thumbnail_url": "https://media.slid.es/thumbnails/305c63907ae5d1f5699690989fba2cf3/thumb.jpg?1650647683",
     "slide_count": 70,
     "width": 960,

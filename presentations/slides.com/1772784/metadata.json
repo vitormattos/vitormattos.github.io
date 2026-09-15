@@ -2,17 +2,9 @@
     "id": 1772784,
     "slug": "xdebug",
     "title": "xdebug",
-    "description": "xdebug",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/xdebug",
     "embed_url": "https://slides.com/vitormattos/xdebug/embed",
-    "tags": {
-        "slides_com": [
-            "opensource",
-            "php",
-            "testes"
-        ]
-    },
     "thumbnail_url": "https://media.slid.es/thumbnails/a725afeca2693f22560c2624a60601a4/thumb.jpg?1587649651",
     "slide_count": 54,
     "width": 1024,
