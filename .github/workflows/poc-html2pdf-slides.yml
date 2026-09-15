@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+name: POC html2pdf-slides
+
+on:
+  push:
+    branches:
+      - poc/html2pdf-slides
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Export one Slides.com deck
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          start=$(date +%s)
+          npx --yes html2pdf-slides@1.1.0 \
+            'https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro/embed' \
+            --output artifacts/quem-controla-sua-tecnologia-html2pdf-slides.pdf \
+            --wait 300 \
+            --parallel 2
+          end=$(date +%s)
+          elapsed=$((end - start))
+          bytes=$(stat -c '%s' artifacts/quem-controla-sua-tecnologia-html2pdf-slides.pdf)
+          printf 'elapsed_seconds=%s\n' "$elapsed" | tee artifacts/benchmark.txt
+          printf 'pdf_bytes=%s\n' "$bytes" | tee -a artifacts/benchmark.txt
+
+      - name: Upload POC result
+        uses: actions/upload-artifact@v4
+        with:
+          name: html2pdf-slides-poc
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
