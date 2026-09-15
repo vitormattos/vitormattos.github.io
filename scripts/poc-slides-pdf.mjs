@@ -62,6 +62,9 @@ try {
 
   const setup = await page.evaluate(() => {
     Reveal.configure({
+      // Slides.com native PDF export fills the 16:9 page. Keep the deck's logical
+      // 1280x720 geometry, but remove reveal.js presentation margin.
+      margin: 0,
       transition: 'none',
       backgroundTransition: 'none',
       transitionSpeed: 'fastest',
@@ -103,8 +106,6 @@ try {
     `;
     document.head.appendChild(style);
 
-    // Preserve the original Slides.com / reveal.js logical deck size and margin.
-    // Only give the embedded presentation the 34px previously occupied by the footer.
     Reveal.layout();
 
     const rect = (selector) => {
