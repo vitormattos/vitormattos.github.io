@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - 'presentations/slides.com/**'
+      - 'scripts/archive-slides-thumbnails.php'
       - 'scripts/generate-slides-pdfs.php'
       - 'scripts/slides/decktape-reveal.js'
       - 'src/Presentations/PdfExportPolicy.php'
@@ -53,6 +54,9 @@ jobs:
           npm install --no-save --package-lock=false decktape@3.16.1
           cp scripts/slides/decktape-reveal.js node_modules/decktape/plugins/reveal.js
 
+      - name: Archive presentation thumbnails
+        run: php scripts/archive-slides-thumbnails.php
+
       - name: Restore presentation PDF cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -61,24 +65,24 @@ jobs:
           restore-keys: |
             slides-pdf-v2-${{ runner.os }}-
 
-      - name: Publish archival PDFs and synchronize release metadata
+      - name: Publish archival PDFs and synchronize release portfolio
         env:
           GH_TOKEN: ${{ github.token }}
         run: php scripts/generate-slides-pdfs.php
 
-      - name: Commit release manifests
+      - name: Commit synchronized release data
         shell: bash
         run: |
           set -euo pipefail
-          git add presentations/slides.com/*/export.json
+          git add presentations/slides.com source/_talks source/_talksEn
 
           if git diff --cached --quiet; then
-            echo 'Release manifests are already up to date.'
+            echo 'Presentation archive and release manifests are already up to date.'
             exit 0
           fi
 
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'content: update presentation PDF release manifests'
+          git commit -m 'content: synchronize presentation release assets'
           git pull --rebase origin main
           git push origin HEAD:main

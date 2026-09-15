@@ -33,15 +33,24 @@ final class SlidesReleaseMetadataTest extends TestCase
             SlidesReleaseMetadata::title($metadata),
         );
 
-        $body = SlidesReleaseMetadata::body($metadata, 'vitormattos/vitormattos.github.io');
+        $thumbnailAsset = 'https://github.com/vitormattos/vitormattos.github.io/releases/download/slides-com-3629052/thumbnail-deadbeef1234.jpg';
+        $pdfAsset = 'https://github.com/vitormattos/vitormattos.github.io/releases/download/slides-com-3629052/slides-com-3629052-cafebabe1234.pdf';
+        $body = SlidesReleaseMetadata::body(
+            $metadata,
+            'vitormattos/vitormattos.github.io',
+            $thumbnailAsset,
+            $pdfAsset,
+        );
+
         self::assertStringContainsString('Uma apresentação sobre autonomia tecnológica.', $body);
+        self::assertStringContainsString('![Presentation thumbnail](' . $thumbnailAsset . ')', $body);
+        self::assertStringContainsString('**Latest archived PDF:** ' . $pdfAsset, $body);
         self::assertStringContainsString('https://slides.com/vitormattos/example', $body);
         self::assertStringContainsString('https://vitormattos.github.io/pt-BR/palestras/quem-controla-sua-tecnologia-controla-seu-futuro', $body);
         self::assertStringContainsString('**Website:** https://vitormattos.github.io', $body);
         self::assertStringContainsString('**Language:** pt-BR', $body);
         self::assertStringContainsString('**Slides:** 76', $body);
         self::assertStringContainsString('**Tags:** software livre, privacidade', $body);
-        self::assertStringContainsString('thumbnail.jpg', $body);
     }
 
     public function testEnglishPresentationUsesEnglishPortfolioPath(): void

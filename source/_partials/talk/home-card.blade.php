@@ -8,11 +8,19 @@
         ? ($isEnglish ? '/talks/' : '/pt-BR/palestras/') . $slug
         : '/' . ltrim($talk->getPath(), '/');
     $talkUrl = rtrim($page->baseUrl, '/') . $talkPath;
+
+    $thumbnail = $presentation['thumbnail'] ?? null;
+    if ($talk->slidesId ?? false) {
+        $localThumbnails = glob('presentations/slides.com/' . $talk->slidesId . '/thumbnail.*') ?: [];
+        if ($localThumbnails !== []) {
+            $thumbnail = '/' . $localThumbnails[0];
+        }
+    }
 @endphp
 <article class="home-talk-card">
     <a class="home-talk-card__preview" href="{{ $talkUrl }}" aria-label="{{ $talk->title }}">
-        @if ($presentation['thumbnail'] ?? false)
-            <img src="{{ $presentation['thumbnail'] }}" alt="" loading="lazy">
+        @if ($thumbnail)
+            <img src="{{ str_starts_with($thumbnail, '/') ? $page->baseUrl . $thumbnail : $thumbnail }}" alt="" loading="lazy">
         @else
             <div class="home-talk-card__fallback" aria-hidden="true">{{ $talk->title }}</div>
         @endif

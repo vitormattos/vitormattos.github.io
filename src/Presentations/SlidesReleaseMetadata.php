@@ -18,8 +18,12 @@ final class SlidesReleaseMetadata
         return $title !== '' ? $title : 'Slides.com presentation ' . (string) ($metadata['id'] ?? '');
     }
 
-    public static function body(array $metadata, string $repository): string
-    {
+    public static function body(
+        array $metadata,
+        string $repository,
+        ?string $thumbnailAssetUrl = null,
+        ?string $pdfAssetUrl = null,
+    ): string {
         $description = trim((string) ($metadata['description'] ?? ''));
         $url = trim((string) ($metadata['url'] ?? ''));
         $language = trim((string) ($metadata['language'] ?? ''));
@@ -37,7 +41,7 @@ final class SlidesReleaseMetadata
             $lines[] = '';
         }
 
-        $thumbnailUrl = self::thumbnailUrl($metadata, $repository);
+        $thumbnailUrl = $thumbnailAssetUrl ?? self::thumbnailUrl($metadata, $repository);
         if ($thumbnailUrl !== null) {
             $lines[] = '![Presentation thumbnail](' . $thumbnailUrl . ')';
             $lines[] = '';
@@ -50,6 +54,9 @@ final class SlidesReleaseMetadata
         $portfolioUrl = self::portfolioUrl($metadata);
         if ($portfolioUrl !== null) {
             $lines[] = '- **Presentation page:** ' . $portfolioUrl;
+        }
+        if ($pdfAssetUrl !== null) {
+            $lines[] = '- **Latest archived PDF:** ' . $pdfAssetUrl;
         }
         $lines[] = '- **Website:** ' . self::SITE_URL;
         if ($url !== '') {
@@ -72,7 +79,7 @@ final class SlidesReleaseMetadata
         }
 
         $lines[] = '';
-        $lines[] = 'The release is keyed by the immutable Slides.com deck ID. New PDF snapshots may be added when the archived visual source changes; previous assets are preserved.';
+        $lines[] = 'The release is keyed by the immutable Slides.com deck ID. New PDF and thumbnail snapshots may be added when the archived presentation changes; previous PDF assets are preserved.';
 
         return rtrim(implode("\n", $lines)) . "\n";
     }
