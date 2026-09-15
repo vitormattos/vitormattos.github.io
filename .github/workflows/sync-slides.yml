@@ -39,6 +39,9 @@ jobs:
           SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
         run: php scripts/sync-slides.php
 
+      - name: Archive presentation thumbnails
+        run: php scripts/archive-slides-thumbnails.php
+
       - name: Commit synchronized archive
         shell: bash
         run: |
