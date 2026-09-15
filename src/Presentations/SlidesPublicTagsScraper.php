@@ -16,7 +16,7 @@ use Throwable;
 final class SlidesPublicTagsScraper
 {
     private const BASE_URL = 'https://slides.com';
-    private const MAX_CANDIDATE_TAG_PAGES = 50;
+    private const MAX_CANDIDATE_TAG_PAGES = 80;
 
     /** @var callable(string): string */
     private $fetchHtml;
@@ -79,10 +79,11 @@ final class SlidesPublicTagsScraper
     }
 
     /**
-     * Candidate detection deliberately does not depend on Slides.com CSS classes.
-     * Public deck URLs returned by the API are excluded. Remaining owned links
-     * are fetched and only promoted to tags if their page contains known decks.
-     * This confines the fragile HTML dependency to a single adapter.
+     * Slides currently renders part of the profile navigation from serialized
+     * client-side data, so tag routes are not guaranteed to exist as <a>
+     * elements in the initial HTML. We collect owned routes from both anchors
+     * and the raw document, then verify every candidate by checking whether its
+     * page actually contains one of the public decks returned by the API.
      *
      * @param list<string> $knownDeckUrls
      *
@@ -95,23 +96,61 @@ final class SlidesPublicTagsScraper
         $candidates = [];
 
         foreach ($this->anchors($html) as [$href, $text]) {
-            $url = $this->resolveUrl($href);
-            $canonical = $this->canonicalOwnedUrl($url);
+            $this->addCandidate($candidates, $known, $profileUrl, $href, $text);
+        }
 
-            if ($canonical === null
-                || $canonical === $profileUrl
-                || isset($known[$canonical])
-                || str_ends_with($canonical, '/embed')
-                || trim($text) === ''
-                || strcasecmp(trim($text), 'All decks') === 0
-            ) {
-                continue;
-            }
-
-            $candidates[$canonical] = trim(preg_replace('/\s+/', ' ', $text) ?? $text);
+        foreach ($this->ownedRoutesInHtml($html) as $route) {
+            $this->addCandidate($candidates, $known, $profileUrl, $route, '');
         }
 
         return $candidates;
+    }
+
+    /**
+     * @param array<string, string> $candidates
+     * @param array<string, true> $known
+     */
+    private function addCandidate(array &$candidates, array $known, string $profileUrl, string $url, string $label): void
+    {
+        $canonical = $this->canonicalOwnedUrl($this->resolveUrl(html_entity_decode($url, ENT_QUOTES | ENT_HTML5)));
+        if ($canonical === null
+            || $canonical === $profileUrl
+            || isset($known[$canonical])
+            || $this->isDeckUtilityRoute($canonical)
+        ) {
+            return;
+        }
+
+        $tagName = trim(preg_replace('/\s+/', ' ', $label) ?? $label);
+        if ($tagName === '' || strcasecmp($tagName, 'All decks') === 0) {
+            $tagName = $this->labelFromUrl($canonical);
+        }
+        if ($tagName === '') {
+            return;
+        }
+
+        $candidates[$canonical] ??= $tagName;
+    }
+
+    /** @return list<string> */
+    private function ownedRoutesInHtml(string $html): array
+    {
+        $username = preg_quote($this->username, '~');
+        $patterns = [
+            '~https?:(?:\\?/){2}slides\.com(?:\\?/)' . $username . '(?:\\?/)[a-zA-Z0-9][a-zA-Z0-9_-]*~',
+            '~(?:\\?/)' . $username . '(?:\\?/)[a-zA-Z0-9][a-zA-Z0-9_-]*~',
+        ];
+        $routes = [];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match_all($pattern, $html, $matches) !== false) {
+                foreach ($matches[0] as $match) {
+                    $routes[] = str_replace('\\/', '/', $match);
+                }
+            }
+        }
+
+        return array_values(array_unique($routes));
     }
 
     /** @param list<string> $knownDeckUrls
@@ -126,6 +165,14 @@ final class SlidesPublicTagsScraper
             $canonical = $this->canonicalOwnedUrl($this->resolveUrl($href));
             if ($canonical !== null && isset($known[$canonical])) {
                 $matches[$canonical] = true;
+            }
+        }
+
+        $normalizedHtml = html_entity_decode(str_replace('\\/', '/', $html), ENT_QUOTES | ENT_HTML5);
+        foreach ($knownDeckUrls as $deckUrl) {
+            $path = (string) parse_url($deckUrl, PHP_URL_PATH);
+            if (str_contains($normalizedHtml, $deckUrl) || ($path !== '' && str_contains($normalizedHtml, $path))) {
+                $matches[$deckUrl] = true;
             }
         }
 
@@ -162,7 +209,7 @@ final class SlidesPublicTagsScraper
 
     private function resolveUrl(string $href): string
     {
-        $href = trim($href);
+        $href = trim(str_replace('\\/', '/', $href));
         if ($href === '') {
             return '';
         }
@@ -180,7 +227,7 @@ final class SlidesPublicTagsScraper
     {
         $parts = parse_url($url);
         if (!is_array($parts)
-            || ($parts['scheme'] ?? null) !== 'https'
+            || !in_array(($parts['scheme'] ?? null), ['http', 'https'], true)
             || ($parts['host'] ?? null) !== 'slides.com'
         ) {
             return null;
@@ -192,12 +239,30 @@ final class SlidesPublicTagsScraper
             return null;
         }
 
-        $canonical = self::BASE_URL . $path;
-        if (isset($parts['query']) && $parts['query'] !== '') {
-            $canonical .= '?' . $parts['query'];
+        return self::BASE_URL . $path;
+    }
+
+    private function isDeckUtilityRoute(string $url): bool
+    {
+        foreach (['/embed', '/fullscreen', '/live', '/edit'] as $suffix) {
+            if (str_ends_with($url, $suffix)) {
+                return true;
+            }
         }
 
-        return $canonical;
+        return false;
+    }
+
+    private function labelFromUrl(string $url): string
+    {
+        $path = trim((string) parse_url($url, PHP_URL_PATH), '/');
+        $segments = explode('/', $path);
+        $slug = end($segments);
+        if (!is_string($slug) || $slug === '') {
+            return '';
+        }
+
+        return ucwords(str_replace(['-', '_'], ' ', $slug));
     }
 
     private static function defaultFetcher(string $url): string
