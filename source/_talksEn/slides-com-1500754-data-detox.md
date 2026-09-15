@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/data-detox"
   embed: "https://slides.com/vitormattos/data-detox/embed"
-  thumbnail: "https://media.slid.es/thumbnails/42814192bae24dab19784d4ddb9787bc/thumb.jpg?1557753303"
+  thumbnail: "/presentations/slides.com/1500754/thumbnail.png"
   localHtml: /presentations/slides.com/1500754/deck.html
   metadata: /presentations/slides.com/1500754/metadata.json
   language: "en"

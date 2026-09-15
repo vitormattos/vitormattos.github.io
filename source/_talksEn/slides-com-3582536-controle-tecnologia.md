@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/controle-tecnologia"
   embed: "https://slides.com/vitormattos/controle-tecnologia/embed"
-  thumbnail: "https://media.slid.es/thumbnails/a6c54fb52d131cf13de1c8edb1433d5a/thumb.jpg?1781188445"
+  thumbnail: "/presentations/slides.com/3582536/thumbnail.png"
   localHtml: /presentations/slides.com/3582536/deck.html
   metadata: /presentations/slides.com/3582536/metadata.json
   language: "en"

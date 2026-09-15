@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/seguranca/fullscreen",
         "edit": "https://slides.com/vitormattos/seguranca/edit",
         "present": "https://slides.com/vitormattos/seguranca/live"
-    }
+    },
+    "description": "Quem nunca se deparou com notícia de sites invadidos, vazamento de dados e coisas do tipo? Tome nota de dicas super importantes para elevar o nível de segurança de aplicações web. Soluções de segurança não envolvem apenas linhas de código mas servidores, senhas, pessoas e muito mais!",
+    "thumbnail_path": "/presentations/slides.com/1338222/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/a58c2c301adbbc7fd31f27a311e6547d/thumb.jpg?1543786464"
 }

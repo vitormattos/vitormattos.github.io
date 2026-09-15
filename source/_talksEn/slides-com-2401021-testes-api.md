@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/testes-api"
   embed: "https://slides.com/vitormattos/testes-api/embed"
-  thumbnail: "https://media.slid.es/thumbnails/e75865de41f3bfe5bf85d9a1fc21d470/thumb.jpg?1653062560"
+  thumbnail: "/presentations/slides.com/2401021/thumbnail.png"
   localHtml: /presentations/slides.com/2401021/deck.html
   metadata: /presentations/slides.com/2401021/metadata.json
   language: "en"

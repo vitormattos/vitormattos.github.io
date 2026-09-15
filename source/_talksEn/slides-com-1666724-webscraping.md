@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/webscraping"
   embed: "https://slides.com/vitormattos/webscraping/embed"
-  thumbnail: "https://media.slid.es/thumbnails/cf3b66f626d3868c48772ff36bb1bda5/thumb.jpg?1582827773"
+  thumbnail: "/presentations/slides.com/1666724/thumbnail.png"
   localHtml: /presentations/slides.com/1666724/deck.html
   metadata: /presentations/slides.com/1666724/metadata.json
   language: "en"

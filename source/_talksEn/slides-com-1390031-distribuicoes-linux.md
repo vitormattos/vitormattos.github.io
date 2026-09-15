@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/distribuicoes-linux"
   embed: "https://slides.com/vitormattos/distribuicoes-linux/embed"
-  thumbnail: "https://media.slid.es/thumbnails/53c425e8663410e5689f64fe05d397b0/thumb.jpg?1544032792"
+  thumbnail: "/presentations/slides.com/1390031/thumbnail.png"
   localHtml: /presentations/slides.com/1390031/deck.html
   metadata: /presentations/slides.com/1390031/metadata.json
   language: "en"

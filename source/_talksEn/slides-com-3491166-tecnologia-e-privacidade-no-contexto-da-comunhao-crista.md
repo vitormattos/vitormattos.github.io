@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/tecnologia-e-privacidade-no-contexto-da-comunhao-crista"
   embed: "https://slides.com/vitormattos/tecnologia-e-privacidade-no-contexto-da-comunhao-crista/embed"
-  thumbnail: "https://media.slid.es/thumbnails/3ff47d54f6487c4e53e99684b20d3fc3/thumb.jpg?1781968846"
+  thumbnail: "/presentations/slides.com/3491166/thumbnail.png"
   localHtml: /presentations/slides.com/3491166/deck.html
   metadata: /presentations/slides.com/3491166/metadata.json
   language: "en"

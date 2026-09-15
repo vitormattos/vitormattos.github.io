@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/que-as-oportunidades-me-encontrem"
   embed: "https://slides.com/vitormattos/que-as-oportunidades-me-encontrem/embed"
-  thumbnail: "https://media.slid.es/thumbnails/30d001514911c6eac6de2046e9e89e85/thumb.jpg?1538329417"
+  thumbnail: "/presentations/slides.com/1293562/thumbnail.png"
   localHtml: /presentations/slides.com/1293562/deck.html
   metadata: /presentations/slides.com/1293562/metadata.json
   language: "en"

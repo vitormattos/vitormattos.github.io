@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/trabalho-colaborativo-software"
   embed: "https://slides.com/vitormattos/trabalho-colaborativo-software/embed"
-  thumbnail: "https://media.slid.es/thumbnails/34171d22cb78c7c7eb23e25b158023f3/thumb.jpg?1689264484"
+  thumbnail: "/presentations/slides.com/2649437/thumbnail.png"
   localHtml: /presentations/slides.com/2649437/deck.html
   metadata: /presentations/slides.com/2649437/metadata.json
   language: "en"

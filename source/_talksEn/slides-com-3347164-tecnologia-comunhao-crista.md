@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/tecnologia-comunhao-crista"
   embed: "https://slides.com/vitormattos/tecnologia-comunhao-crista/embed"
-  thumbnail: "https://media.slid.es/thumbnails/d77bee3dff55daa7c181d61c92e21a2d/thumb.jpg?1745460198"
+  thumbnail: "/presentations/slides.com/3347164/thumbnail.png"
   localHtml: /presentations/slides.com/3347164/deck.html
   metadata: /presentations/slides.com/3347164/metadata.json
   language: "en"

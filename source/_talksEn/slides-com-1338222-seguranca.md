@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/seguranca"
   embed: "https://slides.com/vitormattos/seguranca/embed"
-  thumbnail: "https://media.slid.es/thumbnails/a58c2c301adbbc7fd31f27a311e6547d/thumb.jpg?1543786464"
+  thumbnail: "/presentations/slides.com/1338222/thumbnail.png"
   localHtml: /presentations/slides.com/1338222/deck.html
   metadata: /presentations/slides.com/1338222/metadata.json
   language: "en"

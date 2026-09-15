@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/assine-contratos-com-php-cc183f"
   embed: "https://slides.com/vitormattos/assine-contratos-com-php-cc183f/embed"
-  thumbnail: "https://media.slid.es/thumbnails/dd66a27eceda35198b352f613b811744/thumb.jpg?1759495266"
+  thumbnail: "/presentations/slides.com/3485774/thumbnail.png"
   localHtml: /presentations/slides.com/3485774/deck.html
   metadata: /presentations/slides.com/3485774/metadata.json
   language: "en"

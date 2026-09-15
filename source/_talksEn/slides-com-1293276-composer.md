@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/composer"
   embed: "https://slides.com/vitormattos/composer/embed"
-  thumbnail: "https://media.slid.es/thumbnails/0698c2d0ecc3f3db2da7b2a6d342e85c/thumb.jpg?1531501486"
+  thumbnail: "/presentations/slides.com/1293276/thumbnail.png"
   localHtml: /presentations/slides.com/1293276/deck.html
   metadata: /presentations/slides.com/1293276/metadata.json
   language: "en"

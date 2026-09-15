@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign-integracao"
   embed: "https://slides.com/vitormattos/libresign-integracao/embed"
-  thumbnail: "https://media.slid.es/thumbnails/90f260fed145ed6f5dd20065d43f9e77/thumb.jpg?1643224419"
+  thumbnail: "/presentations/slides.com/2328628/thumbnail.png"
   localHtml: /presentations/slides.com/2328628/deck.html
   metadata: /presentations/slides.com/2328628/metadata.json
   language: "en"

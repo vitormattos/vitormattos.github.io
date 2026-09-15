@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/igrejas-digitais"
   embed: "https://slides.com/vitormattos/igrejas-digitais/embed"
-  thumbnail: "https://media.slid.es/thumbnails/447d058293ff8a30405167149063e36e/thumb.jpg?1747340388"
+  thumbnail: "/presentations/slides.com/3401779/thumbnail.png"
   localHtml: /presentations/slides.com/3401779/deck.html
   metadata: /presentations/slides.com/3401779/metadata.json
   language: "en"

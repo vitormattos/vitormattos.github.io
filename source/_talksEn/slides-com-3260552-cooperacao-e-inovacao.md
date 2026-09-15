@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/cooperacao-e-inovacao"
   embed: "https://slides.com/vitormattos/cooperacao-e-inovacao/embed"
-  thumbnail: "https://media.slid.es/thumbnails/68c23366193c171270c15dc58ce98686/thumb.jpg?1725311267"
+  thumbnail: "/presentations/slides.com/3260552/thumbnail.png"
   localHtml: /presentations/slides.com/3260552/deck.html
   metadata: /presentations/slides.com/3260552/metadata.json
   language: "en"

@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/mediawiki-oficina"
   embed: "https://slides.com/vitormattos/mediawiki-oficina/embed"
-  thumbnail: "https://media.slid.es/thumbnails/08e718b73ceadf9fbdb15de500fc21da/thumb.jpg?1720182004"
+  thumbnail: "/presentations/slides.com/3221966/thumbnail.png"
   localHtml: /presentations/slides.com/3221966/deck.html
   metadata: /presentations/slides.com/3221966/metadata.json
   language: "pt"

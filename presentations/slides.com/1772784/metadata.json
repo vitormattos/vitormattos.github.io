@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/xdebug/fullscreen",
         "edit": "https://slides.com/vitormattos/xdebug/edit",
         "present": "https://slides.com/vitormattos/xdebug/live"
-    }
+    },
+    "description": "xdebug",
+    "thumbnail_path": "/presentations/slides.com/1772784/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/a725afeca2693f22560c2624a60601a4/thumb.jpg?1587649651"
 }

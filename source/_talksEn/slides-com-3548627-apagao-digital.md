@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/apagao-digital"
   embed: "https://slides.com/vitormattos/apagao-digital/embed"
-  thumbnail: "https://media.slid.es/thumbnails/3f8c0a98d3931a022c529a42422e5063/thumb.jpg?1773337608"
+  thumbnail: "/presentations/slides.com/3548627/thumbnail.png"
   localHtml: /presentations/slides.com/3548627/deck.html
   metadata: /presentations/slides.com/3548627/metadata.json
   language: "en"

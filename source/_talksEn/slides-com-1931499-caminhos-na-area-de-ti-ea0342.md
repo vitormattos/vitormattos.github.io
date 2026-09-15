@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/caminhos-na-area-de-ti-ea0342"
   embed: "https://slides.com/vitormattos/caminhos-na-area-de-ti-ea0342/embed"
-  thumbnail: "https://media.slid.es/thumbnails/3abf4d03ca51a6360fdd610317cf8b77/thumb.jpg?1600881105"
+  thumbnail: "/presentations/slides.com/1931499/thumbnail.png"
   localHtml: /presentations/slides.com/1931499/deck.html
   metadata: /presentations/slides.com/1931499/metadata.json
   language: "en"

@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/dojo"
   embed: "https://slides.com/vitormattos/dojo/embed"
-  thumbnail: "https://media.slid.es/thumbnails/0d3c7e17cc8c2d0c48b9ac10bb10bd26/thumb.jpg?1571836754"
+  thumbnail: "/presentations/slides.com/1507067/thumbnail.png"
   localHtml: /presentations/slides.com/1507067/deck.html
   metadata: /presentations/slides.com/1507067/metadata.json
   language: "en"

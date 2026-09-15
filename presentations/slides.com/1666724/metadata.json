@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/webscraping/fullscreen",
         "edit": "https://slides.com/vitormattos/webscraping/edit",
         "present": "https://slides.com/vitormattos/webscraping/live"
-    }
+    },
+    "description": "Necessita coletar dados da web? Conheça como esta técnica funciona, suas variantes e as ferramentas mais atuais que podem facilitar a sua vida neste trabalho.",
+    "thumbnail_path": "/presentations/slides.com/1666724/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/cf3b66f626d3868c48772ff36bb1bda5/thumb.jpg?1582827773"
 }

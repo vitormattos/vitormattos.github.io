@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/dojo/fullscreen",
         "edit": "https://slides.com/vitormattos/dojo/edit",
         "present": "https://slides.com/vitormattos/dojo/live"
-    }
+    },
+    "description": "Coding Dojo",
+    "thumbnail_path": "/presentations/slides.com/1507067/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/0d3c7e17cc8c2d0c48b9ac10bb10bd26/thumb.jpg?1571836754"
 }

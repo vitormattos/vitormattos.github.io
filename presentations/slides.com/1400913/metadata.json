@@ -24,5 +24,8 @@
         "fullscreen": "https://slides.com/vitormattos/webinar-senhas/fullscreen",
         "edit": "https://slides.com/vitormattos/webinar-senhas/edit",
         "present": "https://slides.com/vitormattos/webinar-senhas/live"
-    }
+    },
+    "description": "Segurança de dados de acesso sempre são questões super importantes principalmente nos dias de hoje com tudo conectado a internet. Nesta breve apresentação veremos algumas dicas de como melhorar a segurança de seus dados de acesso e o quanto que a maioria das pessoas cometem atos que as tornam vulneráveis na internet.",
+    "thumbnail_path": "/presentations/slides.com/1400913/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/1858a160b002d204b87db21302880c09/thumb.jpg?1543690586"
 }

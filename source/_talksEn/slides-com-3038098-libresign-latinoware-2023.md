@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign-latinoware-2023"
   embed: "https://slides.com/vitormattos/libresign-latinoware-2023/embed"
-  thumbnail: "https://media.slid.es/thumbnails/10c30bb876fc39d88fade53fd77ab974/thumb.jpg?1697634672"
+  thumbnail: "/presentations/slides.com/3038098/thumbnail.png"
   localHtml: /presentations/slides.com/3038098/deck.html
   metadata: /presentations/slides.com/3038098/metadata.json
   language: "en"

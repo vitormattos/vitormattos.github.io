@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/php-primeiros-passos"
   embed: "https://slides.com/vitormattos/php-primeiros-passos/embed"
-  thumbnail: "https://media.slid.es/thumbnails/16b0abc81c8453f9f5dcbe1ce1837062/thumb.jpg?1558136725"
+  thumbnail: "/presentations/slides.com/1397238/thumbnail.png"
   localHtml: /presentations/slides.com/1397238/deck.html
   metadata: /presentations/slides.com/1397238/metadata.json
   language: "en"

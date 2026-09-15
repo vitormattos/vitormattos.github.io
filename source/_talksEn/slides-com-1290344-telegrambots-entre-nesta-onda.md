@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/telegrambots-entre-nesta-onda"
   embed: "https://slides.com/vitormattos/telegrambots-entre-nesta-onda/embed"
-  thumbnail: "https://media.slid.es/thumbnails/c268010a8a2ed201b4671247f0cabbb0/thumb.jpg?1531083360"
+  thumbnail: "/presentations/slides.com/1290344/thumbnail.png"
   localHtml: /presentations/slides.com/1290344/deck.html
   metadata: /presentations/slides.com/1290344/metadata.json
   language: "en"

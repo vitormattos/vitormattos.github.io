@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/webinar-senhas"
   embed: "https://slides.com/vitormattos/webinar-senhas/embed"
-  thumbnail: "https://media.slid.es/thumbnails/1858a160b002d204b87db21302880c09/thumb.jpg?1543690586"
+  thumbnail: "/presentations/slides.com/1400913/thumbnail.png"
   localHtml: /presentations/slides.com/1400913/deck.html
   metadata: /presentations/slides.com/1400913/metadata.json
   language: "en"

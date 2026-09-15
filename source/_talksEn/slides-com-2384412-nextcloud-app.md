@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/nextcloud-app"
   embed: "https://slides.com/vitormattos/nextcloud-app/embed"
-  thumbnail: "https://media.slid.es/thumbnails/305c63907ae5d1f5699690989fba2cf3/thumb.jpg?1650647683"
+  thumbnail: "/presentations/slides.com/2384412/thumbnail.png"
   localHtml: /presentations/slides.com/2384412/deck.html
   metadata: /presentations/slides.com/2384412/metadata.json
   language: "en"

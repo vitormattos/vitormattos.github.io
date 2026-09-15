@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro"
   embed: "https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro/embed"
-  thumbnail: "https://media.slid.es/thumbnails/3183106658150d9b7f38b8ec6624d6a0/thumb.jpg?1783086816"
+  thumbnail: "/presentations/slides.com/3629052/thumbnail.png"
   localHtml: /presentations/slides.com/3629052/deck.html
   metadata: /presentations/slides.com/3629052/metadata.json
   language: "en"

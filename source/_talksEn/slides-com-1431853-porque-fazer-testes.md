@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/porque-fazer-testes"
   embed: "https://slides.com/vitormattos/porque-fazer-testes/embed"
-  thumbnail: "https://media.slid.es/thumbnails/79cda77b63dd05a0230eee8728ca6c80/thumb.jpg?1550188702"
+  thumbnail: "/presentations/slides.com/1431853/thumbnail.png"
   localHtml: /presentations/slides.com/1431853/deck.html
   metadata: /presentations/slides.com/1431853/metadata.json
   language: "en"

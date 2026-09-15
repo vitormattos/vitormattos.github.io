@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign"
   embed: "https://slides.com/vitormattos/libresign/embed"
-  thumbnail: "https://media.slid.es/thumbnails/ceb17c9080d20f367a272376e09fbd71/thumb.jpg?1669385101"
+  thumbnail: "/presentations/slides.com/2108263/thumbnail.png"
   localHtml: /presentations/slides.com/2108263/deck.html
   metadata: /presentations/slides.com/2108263/metadata.json
   language: "en"

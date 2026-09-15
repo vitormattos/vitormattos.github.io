@@ -16,7 +16,7 @@ presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/docker-dev-to-prod"
   embed: "https://slides.com/vitormattos/docker-dev-to-prod/embed"
-  thumbnail: "https://media.slid.es/thumbnails/36828ca2b728e8c884891983ffc457cb/thumb.jpg?1711488685"
+  thumbnail: "/presentations/slides.com/3154117/thumbnail.png"
   localHtml: /presentations/slides.com/3154117/deck.html
   metadata: /presentations/slides.com/3154117/metadata.json
   language: "en"
