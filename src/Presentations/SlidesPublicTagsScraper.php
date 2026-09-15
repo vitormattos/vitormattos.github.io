@@ -51,14 +51,22 @@ final class SlidesPublicTagsScraper
         $profileHtml = ($this->fetchHtml)($profileUrl);
         $candidates = $this->discoverTagCandidates($profileHtml, array_keys($knownDecks));
 
+        $this->debug('known decks: ' . count($knownDecks));
+        $this->debug('tag candidates: ' . count($candidates));
         foreach (array_slice($candidates, 0, self::MAX_CANDIDATE_TAG_PAGES, true) as $candidateUrl => $tagName) {
+            $this->debug('candidate: ' . $tagName . ' => ' . $candidateUrl);
             try {
                 $html = ($this->fetchHtml)($candidateUrl);
-            } catch (Throwable) {
+            } catch (Throwable $exception) {
+                $this->debug('candidate fetch failed: ' . $exception->getMessage());
                 continue;
             }
 
+            $renderedOwnedLinks = $this->renderedOwnedLinks($html);
+            $this->debug('rendered owned links: ' . json_encode(array_slice($renderedOwnedLinks, 0, 30), JSON_UNESCAPED_SLASHES));
+
             $matchedDecks = $this->extractRenderedKnownDeckUrls($html, array_keys($knownDecks));
+            $this->debug('matched decks: ' . json_encode($matchedDecks, JSON_UNESCAPED_SLASHES));
             if ($matchedDecks === []) {
                 continue;
             }
@@ -173,6 +181,21 @@ final class SlidesPublicTagsScraper
         return array_keys($matches);
     }
 
+    /** @return list<string> */
+    private function renderedOwnedLinks(string $html): array
+    {
+        $links = [];
+        foreach ($this->anchors($html) as [$href, $text]) {
+            $canonical = $this->canonicalOwnedUrl($this->resolveUrl($href));
+            if ($canonical === null) {
+                continue;
+            }
+            $links[] = $canonical . ($text !== '' ? ' [' . $text . ']' : '');
+        }
+
+        return array_values(array_unique($links));
+    }
+
     /** @return list<array{0: string, 1: string}> */
     private function anchors(string $html): array
     {
@@ -257,6 +280,15 @@ final class SlidesPublicTagsScraper
         }
 
         return ucwords(str_replace(['-', '_'], ' ', $slug));
+    }
+
+    private function debug(string $message): void
+    {
+        if (getenv('SLIDES_TAGS_DEBUG') !== '1') {
+            return;
+        }
+
+        fwrite(STDERR, '[slides-tags] ' . $message . PHP_EOL);
     }
 
     private static function defaultFetcher(string $url): string
