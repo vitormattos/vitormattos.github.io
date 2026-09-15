@@ -14,7 +14,7 @@ permissions:
 jobs:
   export:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -23,27 +23,55 @@ jobs:
           node-version: '24'
 
       - name: Install POC dependencies
-        run: npm install --no-save puppeteer@24.7.2 pdf-lib@1.17.1
+        run: |
+          npm install --no-save decktape@3.16.1 puppeteer@24.40.0 pdf-lib@1.17.1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          cp scripts/poc-decktape-reveal.js node_modules/decktape/plugins/reveal.js
 
-      - name: Export one Slides.com deck
+      - name: Run PDF renderer benchmark
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p artifacts
-          start=$(date +%s)
-          node scripts/poc-slides-pdf.mjs \
-            'https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro/embed' \
-            artifacts/quem-controla-sua-tecnologia-focused.pdf
-          end=$(date +%s)
-          elapsed=$((end - start))
-          bytes=$(stat -c '%s' artifacts/quem-controla-sua-tecnologia-focused.pdf)
-          printf 'elapsed_seconds=%s\n' "$elapsed" | tee artifacts/benchmark.txt
-          printf 'pdf_bytes=%s\n' "$bytes" | tee -a artifacts/benchmark.txt
+          mkdir -p artifacts/rendered
+          url='https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro/embed'
+          : > artifacts/benchmark.txt
+
+          benchmark() {
+            name="$1"
+            shift
+            start=$(date +%s%3N)
+            "$@"
+            end=$(date +%s%3N)
+            elapsed_ms=$((end - start))
+            pdf="artifacts/${name}.pdf"
+            bytes=$(stat -c '%s' "$pdf")
+            pages=$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')
+            page_size=$(pdfinfo "$pdf" | awk -F': +' '/^Page size:/ {print $2}')
+            text_chars=$(pdftotext "$pdf" - | wc -m)
+            printf '%s\telapsed_ms=%s\tbytes=%s\tpages=%s\ttext_chars=%s\tpage_size=%s\n' \
+              "$name" "$elapsed_ms" "$bytes" "$pages" "$text_chars" "$page_size" \
+              | tee -a artifacts/benchmark.txt
+            for page in 1 2 22 42 56; do
+              pdftoppm -f "$page" -singlefile -png -r 72 "$pdf" "artifacts/rendered/${name}-p${page}" >/dev/null 2>&1
+            done
+          }
+
+          benchmark raster \
+            node scripts/poc-slides-pdf.mjs "$url" artifacts/raster.pdf
+
+          benchmark decktape \
+            npx decktape --size 1280x720 --pause 100 reveal "$url" artifacts/decktape.pdf
+
+          benchmark vector \
+            node scripts/poc-slides-vector-pdf.mjs "$url" artifacts/vector.pdf
+
+          cat artifacts/benchmark.txt
 
       - name: Upload POC result
         uses: actions/upload-artifact@v4
         with:
-          name: slides-pdf-focused-poc
+          name: slides-pdf-comparison-poc
           path: artifacts/
           if-no-files-found: error
           retention-days: 7
