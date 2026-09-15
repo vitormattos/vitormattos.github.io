@@ -22,6 +22,8 @@ final class SlidesReleaseMetadataTest extends TestCase
             'url' => 'https://slides.com/vitormattos/example',
             'language' => 'pt-BR',
             'slide_count' => 76,
+            'width' => 1280,
+            'height' => 720,
             'created_at' => '2026-01-02T10:00:00Z',
             'updated_at' => '2026-09-10T11:00:00Z',
             'tags' => ['slides_com' => ['software livre', 'privacidade']],
@@ -43,7 +45,10 @@ final class SlidesReleaseMetadataTest extends TestCase
         );
 
         self::assertStringContainsString('Uma apresentação sobre autonomia tecnológica.', $body);
-        self::assertStringContainsString('![Presentation thumbnail](' . $thumbnailAsset . ')', $body);
+        self::assertStringContainsString(
+            '<img src="' . $thumbnailAsset . '" alt="Quem controla sua tecnologia, controla seu futuro" width="1280" height="720">',
+            $body,
+        );
         self::assertStringContainsString('**Latest archived PDF:** ' . $pdfAsset, $body);
         self::assertStringContainsString('https://slides.com/vitormattos/example', $body);
         self::assertStringContainsString('https://vitormattos.github.io/pt-BR/palestras/quem-controla-sua-tecnologia-controla-seu-futuro', $body);
@@ -71,7 +76,7 @@ final class SlidesReleaseMetadataTest extends TestCase
 
         self::assertSame('Slides.com presentation 123', SlidesReleaseMetadata::title($metadata));
         $body = SlidesReleaseMetadata::body($metadata, 'vitormattos/vitormattos.github.io');
-        self::assertStringNotContainsString('Presentation thumbnail', $body);
+        self::assertStringNotContainsString('<img ', $body);
         self::assertStringNotContainsString('**Presentation page:**', $body);
         self::assertStringContainsString('immutable Slides.com deck ID', $body);
     }
