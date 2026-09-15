@@ -46,7 +46,7 @@ final class SlidesPublicTagsScraperTest extends TestCase
         ]));
     }
 
-    public function testItDiscoversTagsFromSerializedProfileData(): void
+    public function testItDiscoversTagRoutesFromSerializedProfileData(): void
     {
         $pages = [
             'https://slides.com/vitormattos' => <<<'HTML'
@@ -55,7 +55,7 @@ final class SlidesPublicTagsScraperTest extends TestCase
                 </script>
                 HTML,
             'https://slides.com/vitormattos/software-livre' => <<<'HTML'
-                <script>window.__DECKS__=["https:\/\/slides.com\/vitormattos\/deck-a"];</script>
+                <a href="/vitormattos/deck-a">Deck A</a>
                 HTML,
         ];
 
@@ -66,6 +66,29 @@ final class SlidesPublicTagsScraperTest extends TestCase
         self::assertSame([
             'https://slides.com/vitormattos/deck-a' => ['Software Livre'],
         ], $scraper->scrape(['https://slides.com/vitormattos/deck-a']));
+    }
+
+    public function testSerializedDeckDataDoesNotInflateTagMembership(): void
+    {
+        $pages = [
+            'https://slides.com/vitormattos' => '<a href="/vitormattos/php">PHP</a>',
+            'https://slides.com/vitormattos/php' => <<<'HTML'
+                <a href="/vitormattos/deck-a">Deck A</a>
+                <script>
+                window.__PROFILE__ = {"decks":["\/vitormattos\/deck-a","\/vitormattos\/deck-b"]};
+                </script>
+                HTML,
+        ];
+
+        $scraper = new SlidesPublicTagsScraper('vitormattos', static fn(string $url): string => $pages[$url]);
+
+        self::assertSame([
+            'https://slides.com/vitormattos/deck-a' => ['PHP'],
+            'https://slides.com/vitormattos/deck-b' => [],
+        ], $scraper->scrape([
+            'https://slides.com/vitormattos/deck-a',
+            'https://slides.com/vitormattos/deck-b',
+        ]));
     }
 
     public function testItNormalizesDeckUrlsBeforeMatchingTags(): void
