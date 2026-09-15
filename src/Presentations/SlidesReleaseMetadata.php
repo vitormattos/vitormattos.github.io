@@ -9,6 +9,8 @@ namespace App\Presentations;
 
 final class SlidesReleaseMetadata
 {
+    private const SITE_URL = 'https://vitormattos.github.io';
+
     public static function title(array $metadata): string
     {
         $title = trim((string) ($metadata['title'] ?? ''));
@@ -45,6 +47,11 @@ final class SlidesReleaseMetadata
         $lines[] = '';
         $lines[] = '### Presentation';
 
+        $portfolioUrl = self::portfolioUrl($metadata);
+        if ($portfolioUrl !== null) {
+            $lines[] = '- **Presentation page:** ' . $portfolioUrl;
+        }
+        $lines[] = '- **Website:** ' . self::SITE_URL;
         if ($url !== '') {
             $lines[] = '- **Slides.com:** ' . $url;
         }
@@ -82,6 +89,19 @@ final class SlidesReleaseMetadata
             trim($repository, '/'),
             implode('/', array_map('rawurlencode', explode('/', ltrim($path, '/')))),
         );
+    }
+
+    private static function portfolioUrl(array $metadata): ?string
+    {
+        $slug = trim((string) ($metadata['slug'] ?? ''));
+        if ($slug === '') {
+            return null;
+        }
+
+        $language = strtolower(trim((string) ($metadata['language'] ?? '')));
+        $prefix = str_starts_with($language, 'pt') ? '/pt-BR/palestras/' : '/talks/';
+
+        return self::SITE_URL . $prefix . rawurlencode($slug);
     }
 
     private static function date(string $value): string
