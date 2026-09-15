@@ -126,12 +126,6 @@ function spdxHtmlHeader(): string
         . '<!-- SPDX-' . 'License-Identifier: CC-BY-SA-4.0 -->' . "\n";
 }
 
-function spdxCssHeader(): string
-{
-    return '/* SPDX-FileCopyrightText: 2026 Vitor Mattos */' . "\n"
-        . '/* SPDX-' . 'License-Identifier: CC-BY-SA-4.0 */' . "\n";
-}
-
 $list = request('/v1/decks?per_page=100&page=1');
 $total = (int) ($list['meta']['total'] ?? count($list['data'] ?? []));
 $summaries = $list['data'] ?? [];
@@ -187,12 +181,10 @@ foreach ($publicDecks as $detail) {
     $updated = substr((string) ($detail['updated_at'] ?? ''), 0, 10);
     $description = trim((string) ($detail['description'] ?? '')) ?: (string) $detail['title'];
     $deckDir = "presentations/slides.com/{$detail['id']}";
+    $css = (string) ($detail['css'] ?? '');
+    $hasCss = trim($css) !== '';
 
     $meta = [
-        '_spdx' => [
-            'copyright' => '2026 Vitor Mattos',
-            'license' => 'CC-BY-SA-4.0',
-        ],
         'id' => $detail['id'],
         'slug' => $slug,
         'title' => $detail['title'] ?? null,
@@ -219,8 +211,12 @@ foreach ($publicDecks as $detail) {
         'urls' => $detail['urls'] ?? [],
     ];
 
-    writeIfChanged("{$deckDir}/deck.html", spdxHtmlHeader() . ($detail['deck_html'] ?? '') . "\n");
-    writeIfChanged("{$deckDir}/deck.css", spdxCssHeader() . ($detail['css'] ?? '') . "\n");
+    writeIfChanged("{$deckDir}/deck.html", (string) ($detail['deck_html'] ?? '') . "\n");
+    if ($hasCss) {
+        writeIfChanged("{$deckDir}/deck.css", $css . "\n");
+    } elseif (is_file("{$deckDir}/deck.css")) {
+        unlink("{$deckDir}/deck.css");
+    }
     writeIfChanged(
         "{$deckDir}/metadata.json",
         json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
@@ -248,7 +244,7 @@ foreach ($publicDecks as $detail) {
         . '  embed: ' . yamlString($embed) . "\n"
         . '  thumbnail: ' . yamlString((string) ($detail['thumbnail_url'] ?? '')) . "\n"
         . "  localHtml: /{$deckDir}/deck.html\n"
-        . "  localCss: /{$deckDir}/deck.css\n"
+        . ($hasCss ? "  localCss: /{$deckDir}/deck.css\n" : '')
         . "  metadata: /{$deckDir}/metadata.json\n"
         . '  language: ' . yamlString((string) ($detail['language'] ?? '')) . "\n"
         . '  slideCount: ' . (int) ($detail['slide_count'] ?? 0) . "\n"
