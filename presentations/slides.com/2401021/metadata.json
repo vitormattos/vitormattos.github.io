@@ -2,6 +2,7 @@
     "id": 2401021,
     "slug": "testes-api",
     "title": "Testes automatizados em API",
+    "description": "Testes automatizados em API",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/testes-api",
     "embed_url": "https://slides.com/vitormattos/testes-api/embed",

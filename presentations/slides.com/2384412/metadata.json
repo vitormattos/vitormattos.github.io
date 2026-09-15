@@ -2,6 +2,7 @@
     "id": 2384412,
     "slug": "nextcloud-app",
     "title": "Nextcloud app tutorial",
+    "description": "A simple Nextcloud app tutorial",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/nextcloud-app",
     "embed_url": "https://slides.com/vitormattos/nextcloud-app/embed",
