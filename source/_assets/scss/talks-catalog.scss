@@ -5,7 +5,7 @@
     display: grid;
     grid-template-columns: 15rem minmax(0, 1fr);
     gap: 1.75rem;
-    width: min(calc(100vw - 3rem), 112rem);
+    width: calc(100vw - 3rem);
     max-width: none;
     margin-inline: calc(50% - 50vw + 1.5rem);
 }
@@ -283,7 +283,7 @@
 @media (min-width: 110rem) {
     .talks-browser {
         grid-template-columns: 16rem minmax(0, 1fr);
-        width: min(calc(100vw - 4rem), 128rem);
+        width: calc(100vw - 4rem);
         margin-inline: calc(50% - 50vw + 2rem);
     }
 
