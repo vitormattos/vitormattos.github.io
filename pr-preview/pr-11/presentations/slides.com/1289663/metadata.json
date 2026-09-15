@@ -1,0 +1,34 @@
+{
+    "id": 1289663,
+    "slug": "arquitetura-de-aplicacoes-web",
+    "title": "Arquitetura de aplicações web",
+    "description": "Vivemos em um mundo onde praticamente tudo tem alguma relação com a web mas como funcionam estas ferramentas que de alguma forma necessitam de um ecossistema web? Compreenda um pouco mais da arquitetura de aplicações web, desde um simples site até uma aplicação embarcada ou mobile.",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web",
+    "embed_url": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/embed",
+    "tags": {
+        "slides_com": [
+            "Carreira"
+        ]
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/6f9b1d1381a5e25fccc97933c02f22c4/thumb.jpg?1530982198",
+    "slide_count": 80,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "opensans",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2018-07-06T14:16:52.200Z",
+    "updated_at": "2018-12-07T12:45:39.833Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web",
+        "fullscreen": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/fullscreen",
+        "edit": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/edit",
+        "present": "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web/live"
+    }
+}

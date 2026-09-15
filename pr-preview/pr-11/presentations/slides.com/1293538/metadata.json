@@ -1,0 +1,35 @@
+{
+    "id": 1293538,
+    "slug": "contribuindo-e-criando-software-livre",
+    "title": "Contribuindo e criando software livre",
+    "description": "O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre",
+    "embed_url": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre/embed",
+    "tags": {
+        "slides_com": [
+            "Carreira",
+            "opensource"
+        ]
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/673fae153f47c0447018c9e7e9f400ab/thumb.jpg?1550106129",
+    "slide_count": 62,
+    "width": 1024,
+    "height": 576,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2018-07-14T13:39:31.454Z",
+    "updated_at": "2019-02-14T01:02:11.343Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre",
+        "fullscreen": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre/fullscreen",
+        "edit": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre/edit",
+        "present": "https://slides.com/vitormattos/contribuindo-e-criando-software-livre/live"
+    }
+}
