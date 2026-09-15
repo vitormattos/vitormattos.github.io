@@ -62,11 +62,6 @@ try {
 
   const setup = await page.evaluate(() => {
     Reveal.configure({
-      width: 960,
-      height: 540,
-      margin: 0,
-      minScale: 1,
-      maxScale: 1,
       transition: 'none',
       backgroundTransition: 'none',
       transitionSpeed: 'fastest',
@@ -75,18 +70,12 @@ try {
       slideNumber: false,
     });
 
-    const selectors = [
-      '.controls', '.progress', '.slide-number', '.speaker-notes', '.playback',
-      '.pause-overlay', '.sl-block-controls', '.sl-menu', '.sl-watermark',
-      '.sl-footer', '.sl-deck-footer', '.deck-footer', '.sl-embed-footer',
-      '.embed-footer', '[class*="footer"]', 'footer',
-    ];
-    document.querySelectorAll(selectors.join(',')).forEach((el) => el.remove());
+    document.querySelectorAll('.embed-footer, footer').forEach((el) => el.remove());
 
     const style = document.createElement('style');
     style.dataset.pocPdf = 'true';
     style.textContent = `
-      html, body, .reveal-viewport, .reveal {
+      html, body, .reveal-viewport {
         margin: 0 !important;
         padding: 0 !important;
         width: 960px !important;
@@ -95,8 +84,16 @@ try {
         max-height: 540px !important;
         overflow: hidden !important;
       }
-      .reveal { position: absolute !important; inset: 0 !important; }
-      .reveal .backgrounds { width: 960px !important; height: 540px !important; }
+      .reveal {
+        position: absolute !important;
+        inset: 0 !important;
+        width: 960px !important;
+        height: 540px !important;
+        margin: 0 !important;
+      }
+      .controls, .progress, .slide-number, .speaker-notes, .playback, .pause-overlay {
+        display: none !important;
+      }
       *, *::before, *::after {
         transition-duration: 0s !important;
         transition-delay: 0s !important;
@@ -106,6 +103,8 @@ try {
     `;
     document.head.appendChild(style);
 
+    // Preserve the original Slides.com / reveal.js logical deck size and margin.
+    // Only give the embedded presentation the 34px previously occupied by the footer.
     Reveal.layout();
 
     const rect = (selector) => {
@@ -116,6 +115,7 @@ try {
     };
 
     return {
+      config: Reveal.getConfig(),
       reveal: rect('.reveal'),
       slides: rect('.reveal .slides'),
       backgrounds: rect('.reveal .backgrounds'),
@@ -124,6 +124,11 @@ try {
   });
 
   console.log('Layout after cleanup:', JSON.stringify({
+    config: {
+      width: setup.config.width,
+      height: setup.config.height,
+      margin: setup.config.margin,
+    },
     reveal: setup.reveal,
     slides: setup.slides,
     backgrounds: setup.backgrounds,
@@ -135,13 +140,12 @@ try {
 
   for (const index of setup.indices) {
     await page.evaluate(({ h, v }) => {
-      Reveal.slide(h, v, Number.MAX_SAFE_INTEGER);
+      Reveal.slide(h, v);
       const current = Reveal.getCurrentSlide();
       current?.querySelectorAll('.fragment').forEach((fragment) => {
         fragment.classList.add('visible');
         fragment.classList.remove('current-fragment');
       });
-      Reveal.sync();
     }, { h: index.h, v: index.v ?? 0 });
 
     await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
