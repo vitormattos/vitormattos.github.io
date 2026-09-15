@@ -185,7 +185,6 @@ function writeReleaseOnlyManifest(
 ): void {
     $sourceFingerprint = PdfExportPolicy::sourceFingerprint($deckDir, $metadata);
     $manifest = [
-        '_spdx' => ['copyright' => '2026 Vitor Mattos', 'license' => 'CC-BY-SA-4.0'],
         'schema' => PdfExportPolicy::MANIFEST_SCHEMA_VERSION,
         'source' => [
             'sha256' => $sourceFingerprint,
