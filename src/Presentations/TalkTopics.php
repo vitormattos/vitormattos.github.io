@@ -32,6 +32,38 @@ final class TalkTopics
     }
 
     /**
+     * Merge localized collections into one archive while preferring the
+     * current catalog locale when both variants identify the same talk.
+     *
+     * @param iterable<object> $preferred
+     * @param iterable<object> $fallback
+     * @return list<object>
+     */
+    public static function mergeCatalog(iterable $preferred, iterable $fallback): array
+    {
+        $items = [];
+        $seen = [];
+
+        foreach ([$preferred, $fallback] as $collection) {
+            foreach ($collection as $talk) {
+                $identity = self::identity($talk);
+                if (isset($seen[$identity])) {
+                    continue;
+                }
+
+                $seen[$identity] = true;
+                $items[] = $talk;
+            }
+        }
+
+        usort($items, static function (object $left, object $right): int {
+            return (int) ($right->date ?? 0) <=> (int) ($left->date ?? 0);
+        });
+
+        return $items;
+    }
+
+    /**
      * @param iterable<object> $talks
      * @return array{items: list<object>, topics: array<string, array{label: string, count: int}>}
      */
@@ -63,6 +95,28 @@ final class TalkTopics
             'items' => $items,
             'topics' => $taxonomy,
         ];
+    }
+
+    private static function identity(object $talk): string
+    {
+        $presentation = $talk->presentation ?? [];
+        if (is_array($presentation)) {
+            $metadata = trim((string) ($presentation['metadata'] ?? ''));
+            if ($metadata !== '') {
+                return 'metadata:' . $metadata;
+            }
+
+            $url = trim((string) ($presentation['url'] ?? ''));
+            if ($url !== '') {
+                return 'url:' . rtrim($url, '/');
+            }
+        }
+
+        if ($talk->slidesId ?? false) {
+            return 'slides:' . (string) $talk->slidesId;
+        }
+
+        return 'slug:' . (string) ($talk->slug ?? $talk->title ?? spl_object_id($talk));
     }
 
     /**
