@@ -61,7 +61,12 @@ jobs:
             node scripts/poc-slides-pdf.mjs "$url" artifacts/raster.pdf
 
           benchmark decktape \
-            npx decktape --size 1280x720 --pause 100 reveal "$url" artifacts/decktape.pdf
+            npx decktape \
+              --chrome-arg=--no-sandbox \
+              --chrome-arg=--disable-dev-shm-usage \
+              --size 1280x720 \
+              --pause 100 \
+              reveal "$url" artifacts/decktape.pdf
 
           benchmark vector \
             node scripts/poc-slides-vector-pdf.mjs "$url" artifacts/vector.pdf
