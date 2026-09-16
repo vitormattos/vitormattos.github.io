@@ -21,13 +21,59 @@
 }
 
 .talks-profile {
-    display: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3.25rem;
+    gap: 0.75rem;
+    align-items: start;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.talks-profile__name {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 650;
+}
+
+.talks-profile__summary {
+    margin: 0.3rem 0 0;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    line-height: 1.45;
+}
+
+.talks-profile__avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+}
+
+.talks-profile__links {
+    display: flex;
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.75rem;
+    margin-top: 0.2rem;
+    font-size: 0.74rem;
+}
+
+.talks-profile__links a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.talks-profile__links a:hover,
+.talks-profile__links a:focus-visible {
+    color: var(--link);
+    text-decoration: underline;
 }
 
 .talk-tag-filter {
     display: grid;
     gap: 0.2rem;
-    margin-top: 0;
+    margin-top: 0.9rem;
 }
 
 .talk-tag-filter__label {
@@ -252,6 +298,20 @@
         gap: 1.25rem;
     }
 
+    .talks-profile {
+        grid-template-columns: 1fr;
+    }
+
+    .talks-profile__avatar {
+        grid-row: 1;
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .talks-profile__links {
+        grid-column: 1;
+    }
+
     .talk-list[data-view='grid'] {
         grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
     }
@@ -274,13 +334,17 @@
         border-bottom: 1px solid var(--border);
     }
 
+    .talks-profile {
+        display: none;
+    }
+
     .talk-tag-filter {
         display: flex;
+        flex-wrap: wrap;
         gap: 0.4rem;
         margin-top: 0;
         padding-bottom: 0.2rem;
-        overflow-x: auto;
-        scrollbar-width: thin;
+        overflow: visible;
     }
 
     .talk-tag-filter__label {
@@ -288,7 +352,7 @@
     }
 
     .talk-tag--filter {
-        flex: 0 0 auto;
+        flex: 0 1 auto;
         padding: 0.45rem 0.6rem;
         border: 1px solid var(--border);
         border-radius: 999px;
