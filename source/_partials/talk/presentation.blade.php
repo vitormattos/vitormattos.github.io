@@ -6,6 +6,7 @@
     $isEnglish = ($page->locale ?? 'en') === 'en';
     $archivedPdf = $presentation['pdf'] ?? null;
     $archivedOriginal = $presentation['original'] ?? null;
+    $archivedPptx = $presentation['pptx'] ?? null;
     $archivedThumbnail = $presentation['thumbnail'] ?? null;
 
     if ($page->slidesId ?? false) {
@@ -16,6 +17,8 @@
                 $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
                 $archivedPdf ??= $manifest['assets']['pdf']['url'] ?? $manifest['pdf']['url'] ?? null;
                 $archivedOriginal ??= $manifest['assets']['original']['url'] ?? null;
+                $archivedPptx ??= $manifest['assets']['pptx']['url'] ?? null;
+                $archivedThumbnail ??= $manifest['assets']['thumbnail']['url'] ?? null;
                 if (! $archivedThumbnail) {
                     $candidate = 'presentations/' . $sourceDirectory . '/' . $page->slidesId . '/thumbnail.';
                     foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
@@ -91,14 +94,17 @@
                 @if ($presentation['url'] ?? false)
                     <a class="presentation-action presentation-action--primary" href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer"><span aria-hidden="true">↗</span><span>{{ $isEnglish ? 'Open original' : 'Abrir original' }}</span></a>
                 @endif
-                @if ($archivedPdf || $archivedOriginal)
+                @if ($archivedPdf || $archivedPptx || $archivedOriginal)
                     <details class="presentation-action-menu">
                         <summary class="presentation-action"><span aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span aria-hidden="true">⌄</span></summary>
                         <div class="presentation-action-menu__panel">
                             @if ($archivedPdf)
                                 <a href="{{ $archivedPdf }}" target="_blank" rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF' : 'PDF arquivado' }}</small></a>
                             @endif
-                            @if ($archivedOriginal && $archivedOriginal !== $archivedPdf)
+                            @if ($archivedPptx)
+                                <a href="{{ $archivedPptx }}" target="_blank" rel="external noopener noreferrer"><strong>PPTX</strong><small>{{ $isEnglish ? 'Archived PowerPoint' : 'PowerPoint arquivado' }}</small></a>
+                            @endif
+                            @if ($archivedOriginal && $archivedOriginal !== $archivedPdf && $archivedOriginal !== $archivedPptx)
                                 <a href="{{ $archivedOriginal }}" target="_blank" rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Original' : 'Original' }}</strong><small>{{ $isEnglish ? 'Original SlideShare file' : 'Arquivo original do SlideShare' }}</small></a>
                             @endif
                         </div>
