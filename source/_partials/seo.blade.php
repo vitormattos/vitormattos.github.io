@@ -29,10 +29,13 @@
     $websiteId = $siteUrl . '/#website';
     $webpageId = $canonicalUrl . '#webpage';
     $contentId = $canonicalUrl . '#content';
-    $sameAs = array_values(array_filter([
-        $page->author['github'] ?? null,
-        $page->author['linkedin'] ?? null,
-    ]));
+    $sameAs = array_values(array_map(
+        static fn (array $profile): string => $profile['url'],
+        array_filter(
+            $page->author['profiles'] ?? [],
+            static fn (array $profile): bool => $profile['sameAs'] ?? false,
+        ),
+    ));
     $updatedAt = null;
     if ($page->updated ?? false) {
         $updatedAt = is_int($page->updated)
