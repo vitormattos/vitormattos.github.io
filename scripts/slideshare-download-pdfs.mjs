@@ -3,29 +3,28 @@
 
 import { chromium } from 'playwright';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const repository = process.env.GITHUB_REPOSITORY;
-const email = process.env.SLIDESHARE_EMAIL;
-const password = process.env.SLIDESHARE_PASSWORD;
+const storageStatePath = process.env.SLIDESHARE_STORAGE_STATE_PATH;
 if (!repository) throw new Error('GITHUB_REPOSITORY is required.');
-if (!email || !password) throw new Error('SLIDESHARE_EMAIL and SLIDESHARE_PASSWORD secrets are required.');
+if (!storageStatePath || !existsSync(storageStatePath)) throw new Error('SLIDESHARE_STORAGE_STATE_PATH must point to an authenticated Playwright storage state.');
 
 const metadataFiles = execFileSync('find', [
   'presentations/slideshare', '-mindepth', '2', '-maxdepth', '2', '-name', 'metadata.json',
 ], { encoding: 'utf8' }).trim().split('\n').filter(Boolean).sort();
 
 const browser = await chromium.launch({ headless: true });
-const context = await browser.newContext({ acceptDownloads: true, locale: 'pt-BR' });
+const context = await browser.newContext({ acceptDownloads: true, locale: 'pt-BR', storageState: storageStatePath });
 let uploaded = 0;
 let skipped = 0;
 let reconstructed = 0;
 let failed = 0;
 
 try {
-  await authenticate(context, email, password);
+  await verifyAuthenticatedSession(context);
 
   for (const metadataFile of metadataFiles) {
     const metadata = JSON.parse(readFileSync(metadataFile, 'utf8'));
@@ -99,71 +98,22 @@ try {
 console.log(`SlideShare PDF backfill finished: ${uploaded} uploaded (${reconstructed} reconstructed), ${skipped} already present, ${failed} failed.`);
 if (failed > 0) process.exitCode = 2;
 
-async function authenticate(context, username, secret) {
+async function verifyAuthenticatedSession(context) {
   const page = await context.newPage();
   try {
-    console.log('Authenticating with SlideShare/Scribd...');
-    await page.goto('https://www.slideshare.net/login', { waitUntil: 'domcontentloaded', timeout: 90_000 });
-
-    const emailChoice = page.getByText(/continue with email|continuar com e-?mail/i, { exact: true }).first();
-    if (await emailChoice.isVisible({ timeout: 10_000 }).catch(() => false)) {
-      console.log('Selecting email sign-in method...');
-      await emailChoice.click();
-      await page.waitForTimeout(500);
-    }
-
-    const emailInput = page.locator('input[type="email"], input[name*="email" i], input[autocomplete="username"], input[name="login"]').first();
-    if (!(await emailInput.isVisible({ timeout: 10_000 }).catch(() => false))) {
-      throw new Error(`login email field not found after selecting email sign-in at ${page.url()}`);
-    }
-    await emailInput.fill(username);
-
-    let passwordField = page.locator('input[type="password"], input[autocomplete="current-password"]').first();
-    if (!(await passwordField.isVisible({ timeout: 2_000 }).catch(() => false))) {
-      const next = page.getByRole('button', { name: /continue|next|continuar|avançar|entrar|sign in/i }).first();
-      if (await next.isVisible({ timeout: 3_000 }).catch(() => false)) {
-        await next.click();
-        await page.waitForTimeout(700);
-      } else {
-        await emailInput.press('Enter');
-        await page.waitForTimeout(700);
-      }
-    }
-
-    passwordField = page.locator('input[type="password"], input[autocomplete="current-password"]').first();
-    if (!(await passwordField.isVisible({ timeout: 10_000 }).catch(() => false))) {
-      throw new Error(`login password field not found at ${page.url()}`);
-    }
-    await passwordField.fill(secret);
-
-    const submit = page.getByRole('button', { name: /sign in|log in|entrar|continue|continuar/i }).first();
-    if (await submit.isVisible({ timeout: 3_000 }).catch(() => false)) {
-      await submit.click();
-    } else {
-      await passwordField.press('Enter');
-    }
-
-    await page.waitForTimeout(2_000);
-    await page.waitForLoadState('domcontentloaded', { timeout: 30_000 }).catch(() => {});
-
-    const errorText = await page.locator('[role="alert"], .error, [class*="error" i]').allTextContents().catch(() => []);
-    const visiblePassword = await page.locator('input[type="password"]').first().isVisible().catch(() => false);
-    if (visiblePassword) {
-      const message = errorText.map((value) => value.trim()).filter(Boolean).join(' ').slice(0, 300);
-      throw new Error(`authentication was not confirmed${message ? `: ${message}` : ''}`);
-    }
-
+    console.log('Verifying restored SlideShare session...');
     await page.goto('https://www.slideshare.net/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.waitForTimeout(1_000);
+
     const signInLink = page.getByRole('link', { name: /^sign in$/i }).first();
-    const stillSignedOut = await signInLink.isVisible({ timeout: 3_000 }).catch(() => false);
-    if (stillSignedOut) {
-      throw new Error('authentication was not confirmed: SlideShare still exposes the Sign in link after login.');
+    if (await signInLink.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      throw new Error('restored SlideShare session is not authenticated or has expired. Refresh SLIDESHARE_STORAGE_STATE with a manual login.');
     }
 
     const cookies = await context.cookies();
     const sessionCookies = cookies.filter((cookie) => /slideshare|scribd/i.test(cookie.domain));
-    if (sessionCookies.length === 0) throw new Error('authentication produced no SlideShare/Scribd session cookies.');
-    console.log(`Authentication confirmed; session established with ${sessionCookies.length} SlideShare/Scribd cookies.`);
+    if (sessionCookies.length === 0) throw new Error('restored state contains no SlideShare/Scribd cookies.');
+    console.log(`Restored authenticated session with ${sessionCookies.length} SlideShare/Scribd cookies.`);
   } finally {
     await page.close();
   }
