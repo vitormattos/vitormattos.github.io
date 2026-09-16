@@ -9,7 +9,7 @@
     aria-pressed="false"
 >
     <span class="theme-toggle__icon" aria-hidden="true"></span>
-    <span class="theme-toggle__text">{{ $isEnglish ? 'Theme' : 'Tema' }}</span>
+    <span class="visually-hidden">{{ $isEnglish ? 'Theme' : 'Tema' }}</span>
 </button>
 
 <script>
