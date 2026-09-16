@@ -280,6 +280,15 @@
     border-radius: 0.6rem;
 }
 
+@media (min-width: 62.01rem) {
+    .talks-sidebar {
+        z-index: 1;
+        max-height: calc(100vh + 4.75rem);
+        margin-top: -4.75rem;
+        background: var(--surface);
+    }
+}
+
 @media (min-width: 110rem) {
     .talks-browser {
         grid-template-columns: 16rem minmax(0, 1fr);
