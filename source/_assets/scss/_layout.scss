@@ -16,28 +16,40 @@
     justify-content: space-between;
     margin-inline: auto;
     max-width: $site-max-width;
-    min-height: 4.25rem;
+    min-height: 4.75rem;
 }
 
 .site-identity {
     align-items: center;
-    border: 1px solid var(--border);
-    border-radius: .65rem;
     color: var(--text);
     display: inline-flex;
     flex: 0 0 auto;
-    font-size: .85rem;
-    font-weight: 700;
-    justify-content: center;
-    letter-spacing: .08em;
-    min-height: 2.25rem;
-    min-width: 2.6rem;
-    padding-inline: .55rem;
+    gap: .8rem;
     text-decoration: none;
 }
 
-.site-identity:hover {
-    background: var(--surface-muted);
+.site-identity__avatar {
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: block;
+    height: 2.8rem;
+    object-fit: cover;
+    width: 2.8rem;
+}
+
+.site-identity__copy {
+    display: grid;
+    line-height: 1.2;
+}
+
+.site-identity__copy strong {
+    font-size: 1.05rem;
+}
+
+.site-identity__copy span {
+    color: var(--text-muted);
+    font-size: .78rem;
+    margin-top: .2rem;
 }
 
 .site-header__actions,
@@ -116,12 +128,12 @@ footer {
     .site-header__bar {
         display: grid;
         gap: 0;
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: 1fr auto;
         min-height: auto;
     }
 
     .site-identity {
-        margin: .7rem 0 .7rem $page-gutter;
+        display: none;
     }
 
     .site-header__actions {
@@ -131,10 +143,10 @@ footer {
     .site-controls {
         border: 0;
         gap: .45rem;
-        grid-column: 3;
+        grid-column: 2;
         grid-row: 1;
-        padding: 0;
         margin-right: $page-gutter;
+        padding: .65rem 0;
     }
 
     .site-nav {
