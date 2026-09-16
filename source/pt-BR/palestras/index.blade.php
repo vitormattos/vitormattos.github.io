@@ -29,7 +29,11 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
         @include('_partials.author.profile', ['locale' => 'pt-BR'])
 
         @if ($topics !== [])
-            <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filtrar palestras por tópico">
+            <button class="talk-tag-toggle" type="button" data-talk-tag-toggle aria-controls="talk-topic-filter"
+                aria-expanded="false">
+                <span>Tags</span><span class="talk-tag-toggle__chevron" aria-hidden="true">⌄</span>
+            </button>
+            <nav id="talk-topic-filter" class="talk-tag-filter" data-talk-tag-filter aria-label="Filtrar palestras por tópico">
                 <p class="talk-tag-filter__label">Tópicos</p>
                 <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/pt-BR/palestras/" data-talk-tag="" aria-current="true"><span>Todas</span><span>{{ count($talkItems) }}</span></a>
                 @foreach ($topics as $topic => $data)
