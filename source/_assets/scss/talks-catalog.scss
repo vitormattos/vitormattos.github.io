@@ -141,12 +141,16 @@
     align-items: center;
     justify-content: center;
     padding: 0 0.25rem;
-    color: var(--surface);
+    color: var(--text);
     font-size: 0.58rem;
     font-weight: 700;
     line-height: 1;
-    background: var(--link);
+    background: color-mix(in srgb, var(--text) 12%, transparent);
     border-radius: 999px;
+}
+
+.talk-tag--filter[aria-current='true'] > span:last-child {
+    background: color-mix(in srgb, var(--text) 18%, transparent);
 }
 
 .talks-catalog {
