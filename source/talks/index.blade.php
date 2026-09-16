@@ -19,30 +19,10 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
 
 @section('body')
 @php
-    $talkItems = [];
-    $tagCounts = [];
-    $tagLabels = [];
-
-    foreach ($talksEn as $talk) {
-        $talkItems[] = $talk;
-
-        foreach ((array) ($talk->tags ?? []) as $tag) {
-            $tag = trim((string) $tag);
-            if ($tag === '') {
-                continue;
-            }
-
-            $key = strtolower($tag);
-            $tagCounts[$key] = ($tagCounts[$key] ?? 0) + 1;
-
-            if (!isset($tagLabels[$key])
-                || ($tagLabels[$key] === strtolower($tagLabels[$key]) && $tag !== strtolower($tag))) {
-                $tagLabels[$key] = $tag;
-            }
-        }
-    }
-
-    ksort($tagCounts, SORT_NATURAL | SORT_FLAG_CASE);
+    $mergedTalks = \App\Presentations\TalkTopics::mergeCatalog($talksEn, $talks);
+    $catalog = \App\Presentations\TalkTopics::taxonomy($mergedTalks);
+    $talkItems = $catalog['items'];
+    $topics = $catalog['topics'];
 @endphp
 <div class="talks-browser">
     <aside class="talks-sidebar" aria-label="Speaker and topics">
@@ -58,12 +38,12 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
             </div>
         </div>
 
-        @if ($tagCounts !== [])
+        @if ($topics !== [])
             <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filter talks by topic">
                 <p class="talk-tag-filter__label">Topics</p>
                 <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/talks/" data-talk-tag="" aria-current="true"><span>All talks</span><span>{{ count($talkItems) }}</span></a>
-                @foreach ($tagCounts as $tag => $count)
-                    <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/talks/?tag={{ rawurlencode($tag) }}" data-talk-tag="{{ $tag }}"><span>{{ $tagLabels[$tag] }}</span><span>{{ $count }}</span></a>
+                @foreach ($topics as $topic => $data)
+                    <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/talks/?tag={{ rawurlencode($topic) }}" data-talk-tag="{{ $topic }}"><span>{{ $data['label'] }}</span><span>{{ $data['count'] }}</span></a>
                 @endforeach
             </nav>
         @endif
@@ -96,7 +76,7 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
         </div>
         <div class="talk-list" data-talk-gallery data-view="grid">
             @foreach ($talkItems as $talk)
-                @include('_partials.talk.card', ['talk' => $talk])
+                @include('_partials.talk.card', ['talk' => $talk, 'tagIndexPath' => '/talks/'])
             @endforeach
         </div>
         <p class="talk-filter-empty" data-talk-filter-empty hidden>No talks were found for this topic.</p>
