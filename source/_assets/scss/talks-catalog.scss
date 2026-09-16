@@ -295,16 +295,8 @@
         margin-top: -4.75rem;
         padding-top: 1.5rem;
         background: var(--surface);
+        box-shadow: -1.5rem 0 0 var(--surface);
         overflow: visible auto;
-    }
-
-    .talks-sidebar::before {
-        position: absolute;
-        inset-block: 0;
-        right: 100%;
-        width: 2rem;
-        content: '';
-        background: var(--surface);
     }
 }
 
@@ -313,6 +305,10 @@
         grid-template-columns: 16rem minmax(0, 1fr);
         width: calc(100vw - 4rem);
         margin-inline: calc(50% - 50vw + 2rem);
+    }
+
+    .talks-sidebar {
+        box-shadow: -2rem 0 0 var(--surface);
     }
 
     .talk-list[data-view='grid'] {
@@ -355,6 +351,7 @@
         overflow: visible;
         border-right: 0;
         border-bottom: 1px solid var(--border);
+        box-shadow: none;
     }
 
     .talks-profile {
