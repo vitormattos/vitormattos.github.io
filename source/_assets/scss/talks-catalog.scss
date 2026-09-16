@@ -78,13 +78,19 @@
     text-decoration: underline;
 }
 
+.talk-tag-toggle {
+    display: none;
+}
+
 .talk-tag-filter {
-    display: grid;
-    gap: 0.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
     margin-top: 0.9rem;
 }
 
 .talk-tag-filter__label {
+    flex-basis: 100%;
     margin: 0 0 0.4rem;
     color: var(--text-muted);
     font-size: 0.7rem;
@@ -97,11 +103,11 @@
     display: inline-flex;
     width: fit-content;
     max-width: 100%;
-    gap: 0.5rem;
+    gap: 0.45rem;
     align-items: center;
-    padding: 0.22rem 0.28rem 0.22rem 0.65rem;
+    padding: 0.18rem 0.28rem 0.18rem 0.58rem;
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     line-height: 1.15;
     text-decoration: none;
     background: var(--surface-muted);
@@ -130,13 +136,13 @@
 
 .talk-tag--filter > span:last-child {
     display: inline-flex;
-    min-width: 1.35rem;
-    height: 1.35rem;
+    min-width: 1.05rem;
+    height: 1.05rem;
     align-items: center;
     justify-content: center;
-    padding: 0 0.38rem;
+    padding: 0 0.25rem;
     color: var(--surface);
-    font-size: 0.65rem;
+    font-size: 0.58rem;
     font-weight: 700;
     line-height: 1;
     background: var(--link);
@@ -373,13 +379,37 @@
         display: none;
     }
 
-    .talk-tag-filter {
+    .talk-tag-toggle {
         display: flex;
-        flex-wrap: wrap;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        color: var(--text);
+        font: inherit;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .talk-tag-toggle__chevron {
+        display: inline-block;
+        transition: transform 0.15s ease;
+    }
+
+    .talk-tag-toggle[aria-expanded='true'] .talk-tag-toggle__chevron {
+        transform: rotate(180deg);
+    }
+
+    .talk-tag-filter {
+        display: none;
         gap: 0.35rem;
         margin-top: 0;
         padding-bottom: 0.2rem;
-        overflow: visible;
+    }
+
+    .talk-tag-filter.is-open {
+        display: flex;
     }
 
     .talk-tag-filter__label {
