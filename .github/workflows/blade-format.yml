@@ -38,4 +38,9 @@ jobs:
             exit 0
           fi
           printf 'Checking %s\n' "${files[@]}"
-          npx prettier --check "${files[@]}"
+          npx prettier --write "${files[@]}"
+          if ! git diff --quiet -- "${files[@]}"; then
+            echo "Blade templates are not canonically formatted. Apply the diff below:"
+            git diff -- "${files[@]}"
+            exit 1
+          fi
