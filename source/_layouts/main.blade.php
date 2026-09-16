@@ -39,14 +39,15 @@
 <body>
 <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
 <header class="site-header">
-    <a href="{{ $page->baseUrl }}{{ $homePath }}">Vitor Mattos</a>
+    <a href="{{ $page->baseUrl }}{{ $homePath }}">{{ $page->author['name'] }}</a>
     <div class="site-header__actions">
         <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
             <a href="{{ $page->baseUrl }}{{ $aboutPath }}">{{ $isEnglish ? 'About' : 'Sobre' }}</a>
             <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
             <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
-            <a href="{{ $page->author['github'] }}" target="_blank" rel="me external noopener noreferrer">GitHub</a>
-            <a href="{{ $page->author['linkedin'] }}" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>
+            @foreach ($page->author['profiles'] as $profile)
+                <a href="{{ $profile['url'] }}" target="_blank" rel="me external noopener noreferrer">{{ $profile['label'] }}</a>
+            @endforeach
             @if ($alternatePath !== null)
                 <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
                     {{ $isEnglish ? 'Português' : 'English' }}
