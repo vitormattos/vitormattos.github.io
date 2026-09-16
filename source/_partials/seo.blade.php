@@ -34,21 +34,20 @@
     }
     $updatedAt = null;
     if ($page->updated ?? false) {
-        $updatedAt = is_int($page->updated)
-            ? $page->updated
-            : (strtotime((string) $page->updated) ?: null);
+        $updatedAt = is_int($page->updated) ? $page->updated : (strtotime((string) $page->updated) ?: null);
     }
 
     $presentation = $page->presentation ?? [];
     $academic = $page->academic ?? [];
-    $pageSocialImage = $page->socialImage
-        ?? $page->image
-        ?? $page->thumbnail
-        ?? ($academic['socialImage'] ?? null)
-        ?? ($academic['image'] ?? null)
-        ?? ($academic['thumbnail'] ?? null);
-    $socialImageWidth = (int) ($page->socialImageWidth ?? $page->imageWidth ?? 0);
-    $socialImageHeight = (int) ($page->socialImageHeight ?? $page->imageHeight ?? 0);
+    $pageSocialImage =
+        $page->socialImage ??
+        ($page->image ??
+            ($page->thumbnail ??
+                ($academic['socialImage'] ??
+                    null ??
+                    ($academic['image'] ?? null ?? ($academic['thumbnail'] ?? null)))));
+    $socialImageWidth = (int) ($page->socialImageWidth ?? ($page->imageWidth ?? 0));
+    $socialImageHeight = (int) ($page->socialImageHeight ?? ($page->imageHeight ?? 0));
 
     if ($pageSocialImage === null && ($page->slidesId ?? false)) {
         $presentationType = $presentation['type'] ?? 'external';
