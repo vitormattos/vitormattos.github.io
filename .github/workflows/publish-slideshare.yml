@@ -4,12 +4,6 @@ name: Publish SlideShare archive
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - temp/slideshare-pdf-backfill
-    paths:
-      - '.github/workflows/publish-slideshare.yml'
-      - 'scripts/slideshare-download-pdfs.mjs'
 
 permissions:
   contents: write
@@ -35,9 +29,15 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
 
+      - name: Restore SlideShare session
+        env:
+          SLIDESHARE_STORAGE_STATE: ${{ secrets.SLIDESHARE_STORAGE_STATE }}
+        run: |
+          test -n "$SLIDESHARE_STORAGE_STATE" || { echo 'SLIDESHARE_STORAGE_STATE secret is required.' >&2; exit 1; }
+          printf '%s' "$SLIDESHARE_STORAGE_STATE" > "$RUNNER_TEMP/slideshare-storage-state.json"
+
       - name: Download and publish SlideShare PDFs
         env:
           GH_TOKEN: ${{ github.token }}
-          SLIDESHARE_EMAIL: ${{ secrets.SLIDESHARE_EMAIL }}
-          SLIDESHARE_PASSWORD: ${{ secrets.SLIDESHARE_PASSWORD }}
+          SLIDESHARE_STORAGE_STATE_PATH: ${{ runner.temp }}/slideshare-storage-state.json
         run: node scripts/slideshare-download-pdfs.mjs
