@@ -12,6 +12,7 @@ export default defineConfig({
                 'source/_assets/scss/presentations.scss',
                 'source/_assets/scss/talks-catalog.scss',
                 'source/_assets/js/presentations.js',
+                'source/_assets/js/social-icons.js',
             ],
             refresh: true,
         }),

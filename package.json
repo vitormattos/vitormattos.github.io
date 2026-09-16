@@ -10,6 +10,7 @@
     "lint:blade": "prettier --check \"source/**/*.blade.php\""
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@shufo/prettier-plugin-blade": "^1.16.2",
     "@tighten/jigsaw-vite-plugin": "^2.1.0",
     "prettier": "^3.6.2",

@@ -18,7 +18,7 @@ return [
     'author' => [
         'name' => 'Vitor Mattos',
         'id' => 'https://vitormattos.github.io/#person',
-        'avatar' => 'https://github.com/vitormattos.png?size=112',
+        'avatar' => 'https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=112&r=g',
         'summary' => [
             'en' => 'CTO at LibreCode. Free software, privacy, PHP, digital signatures and sustainable software communities.',
             'pt-BR' => 'CTO da LibreCode. Software livre, privacidade, PHP, assinaturas digitais e comunidades sustentáveis de software.',
