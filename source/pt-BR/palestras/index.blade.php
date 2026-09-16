@@ -33,8 +33,8 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
             </div>
             <img class="talks-profile__avatar" src="https://github.com/vitormattos.png?size=112" alt="" width="56" height="56">
             <div class="talks-profile__links">
-                <a href="https://github.com/vitormattos" rel="me">GitHub</a>
-                <a href="https://www.linkedin.com/in/vitormattos/" rel="me">LinkedIn</a>
+                <a href="https://github.com/vitormattos" target="_blank" rel="me external noopener noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/vitormattos/" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>
             </div>
         </div>
 
