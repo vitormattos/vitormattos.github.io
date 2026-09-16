@@ -3,7 +3,7 @@
 
 import { chromium } from 'playwright';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const repository = 'vitormattos/vitormattos.github.io';
@@ -36,6 +36,7 @@ await loginPage.close();
 
 let uploadedAssets = 0;
 let skippedAssets = 0;
+let unavailableAssets = 0;
 let presentationsWithFailures = 0;
 
 try {
@@ -46,11 +47,17 @@ try {
 
     ensureRelease(tag, metadata);
     const existingAssets = releaseAssetNames(tag);
-    const missingTypes = ['pdf', 'pptx'].filter((type) => !existingAssets.has(`slideshare-${id}.${type}`));
+    const missingTypes = ['pdf', 'pptx'].filter((type) => !hasAssetType(existingAssets, type));
+
+    for (const type of ['pdf', 'pptx']) {
+      if (hasAssetType(existingAssets, type)) {
+        console.log(`${id}: ${type.toUpperCase()} already exists in release; will not download it again.`);
+        skippedAssets++;
+      }
+    }
 
     if (missingTypes.length === 0) {
-      console.log(`${id}: release already has PDF and PPTX; skipping.`);
-      skippedAssets += 2;
+      console.log(`${id}: all archived formats already present; skipping presentation.\n`);
       continue;
     }
 
@@ -68,13 +75,16 @@ try {
         rmSync(output, { force: true });
 
         try {
-          const saved = await downloadAsset(page, output, type);
-          if (!saved) {
-            console.log(`  ${type.toUpperCase()}: automatic download was not detected.`);
-            console.log(`  In the open browser, click Download and choose ${type.toUpperCase()}.`);
-            console.log('  When the download has started or finished, return here and press ENTER.');
-            const manual = await waitForManualDownload(page, output, type);
-            if (!manual) throw new Error(`no downloadable ${type.toUpperCase()} was exposed by SlideShare`);
+          const result = await obtainAsset(context, page, output, type, id);
+
+          if (result.status === 'unavailable') {
+            console.log(`  ${type.toUpperCase()}: not offered by this SlideShare upload; skipping.`);
+            unavailableAssets++;
+            continue;
+          }
+
+          if (result.status !== 'saved') {
+            throw new Error(`could not capture ${type.toUpperCase()} download`);
           }
 
           assertAsset(output, type);
@@ -93,102 +103,236 @@ try {
     }
 
     if (failed) presentationsWithFailures++;
+    console.log('');
   }
 } finally {
   await context.close();
   await browser.close();
 }
 
-console.log(`\nFinished: ${uploadedAssets} assets uploaded, ${skippedAssets} assets already present, ${presentationsWithFailures} presentations with failures.`);
+console.log(`Finished: ${uploadedAssets} assets uploaded, ${skippedAssets} already present, ${unavailableAssets} formats not offered, ${presentationsWithFailures} presentations with failures.`);
 if (presentationsWithFailures) process.exitCode = 2;
 
-async function downloadAsset(page, output, type) {
-  const direct = type === 'pdf'
-    ? [/download pdf/i, /baixar pdf/i, /^pdf$/i]
-    : [/download pptx/i, /download powerpoint/i, /baixar pptx/i, /baixar powerpoint/i, /^pptx$/i, /^powerpoint$/i];
+async function obtainAsset(context, page, output, type, id) {
+  // First try explicit format entries already visible on the page.
+  if (await clickFormatOption(context, page, output, type)) return { status: 'saved' };
 
-  for (const pattern of direct) {
-    const candidate = page.getByRole('link', { name: pattern }).first();
-    if (await tryDownloadFromElement(page, candidate, output, type)) return true;
-    const button = page.getByRole('button', { name: pattern }).first();
-    if (await tryDownloadFromElement(page, button, output, type)) return true;
+  const trigger = await findDownloadTrigger(page);
+  if (!trigger) {
+    return await manualCapture(context, page, output, type, id);
   }
 
-  const genericCandidates = [
-    page.getByRole('button', { name: /download|baixar/i }).first(),
-    page.getByRole('link', { name: /download|baixar/i }).first(),
-    page.locator('a[href*="download" i]').first(),
-  ];
+  const capture = createAssetCapture(context, output, type, id);
+  try {
+    await trigger.click();
 
-  for (const trigger of genericCandidates) {
-    if (!(await trigger.isVisible({ timeout: 700 }).catch(() => false))) continue;
-
-    const directDownload = await Promise.all([
-      page.waitForEvent('download', { timeout: 2500 }),
-      trigger.click(),
-    ]).then(([download]) => download).catch(() => null);
-
-    if (directDownload) {
-      await directDownload.saveAs(output);
-      if (isAsset(output, type)) return true;
-      rmSync(output, { force: true });
-      continue;
+    // A single-format upload starts a download immediately. If that download is
+    // the requested type, the capture resolves. If it is another type, we know
+    // the requested format is not offered by this upload.
+    const immediate = await capture.wait(3500);
+    if (immediate.saved) return { status: 'saved' };
+    if (immediate.observedTypes.size > 0 && !immediate.observedTypes.has(type)) {
+      return { status: 'unavailable' };
     }
 
-    await page.waitForTimeout(400);
-    if (await clickFormatOption(page, output, type)) return true;
-  }
+    // Multi-format uploads open a menu. Enumerate it instead of assuming both
+    // PDF and PPTX exist.
+    const offered = await detectOfferedFormats(page);
+    if (offered.size > 0) {
+      if (!offered.has(type)) return { status: 'unavailable' };
+      if (await clickFormatOption(context, page, output, type)) return { status: 'saved' };
+    }
 
-  return false;
+    // The UI is ambiguous. Keep a network/download capture active while the
+    // user clicks once manually. This also catches downloads from popup pages.
+    return await manualCapture(context, page, output, type, id, capture);
+  } finally {
+    capture.close();
+  }
 }
 
-async function clickFormatOption(page, output, type) {
+async function findDownloadTrigger(page) {
+  const candidates = [
+    page.getByRole('button', { name: /download|baixar/i }).first(),
+    page.getByRole('link', { name: /download|baixar/i }).first(),
+    page.locator('button:has-text("Download"), button:has-text("Baixar")').first(),
+    page.locator('a[href*="download" i]').first(),
+  ];
+  for (const candidate of candidates) {
+    if (await candidate.isVisible({ timeout: 700 }).catch(() => false)) return candidate;
+  }
+  return null;
+}
+
+async function detectOfferedFormats(page) {
+  const offered = new Set();
+  for (const frame of page.frames()) {
+    const text = await frame.locator('body').innerText({ timeout: 500 }).catch(() => '');
+    if (/\bPDF\b/i.test(text)) offered.add('pdf');
+    if (/\bPPTX\b|\bPowerPoint\b/i.test(text)) offered.add('pptx');
+  }
+  return offered;
+}
+
+async function clickFormatOption(context, page, output, type) {
   const patterns = type === 'pdf'
     ? [/download pdf/i, /baixar pdf/i, /^pdf$/i]
     : [/download pptx/i, /download powerpoint/i, /baixar pptx/i, /baixar powerpoint/i, /^pptx$/i, /^powerpoint$/i];
 
   for (const frame of page.frames()) {
     for (const pattern of patterns) {
-      for (const locator of [
+      const locators = [
         frame.getByRole('menuitem', { name: pattern }).first(),
         frame.getByRole('button', { name: pattern }).first(),
         frame.getByRole('link', { name: pattern }).first(),
         frame.getByText(pattern).first(),
-      ]) {
-        if (await tryDownloadFromElement(page, locator, output, type)) return true;
+      ];
+      for (const locator of locators) {
+        if (!(await locator.isVisible({ timeout: 300 }).catch(() => false))) continue;
+        const capture = createAssetCapture(context, output, type, 'format-option');
+        try {
+          await locator.click();
+          const result = await capture.wait(20_000);
+          if (result.saved) return true;
+        } finally {
+          capture.close();
+        }
       }
     }
   }
   return false;
 }
 
-async function waitForManualDownload(page, output, type) {
-  console.log('  Waiting for your manual download...');
-  const downloadPromise = page.waitForEvent('download', { timeout: 120_000 }).catch(() => null);
-  await waitForEnter();
-  const download = await Promise.race([
-    downloadPromise,
-    new Promise((resolve) => setTimeout(() => resolve(null), 2_000)),
-  ]);
-
-  if (!download) return false;
-  await download.saveAs(output);
-  if (isAsset(output, type)) return true;
-  rmSync(output, { force: true });
-  return false;
+async function manualCapture(context, page, output, type, id, existingCapture = null) {
+  const capture = existingCapture ?? createAssetCapture(context, output, type, id);
+  const ownsCapture = existingCapture === null;
+  try {
+    console.log(`  ${type.toUpperCase()}: automatic detection was inconclusive.`);
+    console.log(`  In the open browser, click Download${type === 'pptx' ? ' and choose PPTX/PowerPoint' : ' and choose PDF if a menu appears'}.`);
+    console.log('  Return here and press ENTER after the browser starts or finishes the download.');
+    await waitForEnter();
+    const result = await capture.wait(5000);
+    if (result.saved) return { status: 'saved' };
+    if (result.observedTypes.size > 0 && !result.observedTypes.has(type)) return { status: 'unavailable' };
+    return { status: 'failed' };
+  } finally {
+    if (ownsCapture) capture.close();
+  }
 }
 
-async function tryDownloadFromElement(page, element, output, type) {
-  if (!(await element.isVisible({ timeout: 500 }).catch(() => false))) return false;
-  const download = await Promise.all([
-    page.waitForEvent('download', { timeout: 20_000 }),
-    element.click(),
-  ]).then(([event]) => event).catch(() => null);
-  if (!download) return false;
-  await download.saveAs(output);
-  if (isAsset(output, type)) return true;
-  rmSync(output, { force: true });
-  return false;
+function createAssetCapture(context, output, expectedType, id) {
+  let resolveSaved;
+  const savedPromise = new Promise((resolve) => { resolveSaved = resolve; });
+  const observedTypes = new Set();
+  const attachedPages = new Set();
+  let saved = false;
+
+  const saveDownload = async (download) => {
+    try {
+      const suggested = download.suggestedFilename();
+      const type = typeFromFilename(suggested);
+      if (type) observedTypes.add(type);
+      if (type !== expectedType || saved) return;
+      await download.saveAs(output);
+      if (isAsset(output, expectedType)) {
+        saved = true;
+        console.log(`  Captured ${expectedType.toUpperCase()} download (${suggested}).`);
+        resolveSaved(true);
+      }
+    } catch {}
+  };
+
+  const inspectResponse = async (response) => {
+    try {
+      const headers = response.headers();
+      const disposition = headers['content-disposition'] ?? '';
+      const contentType = (headers['content-type'] ?? '').toLowerCase();
+      const responseType = typeFromResponse(response.url(), disposition, contentType);
+      if (responseType) observedTypes.add(responseType);
+
+      if (responseType === expectedType && !saved) {
+        const body = await response.body();
+        writeFileSync(output, body);
+        if (isAsset(output, expectedType)) {
+          saved = true;
+          console.log(`  Captured ${expectedType.toUpperCase()} from network response: ${response.url()}`);
+          resolveSaved(true);
+          return;
+        }
+        rmSync(output, { force: true });
+      }
+
+      if (/json|text/i.test(contentType) && /download|export|file/i.test(response.url())) {
+        const text = await response.text().catch(() => '');
+        for (const candidate of extractUrls(text)) {
+          const candidateType = typeFromFilename(candidate);
+          if (candidateType) observedTypes.add(candidateType);
+          if (candidateType === expectedType && !saved) {
+            const request = await context.request.get(candidate, { failOnStatusCode: false, timeout: 20_000 }).catch(() => null);
+            if (!request?.ok()) continue;
+            const body = await request.body();
+            writeFileSync(output, body);
+            if (isAsset(output, expectedType)) {
+              saved = true;
+              console.log(`  Captured ${expectedType.toUpperCase()} URL from SlideShare response.`);
+              resolveSaved(true);
+              return;
+            }
+            rmSync(output, { force: true });
+          }
+        }
+      }
+    } catch {}
+  };
+
+  const attachPage = (p) => {
+    if (attachedPages.has(p)) return;
+    attachedPages.add(p);
+    p.on('download', saveDownload);
+    p.on('response', inspectResponse);
+  };
+
+  for (const p of context.pages()) attachPage(p);
+  context.on('page', attachPage);
+
+  return {
+    observedTypes,
+    async wait(timeoutMs) {
+      if (saved) return { saved: true, observedTypes };
+      await Promise.race([
+        savedPromise,
+        new Promise((resolve) => setTimeout(resolve, timeoutMs)),
+      ]);
+      return { saved, observedTypes };
+    },
+    close() {
+      context.off('page', attachPage);
+      for (const p of attachedPages) {
+        p.off('download', saveDownload);
+        p.off('response', inspectResponse);
+      }
+    },
+  };
+}
+
+function typeFromResponse(url, disposition, contentType) {
+  const byName = typeFromFilename(`${url} ${disposition}`);
+  if (byName) return byName;
+  if (contentType.includes('application/pdf')) return 'pdf';
+  if (contentType.includes('presentationml.presentation') || contentType.includes('powerpoint')) return 'pptx';
+  return null;
+}
+
+function typeFromFilename(value) {
+  const clean = String(value).toLowerCase();
+  if (/\.pdf(?:\?|$|["'\s])/.test(clean) || /filename[^;]*\.pdf/i.test(clean)) return 'pdf';
+  if (/\.pptx(?:\?|$|["'\s])/.test(clean) || /filename[^;]*\.pptx/i.test(clean)) return 'pptx';
+  return null;
+}
+
+function extractUrls(text) {
+  const decoded = String(text).replaceAll('\\u002F', '/').replaceAll('\\/', '/');
+  return [...decoded.matchAll(/https?:\/\/[^"'<>\s]+/g)].map((match) => match[0].replaceAll('&amp;', '&'));
 }
 
 function ensureRelease(tag, metadata) {
@@ -214,6 +358,10 @@ function releaseAssetNames(tag) {
     '--jq', '.assets[].name',
   ], { encoding: 'utf8' });
   return new Set(names.split('\n').map((name) => name.trim()).filter(Boolean));
+}
+
+function hasAssetType(names, type) {
+  return [...names].some((name) => name.toLowerCase().endsWith(`.${type}`));
 }
 
 function releaseNotes(metadata) {
