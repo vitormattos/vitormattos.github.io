@@ -13,11 +13,23 @@ class PresentationReleaseMetadata
 
     public static function title(array $metadata): string
     {
-        return trim((string) ($metadata['title'] ?? '')) ?: ucfirst((string) ($metadata['source'] ?? 'presentation')) . ' presentation ' . (string) ($metadata['id'] ?? '');
+        $title = trim((string) ($metadata['title'] ?? ''));
+        if ($title !== '') {
+            return $title;
+        }
+
+        return ucfirst((string) ($metadata['source'] ?? 'presentation'))
+            . ' presentation '
+            . (string) ($metadata['id'] ?? '');
     }
 
-    public static function body(array $metadata, string $repository, ?string $thumbnailAssetUrl = null, ?string $pdfAssetUrl = null, ?string $originalAssetUrl = null): string
-    {
+    public static function body(
+        array $metadata,
+        string $repository,
+        ?string $thumbnailAssetUrl = null,
+        ?string $pdfAssetUrl = null,
+        ?string $originalAssetUrl = null,
+    ): string {
         $source = trim((string) ($metadata['source'] ?? 'slides.com'));
         $sourceLabel = $source === 'slideshare' ? 'SlideShare' : 'Slides.com';
         $description = trim((string) ($metadata['description'] ?? ''));
@@ -30,45 +42,93 @@ class PresentationReleaseMetadata
         $statistics = is_array($metadata['statistics'] ?? null) ? $metadata['statistics'] : [];
 
         $lines = [];
-        if ($description !== '') $lines = [$description, ''];
+        if ($description !== '') {
+            $lines[] = $description;
+            $lines[] = '';
+        }
 
         $thumbnailUrl = $thumbnailAssetUrl ?? self::thumbnailUrl($metadata, $repository);
-        if ($thumbnailUrl !== null) $lines = [...$lines, self::thumbnailHtml($metadata, $thumbnailUrl), ''];
+        if ($thumbnailUrl !== null) {
+            $lines[] = self::thumbnailHtml($metadata, $thumbnailUrl);
+            $lines[] = '';
+        }
 
         $lines[] = 'Archived presentation from ' . $sourceLabel . '. Release assets preserve the presentation independently from the original hosting service.';
         $lines[] = '';
         $lines[] = '### Presentation';
-        if (($portfolioUrl = self::portfolioUrl($metadata)) !== null) $lines[] = '- **Presentation page:** ' . $portfolioUrl;
-        if ($pdfAssetUrl !== null) $lines[] = '- **Archived PDF:** ' . $pdfAssetUrl;
-        if ($originalAssetUrl !== null) $lines[] = '- **Original archived file:** ' . $originalAssetUrl;
-        $lines[] = '- **Website:** ' . self::SITE_URL;
-        if ($url !== '') $lines[] = '- **' . $sourceLabel . ':** ' . $url;
-        if ($language !== '') $lines[] = '- **Language:** ' . $language;
-        if ($slideCount > 0) $lines[] = '- **Slides:** ' . $slideCount;
-        if ($publishedAt !== '') $lines[] = '- **Published:** ' . $publishedAt;
-        if ($updatedAt !== '') $lines[] = '- **Last updated:** ' . $updatedAt;
-        if ($tags !== []) $lines[] = '- **Tags:** ' . implode(', ', $tags);
 
-        $statLabels = ['total_views' => 'Total views', 'slideshare_views' => 'SlideShare views', 'embed_views' => 'Embedded views', 'likes' => 'Likes', 'comments' => 'Comments', 'downloads' => 'Downloads'];
+        $portfolioUrl = self::portfolioUrl($metadata);
+        if ($portfolioUrl !== null) {
+            $lines[] = '- **Presentation page:** ' . $portfolioUrl;
+        }
+        if ($pdfAssetUrl !== null) {
+            $lines[] = '- **Archived PDF:** ' . $pdfAssetUrl;
+        }
+        if ($originalAssetUrl !== null) {
+            $lines[] = '- **Original archived file:** ' . $originalAssetUrl;
+        }
+
+        $lines[] = '- **Website:** ' . self::SITE_URL;
+
+        if ($url !== '') {
+            $lines[] = '- **' . $sourceLabel . ':** ' . $url;
+        }
+        if ($language !== '') {
+            $lines[] = '- **Language:** ' . $language;
+        }
+        if ($slideCount > 0) {
+            $lines[] = '- **Slides:** ' . $slideCount;
+        }
+        if ($publishedAt !== '') {
+            $lines[] = '- **Published:** ' . $publishedAt;
+        }
+        if ($updatedAt !== '') {
+            $lines[] = '- **Last updated:** ' . $updatedAt;
+        }
+        if ($tags !== []) {
+            $lines[] = '- **Tags:** ' . implode(', ', $tags);
+        }
+
+        $statLabels = [
+            'total_views' => 'Total views',
+            'slideshare_views' => 'SlideShare views',
+            'embed_views' => 'Embedded views',
+            'likes' => 'Likes',
+            'comments' => 'Comments',
+            'downloads' => 'Downloads',
+        ];
         $availableStats = array_intersect_key($statistics, $statLabels);
         if ($availableStats !== []) {
             $lines[] = '';
             $lines[] = '### Historical statistics';
-            foreach ($statLabels as $key => $label) if (array_key_exists($key, $availableStats)) $lines[] = '- **' . $label . ':** ' . number_format((int) $availableStats[$key], 0, '.', ',');
+            foreach ($statLabels as $key => $label) {
+                if (array_key_exists($key, $availableStats)) {
+                    $lines[] = '- **' . $label . ':** '
+                        . number_format((int) $availableStats[$key], 0, '.', ',');
+                }
+            }
             $lines[] = '';
             $lines[] = '_Statistics are preserved from the source archive and represent the values captured during migration._';
         }
 
         $lines[] = '';
         $lines[] = 'The release is keyed by the immutable source presentation ID. Historical assets are preserved when a new archived snapshot is published.';
+
         return rtrim(implode("\n", $lines)) . "\n";
     }
 
     private static function tags(array $metadata, string $source): array
     {
         $tags = $metadata['tags'] ?? [];
-        if (isset($tags[$source === 'slideshare' ? 'slideshare' : 'slides_com'])) $tags = $tags[$source === 'slideshare' ? 'slideshare' : 'slides_com'];
-        return array_values(array_filter(array_map(static fn($tag): string => trim((string) $tag), (array) $tags)));
+        $tagKey = $source === 'slideshare' ? 'slideshare' : 'slides_com';
+        if (isset($tags[$tagKey])) {
+            $tags = $tags[$tagKey];
+        }
+
+        return array_values(array_filter(
+            array_map(static fn($tag): string => trim((string) $tag), (array) $tags),
+            static fn(string $tag): bool => $tag !== '',
+        ));
     }
 
     private static function thumbnailHtml(array $metadata, string $thumbnailUrl): string
@@ -77,23 +137,49 @@ class PresentationReleaseMetadata
         $height = (int) ($metadata['thumbnail_height'] ?? $metadata['height'] ?? 0);
         $src = htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $alt = htmlspecialchars(self::title($metadata), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        return $width > 0 && $height > 0 ? sprintf('<img src="%s" alt="%s" width="%d" height="%d">', $src, $alt, $width, $height) : sprintf('<img src="%s" alt="%s">', $src, $alt);
+
+        if ($width > 0 && $height > 0) {
+            return sprintf(
+                '<img src="%s" alt="%s" width="%d" height="%d">',
+                $src,
+                $alt,
+                $width,
+                $height,
+            );
+        }
+
+        return sprintf('<img src="%s" alt="%s">', $src, $alt);
     }
 
     private static function thumbnailUrl(array $metadata, string $repository): ?string
     {
         $path = trim((string) ($metadata['thumbnail_path'] ?? ''));
-        if ($path === '') return null;
-        return sprintf('https://raw.githubusercontent.com/%s/main/%s', trim($repository, '/'), implode('/', array_map('rawurlencode', explode('/', ltrim($path, '/')))));
+        if ($path === '') {
+            return null;
+        }
+
+        return sprintf(
+            'https://raw.githubusercontent.com/%s/main/%s',
+            trim($repository, '/'),
+            implode('/', array_map('rawurlencode', explode('/', ltrim($path, '/')))),
+        );
     }
 
     private static function portfolioUrl(array $metadata): ?string
     {
         $slug = trim((string) ($metadata['slug'] ?? ''));
-        if ($slug === '') return null;
-        $prefix = str_starts_with(strtolower(trim((string) ($metadata['language'] ?? ''))), 'pt') ? '/pt-BR/palestras/' : '/talks/';
+        if ($slug === '') {
+            return null;
+        }
+
+        $language = strtolower(trim((string) ($metadata['language'] ?? '')));
+        $prefix = str_starts_with($language, 'pt') ? '/pt-BR/palestras/' : '/talks/';
+
         return self::SITE_URL . $prefix . rawurlencode($slug);
     }
 
-    private static function date(string $value): string { return $value !== '' ? substr($value, 0, 10) : ''; }
+    private static function date(string $value): string
+    {
+        return $value !== '' ? substr($value, 0, 10) : '';
+    }
 }
