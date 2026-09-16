@@ -41,18 +41,73 @@ final class TalkHistoryTest extends TestCase
         );
     }
 
-    public function testItNormalizesUnderscoreAliasesWhenMatchingTalkSlug(): void
+    public function testItResolvesAlternateSlidesLink(): void
     {
         $history = [
-            'celular-floss' => [
-                'aliases' => ['https://slides.com/vitormattos/celular_floss'],
+            'senhas' => [
+                'aliases' => ['https://slides.com/vitormattos/senhas'],
+                'links' => [
+                    ['type' => 'slides', 'label' => 'Webinar slides', 'url' => 'https://slides.com/vitormattos/webinar-senhas#/'],
+                ],
             ],
         ];
 
         self::assertSame(
-            $history['celular-floss'],
-            TalkHistory::resolve($history, '', 'celular-floss'),
+            $history['senhas'],
+            TalkHistory::resolve($history, 'https://slides.com/vitormattos/webinar-senhas#/', 'generated-provider-slug'),
         );
+    }
+
+    public function testItValidatesCuratedMetadata(): void
+    {
+        $history = [
+            'cloud-privacity' => [
+                'aliases' => ['https://slides.com/vitormattos/cloud-privacity'],
+                'sources' => [
+                    ['type' => 'cfp', 'label' => 'PHPRio CFP', 'url' => 'https://github.com/PHPRio/CFP/issues/146'],
+                ],
+                'appearances' => [
+                    [
+                        'event' => 'PHPRio',
+                        'date' => '2022-08-03',
+                        'url' => 'https://www.meetup.com/pt-BR/php-rio/events/287427112/',
+                        'links' => [
+                            ['type' => 'video', 'label' => 'Recording', 'url' => 'https://www.youtube.com/watch?v=h2UF0h70NTA'],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        self::assertSame([], TalkHistory::validationErrors($history));
+    }
+
+    public function testItReportsInvalidMetadataAndDuplicateAliases(): void
+    {
+        $history = [
+            'Bad Slug' => [
+                'aliases' => ['not-a-url'],
+                'links' => [
+                    ['type' => '', 'label' => '', 'url' => 'invalid'],
+                ],
+                'appearances' => [
+                    ['event' => '', 'date' => '2022-02-31', 'url' => 'invalid'],
+                ],
+            ],
+            'second-talk' => [
+                'aliases' => ['https://slides.com/vitormattos/talk'],
+            ],
+            'third-talk' => [
+                'aliases' => ['https://slides.com/vitormattos/talk/'],
+            ],
+        ];
+
+        $errors = TalkHistory::validationErrors($history);
+
+        self::assertNotSame([], $errors);
+        self::assertTrue((bool) array_filter($errors, static fn (string $error): bool => str_contains($error, 'normalized slug')));
+        self::assertTrue((bool) array_filter($errors, static fn (string $error): bool => str_contains($error, 'duplicates a presentation URL')));
+        self::assertTrue((bool) array_filter($errors, static fn (string $error): bool => str_contains($error, 'real calendar date')));
     }
 
     public function testUnknownTalkHasNoCuratedHistory(): void
