@@ -44,8 +44,7 @@
         ($page->image ??
             ($page->thumbnail ??
                 ($academic['socialImage'] ??
-                    null ??
-                    ($academic['image'] ?? null ?? ($academic['thumbnail'] ?? null)))));
+                    (null ?? ($academic['image'] ?? (null ?? ($academic['thumbnail'] ?? null)))))));
     $socialImageWidth = (int) ($page->socialImageWidth ?? ($page->imageWidth ?? 0));
     $socialImageHeight = (int) ($page->socialImageHeight ?? ($page->imageHeight ?? 0));
 
