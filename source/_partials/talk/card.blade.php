@@ -57,14 +57,22 @@
         <p class="talk-card__description">{{ $talk->description }}</p>
 
         <div class="talk-card__meta-line">
-            @if ($talk->date ?? false)<span><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>@endif
-            @if ($presentation['slideCount'] ?? 0)<span>{{ $presentation['slideCount'] }} slides</span>@endif
-            @if ($presentation['language'] ?? false)<span>{{ $presentation['language'] }}</span>@endif
+            @if ($talk->date ?? false)
+                <span><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>
+            @endif
+            @if ($presentation['slideCount'] ?? 0)
+                <span>{{ $presentation['slideCount'] }} slides</span>
+            @endif
+            @if ($presentation['language'] ?? false)
+                <span>{{ $presentation['language'] }}</span>
+            @endif
         </div>
 
         @if ($topics !== [])
             <nav class="talk-card__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
-                @foreach ($topics as $topic => $label)<a class="talk-tag" href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($topic) }}">{{ $label }}</a>@endforeach
+                @foreach ($topics as $topic => $label)
+                    <a class="talk-tag" href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($topic) }}">{{ $label }}</a>
+                @endforeach
             </nav>
         @endif
 
