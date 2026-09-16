@@ -67,7 +67,7 @@ try {
 
     try {
       await page.goto(metadata.source_url, { waitUntil: 'domcontentloaded', timeout: 90_000 });
-      await page.waitForTimeout(1500);
+      await page.waitForTimeout(1200);
 
       for (const type of missingTypes) {
         const filename = `${tag}.${type}`;
@@ -114,64 +114,18 @@ console.log(`Finished: ${uploadedAssets} assets uploaded, ${skippedAssets} alrea
 if (presentationsWithFailures) process.exitCode = 2;
 
 async function obtainAsset(context, page, output, type, id) {
-  // First try explicit format entries already visible on the page.
-  if (await clickFormatOption(context, page, output, type)) return { status: 'saved' };
-
-  const trigger = await findDownloadTrigger(page);
-  if (!trigger) {
-    return await manualCapture(context, page, output, type, id);
+  // Only interact automatically when SlideShare exposes an explicit option for
+  // the requested format. Do not click the generic Download control: on some
+  // pages that element changes slide/carousel state and causes unwanted
+  // scrolling instead of opening the format menu.
+  if (await clickFormatOption(context, page, output, type)) {
+    return { status: 'saved' };
   }
 
-  const capture = createAssetCapture(context, output, type, id);
-  try {
-    await trigger.click();
-
-    // A single-format upload starts a download immediately. If that download is
-    // the requested type, the capture resolves. If it is another type, we know
-    // the requested format is not offered by this upload.
-    const immediate = await capture.wait(3500);
-    if (immediate.saved) return { status: 'saved' };
-    if (immediate.observedTypes.size > 0 && !immediate.observedTypes.has(type)) {
-      return { status: 'unavailable' };
-    }
-
-    // Multi-format uploads open a menu. Enumerate it instead of assuming both
-    // PDF and PPTX exist.
-    const offered = await detectOfferedFormats(page);
-    if (offered.size > 0) {
-      if (!offered.has(type)) return { status: 'unavailable' };
-      if (await clickFormatOption(context, page, output, type)) return { status: 'saved' };
-    }
-
-    // The UI is ambiguous. Keep a network/download capture active while the
-    // user clicks once manually. This also catches downloads from popup pages.
-    return await manualCapture(context, page, output, type, id, capture);
-  } finally {
-    capture.close();
-  }
-}
-
-async function findDownloadTrigger(page) {
-  const candidates = [
-    page.getByRole('button', { name: /download|baixar/i }).first(),
-    page.getByRole('link', { name: /download|baixar/i }).first(),
-    page.locator('button:has-text("Download"), button:has-text("Baixar")').first(),
-    page.locator('a[href*="download" i]').first(),
-  ];
-  for (const candidate of candidates) {
-    if (await candidate.isVisible({ timeout: 700 }).catch(() => false)) return candidate;
-  }
-  return null;
-}
-
-async function detectOfferedFormats(page) {
-  const offered = new Set();
-  for (const frame of page.frames()) {
-    const text = await frame.locator('body').innerText({ timeout: 500 }).catch(() => '');
-    if (/\bPDF\b/i.test(text)) offered.add('pdf');
-    if (/\bPPTX\b|\bPowerPoint\b/i.test(text)) offered.add('pptx');
-  }
-  return offered;
+  // Keep the page completely still and let the user open the Download menu and
+  // choose the requested format. While the user does that, capture downloads,
+  // popup downloads and download URLs returned by SlideShare network calls.
+  return await manualCapture(context, page, output, type, id);
 }
 
 async function clickFormatOption(context, page, output, type) {
@@ -185,10 +139,9 @@ async function clickFormatOption(context, page, output, type) {
         frame.getByRole('menuitem', { name: pattern }).first(),
         frame.getByRole('button', { name: pattern }).first(),
         frame.getByRole('link', { name: pattern }).first(),
-        frame.getByText(pattern).first(),
       ];
       for (const locator of locators) {
-        if (!(await locator.isVisible({ timeout: 300 }).catch(() => false))) continue;
+        if (!(await locator.isVisible({ timeout: 250 }).catch(() => false))) continue;
         const capture = createAssetCapture(context, output, type, 'format-option');
         try {
           await locator.click();
@@ -203,20 +156,24 @@ async function clickFormatOption(context, page, output, type) {
   return false;
 }
 
-async function manualCapture(context, page, output, type, id, existingCapture = null) {
-  const capture = existingCapture ?? createAssetCapture(context, output, type, id);
-  const ownsCapture = existingCapture === null;
+async function manualCapture(context, page, output, type, id) {
+  const capture = createAssetCapture(context, output, type, id);
   try {
-    console.log(`  ${type.toUpperCase()}: automatic detection was inconclusive.`);
-    console.log(`  In the open browser, click Download${type === 'pptx' ? ' and choose PPTX/PowerPoint' : ' and choose PDF if a menu appears'}.`);
-    console.log('  Return here and press ENTER after the browser starts or finishes the download.');
+    console.log(`  ${type.toUpperCase()}: explicit format option is not currently visible.`);
+    console.log(`  The script will NOT click or scroll the page automatically.`);
+    console.log(`  In the open browser, open Download and choose ${type === 'pptx' ? 'PPTX/PowerPoint' : 'PDF'}.`);
+    console.log('  If that format is not offered, just press ENTER without downloading it.');
+    console.log('  Return here and press ENTER after the download starts/finishes or after confirming the format is unavailable.');
     await waitForEnter();
-    const result = await capture.wait(5000);
+
+    const result = await capture.wait(6000);
     if (result.saved) return { status: 'saved' };
     if (result.observedTypes.size > 0 && !result.observedTypes.has(type)) return { status: 'unavailable' };
-    return { status: 'failed' };
+
+    console.log(`  No ${type.toUpperCase()} download was observed. Treating it as unavailable for this run.`);
+    return { status: 'unavailable' };
   } finally {
-    if (ownsCapture) capture.close();
+    capture.close();
   }
 }
 
