@@ -33,7 +33,8 @@ alternateUrl: /about
 
     <p>Procuro manter o mesmo princípio entre essas diferentes áreas: trabalho técnico relevante deve ser compreensível, verificável e reutilizável por outras pessoas.</p>
 
-    <h2>Outros canais</h2>
+    <h2>Perfis</h2>
+    <p>Perfis e registros públicos relacionados à minha atuação profissional, técnica e acadêmica.</p>
     <p>@include('_partials.author.profile-links')</p>
 </article>
 @endsection
