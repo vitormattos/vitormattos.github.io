@@ -47,10 +47,6 @@ jobs:
         if: github.event.action != 'closed'
         run: vendor/bin/phpunit tests/Presentations
 
-      # Imported presentations are not yet versioned on main. Until the first
-      # synchronization PR is merged, hydrate preview content from Slides.com.
-      # This never renders PDFs: PDF generation remains exclusive to the sync
-      # workflow because it is the expensive part of the pipeline.
       - name: Compute Slides.com preview cache key
         id: slides-cache-key
         if: github.event.action != 'closed'

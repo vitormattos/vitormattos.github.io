@@ -18,6 +18,11 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/melhor-que-whatsapp-telegram-php/54446916"
   metadata: /presentations/slideshare/54446916/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-54446916/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-54446916/slideshare-54446916.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-54446916/slideshare-54446916.pptx"
+  thumbnailWidth: 1280
+  thumbnailHeight: 720
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

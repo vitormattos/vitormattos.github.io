@@ -18,6 +18,11 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/composer-dependency-manager-tdc-poa-2017/81808135"
   metadata: /presentations/slideshare/81808135/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-81808135/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-81808135/slideshare-81808135.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-81808135/slideshare-81808135.pptx"
+  thumbnailWidth: 1280
+  thumbnailHeight: 720
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

@@ -31,7 +31,7 @@ final class TalkTopicsTest extends TestCase
         self::assertArrayHasKey('software testing', $topics);
     }
 
-    public function testTaxonomyCountsEachTalkOncePerNormalizedTopic(): void
+    public function testTaxonomyCountsEachTalkOncePerNormalizedTopicAndExposesOnlyRecurringTopics(): void
     {
         $talks = [
             (object) ['tags' => ['PHP', 'php']],
@@ -44,7 +44,8 @@ final class TalkTopicsTest extends TestCase
         self::assertCount(3, $catalog['items']);
         self::assertSame(2, $catalog['topics']['php']['count']);
         self::assertSame('PHP', $catalog['topics']['php']['label']);
-        self::assertSame(1, $catalog['topics']['testing']['count']);
+        self::assertArrayNotHasKey('testing', $catalog['topics']);
+        self::assertSame(['testing' => 'testing'], TalkTopics::resolve($talks[2]));
     }
 
     public function testMergeCatalogIncludesFallbackLocaleAndPrefersCurrentLocale(): void

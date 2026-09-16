@@ -18,7 +18,9 @@ class PresentationReleaseMetadata
             return $title;
         }
 
-        return ucfirst((string) ($metadata['source'] ?? 'presentation')) . ' presentation ' . (string) ($metadata['id'] ?? '');
+        return ucfirst((string) ($metadata['source'] ?? 'presentation'))
+            . ' presentation '
+            . (string) ($metadata['id'] ?? '');
     }
 
     public static function body(
@@ -37,6 +39,7 @@ class PresentationReleaseMetadata
         $publishedAt = self::date((string) ($metadata['published_at'] ?? $metadata['created_at'] ?? ''));
         $updatedAt = self::date((string) ($metadata['updated_at'] ?? ''));
         $tags = self::tags($metadata, $source);
+        $statistics = is_array($metadata['statistics'] ?? null) ? $metadata['statistics'] : [];
 
         $lines = [];
         if ($description !== '') {
@@ -64,7 +67,9 @@ class PresentationReleaseMetadata
         if ($originalAssetUrl !== null) {
             $lines[] = '- **Original archived file:** ' . $originalAssetUrl;
         }
+
         $lines[] = '- **Website:** ' . self::SITE_URL;
+
         if ($url !== '') {
             $lines[] = '- **' . $sourceLabel . ':** ' . $url;
         }
@@ -84,6 +89,28 @@ class PresentationReleaseMetadata
             $lines[] = '- **Tags:** ' . implode(', ', $tags);
         }
 
+        $statLabels = [
+            'total_views' => 'Total views',
+            'slideshare_views' => 'SlideShare views',
+            'embed_views' => 'Embedded views',
+            'likes' => 'Likes',
+            'comments' => 'Comments',
+            'downloads' => 'Downloads',
+        ];
+        $availableStats = array_intersect_key($statistics, $statLabels);
+        if ($availableStats !== []) {
+            $lines[] = '';
+            $lines[] = '### Historical statistics';
+            foreach ($statLabels as $key => $label) {
+                if (array_key_exists($key, $availableStats)) {
+                    $lines[] = '- **' . $label . ':** '
+                        . number_format((int) $availableStats[$key], 0, '.', ',');
+                }
+            }
+            $lines[] = '';
+            $lines[] = '_Statistics are preserved from the source archive and represent the values captured during migration._';
+        }
+
         $lines[] = '';
         $lines[] = 'The release is keyed by the immutable source presentation ID. Historical assets are preserved when a new archived snapshot is published.';
 
@@ -93,8 +120,9 @@ class PresentationReleaseMetadata
     private static function tags(array $metadata, string $source): array
     {
         $tags = $metadata['tags'] ?? [];
-        if (isset($tags[$source === 'slideshare' ? 'slideshare' : 'slides_com'])) {
-            $tags = $tags[$source === 'slideshare' ? 'slideshare' : 'slides_com'];
+        $tagKey = $source === 'slideshare' ? 'slideshare' : 'slides_com';
+        if (isset($tags[$tagKey])) {
+            $tags = $tags[$tagKey];
         }
 
         return array_values(array_filter(
@@ -105,13 +133,19 @@ class PresentationReleaseMetadata
 
     private static function thumbnailHtml(array $metadata, string $thumbnailUrl): string
     {
-        $width = (int) ($metadata['width'] ?? 0);
-        $height = (int) ($metadata['height'] ?? 0);
+        $width = (int) ($metadata['thumbnail_width'] ?? $metadata['width'] ?? 0);
+        $height = (int) ($metadata['thumbnail_height'] ?? $metadata['height'] ?? 0);
         $src = htmlspecialchars($thumbnailUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         $alt = htmlspecialchars(self::title($metadata), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
         if ($width > 0 && $height > 0) {
-            return sprintf('<img src="%s" alt="%s" width="%d" height="%d">', $src, $alt, $width, $height);
+            return sprintf(
+                '<img src="%s" alt="%s" width="%d" height="%d">',
+                $src,
+                $alt,
+                $width,
+                $height,
+            );
         }
 
         return sprintf('<img src="%s" alt="%s">', $src, $alt);

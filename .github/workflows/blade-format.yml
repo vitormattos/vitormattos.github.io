@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Blade formatting
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: blade-format-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+      - run: npm install --no-audit --no-fund
+      - name: Check changed Blade templates
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mapfile -t files < <(git diff --diff-filter=ACMR --name-only "$BASE_SHA" "$HEAD_SHA" -- 'source/**/*.blade.php')
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No Blade templates changed."
+            exit 0
+          fi
+          printf 'Checking %s\n' "${files[@]}"
+          npx prettier --write "${files[@]}"
+          if ! git diff --quiet -- "${files[@]}"; then
+            echo "Blade templates are not canonically formatted. Apply the diff below:"
+            git diff -- "${files[@]}"
+            exit 1
+          fi

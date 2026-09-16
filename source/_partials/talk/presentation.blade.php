@@ -6,6 +6,7 @@
     $isEnglish = ($page->locale ?? 'en') === 'en';
     $archivedPdf = $presentation['pdf'] ?? null;
     $archivedOriginal = $presentation['original'] ?? null;
+    $archivedPptx = $presentation['pptx'] ?? null;
     $archivedThumbnail = $presentation['thumbnail'] ?? null;
 
     if ($page->slidesId ?? false) {
@@ -14,9 +15,11 @@
         if (is_file($manifestPath)) {
             try {
                 $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                $archivedPdf ??= $manifest['assets']['pdf']['url'] ?? $manifest['pdf']['url'] ?? null;
+                $archivedPdf ??= $manifest['assets']['pdf']['url'] ?? ($manifest['pdf']['url'] ?? null);
                 $archivedOriginal ??= $manifest['assets']['original']['url'] ?? null;
-                if (! $archivedThumbnail) {
+                $archivedPptx ??= $manifest['assets']['pptx']['url'] ?? null;
+                $archivedThumbnail ??= $manifest['assets']['thumbnail']['url'] ?? null;
+                if (!$archivedThumbnail) {
                     $candidate = 'presentations/' . $sourceDirectory . '/' . $page->slidesId . '/thumbnail.';
                     foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
                         if (is_file($candidate . $extension)) {
@@ -43,7 +46,8 @@
             </div>
             <div class="presentation-toolbar__actions">
                 @if ($presentation['url'] ?? false)
-                    <a class="presentation-action presentation-action--primary" href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer">
+                    <a class="presentation-action presentation-action--primary" href="{{ $presentation['url'] }}"
+                        target="_blank" rel="external noopener noreferrer">
                         <span aria-hidden="true">↗</span>
                         <span>{{ $isEnglish ? 'Open original' : 'Abrir original' }}</span>
                     </a>
@@ -51,33 +55,43 @@
 
                 @if ($archivedPdf || ($presentation['video'] ?? false))
                     <details class="presentation-action-menu">
-                        <summary class="presentation-action"><span aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span aria-hidden="true">⌄</span></summary>
+                        <summary class="presentation-action"><span
+                                aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span
+                                aria-hidden="true">⌄</span></summary>
                         <div class="presentation-action-menu__panel">
                             @if ($archivedPdf)
-                                <a href="{{ $archivedPdf }}" target="_blank" rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF snapshot' : 'Snapshot PDF arquivado' }}</small></a>
+                                <a href="{{ $archivedPdf }}" target="_blank"
+                                    rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF snapshot' : 'Snapshot PDF arquivado' }}</small></a>
                             @endif
                             @if ($presentation['video'] ?? false)
-                                <a href="{{ $presentation['video'] }}" target="_blank" rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Video' : 'Vídeo' }}</strong><small>{{ $isEnglish ? 'Watch recording' : 'Assistir gravação' }}</small></a>
+                                <a href="{{ $presentation['video'] }}" target="_blank"
+                                    rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Video' : 'Vídeo' }}</strong><small>{{ $isEnglish ? 'Watch recording' : 'Assistir gravação' }}</small></a>
                             @endif
                         </div>
                     </details>
                 @endif
 
                 <details class="presentation-action-menu">
-                    <summary class="presentation-action presentation-action--secondary"><span aria-hidden="true">&lt;/&gt;</span><span>{{ $isEnglish ? 'Source' : 'Fonte' }}</span><span aria-hidden="true">⌄</span></summary>
+                    <summary class="presentation-action presentation-action--secondary"><span
+                            aria-hidden="true">&lt;/&gt;</span><span>{{ $isEnglish ? 'Source' : 'Fonte' }}</span><span
+                            aria-hidden="true">⌄</span></summary>
                     <div class="presentation-action-menu__panel">
-                        <a href="{{ $page->baseUrl }}{{ $presentation['localHtml'] }}" download><strong>HTML</strong><small>{{ $isEnglish ? 'Archived slide markup' : 'Marcação arquivada dos slides' }}</small></a>
+                        <a href="{{ $page->baseUrl }}{{ $presentation['localHtml'] }}"
+                            download><strong>HTML</strong><small>{{ $isEnglish ? 'Archived slide markup' : 'Marcação arquivada dos slides' }}</small></a>
                         @if ($presentation['localCss'] ?? false)
-                            <a href="{{ $page->baseUrl }}{{ $presentation['localCss'] }}" download><strong>CSS</strong><small>{{ $isEnglish ? 'Presentation styles' : 'Estilos da apresentação' }}</small></a>
+                            <a href="{{ $page->baseUrl }}{{ $presentation['localCss'] }}"
+                                download><strong>CSS</strong><small>{{ $isEnglish ? 'Presentation styles' : 'Estilos da apresentação' }}</small></a>
                         @endif
                         @if ($presentation['metadata'] ?? false)
-                            <a href="{{ $page->baseUrl }}{{ $presentation['metadata'] }}" download><strong>JSON</strong><small>{{ $isEnglish ? 'Synced metadata' : 'Metadados sincronizados' }}</small></a>
+                            <a href="{{ $page->baseUrl }}{{ $presentation['metadata'] }}"
+                                download><strong>JSON</strong><small>{{ $isEnglish ? 'Synced metadata' : 'Metadados sincronizados' }}</small></a>
                         @endif
                     </div>
                 </details>
             </div>
         </div>
-        <div class="presentation-stage"><iframe src="{{ $presentation['embed'] }}" title="{{ $page->title }}" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+        <div class="presentation-stage"><iframe src="{{ $presentation['embed'] }}" title="{{ $page->title }}"
+                loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
     </div>
 @elseif ($type === 'slideshare')
     <div class="presentation-frame">
@@ -89,38 +103,80 @@
             </div>
             <div class="presentation-toolbar__actions">
                 @if ($presentation['url'] ?? false)
-                    <a class="presentation-action presentation-action--primary" href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer"><span aria-hidden="true">↗</span><span>{{ $isEnglish ? 'Open original' : 'Abrir original' }}</span></a>
+                    <a class="presentation-action presentation-action--primary" href="{{ $presentation['url'] }}"
+                        target="_blank" rel="external noopener noreferrer"><span
+                            aria-hidden="true">↗</span><span>{{ $isEnglish ? 'Open original' : 'Abrir original' }}</span></a>
                 @endif
-                @if ($archivedPdf || $archivedOriginal)
+                @if ($archivedPdf || $archivedPptx || $archivedOriginal)
                     <details class="presentation-action-menu">
-                        <summary class="presentation-action"><span aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span aria-hidden="true">⌄</span></summary>
+                        <summary class="presentation-action"><span
+                                aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span
+                                aria-hidden="true">⌄</span></summary>
                         <div class="presentation-action-menu__panel">
                             @if ($archivedPdf)
-                                <a href="{{ $archivedPdf }}" target="_blank" rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF' : 'PDF arquivado' }}</small></a>
+                                <a href="{{ $archivedPdf }}" target="_blank"
+                                    rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF' : 'PDF arquivado' }}</small></a>
                             @endif
-                            @if ($archivedOriginal && $archivedOriginal !== $archivedPdf)
-                                <a href="{{ $archivedOriginal }}" target="_blank" rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Original' : 'Original' }}</strong><small>{{ $isEnglish ? 'Original SlideShare file' : 'Arquivo original do SlideShare' }}</small></a>
+                            @if ($archivedPptx)
+                                <a href="{{ $archivedPptx }}" target="_blank"
+                                    rel="external noopener noreferrer"><strong>PPTX</strong><small>{{ $isEnglish ? 'Archived PowerPoint' : 'PowerPoint arquivado' }}</small></a>
+                            @endif
+                            @if ($archivedOriginal && $archivedOriginal !== $archivedPdf && $archivedOriginal !== $archivedPptx)
+                                <a href="{{ $archivedOriginal }}" target="_blank"
+                                    rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Original' : 'Original' }}</strong><small>{{ $isEnglish ? 'Original SlideShare file' : 'Arquivo original do SlideShare' }}</small></a>
                             @endif
                         </div>
                     </details>
                 @endif
                 @if ($presentation['metadata'] ?? false)
-                    <a class="presentation-action presentation-action--secondary" href="{{ $page->baseUrl }}{{ $presentation['metadata'] }}" download>JSON</a>
+                    <a class="presentation-action presentation-action--secondary"
+                        href="{{ $page->baseUrl }}{{ $presentation['metadata'] }}" download>JSON</a>
                 @endif
             </div>
         </div>
         <div class="presentation-stage">
             @if ($archivedThumbnail)
-                <img src="{{ str_starts_with($archivedThumbnail, 'http') ? $archivedThumbnail : $page->baseUrl . $archivedThumbnail }}" alt="{{ $page->title }}" loading="lazy">
+                <img src="{{ str_starts_with($archivedThumbnail, 'http') ? $archivedThumbnail : $page->baseUrl . $archivedThumbnail }}"
+                    alt="{{ $page->title }}" loading="lazy">
             @else
-                <div class="presentation-fallback"><p><a href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation on SlideShare' : 'Abrir apresentação no SlideShare' }}</a></p></div>
+                <div class="presentation-fallback">
+                    <p><a href="{{ $presentation['url'] }}" target="_blank"
+                            rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation on SlideShare' : 'Abrir apresentação no SlideShare' }}</a>
+                    </p>
+                </div>
             @endif
         </div>
     </div>
 @elseif (in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
-    <div class="presentation-frame"><div class="presentation-toolbar"><span>{{ $isEnglish ? 'Presentation' : 'Apresentação' }}</span><div class="presentation-toolbar__actions">@if ($presentation['url'] ?? false)<a href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $isEnglish ? 'Open original' : 'Abrir original' }}</a>@endif @if ($presentation['video'] ?? false)<a href="{{ $presentation['video'] }}" target="_blank" rel="external noopener noreferrer">{{ $isEnglish ? 'Video' : 'Vídeo' }}</a>@endif</div></div><div class="presentation-stage"><iframe src="{{ $presentation['embed'] }}" title="{{ $page->title }}" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>
+    <div class="presentation-frame">
+        <div class="presentation-toolbar"><span>{{ $isEnglish ? 'Presentation' : 'Apresentação' }}</span>
+            <div class="presentation-toolbar__actions">
+                @if ($presentation['url'] ?? false)
+                    <a href="{{ $presentation['url'] }}" target="_blank"
+                        rel="external noopener noreferrer">{{ $isEnglish ? 'Open original' : 'Abrir original' }}</a>
+                    @endif @if ($presentation['video'] ?? false)
+                        <a href="{{ $presentation['video'] }}" target="_blank"
+                            rel="external noopener noreferrer">{{ $isEnglish ? 'Video' : 'Vídeo' }}</a>
+                    @endif
+            </div>
+        </div>
+        <div class="presentation-stage"><iframe src="{{ $presentation['embed'] }}" title="{{ $page->title }}"
+                loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    </div>
 @elseif ($type === 'pdf' && ($presentation['url'] ?? false))
-    <div class="presentation-frame"><div class="presentation-fallback"><p><a href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}</a></p></div></div>
+    <div class="presentation-frame">
+        <div class="presentation-fallback">
+            <p><a href="{{ $presentation['url'] }}" target="_blank"
+                    rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}</a>
+            </p>
+        </div>
+    </div>
 @elseif ($presentation['url'] ?? false)
-    <div class="presentation-frame"><div class="presentation-fallback"><p><a href="{{ $presentation['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation' : 'Abrir apresentação' }}</a></p></div></div>
+    <div class="presentation-frame">
+        <div class="presentation-fallback">
+            <p><a href="{{ $presentation['url'] }}" target="_blank"
+                    rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation' : 'Abrir apresentação' }}</a>
+            </p>
+        </div>
+    </div>
 @endif

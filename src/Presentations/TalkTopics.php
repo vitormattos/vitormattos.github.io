@@ -9,15 +9,12 @@ namespace App\Presentations;
 
 final class TalkTopics
 {
-    /**
-     * @return array<string, string> normalized topic key => display label
-     */
+    private const CATALOG_MINIMUM_OCCURRENCES = 2;
+
     public static function resolve(object $talk): array
     {
         $topics = [];
-
         self::collect($topics, $talk->tags ?? []);
-
         $presentation = $talk->presentation ?? [];
         if (is_array($presentation)) {
             $metadataPath = trim((string) ($presentation['metadata'] ?? ''));
@@ -31,14 +28,6 @@ final class TalkTopics
         return $topics;
     }
 
-    /**
-     * Merge localized collections into one archive while preferring the
-     * current catalog locale when both variants identify the same talk.
-     *
-     * @param iterable<object> $preferred
-     * @param iterable<object> $fallback
-     * @return list<object>
-     */
     public static function mergeCatalog(iterable $preferred, iterable $fallback): array
     {
         $items = [];
@@ -56,15 +45,19 @@ final class TalkTopics
             }
         }
 
-        usort($items, static function (object $left, object $right): int {
-            return (int) ($right->date ?? 0) <=> (int) ($left->date ?? 0);
-        });
+        usort(
+            $items,
+            static fn(object $left, object $right): int => (int) ($right->date ?? 0) <=> (int) ($left->date ?? 0),
+        );
 
         return $items;
     }
 
     /**
-     * @param iterable<object> $talks
+     * The catalog filter intentionally exposes only recurring topics. All
+     * original tags remain attached to each talk and in source metadata, so
+     * this presentation rule is non-destructive and can be changed later.
+     *
      * @return array{items: list<object>, topics: array<string, array{label: string, count: int}>}
      */
     public static function taxonomy(iterable $talks): array
@@ -74,13 +67,9 @@ final class TalkTopics
 
         foreach ($talks as $talk) {
             $items[] = $talk;
-
             foreach (self::resolve($talk) as $key => $label) {
                 if (!isset($taxonomy[$key])) {
-                    $taxonomy[$key] = [
-                        'label' => $label,
-                        'count' => 0,
-                    ];
+                    $taxonomy[$key] = ['label' => $label, 'count' => 0];
                 } elseif (self::preferLabel($label, $taxonomy[$key]['label'])) {
                     $taxonomy[$key]['label'] = $label;
                 }
@@ -89,12 +78,17 @@ final class TalkTopics
             }
         }
 
-        ksort($taxonomy, SORT_NATURAL | SORT_FLAG_CASE);
+        $taxonomy = array_filter(
+            $taxonomy,
+            static fn(array $topic): bool => $topic['count'] >= self::CATALOG_MINIMUM_OCCURRENCES,
+        );
+        uasort($taxonomy, static function (array $left, array $right): int {
+            $byCount = $right['count'] <=> $left['count'];
 
-        return [
-            'items' => $items,
-            'topics' => $taxonomy,
-        ];
+            return $byCount !== 0 ? $byCount : strnatcasecmp($left['label'], $right['label']);
+        });
+
+        return ['items' => $items, 'topics' => $taxonomy];
     }
 
     private static function identity(object $talk): string
@@ -119,9 +113,6 @@ final class TalkTopics
         return 'slug:' . (string) ($talk->slug ?? $talk->title ?? spl_object_id($talk));
     }
 
-    /**
-     * @param array<string, string> $topics
-     */
     private static function collect(array &$topics, mixed $value): void
     {
         if (is_array($value)) {
@@ -141,18 +132,12 @@ final class TalkTopics
             return;
         }
 
-        $key = function_exists('mb_strtolower')
-            ? mb_strtolower($label, 'UTF-8')
-            : strtolower($label);
-
+        $key = function_exists('mb_strtolower') ? mb_strtolower($label, 'UTF-8') : strtolower($label);
         if (!isset($topics[$key]) || self::preferLabel($label, $topics[$key])) {
             $topics[$key] = $label;
         }
     }
 
-    /**
-     * @param array<string, string> $topics
-     */
     private static function collectFromMetadata(array &$topics, string $metadataPath): void
     {
         $path = ltrim($metadataPath, '/');
@@ -166,11 +151,9 @@ final class TalkTopics
             return;
         }
 
-        if (!is_array($metadata) || !array_key_exists('tags', $metadata)) {
-            return;
+        if (is_array($metadata) && array_key_exists('tags', $metadata)) {
+            self::collect($topics, $metadata['tags']);
         }
-
-        self::collect($topics, $metadata['tags']);
     }
 
     private static function preferLabel(string $candidate, string $current): bool
@@ -186,10 +169,6 @@ final class TalkTopics
             ? mb_strtolower($current, 'UTF-8')
             : strtolower($current);
 
-        if ($current === $currentLower && $candidate !== $candidateLower) {
-            return true;
-        }
-
-        return false;
+        return $current === $currentLower && $candidate !== $candidateLower;
     }
 }

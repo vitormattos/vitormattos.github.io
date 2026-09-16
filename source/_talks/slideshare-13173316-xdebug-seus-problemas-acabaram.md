@@ -18,6 +18,11 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/xdebug-seus-problemas-acabaram-13173316/13173316"
   metadata: /presentations/slideshare/13173316/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-13173316/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-13173316/slideshare-13173316.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-13173316/slideshare-13173316.pptx"
+  thumbnailWidth: 1280
+  thumbnailHeight: 960
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

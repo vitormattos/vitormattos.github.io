@@ -18,6 +18,10 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/xdebug-seus-problemas-acabaram-tdc-ph-peste/66766200"
   metadata: /presentations/slideshare/66766200/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-66766200/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-66766200/slideshare-66766200.pdf"
+  thumbnailWidth: 1280
+  thumbnailHeight: 720
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

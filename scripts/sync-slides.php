@@ -14,10 +14,16 @@ const MANAGED_PREFIX = 'slides-com-';
 const MAX_RETRIES = 6;
 const REQUEST_DELAY_MICROSECONDS = 750000;
 
+$requireToken = in_array('--require-token', $argv, true);
 $token = getenv('SLIDES_API_TOKEN');
 if (!$token) {
-    fwrite(STDERR, "SLIDES_API_TOKEN is required.\n");
-    exit(1);
+    if ($requireToken) {
+        fwrite(STDERR, "SLIDES_API_TOKEN is required.\n");
+        exit(1);
+    }
+
+    fwrite(STDOUT, "SLIDES_API_TOKEN is unavailable; skipping Slides.com synchronization and using versioned content.\n");
+    exit(0);
 }
 
 function responseStatusCode(array $headers): int
