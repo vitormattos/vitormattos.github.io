@@ -26,17 +26,7 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
 @endphp
 <div class="talks-browser">
     <aside class="talks-sidebar" aria-label="Speaker and topics">
-        <div class="talks-profile">
-            <div>
-                <p class="talks-profile__name">Vitor Mattos</p>
-                <p class="talks-profile__summary">CTO at LibreCode. Free software, privacy, PHP, digital signatures and sustainable software communities.</p>
-            </div>
-            <img class="talks-profile__avatar" src="https://github.com/vitormattos.png?size=112" alt="" width="56" height="56">
-            <div class="talks-profile__links">
-                <a href="https://github.com/vitormattos" target="_blank" rel="me external noopener noreferrer">GitHub</a>
-                <a href="https://www.linkedin.com/in/vitormattos/" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>
-            </div>
-        </div>
+        @include('_partials.author.profile', ['locale' => 'en'])
 
         @if ($topics !== [])
             <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filter talks by topic">
