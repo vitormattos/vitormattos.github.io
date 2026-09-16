@@ -47,10 +47,6 @@ jobs:
         if: github.event.action != 'closed'
         run: vendor/bin/phpunit tests/Presentations
 
-      # Imported presentations are not yet versioned on main. Until the first
-      # synchronization PR is merged, hydrate preview content from Slides.com.
-      # This never renders PDFs: PDF generation remains exclusive to the sync
-      # workflow because it is the expensive part of the pipeline.
       - name: Compute Slides.com preview cache key
         id: slides-cache-key
         if: github.event.action != 'closed'
@@ -76,7 +72,12 @@ jobs:
         env:
           SLIDES_API_TOKEN: ${{ secrets.SLIDES_API_TOKEN }}
           SLIDES_TAGS_DEBUG: '1'
-        run: php scripts/sync-slides.php
+        run: |
+          if [ -z "${SLIDES_API_TOKEN:-}" ]; then
+            echo "SLIDES_API_TOKEN is unavailable; using the versioned presentation archive for this preview."
+            exit 0
+          fi
+          php scripts/sync-slides.php
 
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
