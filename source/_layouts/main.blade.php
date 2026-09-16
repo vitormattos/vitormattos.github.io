@@ -46,7 +46,7 @@
 
 <body>
     <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
-    <header class="site-header">
+    <header @class(['site-header', 'site-header--talks' => $isTalks])>
         <div class="site-header__bar">
             <a class="site-identity" href="{{ $page->baseUrl }}{{ $homePath }}"
                 aria-label="{{ $page->author['name'] }}">
