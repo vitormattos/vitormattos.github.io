@@ -1,18 +1,19 @@
 // SPDX-FileCopyrightText: 2026 Vitor Mattos
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { siGithub, siLinkedin } from 'simple-icons';
+import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 
 const icons = {
-    github: siGithub,
-    linkedin: siLinkedin,
+    github: faGithub,
+    linkedin: faLinkedin,
 };
 
-document.querySelectorAll('[data-simple-icon]').forEach((container) => {
-    const icon = icons[container.dataset.simpleIcon];
+document.querySelectorAll('[data-brand-icon]').forEach((container) => {
+    const icon = icons[container.dataset.brandIcon];
     if (!icon) {
         return;
     }
 
-    container.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="${icon.path}"></path></svg>`;
+    const [width, height, , , path] = icon.icon;
+    container.innerHTML = `<svg viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><path fill="currentColor" d="${path}"></path></svg>`;
 });
