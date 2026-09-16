@@ -4,6 +4,7 @@
     $locale = $page->locale ?? $page->defaultLocale;
     $isEnglish = $locale === 'en';
     $homePath = $isEnglish ? '/' : '/pt-BR';
+    $aboutPath = $isEnglish ? '/about' : '/pt-BR/sobre';
     $articlesPath = $isEnglish ? '/articles' : '/pt-BR/artigos';
     $talksPath = $isEnglish ? '/talks' : '/pt-BR/palestras';
     $alternatePath = null;
@@ -41,6 +42,7 @@
     <a href="{{ $page->baseUrl }}{{ $homePath }}">Vitor Mattos</a>
     <div class="site-header__actions">
         <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
+            <a href="{{ $page->baseUrl }}{{ $aboutPath }}">{{ $isEnglish ? 'About' : 'Sobre' }}</a>
             <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
             <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
             <a href="{{ $page->author['github'] }}" target="_blank" rel="me external noopener noreferrer">GitHub</a>
