@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>Sobre · Vitor Mattos</title>
+    <meta name="description" content="Sobre Vitor Mattos, desenvolvedor de software, líder de tecnologia e contribuidor de software livre atuando com tecnologias abertas, comunidades e pesquisa.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR/sobre">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/sobre">
+    <link rel="alternate" hreflang="en" href="https://vitormattos.github.io/about">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/about">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sobre · Vitor Mattos">
+<meta property="og:description" content="Sobre Vitor Mattos, desenvolvedor de software, líder de tecnologia e contribuidor de software livre atuando com tecnologias abertas, comunidades e pesquisa.">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR/sobre">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sobre · Vitor Mattos">
+<meta name="twitter:description" content="Sobre Vitor Mattos, desenvolvedor de software, líder de tecnologia e contribuidor de software livre atuando com tecnologias abertas, comunidades e pesquisa.">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/pt-BR/sobre#webpage","url":"https://vitormattos.github.io/pt-BR/sobre","name":"Sobre","description":"Sobre Vitor Mattos, desenvolvedor de software, líder de tecnologia e contribuidor de software livre atuando com tecnologias abertas, comunidades e pesquisa.","inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"}}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-18/assets/build/assets/main-CKzBA8U0.css">
+    </head>
+<body>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/pr-preview/pr-18/pt-BR">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Principal">
+            <a href="https://vitormattos.github.io/pr-preview/pr-18/pt-BR/sobre">Sobre</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-18/pt-BR/artigos">Artigos</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-18/pt-BR/palestras">Palestras</a>
+            <a href="https://github.com/vitormattos" target="_blank" rel="me external noopener noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/vitormattos/" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>
+                            <a href="https://vitormattos.github.io/pr-preview/pr-18/about" hreflang="en">
+                    English
+                </a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Usar tema claro"
+    data-label-dark="Usar tema escuro"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Tema</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <article class="content">
+    <header>
+        <p class="eyebrow">Sobre</p>
+        <h1>Vitor Mattos</h1>
+        <p class="lead">Sou desenvolvedor de software e líder de tecnologia, com atuação concentrada em software livre, tecnologias abertas e nas comunidades que as sustentam.</p>
+    </header>
+
+    <p>Trabalho com tecnologias web há mais de duas décadas, com forte experiência em PHP e Linux. Hoje sou CTO e cooperado da <a href="https://librecode.coop/" rel="external">LibreCode</a>, uma cooperativa brasileira de tecnologia, onde atuo em produtos, infraestrutura, estratégia técnica e na sustentabilidade de longo prazo de software livre.</p>
+
+    <h2>Construindo software livre</h2>
+    <p>Uma parte central do meu trabalho é o <a href="https://libresign.coop/" rel="external">LibreSign</a>, uma plataforma de assinatura eletrônica de código aberto que mantenho e ajudo a desenvolver junto com sua comunidade. O LibreSign é reconhecido como Digital Public Good e faz parte de um esforço mais amplo para construir infraestrutura digital que organizações possam operar, inspecionar e melhorar sem depender de plataformas proprietárias.</p>
+
+    <p>Meu trabalho também envolve tecnologias como Nextcloud e outros softwares livres usados por organizações que precisam manter controle sobre seus dados e sua infraestrutura. Tenho especial interesse em projetos nos quais qualidade técnica, privacidade, interoperabilidade e modelos de negócio sustentáveis precisam funcionar em conjunto.</p>
+
+    <h2>Comunidades e compartilhamento de conhecimento</h2>
+    <p>O software livre moldou grande parte da minha trajetória profissional. Organizo o PHPRio e coordeno o PHPWomenBR, além de contribuir com comunidades técnicas por meio de eventos, mentoria, discussões, código e documentação pública. Vejo a construção de comunidades como parte do trabalho de engenharia: o software se torna mais resiliente quando conhecimento, decisões e oportunidades de contribuição são compartilhados.</p>
+
+    <p>Também realizo palestras sobre desenvolvimento de software, software livre, autonomia digital e os desafios práticos de manter projetos abertos. Parte desse trabalho está disponível na seção de <a href="https://vitormattos.github.io/pr-preview/pr-18/pt-BR/palestras">palestras</a>.</p>
+
+    <h2>Pesquisa e trabalho público</h2>
+    <p>Em paralelo à atuação profissional, mantenho uma trajetória acadêmica e de pesquisa relacionada ao desenvolvimento de software e software livre. Este site também funciona como um arquivo público desse trabalho, reunindo <a href="https://vitormattos.github.io/pr-preview/pr-18/pt-BR/artigos">artigos e pesquisas</a>, apresentações e materiais técnicos.</p>
+
+    <p>Procuro manter o mesmo princípio entre essas diferentes áreas: trabalho técnico relevante deve ser compreensível, verificável e reutilizável por outras pessoas.</p>
+
+    <h2>Outros canais</h2>
+    <p>Meu código e minha atividade técnica pública estão no <a href="https://github.com/vitormattos" rel="me external">GitHub</a>, e meu perfil profissional está no <a href="https://www.linkedin.com/in/vitormattos/" rel="me external">LinkedIn</a>.</p>
+</article>
+</main>
+<footer>
+    <p>Conteúdo e código publicados com transparência e controle de versão.</p>
+    <p><a href="https://vitormattos.github.io/pt-BR/feed.xml">RSS</a></p>
+</footer>
+</body>
+</html>
