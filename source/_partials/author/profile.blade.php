@@ -16,9 +16,7 @@
     <img class="talks-profile__avatar" src="{{ $page->author['avatar'] }}" alt="" width="56" height="56">
     @if (($page->author['profiles'] ?? []) !== [])
         <div class="talks-profile__links">
-            @foreach ($page->author['profiles'] as $profile)
-                <a href="{{ $profile['url'] }}" target="_blank" rel="me external noopener noreferrer">{{ $profile['label'] }}</a>
-            @endforeach
+            @include('_partials.author.profile-links', ['separator' => ' '])
         </div>
     @endif
 </div>
