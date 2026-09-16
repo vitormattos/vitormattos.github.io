@@ -82,6 +82,13 @@ final class TalkHistoryTest extends TestCase
         self::assertSame([], TalkHistory::validationErrors($history));
     }
 
+    public function testRepositoryCuratedMetadataIsValid(): void
+    {
+        $history = require __DIR__ . '/../../data/talk-history.php';
+
+        self::assertSame([], TalkHistory::validationErrors($history));
+    }
+
     public function testItReportsInvalidMetadataAndDuplicateAliases(): void
     {
         $history = [
