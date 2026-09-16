@@ -12,6 +12,9 @@ date: 2019-02-27
 updated: 2019-12-12
 managed: slides.com
 slidesId: 1442266
+tags:
+  - "Carreira"
+  - "opensource"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/trabalho-colaborativo"

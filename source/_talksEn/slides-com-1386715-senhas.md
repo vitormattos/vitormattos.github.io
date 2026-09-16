@@ -12,6 +12,9 @@ date: 2018-12-01
 updated: 2018-12-21
 managed: slides.com
 slidesId: 1386715
+tags:
+  - "opensource"
+  - "segurança"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/senhas"

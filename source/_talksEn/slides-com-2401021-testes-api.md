@@ -12,12 +12,17 @@ date: 2022-05-20
 updated: 2023-10-06
 managed: slides.com
 slidesId: 2401021
+tags:
+  - "opensource"
+  - "php"
+  - "testes"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/testes-api"
   embed: "https://slides.com/vitormattos/testes-api/embed"
   thumbnail: "/presentations/slides.com/2401021/thumbnail.png"
   localHtml: /presentations/slides.com/2401021/deck.html
+  localCss: /presentations/slides.com/2401021/deck.css
   metadata: /presentations/slides.com/2401021/metadata.json
   language: "en"
   slideCount: 39

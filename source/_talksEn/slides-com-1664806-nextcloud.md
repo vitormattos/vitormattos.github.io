@@ -12,6 +12,10 @@ date: 2019-12-04
 updated: 2022-02-09
 managed: slides.com
 slidesId: 1664806
+tags:
+  - "opensource"
+  - "php"
+  - "segurança"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/nextcloud"

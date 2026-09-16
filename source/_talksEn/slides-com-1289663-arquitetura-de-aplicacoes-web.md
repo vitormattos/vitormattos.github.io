@@ -12,6 +12,8 @@ date: 2018-07-06
 updated: 2018-12-07
 managed: slides.com
 slidesId: 1289663
+tags:
+  - "Carreira"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/arquitetura-de-aplicacoes-web"

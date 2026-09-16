@@ -12,6 +12,9 @@ date: 2020-08-20
 updated: 2024-11-26
 managed: slides.com
 slidesId: 1906989
+tags:
+  - "opensource"
+  - "segurança"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/celular_floss"

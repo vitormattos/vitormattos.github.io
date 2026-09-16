@@ -12,6 +12,8 @@ date: 2020-09-23
 updated: 2024-04-20
 managed: slides.com
 slidesId: 1931499
+tags:
+  - "Carreira"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/caminhos-na-area-de-ti-ea0342"

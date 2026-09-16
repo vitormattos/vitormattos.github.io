@@ -12,6 +12,9 @@ date: 2021-04-24
 updated: 2022-11-25
 managed: slides.com
 slidesId: 2108263
+tags:
+  - "opensource"
+  - "php"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign"

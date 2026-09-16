@@ -12,6 +12,9 @@ date: 2018-07-13
 updated: 2019-12-06
 managed: slides.com
 slidesId: 1293276
+tags:
+  - "opensource"
+  - "php"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/composer"

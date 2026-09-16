@@ -12,6 +12,10 @@ date: 2018-09-30
 updated: 2024-01-27
 managed: slides.com
 slidesId: 1338222
+tags:
+  - "opensource"
+  - "php"
+  - "segurança"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/seguranca"

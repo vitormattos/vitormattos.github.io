@@ -2,9 +2,16 @@
     "id": 1442266,
     "slug": "trabalho-colaborativo",
     "title": "Trabalho colaborativo",
+    "description": "Conheça as vantagens de se fazer parte de projetos com equipes focadas em trabalhos colaborativos que proporcionem interação, auxiliam na gestão e na comunicação entre pessoas que estão no mesmo local geográfico ou de locais diferentes. Conheça ferramentas que facilitam este trabalho e casos reais de times e pessoas que trabalham de forma descentralizada geograficamente e que com isto passaram a ter uma produtividade muito maior. Vamos todos juntos cooperar!",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/trabalho-colaborativo",
     "embed_url": "https://slides.com/vitormattos/trabalho-colaborativo/embed",
+    "tags": {
+        "slides_com": [
+            "Carreira",
+            "opensource"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/a02e9e802ad39ce0f043293ea8029ec6/thumb.jpg?1551281600",
     "slide_count": 75,
     "width": 1024,
@@ -25,7 +32,6 @@
         "edit": "https://slides.com/vitormattos/trabalho-colaborativo/edit",
         "present": "https://slides.com/vitormattos/trabalho-colaborativo/live"
     },
-    "description": "Conheça as vantagens de se fazer parte de projetos com equipes focadas em trabalhos colaborativos que proporcionem interação, auxiliam na gestão e na comunicação entre pessoas que estão no mesmo local geográfico ou de locais diferentes. Conheça ferramentas que facilitam este trabalho e casos reais de times e pessoas que trabalham de forma descentralizada geograficamente e que com isto passaram a ter uma produtividade muito maior. Vamos todos juntos cooperar!",
     "thumbnail_path": "/presentations/slides.com/1442266/thumbnail.png",
     "thumbnail_source_url": "https://media.slid.es/thumbnails/a02e9e802ad39ce0f043293ea8029ec6/thumb.jpg?1551281600"
 }

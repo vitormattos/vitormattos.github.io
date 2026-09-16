@@ -12,6 +12,8 @@ date: 2024-07-04
 updated: 2025-08-05
 managed: slides.com
 slidesId: 3221966
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/mediawiki-oficina"

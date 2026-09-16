@@ -12,12 +12,15 @@ date: 2024-03-26
 updated: 2024-08-31
 managed: slides.com
 slidesId: 3154117
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/docker-dev-to-prod"
   embed: "https://slides.com/vitormattos/docker-dev-to-prod/embed"
   thumbnail: "/presentations/slides.com/3154117/thumbnail.png"
   localHtml: /presentations/slides.com/3154117/deck.html
+  localCss: /presentations/slides.com/3154117/deck.css
   metadata: /presentations/slides.com/3154117/metadata.json
   language: "en"
   slideCount: 45

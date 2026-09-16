@@ -12,6 +12,8 @@ date: 2023-10-18
 updated: 2023-10-18
 managed: slides.com
 slidesId: 3038098
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign-latinoware-2023"

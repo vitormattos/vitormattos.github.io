@@ -12,6 +12,8 @@ date: 2019-02-13
 updated: 2023-09-30
 managed: slides.com
 slidesId: 1431853
+tags:
+  - "testes"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/porque-fazer-testes"

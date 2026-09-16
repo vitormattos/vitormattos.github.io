@@ -12,6 +12,10 @@ date: 2019-11-28
 updated: 2024-03-26
 managed: slides.com
 slidesId: 1659891
+tags:
+  - "opensource"
+  - "php"
+  - "testes"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/bdd"

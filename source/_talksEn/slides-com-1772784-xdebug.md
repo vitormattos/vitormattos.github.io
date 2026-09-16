@@ -12,6 +12,10 @@ date: 2020-04-23
 updated: 2023-08-10
 managed: slides.com
 slidesId: 1772784
+tags:
+  - "opensource"
+  - "php"
+  - "testes"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/xdebug"

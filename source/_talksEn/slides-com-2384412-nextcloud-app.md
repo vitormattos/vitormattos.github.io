@@ -12,12 +12,15 @@ date: 2022-04-22
 updated: 2023-12-08
 managed: slides.com
 slidesId: 2384412
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/nextcloud-app"
   embed: "https://slides.com/vitormattos/nextcloud-app/embed"
   thumbnail: "/presentations/slides.com/2384412/thumbnail.png"
   localHtml: /presentations/slides.com/2384412/deck.html
+  localCss: /presentations/slides.com/2384412/deck.css
   metadata: /presentations/slides.com/2384412/metadata.json
   language: "en"
   slideCount: 70

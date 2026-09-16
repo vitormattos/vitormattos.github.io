@@ -12,6 +12,8 @@ date: 2025-11-06
 updated: 2026-06-20
 managed: slides.com
 slidesId: 3491166
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/tecnologia-e-privacidade-no-contexto-da-comunhao-crista"

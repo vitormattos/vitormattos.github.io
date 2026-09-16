@@ -12,6 +12,8 @@ date: 2025-02-05
 updated: 2025-04-24
 managed: slides.com
 slidesId: 3347164
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/tecnologia-comunhao-crista"

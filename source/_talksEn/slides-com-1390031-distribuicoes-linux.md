@@ -12,6 +12,8 @@ date: 2018-12-05
 updated: 2019-02-27
 managed: slides.com
 slidesId: 1390031
+tags:
+  - "opensource"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/distribuicoes-linux"

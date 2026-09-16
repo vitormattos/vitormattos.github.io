@@ -12,6 +12,8 @@ date: 2025-05-15
 updated: 2025-08-25
 managed: slides.com
 slidesId: 3401779
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/igrejas-digitais"

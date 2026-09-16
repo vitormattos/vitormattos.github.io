@@ -12,6 +12,9 @@ date: 2018-07-14
 updated: 2019-02-14
 managed: slides.com
 slidesId: 1293538
+tags:
+  - "Carreira"
+  - "opensource"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/contribuindo-e-criando-software-livre"

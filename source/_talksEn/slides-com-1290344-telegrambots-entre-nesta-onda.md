@@ -12,6 +12,10 @@ date: 2018-07-08
 updated: 2021-09-12
 managed: slides.com
 slidesId: 1290344
+tags:
+  - "opensource"
+  - "php"
+  - "segurança"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/telegrambots-entre-nesta-onda"

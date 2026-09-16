@@ -12,6 +12,8 @@ date: 2026-06-09
 updated: 2026-07-28
 managed: slides.com
 slidesId: 3582536
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/controle-tecnologia"

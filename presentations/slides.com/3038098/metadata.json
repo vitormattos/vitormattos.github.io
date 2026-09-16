@@ -2,9 +2,13 @@
     "id": 3038098,
     "slug": "libresign-latinoware-2023",
     "title": "LibreSign",
+    "description": "Se o futuro das assinaturas eletrônicas desperta sua curiosidade, esta palestra é simplesmente imperdível! Prepare-se para conhecer o LibreSign, o pioneiro assinador web totalmente open source.",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/libresign-latinoware-2023",
     "embed_url": "https://slides.com/vitormattos/libresign-latinoware-2023/embed",
+    "tags": {
+        "slides_com": []
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/10c30bb876fc39d88fade53fd77ab974/thumb.jpg?1697634672",
     "slide_count": 62,
     "width": 960,
@@ -25,7 +29,6 @@
         "edit": "https://slides.com/vitormattos/libresign-latinoware-2023/edit",
         "present": "https://slides.com/vitormattos/libresign-latinoware-2023/live"
     },
-    "description": "Se o futuro das assinaturas eletrônicas desperta sua curiosidade, esta palestra é simplesmente imperdível! Prepare-se para conhecer o LibreSign, o pioneiro assinador web totalmente open source.",
     "thumbnail_path": "/presentations/slides.com/3038098/thumbnail.png",
     "thumbnail_source_url": "https://media.slid.es/thumbnails/10c30bb876fc39d88fade53fd77ab974/thumb.jpg?1697634672"
 }

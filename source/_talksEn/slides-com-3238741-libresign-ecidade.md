@@ -12,6 +12,8 @@ date: 2024-07-31
 updated: 2024-07-31
 managed: slides.com
 slidesId: 3238741
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign-ecidade"

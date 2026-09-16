@@ -12,6 +12,9 @@ date: 2019-12-05
 updated: 2020-05-20
 managed: slides.com
 slidesId: 1666724
+tags:
+  - "opensource"
+  - "php"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/webscraping"

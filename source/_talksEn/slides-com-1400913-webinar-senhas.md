@@ -12,6 +12,8 @@ date: 2018-12-20
 updated: 2024-07-18
 managed: slides.com
 slidesId: 1400913
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/webinar-senhas"

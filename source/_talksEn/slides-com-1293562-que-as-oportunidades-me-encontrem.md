@@ -12,6 +12,8 @@ date: 2018-07-14
 updated: 2018-09-30
 managed: slides.com
 slidesId: 1293562
+tags:
+  - "Carreira"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/que-as-oportunidades-me-encontrem"

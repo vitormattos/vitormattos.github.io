@@ -12,6 +12,9 @@ date: 2022-11-25
 updated: 2022-11-25
 managed: slides.com
 slidesId: 2508353
+tags:
+  - "opensource"
+  - "php"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/libresign-integracoes"

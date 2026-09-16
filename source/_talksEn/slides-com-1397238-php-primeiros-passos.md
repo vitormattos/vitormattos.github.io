@@ -12,6 +12,9 @@ date: 2018-12-14
 updated: 2019-05-28
 managed: slides.com
 slidesId: 1397238
+tags:
+  - "opensource"
+  - "php"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/php-primeiros-passos"

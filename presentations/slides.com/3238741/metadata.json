@@ -2,9 +2,13 @@
     "id": 3238741,
     "slug": "libresign-ecidade",
     "title": "Integração: LibreSign + e-Cidade",
+    "description": "Integração do LibreSign com e-Cidade",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/libresign-ecidade",
     "embed_url": "https://slides.com/vitormattos/libresign-ecidade/embed",
+    "tags": {
+        "slides_com": []
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/70423a93fddac949c7f81a93c0aab189/thumb.jpg?1722459682",
     "slide_count": 34,
     "width": 1024,
@@ -25,7 +29,6 @@
         "edit": "https://slides.com/vitormattos/libresign-ecidade/edit",
         "present": "https://slides.com/vitormattos/libresign-ecidade/live"
     },
-    "description": "Integração do LibreSign com e-Cidade",
     "thumbnail_path": "/presentations/slides.com/3238741/thumbnail.png",
     "thumbnail_source_url": "https://media.slid.es/thumbnails/70423a93fddac949c7f81a93c0aab189/thumb.jpg?1722459682"
 }

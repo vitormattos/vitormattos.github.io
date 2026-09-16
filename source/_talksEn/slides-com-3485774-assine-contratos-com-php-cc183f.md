@@ -12,6 +12,8 @@ date: 2025-10-28
 updated: 2026-06-09
 managed: slides.com
 slidesId: 3485774
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/assine-contratos-com-php-cc183f"

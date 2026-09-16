@@ -12,6 +12,8 @@ date: 2025-10-03
 updated: 2025-10-15
 managed: slides.com
 slidesId: 3471714
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/assine-contratos-com-php"

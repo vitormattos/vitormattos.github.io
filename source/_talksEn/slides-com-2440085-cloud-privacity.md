@@ -12,6 +12,8 @@ date: 2022-08-03
 updated: 2024-04-20
 managed: slides.com
 slidesId: 2440085
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/cloud-privacity"

@@ -12,6 +12,8 @@ date: 2024-09-02
 updated: 2024-09-05
 managed: slides.com
 slidesId: 3260552
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/cooperacao-e-inovacao"

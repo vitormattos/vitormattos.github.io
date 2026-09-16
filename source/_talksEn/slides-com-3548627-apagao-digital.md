@@ -12,6 +12,8 @@ date: 2026-03-11
 updated: 2026-06-09
 managed: slides.com
 slidesId: 3548627
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/apagao-digital"

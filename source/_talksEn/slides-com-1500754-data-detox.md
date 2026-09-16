@@ -12,6 +12,9 @@ date: 2019-05-13
 updated: 2019-05-18
 managed: slides.com
 slidesId: 1500754
+tags:
+  - "opensource"
+  - "segurança"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/data-detox"

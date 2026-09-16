@@ -12,6 +12,8 @@ date: 2026-07-03
 updated: 2026-07-28
 managed: slides.com
 slidesId: 3629052
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/quem-controla-sua-tecnologia-controla-seu-futuro"

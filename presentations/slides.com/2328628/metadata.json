@@ -2,9 +2,16 @@
     "id": 2328628,
     "slug": "libresign-integracao",
     "title": "LibreSign - Integrações",
+    "description": "https://youtu.be/WJpe_NnmW8o Revolucione a maneira de assinar documentos",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/libresign-integracao",
     "embed_url": "https://slides.com/vitormattos/libresign-integracao/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/90f260fed145ed6f5dd20065d43f9e77/thumb.jpg?1643224419",
     "slide_count": 53,
     "width": 1024,
@@ -25,7 +32,6 @@
         "edit": "https://slides.com/vitormattos/libresign-integracao/edit",
         "present": "https://slides.com/vitormattos/libresign-integracao/live"
     },
-    "description": "https://youtu.be/WJpe_NnmW8o Revolucione a maneira de assinar documentos",
     "thumbnail_path": "/presentations/slides.com/2328628/thumbnail.png",
     "thumbnail_source_url": "https://media.slid.es/thumbnails/90f260fed145ed6f5dd20065d43f9e77/thumb.jpg?1643224419"
 }

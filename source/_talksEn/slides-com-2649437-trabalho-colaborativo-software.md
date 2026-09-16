@@ -12,6 +12,8 @@ date: 2023-07-13
 updated: 2023-09-21
 managed: slides.com
 slidesId: 2649437
+tags:
+  []
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/trabalho-colaborativo-software"

@@ -12,6 +12,8 @@ date: 2019-05-18
 updated: 2019-10-23
 managed: slides.com
 slidesId: 1507067
+tags:
+  - "testes"
 presentation:
   type: slides.com
   url: "https://slides.com/vitormattos/dojo"
