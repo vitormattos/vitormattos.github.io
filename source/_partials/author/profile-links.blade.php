@@ -4,7 +4,7 @@
     @foreach ($page->author['profiles'] as $profileKey => $profile)
         <a class="profile-link" href="{{ $profile['url'] }}" target="_blank"
             rel="me external noopener noreferrer">
-            <span class="profile-link__icon" data-simple-icon="{{ $profileKey }}" aria-hidden="true"></span>
+            <span class="profile-link__icon" data-brand-icon="{{ $profileKey }}" aria-hidden="true"></span>
             <span>{{ $profile['label'] }}</span>
         </a>@if (! $loop->last){{ $separator ?? ' · ' }}@endif
     @endforeach
