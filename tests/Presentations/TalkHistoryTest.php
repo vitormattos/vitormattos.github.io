@@ -10,31 +10,48 @@ use PHPUnit\Framework\TestCase;
 
 final class TalkHistoryTest extends TestCase
 {
-    public function testItResolvesExactPresentationUrl(): void
+    public function testItResolvesStableTalkSlug(): void
     {
         $history = [
-            'https://slides.com/vitormattos/libresign' => ['cfp' => 'https://github.com/PHPRio/CFP/issues/131'],
+            'libresign' => [
+                'aliases' => ['https://slides.com/vitormattos/libresign'],
+                'sources' => [
+                    ['type' => 'cfp', 'label' => 'PHPRio CFP', 'url' => 'https://github.com/PHPRio/CFP/issues/131'],
+                ],
+            ],
         ];
 
         self::assertSame(
-            $history['https://slides.com/vitormattos/libresign'],
-            TalkHistory::resolve($history, 'https://slides.com/vitormattos/libresign/', 'libresign'),
+            $history['libresign'],
+            TalkHistory::resolve($history, '', 'libresign'),
         );
     }
 
-    public function testItFallsBackToNormalizedSlugAcrossPresentationSources(): void
+    public function testItResolvesExactProviderAlias(): void
     {
         $history = [
-            'https://slides.com/vitormattos/celular_floss' => ['cfp' => 'https://github.com/PHPRio/CFP/issues/126'],
+            'libresign' => [
+                'aliases' => ['https://slides.com/vitormattos/libresign'],
+            ],
         ];
 
         self::assertSame(
-            $history['https://slides.com/vitormattos/celular_floss'],
-            TalkHistory::resolve(
-                $history,
-                'https://pt.slideshare.net/slideshow/tenha-um-celular-100-floss/123456',
-                'celular-floss',
-            ),
+            $history['libresign'],
+            TalkHistory::resolve($history, 'https://slides.com/vitormattos/libresign/', 'generated-provider-slug'),
+        );
+    }
+
+    public function testItNormalizesUnderscoreAliasesWhenMatchingTalkSlug(): void
+    {
+        $history = [
+            'celular-floss' => [
+                'aliases' => ['https://slides.com/vitormattos/celular_floss'],
+            ],
+        ];
+
+        self::assertSame(
+            $history['celular-floss'],
+            TalkHistory::resolve($history, '', 'celular-floss'),
         );
     }
 
