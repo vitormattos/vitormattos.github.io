@@ -3,6 +3,11 @@
 name: Backfill release thumbnails
 
 on:
+  push:
+    branches:
+      - temp/slideshare-pdf-backfill
+    paths:
+      - '.github/workflows/backfill-release-thumbnails.yml'
   workflow_run:
     workflows:
       - Publish Slides.com PDFs
