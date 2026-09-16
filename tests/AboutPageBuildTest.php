@@ -57,10 +57,11 @@ final class AboutPageBuildTest extends TestCase
         self::assertStringContainsString('LibreCode', $english);
         self::assertStringContainsString('LibreSign', $english);
         self::assertStringContainsString('PHPRio', $english);
-        self::assertStringContainsString('PHPWomenBR', $english);
         self::assertStringContainsString('Digital Public Good', $english);
         self::assertStringContainsString('LibreCode', $portuguese);
         self::assertStringContainsString('LibreSign', $portuguese);
+        self::assertStringNotContainsString('PHPWomenBR', $english);
+        self::assertStringNotContainsString('PHPWomenBR', $portuguese);
         self::assertStringNotContainsString('Global Talent', $english);
         self::assertStringNotContainsString('Global Talent', $portuguese);
     }
