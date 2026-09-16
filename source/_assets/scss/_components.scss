@@ -14,6 +14,19 @@
     }
 }
 
+.visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
 .hero {
     padding-block: 5rem;
 
@@ -126,19 +139,21 @@
 
 .theme-toggle {
     align-items: center;
-    background: var(--surface-muted);
-    border: 1px solid var(--border);
-    border-radius: 999px;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
     color: var(--text);
     cursor: pointer;
     display: inline-flex;
     font: inherit;
-    gap: .5rem;
-    padding: .4rem .75rem;
+    height: 2.25rem;
+    justify-content: center;
+    padding: 0;
+    width: 2.25rem;
 }
 
 .theme-toggle:hover {
-    border-color: currentColor;
+    background: var(--surface-muted);
 }
 
 .theme-toggle:focus-visible {
@@ -157,5 +172,5 @@
 
 .theme-toggle[aria-pressed='true'] .theme-toggle__icon {
     background: currentColor;
-    box-shadow: inset .3rem -.2rem 0 var(--surface-muted);
+    box-shadow: inset .3rem -.2rem 0 var(--surface);
 }
