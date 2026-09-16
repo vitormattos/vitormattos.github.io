@@ -16,11 +16,17 @@ foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath
 
     $urls = [];
     foreach ($assets as $asset) {
-        $name = strtolower((string) ($asset['name'] ?? ''));
-        $url = (string) ($asset['url'] ?? '');
-        if ($url === '') {
+        $assetName = (string) ($asset['name'] ?? '');
+        $name = strtolower($assetName);
+        if ($assetName === '') {
             continue;
         }
+        $url = sprintf(
+            'https://github.com/%s/releases/download/%s/%s',
+            trim($repository, '/'),
+            rawurlencode($tag),
+            rawurlencode($assetName),
+        );
         if (str_ends_with($name, '.pdf')) {
             $urls['pdf'] ??= $url;
         } elseif (str_ends_with($name, '.pptx')) {
