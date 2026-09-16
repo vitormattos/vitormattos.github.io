@@ -16,12 +16,9 @@
         $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
         $alternatePath = $rawAlternatePath === '/' ? '/' : rtrim($rawAlternatePath, '/');
     }
-    $alternateCanonicalUrl = $alternatePath !== null
-        ? $siteUrl . ($alternatePath === '/' ? '/' : $alternatePath)
-        : null;
-    $englishCanonicalUrl = $isEnglish
-        ? $canonicalUrl
-        : ($alternateCanonicalUrl ?? $siteUrl . '/');
+    $alternateCanonicalUrl =
+        $alternatePath !== null ? $siteUrl . ($alternatePath === '/' ? '/' : $alternatePath) : null;
+    $englishCanonicalUrl = $isEnglish ? $canonicalUrl : $alternateCanonicalUrl ?? $siteUrl . '/';
     $schemaType = $page->schemaType ?? null;
     $isProfilePage = in_array($path, ['/', '/pt-BR'], true);
     $pageType = $page->pageType ?? ($isProfilePage ? 'ProfilePage' : 'WebPage');
@@ -30,7 +27,7 @@
     $webpageId = $canonicalUrl . '#webpage';
     $contentId = $canonicalUrl . '#content';
     $sameAs = [];
-    foreach (($page->author['profiles'] ?? []) as $profile) {
+    foreach ($page->author['profiles'] ?? [] as $profile) {
         if ($profile['sameAs'] ?? false) {
             $sameAs[] = $profile['url'];
         }
@@ -74,8 +71,7 @@
         $socialImageHeight = (int) ($presentation['thumbnailHeight'] ?? 0);
     }
 
-    $socialImageCandidate = $pageSocialImage
-        ?? ($page->author['socialImage'] ?? $page->author['avatar']);
+    $socialImageCandidate = $pageSocialImage ?? ($page->author['socialImage'] ?? $page->author['avatar']);
     $socialImage = preg_match('#^https?://#i', (string) $socialImageCandidate)
         ? (string) $socialImageCandidate
         : $siteUrl . '/' . ltrim((string) $socialImageCandidate, '/');
@@ -83,8 +79,7 @@
         $socialImageWidth = 512;
         $socialImageHeight = 512;
     }
-    $socialImageAlt = $page->socialImageAlt
-        ?? ($isProfilePage ? $page->author['name'] : $pageTitle);
+    $socialImageAlt = $page->socialImageAlt ?? ($isProfilePage ? $page->author['name'] : $pageTitle);
     $twitterCard = $pageSocialImage !== null ? 'summary_large_image' : 'summary';
 
     $graph = [
@@ -178,11 +173,13 @@
 
         $isArticle = in_array($schemaType, ['Article', 'ScholarlyArticle'], true);
         $sectionPath = $isArticle
-            ? ($isEnglish ? '/articles' : '/pt-BR/artigos')
-            : ($isEnglish ? '/talks' : '/pt-BR/palestras');
-        $sectionName = $isArticle
-            ? ($isEnglish ? 'Articles' : 'Artigos')
-            : ($isEnglish ? 'Talks' : 'Palestras');
+            ? ($isEnglish
+                ? '/articles'
+                : '/pt-BR/artigos')
+            : ($isEnglish
+                ? '/talks'
+                : '/pt-BR/palestras');
+        $sectionName = $isArticle ? ($isEnglish ? 'Articles' : 'Artigos') : ($isEnglish ? 'Talks' : 'Palestras');
         $breadcrumbId = $canonicalUrl . '#breadcrumb';
 
         $graph[] = [
@@ -219,7 +216,7 @@
 @endphp
 <meta name="description" content="{{ $description }}">
 <meta name="author" content="{{ $page->academic['author'] ?? $page->author['name'] }}">
-@if (! $effectiveIndexable)
+@if (!$effectiveIndexable)
     <meta name="robots" content="noindex,nofollow,noarchive">
 @else
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
@@ -230,8 +227,11 @@
     <link rel="alternate" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}" href="{{ $alternateCanonicalUrl }}">
 @endif
 <link rel="alternate" hreflang="x-default" href="{{ $englishCanonicalUrl }}">
-<link rel="alternate" type="application/rss+xml" title="{{ $page->siteName }} — {{ $isEnglish ? 'Articles' : 'Artigos' }}" href="{{ $siteUrl }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
-<meta property="og:type" content="{{ in_array($schemaType, ['Article', 'ScholarlyArticle'], true) ? 'article' : 'website' }}">
+<link rel="alternate" type="application/rss+xml"
+    title="{{ $page->siteName }} — {{ $isEnglish ? 'Articles' : 'Artigos' }}"
+    href="{{ $siteUrl }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
+<meta property="og:type"
+    content="{{ in_array($schemaType, ['Article', 'ScholarlyArticle'], true) ? 'article' : 'website' }}">
 <meta property="og:title" content="{{ $documentTitle }}">
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:url" content="{{ $canonicalUrl }}">
