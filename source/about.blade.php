@@ -33,7 +33,8 @@ alternateUrl: /pt-BR/sobre
 
     <p>I try to keep the same principle across these different areas: important technical work should be understandable, verifiable and reusable by other people.</p>
 
-    <h2>Elsewhere</h2>
+    <h2>Profiles</h2>
+    <p>Public profiles and records related to my professional, technical and academic work.</p>
     <p>@include('_partials.author.profile-links')</p>
 </article>
 @endsection
