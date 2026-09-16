@@ -24,6 +24,27 @@ final class AboutPageBuildTest extends TestCase
         return $contents;
     }
 
+    private function assertLinkExists(string $html, string $href, string $label): void
+    {
+        $document = new DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $loaded = $document->loadHTML($html, LIBXML_NOWARNING | LIBXML_NOERROR);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+
+        self::assertTrue($loaded);
+
+        foreach ($document->getElementsByTagName('a') as $link) {
+            if ($link->getAttribute('href') === $href && trim($link->textContent) === $label) {
+                self::assertTrue(true);
+
+                return;
+            }
+        }
+
+        self::fail(sprintf('Failed asserting that link "%s" points to "%s".', $label, $href));
+    }
+
     public function testLocalizedAboutPagesAreBuiltAndLinkedFromNavigation(): void
     {
         $build = $this->buildDirectory();
@@ -33,9 +54,10 @@ final class AboutPageBuildTest extends TestCase
 
         $englishHome = $this->read('index.html');
         $portugueseHome = $this->read('pt-BR/index.html');
+        $baseUrl = rtrim(getenv('EXPECTED_BASE_URL') ?: self::SITE_URL, '/');
 
-        self::assertStringContainsString('href="' . (getenv('EXPECTED_BASE_URL') ?: self::SITE_URL) . '/about">About</a>', $englishHome);
-        self::assertStringContainsString('/pt-BR/sobre">Sobre</a>', $portugueseHome);
+        $this->assertLinkExists($englishHome, $baseUrl . '/about', 'About');
+        $this->assertLinkExists($portugueseHome, $baseUrl . '/pt-BR/sobre', 'Sobre');
     }
 
     public function testAboutPagesExposeReciprocalLanguageAlternatesAndCanonicalUrls(): void
