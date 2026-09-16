@@ -42,6 +42,34 @@
             : (strtotime((string) $page->updated) ?: null);
     }
 
+    $presentation = $page->presentation ?? [];
+    $pageSocialImage = $page->socialImage
+        ?? $page->image
+        ?? $page->thumbnail
+        ?? ($presentation['thumbnail'] ?? null);
+    $socialImageCandidate = $pageSocialImage
+        ?? ($page->author['socialImage'] ?? $page->author['avatar']);
+    $socialImage = preg_match('#^https?://#i', (string) $socialImageCandidate)
+        ? (string) $socialImageCandidate
+        : $siteUrl . '/' . ltrim((string) $socialImageCandidate, '/');
+    $socialImageWidth = (int) (
+        $page->socialImageWidth
+        ?? $page->imageWidth
+        ?? ($presentation['thumbnailWidth'] ?? ($presentation['width'] ?? 0))
+    );
+    $socialImageHeight = (int) (
+        $page->socialImageHeight
+        ?? $page->imageHeight
+        ?? ($presentation['thumbnailHeight'] ?? ($presentation['height'] ?? 0))
+    );
+    if ($pageSocialImage === null) {
+        $socialImageWidth = 512;
+        $socialImageHeight = 512;
+    }
+    $socialImageAlt = $page->socialImageAlt
+        ?? ($isProfilePage ? $page->author['name'] : $pageTitle);
+    $twitterCard = $pageSocialImage !== null ? 'summary_large_image' : 'summary';
+
     $graph = [
         [
             '@type' => 'WebSite',
@@ -56,6 +84,7 @@
             '@id' => $personId,
             'name' => $page->author['name'],
             'url' => $siteUrl . '/',
+            'image' => $page->author['socialImage'] ?? $page->author['avatar'],
             'sameAs' => $sameAs,
             'knowsAbout' => $page->author['knowsAbout'],
             'worksFor' => [
@@ -70,6 +99,11 @@
             'url' => $canonicalUrl,
             'name' => $pageTitle,
             'description' => $description,
+            'image' => $socialImage,
+            'primaryImageOfPage' => [
+                '@type' => 'ImageObject',
+                'url' => $socialImage,
+            ],
             'inLanguage' => $locale,
             'isPartOf' => ['@id' => $websiteId],
             'about' => ['@id' => $personId],
@@ -88,6 +122,7 @@
             'name' => $pageTitle,
             'headline' => $pageTitle,
             'description' => $description,
+            'image' => $socialImage,
             'inLanguage' => $locale,
             'author' => ['@id' => $personId],
             'publisher' => ['@id' => $personId],
@@ -186,13 +221,22 @@
 <meta property="og:site_name" content="{{ $page->siteName }}">
 <meta property="og:locale" content="{{ $isEnglish ? 'en_US' : 'pt_BR' }}">
 <meta property="og:locale:alternate" content="{{ $isEnglish ? 'pt_BR' : 'en_US' }}">
+<meta property="og:image" content="{{ $socialImage }}">
+<meta property="og:image:secure_url" content="{{ $socialImage }}">
+@if ($socialImageWidth > 0 && $socialImageHeight > 0)
+    <meta property="og:image:width" content="{{ $socialImageWidth }}">
+    <meta property="og:image:height" content="{{ $socialImageHeight }}">
+@endif
+<meta property="og:image:alt" content="{{ $socialImageAlt }}">
 @if (in_array($schemaType, ['Article', 'ScholarlyArticle'], true) && ($page->date ?? false))
     <meta property="article:published_time" content="{{ date(DATE_ATOM, $page->date) }}">
 @endif
 @if (in_array($schemaType, ['Article', 'ScholarlyArticle'], true) && $updatedAt !== null)
     <meta property="article:modified_time" content="{{ date(DATE_ATOM, $updatedAt) }}">
 @endif
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="{{ $twitterCard }}">
 <meta name="twitter:title" content="{{ $documentTitle }}">
 <meta name="twitter:description" content="{{ $description }}">
+<meta name="twitter:image" content="{{ $socialImage }}">
+<meta name="twitter:image:alt" content="{{ $socialImageAlt }}">
 <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
