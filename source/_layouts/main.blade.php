@@ -45,9 +45,6 @@
             <a href="{{ $page->baseUrl }}{{ $aboutPath }}">{{ $isEnglish ? 'About' : 'Sobre' }}</a>
             <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
             <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
-            @foreach ($page->author['profiles'] as $profile)
-                <a href="{{ $profile['url'] }}" target="_blank" rel="me external noopener noreferrer">{{ $profile['label'] }}</a>
-            @endforeach
             @if ($alternatePath !== null)
                 <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
                     {{ $isEnglish ? 'Português' : 'English' }}
