@@ -3,8 +3,8 @@
 
 .talks-browser {
     display: grid;
-    grid-template-columns: 15rem minmax(0, 1fr);
-    gap: 1.75rem;
+    grid-template-columns: clamp(12.5rem, 19vw, 16rem) minmax(0, 1fr);
+    gap: clamp(1.25rem, 2vw, 1.75rem);
     width: calc(100vw - 3rem);
     max-width: none;
     margin-inline: calc(50% - 50vw + 1.5rem);
@@ -324,7 +324,6 @@
 
 @media (min-width: 110rem) {
     .talks-browser {
-        grid-template-columns: 16rem minmax(0, 1fr);
         width: calc(100vw - 4rem);
         margin-inline: calc(50% - 50vw + 2rem);
     }
@@ -335,26 +334,6 @@
 
     .talk-list[data-view='grid'] {
         grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-    }
-}
-
-@media (max-width: 78rem) {
-    .talks-browser {
-        grid-template-columns: 12.5rem minmax(0, 1fr);
-        gap: 1.25rem;
-    }
-
-    .talks-profile {
-        grid-template-columns: 3rem minmax(0, 1fr);
-    }
-
-    .talks-profile__avatar {
-        width: 3rem;
-        height: 3rem;
-    }
-
-    .talk-list[data-view='grid'] {
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
     }
 }
 
