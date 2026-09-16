@@ -34,11 +34,6 @@ return [
                 'url' => 'https://www.linkedin.com/in/vitormattos/',
                 'sameAs' => true,
             ],
-            'gravatar' => [
-                'label' => 'Gravatar',
-                'url' => 'https://gravatar.com/vitormattos',
-                'sameAs' => true,
-            ],
         ],
         'organization' => [
             'name' => 'LibreCode',
