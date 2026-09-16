@@ -89,6 +89,7 @@
         </p>
         <p><a href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">RSS</a></p>
     </footer>
+    <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/social-icons.js') }}"></script>
     @stack('scripts')
 </body>
 
