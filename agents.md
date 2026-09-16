@@ -44,13 +44,14 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Presentation pages can expose overview, reading/scroll and fullscreen modes plus source/download resources.
 - Talk collection pages support grid and list views. The preference is presentation-only and stored as `localStorage['talk-gallery-view']`.
 - Presentation business rules belong in testable PHP classes under `src/Presentations/`. CLI scripts under `scripts/` should be thin entrypoints; do not put domain policy in shell scripts.
+- Curated presentation history (events, dates, venues, recordings, CFP references and related resources) lives in `data/talk-history.php`. It is editorial data independent of any presentation provider and must never be written or removed by Slides.com or SlideShare synchronization. `App\Presentations\TalkHistory` resolves that data across provider-specific copies of the same talk.
 
 ### Slides.com synchronization
 
 - `.github/workflows/sync-slides.yml` synchronizes public owned decks using `SLIDES_API_TOKEN`. Never commit, print or otherwise persist the token.
 - The workflow runs daily or manually and opens/updates `automation/slides-com-sync`; synchronization reaches `main` only through a pull request.
 - `scripts/sync-slides.php` imports only decks whose API `visibility` is `all`. Privacy filtering is a business invariant and must have regression tests when changed.
-- Generated talk records are prefixed `slides-com-` and carry `managed: slides.com`. The synchronizer may delete/replace only these managed records; it must never alter native presentation records.
+- Generated talk records are prefixed `slides-com-` and carry `managed: slides.com`. The synchronizer may delete/replace only these managed records; it must never alter native presentation records or `data/talk-history.php`.
 - Archived Slides.com material lives only under `presentations/slides.com/<deck-id>/`. Native decks must never be stored there.
 - Archive `deck_html`, deck CSS and API metadata so public presentations remain inspectable independently of the Slides.com iframe. Preserve the original public Slides.com URL for provenance and rendering.
 - PDF archives are rendered from public Slides.com URLs with the pinned DeckTape version defined by `PdfExportPolicy`; they do not use the Slides.com export API or its export quota.
@@ -90,7 +91,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Dependabot covers Composer, npm and Actions.
 - `SITE_BUILD_DIR` and `EXPECTED_BASE_URL` make tests preview-aware.
 - Tests are contract/regression tests for behavior and business invariants, not a coverage target. New presentation behavior must ship with tests that would fail if its rule is broken.
-- Critical presentation contracts include: private/team decks are never exported; only the expected public Slides.com owner URL is accepted; renderer version and dimensions are deterministic; invalid PDFs are rejected; native content is never deleted by synchronization.
+- Critical presentation contracts include: private/team decks are never exported; only the expected public Slides.com owner URL is accepted; renderer version and dimensions are deterministic; invalid PDFs are rejected; native and curated presentation history content are never deleted by synchronization.
 - Add regression tests for deployment, SEO, URL generation and presentation-gallery behavior.
 
 ## Licensing and REUSE
