@@ -8,6 +8,12 @@
     $showAbout = $page->showAbout ?? true;
     $tags = array_values(array_filter(array_map('strval', (array) ($page->tags ?? []))));
     $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
+    $presentationUrl = rtrim((string) ($presentation['url'] ?? ''), '/');
+    $talkHistory = (array) (($page->talkHistory ?? [])[$presentationUrl] ?? []);
+    $appearances = (array) ($talkHistory['appearances'] ?? []);
+    $recordings = (array) ($talkHistory['recordings'] ?? []);
+    $alternateSlides = (array) ($talkHistory['alternateSlides'] ?? []);
+    $resources = (array) ($talkHistory['resources'] ?? []);
 @endphp
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
@@ -39,6 +45,32 @@
             @if ($presentation['themeColor'] ?? false)<div><dt>{{ $isEnglish ? 'Theme' : 'Tema' }}</dt><dd>{{ $presentation['themeColor'] }}</dd></div>@endif
             @if (($presentation['width'] ?? 0) && ($presentation['height'] ?? 0))<div><dt>{{ $isEnglish ? 'Canvas' : 'Tela' }}</dt><dd>{{ $presentation['width'] }} × {{ $presentation['height'] }}</dd></div>@endif
         </dl>
+    @endif
+    @if ($talkHistory !== [])
+        <section class="talk-history" aria-labelledby="talk-history-title">
+            <h2 id="talk-history-title">{{ $isEnglish ? 'Presentation history' : 'Histórico de apresentações' }}</h2>
+            @if ($appearances !== [])
+                <h3>{{ $isEnglish ? 'Presented at' : 'Apresentada em' }}</h3>
+                <ul class="talk-history__list">
+                    @foreach ($appearances as $appearance)
+                        <li>
+                            @if ($appearance['url'] ?? false)<a href="{{ $appearance['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $appearance['event'] ?? ($isEnglish ? 'Event' : 'Evento') }}</a>@else{{ $appearance['event'] ?? ($isEnglish ? 'Event' : 'Evento') }}@endif
+                            @if ($appearance['date'] ?? false) · <time datetime="{{ $appearance['date'] }}">{{ $isEnglish ? $appearance['date'] : date('d/m/Y', strtotime($appearance['date'])) }}</time>@endif
+                            @if ($appearance['venue'] ?? false) · {{ $appearance['venue'] }}@endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+            @if ($recordings !== [] || $alternateSlides !== [] || $resources !== [] || ($talkHistory['cfp'] ?? false))
+                <h3>{{ $isEnglish ? 'Related resources' : 'Recursos relacionados' }}</h3>
+                <ul class="talk-history__links">
+                    @foreach ($recordings as $recording)<li><a href="{{ $recording['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $recording['label'] ?? ($isEnglish ? 'Recording' : 'Gravação') }}</a></li>@endforeach
+                    @foreach ($alternateSlides as $slides)<li><a href="{{ $slides['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $slides['label'] ?? ($isEnglish ? 'Alternate slides' : 'Slides alternativos') }}</a></li>@endforeach
+                    @foreach ($resources as $resource)<li><a href="{{ $resource['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $resource['label'] ?? ($isEnglish ? 'Resource' : 'Recurso') }}</a></li>@endforeach
+                    @if ($talkHistory['cfp'] ?? false)<li><a href="{{ $talkHistory['cfp'] }}" target="_blank" rel="external noopener noreferrer">PHPRio CFP</a></li>@endif
+                </ul>
+            @endif
+        </section>
     @endif
     @if ($showAbout)
         <section aria-labelledby="talk-about-title"><h2 id="talk-about-title">{{ $isEnglish ? 'About this talk' : 'Sobre esta palestra' }}</h2>@yield('content')</section>
