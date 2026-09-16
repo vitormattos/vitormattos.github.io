@@ -147,9 +147,18 @@
 }
 
 @media (max-width: 560px) {
+    .hero {
+        margin-block: 0 2.5rem;
+        padding-block: 2.75rem 0;
+    }
+
     .section-heading {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .home-talks {
+        margin-block: 0 3rem;
     }
 
     .home-talks__grid {
