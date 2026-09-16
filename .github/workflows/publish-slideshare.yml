@@ -16,7 +16,7 @@ permissions:
 
 concurrency:
   group: temp-slideshare-pdf-backfill
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -38,4 +38,6 @@ jobs:
       - name: Download and publish SlideShare PDFs
         env:
           GH_TOKEN: ${{ github.token }}
+          SLIDESHARE_EMAIL: ${{ secrets.SLIDESHARE_EMAIL }}
+          SLIDESHARE_PASSWORD: ${{ secrets.SLIDESHARE_PASSWORD }}
         run: node scripts/slideshare-download-pdfs.mjs
