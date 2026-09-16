@@ -11,6 +11,7 @@ Canonical site: https://vitormattos.github.io/
 - Organization: LibreCode — https://librecode.coop/
 - GitHub: https://github.com/vitormattos
 - LinkedIn: https://www.linkedin.com/in/vitormattos/
+- Gravatar: https://gravatar.com/vitormattos
 
 ## Primary topics
 
