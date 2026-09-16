@@ -4,12 +4,18 @@ name: Publish SlideShare archive
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - temp/slideshare-pdf-backfill
+    paths:
+      - '.github/workflows/publish-slideshare.yml'
+      - 'scripts/slideshare-download-pdfs.mjs'
 
 permissions:
   contents: write
 
 concurrency:
-  group: slideshare-archive-publish
+  group: temp-slideshare-pdf-backfill
   cancel-in-progress: false
 
 jobs:
