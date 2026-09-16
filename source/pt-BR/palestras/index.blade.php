@@ -52,11 +52,12 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
                 <div>
                     <p class="eyebrow">Apresentações</p>
                     <h1 id="page-title">Palestras</h1>
-                    <p class="lead">Palestras e apresentações sobre software livre, PHP, LibreSign, engenharia de software e construção de comunidades.</p>
+                    <p class="lead">Palestras e apresentações sobre software livre, PHP, LibreSign, engenharia de software
+                        e construção de comunidades.</p>
                 </div>
                 <div class="gallery-switcher" data-gallery-switcher>
-                    <button class="gallery-switcher__trigger" type="button" data-gallery-menu-trigger
-                        aria-expanded="false" aria-haspopup="true">
+                    <button class="gallery-switcher__trigger" type="button" data-gallery-menu-trigger aria-expanded="false"
+                        aria-haspopup="true">
                         <span>Layout:</span> <strong data-gallery-current>Grade</strong><span aria-hidden="true">⌄</span>
                     </button>
                     <div class="gallery-switcher__menu" data-gallery-menu hidden role="group"
@@ -67,8 +68,9 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
                                 class="gallery-switcher__check" aria-hidden="true">✓</span>
                         </button>
                         <button type="button" data-gallery-view="list" aria-pressed="false">
-                            <span><strong>Lista</strong><small>Imagens pequenas e descrição da apresentação</small></span><span
-                                class="gallery-switcher__check" aria-hidden="true">✓</span>
+                            <span><strong>Lista</strong><small>Imagens pequenas e descrição da
+                                    apresentação</small></span><span class="gallery-switcher__check"
+                                aria-hidden="true">✓</span>
                         </button>
                     </div>
                 </div>
@@ -78,7 +80,10 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
             </div>
             <div class="talk-list" data-talk-gallery data-view="grid">
                 @foreach ($talkItems as $talk)
-                    @include('_partials.talk.card', ['talk' => $talk, 'tagIndexPath' => '/pt-BR/palestras/'])
+                    @include('_partials.talk.card', [
+                        'talk' => $talk,
+                        'tagIndexPath' => '/pt-BR/palestras/',
+                    ])
                 @endforeach
             </div>
             <p class="talk-filter-empty" data-talk-filter-empty hidden>Nenhuma palestra foi encontrada para este tópico.</p>
