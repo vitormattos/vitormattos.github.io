@@ -104,8 +104,8 @@ final class TalkMetadataTest extends TestCase
         $errors = TalkMetadata::validationErrors($metadata);
 
         self::assertNotSame([], $errors);
-        self::assertTrue((bool) array_filter($errors, static fn (string $error): bool => str_contains($error, 'normalized slug')));
-        self::assertTrue((bool) array_filter($errors, static fn (string $error): bool => str_contains($error, 'real calendar date')));
-        self::assertTrue((bool) array_filter($errors, static fn (string $error): bool => str_contains($error, 'ISO 3166-1')));
+        self::assertTrue((bool) array_filter($errors, static fn(string $error): bool => str_contains($error, 'normalized slug')));
+        self::assertTrue((bool) array_filter($errors, static fn(string $error): bool => str_contains($error, 'real calendar date')));
+        self::assertTrue((bool) array_filter($errors, static fn(string $error): bool => str_contains($error, 'ISO 3166-1')));
     }
 }
