@@ -12,6 +12,12 @@
         $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
         $alternatePath = $rawAlternatePath === '/' ? '/' : rtrim($rawAlternatePath, '/');
     }
+
+    $currentPath = '/' . trim((string) $page->getPath(), '/');
+    $currentPath = $currentPath === '/' ? '/' : rtrim($currentPath, '/');
+    $isAbout = $currentPath === $aboutPath;
+    $isArticles = $currentPath === $articlesPath || str_starts_with($currentPath, $articlesPath . '/');
+    $isTalks = $currentPath === $talksPath || str_starts_with($currentPath, $talksPath . '/');
 @endphp
 <!doctype html>
 <html lang="{{ $locale }}">
@@ -39,19 +45,36 @@
 <body>
 <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
 <header class="site-header">
-    <a href="{{ $page->baseUrl }}{{ $homePath }}">{{ $page->author['name'] }}</a>
-    <div class="site-header__actions">
-        <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
-            <a href="{{ $page->baseUrl }}{{ $aboutPath }}">{{ $isEnglish ? 'About' : 'Sobre' }}</a>
-            <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
-            <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
-            @if ($alternatePath !== null)
-                <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
-                    {{ $isEnglish ? 'Português' : 'English' }}
-                </a>
-            @endif
-        </nav>
-        @include('_partials.theme-toggle')
+    <div class="site-header__bar">
+        <a class="site-identity" href="{{ $page->baseUrl }}{{ $homePath }}" aria-label="{{ $page->author['name'] }}">
+            <span class="site-identity__monogram" aria-hidden="true">VM</span>
+            <span class="site-identity__copy">
+                <strong>{{ $page->author['name'] }}</strong>
+                <span>{{ $isEnglish ? 'free software · technology' : 'software livre · tecnologia' }}</span>
+            </span>
+        </a>
+
+        <div class="site-header__actions">
+            <nav class="site-nav" aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
+                <a @class(['site-nav__link', 'is-active' => $isAbout]) href="{{ $page->baseUrl }}{{ $aboutPath }}"
+                    @if ($isAbout) aria-current="page" @endif>{{ $isEnglish ? 'About' : 'Sobre' }}</a>
+                <a @class(['site-nav__link', 'is-active' => $isArticles]) href="{{ $page->baseUrl }}{{ $articlesPath }}"
+                    @if ($isArticles) aria-current="page" @endif>{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
+                <a @class(['site-nav__link', 'is-active' => $isTalks]) href="{{ $page->baseUrl }}{{ $talksPath }}"
+                    @if ($isTalks) aria-current="page" @endif>{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
+            </nav>
+
+            <div class="site-controls">
+                @if ($alternatePath !== null)
+                    <a class="language-switch" href="{{ $page->baseUrl }}{{ $alternatePath }}"
+                        hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}"
+                        aria-label="{{ $isEnglish ? 'Ver esta página em português' : 'View this page in English' }}">
+                        {{ $isEnglish ? 'PT' : 'EN' }}
+                    </a>
+                @endif
+                @include('_partials.theme-toggle')
+            </div>
+        </div>
     </div>
 </header>
 <main id="main-content">
