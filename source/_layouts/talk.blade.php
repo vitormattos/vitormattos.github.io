@@ -9,18 +9,19 @@
     $tags = array_values(array_filter(array_map('strval', (array) ($page->tags ?? []))));
     $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
     $presentationUrl = rtrim((string) ($presentation['url'] ?? ''), '/');
-    $rawTalkHistory = $page->talkHistory ?? [];
-    if (is_object($rawTalkHistory) && method_exists($rawTalkHistory, 'toArray')) {
-        $rawTalkHistory = $rawTalkHistory->toArray();
+    $rawTalkMetadata = $page->talkMetadata ?? [];
+    if (is_object($rawTalkMetadata) && method_exists($rawTalkMetadata, 'toArray')) {
+        $rawTalkMetadata = $rawTalkMetadata->toArray();
     }
-    $talkHistory = \App\Presentations\TalkHistory::resolve(
-        is_array($rawTalkHistory) ? $rawTalkHistory : [],
+    $talkMetadata = \App\Presentations\TalkMetadata::resolve(
+        is_array($rawTalkMetadata) ? $rawTalkMetadata : [],
         $presentationUrl,
         (string) ($page->slug ?? ''),
     );
-    $appearances = (array) ($talkHistory['appearances'] ?? []);
-    $links = (array) ($talkHistory['links'] ?? []);
-    $sources = (array) ($talkHistory['sources'] ?? []);
+    $appearances = (array) ($talkMetadata['appearances'] ?? []);
+    $resources = (array) ($talkMetadata['resources'] ?? []);
+    $sources = (array) ($talkMetadata['sources'] ?? []);
+    $resourceHref = static fn (array $item): string => \App\Presentations\TalkMetadata::publicHref((string) ($item['href'] ?? ''), (string) $page->baseUrl);
 @endphp
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
@@ -53,7 +54,7 @@
             @if (($presentation['width'] ?? 0) && ($presentation['height'] ?? 0))<div><dt>{{ $isEnglish ? 'Canvas' : 'Tela' }}</dt><dd>{{ $presentation['width'] }} × {{ $presentation['height'] }}</dd></div>@endif
         </dl>
     @endif
-    @if ($talkHistory !== [])
+    @if ($talkMetadata !== [])
         <section class="talk-history" aria-labelledby="talk-history-title">
             <h2 id="talk-history-title">{{ $isEnglish ? 'Presentation history' : 'Histórico de apresentações' }}</h2>
             @if ($appearances !== [])
@@ -62,14 +63,17 @@
                     @foreach ($appearances as $appearance)
                         <li>
                             <div>
-                                @if ($appearance['url'] ?? false)<a href="{{ $appearance['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $appearance['event'] ?? ($isEnglish ? 'Event' : 'Evento') }}</a>@else{{ $appearance['event'] ?? ($isEnglish ? 'Event' : 'Evento') }}@endif
+                                @if ($appearance['href'] ?? false)<a href="{{ $resourceHref($appearance) }}" target="_blank" rel="external noopener noreferrer">{{ $appearance['event'] ?? ($isEnglish ? 'Event' : 'Evento') }}</a>@else{{ $appearance['event'] ?? ($isEnglish ? 'Event' : 'Evento') }}@endif
                                 @if ($appearance['date'] ?? false) · <time datetime="{{ $appearance['date'] }}">{{ $isEnglish ? $appearance['date'] : date('d/m/Y', strtotime($appearance['date'])) }}</time>@endif
                                 @if ($appearance['venue'] ?? false) · {{ $appearance['venue'] }}@endif
+                                @if ($appearance['city'] ?? false) · {{ $appearance['city'] }}@endif
+                                @if ($appearance['country'] ?? false) · {{ $appearance['country'] }}@endif
+                                @if ($appearance['mode'] ?? false) · {{ $appearance['mode'] }}</span>@endif
                             </div>
-                            @if (($appearance['links'] ?? []) !== [])
+                            @if (($appearance['resources'] ?? []) !== [])
                                 <ul class="talk-history__links">
-                                    @foreach ((array) $appearance['links'] as $link)
-                                        <li><a href="{{ $link['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $link['label'] ?? ucfirst((string) ($link['type'] ?? ($isEnglish ? 'resource' : 'recurso'))) }}</a></li>
+                                    @foreach ((array) $appearance['resources'] as $resource)
+                                        <li><a href="{{ $resourceHref((array) $resource) }}" target="_blank" rel="external noopener noreferrer">{{ $resource['label'] ?? ucfirst((string) ($resource['type'] ?? ($isEnglish ? 'resource' : 'recurso'))) }}</a></li>
                                     @endforeach
                                 </ul>
                             @endif
@@ -77,11 +81,11 @@
                     @endforeach
                 </ul>
             @endif
-            @if ($links !== [])
+            @if ($resources !== [])
                 <h3>{{ $isEnglish ? 'Related resources' : 'Recursos relacionados' }}</h3>
                 <ul class="talk-history__links">
-                    @foreach ($links as $link)
-                        <li><a href="{{ $link['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $link['label'] ?? ucfirst((string) ($link['type'] ?? ($isEnglish ? 'resource' : 'recurso'))) }}</a></li>
+                    @foreach ($resources as $resource)
+                        <li><a href="{{ $resourceHref((array) $resource) }}" target="_blank" rel="external noopener noreferrer">{{ $resource['label'] ?? ucfirst((string) ($resource['type'] ?? ($isEnglish ? 'resource' : 'recurso'))) }}</a></li>
                     @endforeach
                 </ul>
             @endif
@@ -89,7 +93,7 @@
                 <h3>{{ $isEnglish ? 'Sources' : 'Fontes' }}</h3>
                 <ul class="talk-history__links">
                     @foreach ($sources as $source)
-                        <li><a href="{{ $source['url'] }}" target="_blank" rel="external noopener noreferrer">{{ $source['label'] ?? strtoupper((string) ($source['type'] ?? ($isEnglish ? 'Source' : 'Fonte'))) }}</a></li>
+                        <li><a href="{{ $resourceHref((array) $source) }}" target="_blank" rel="external noopener noreferrer">{{ $source['label'] ?? strtoupper((string) ($source['type'] ?? ($isEnglish ? 'Source' : 'Fonte'))) }}</a></li>
                     @endforeach
                 </ul>
             @endif
