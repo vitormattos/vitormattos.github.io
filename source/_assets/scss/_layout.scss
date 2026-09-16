@@ -28,16 +28,12 @@
     text-decoration: none;
 }
 
-.site-identity__monogram {
-    align-items: center;
-    background: var(--text);
-    border-radius: .7rem;
-    color: var(--surface);
-    display: inline-flex;
-    font-size: 1.05rem;
+.site-identity__avatar {
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: block;
     height: 2.8rem;
-    justify-content: center;
-    letter-spacing: .04em;
+    object-fit: cover;
     width: 2.8rem;
 }
 
