@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <title>Apresentação feedback cool · Vitor Mattos</title>
+    <meta name="description" content="FeedbackCoolBot">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Apresentação feedback cool · Vitor Mattos">
+<meta property="og:description" content="FeedbackCoolBot">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apresentação feedback cool · Vitor Mattos">
+<meta name="twitter:description" content="FeedbackCoolBot">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool#webpage","url":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool","name":"Apresentação feedback cool","description":"FeedbackCoolBot","inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool#breadcrumb"}},{"@type":"CreativeWork","@id":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool#content","url":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool","name":"Apresentação feedback cool","headline":"Apresentação feedback cool","description":"FeedbackCoolBot","inLanguage":"pt-BR","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool#webpage"},"datePublished":"2016-05-13T00:00:00+00:00","dateModified":"2016-05-13T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://vitormattos.github.io/pt-BR"},{"@type":"ListItem","position":2,"name":"Palestras","item":"https://vitormattos.github.io/pt-BR/palestras"},{"@type":"ListItem","position":3,"name":"Apresentação feedback cool","item":"https://vitormattos.github.io/pt-BR/palestras/apresentacao-feedback-cool"}]}]}</script>        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-22/assets/build/assets/main-CKzBA8U0.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-22/assets/build/assets/presentations-BejEjNuL.css">
+    </head>
+<body>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header class="site-header">
+    <a href="https://vitormattos.github.io/pr-preview/pr-22/pt-BR">Vitor Mattos</a>
+    <div class="site-header__actions">
+        <nav aria-label="Principal">
+            <a href="https://vitormattos.github.io/pr-preview/pr-22/pt-BR/sobre">Sobre</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-22/pt-BR/artigos">Artigos</a>
+            <a href="https://vitormattos.github.io/pr-preview/pr-22/pt-BR/palestras">Palestras</a>
+                    </nav>
+        <button
+    class="theme-toggle"
+    type="button"
+    data-theme-toggle
+    data-label-light="Usar tema claro"
+    data-label-dark="Usar tema escuro"
+    aria-pressed="false"
+>
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="theme-toggle__text">Tema</span>
+</button>
+
+<script>
+(() => {
+    const button = document.currentScript.previousElementSibling;
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+    const syncButton = () => {
+        const theme = currentTheme();
+        const isDark = theme === 'dark';
+        button.setAttribute('aria-pressed', String(isDark));
+        button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+    };
+
+    button.addEventListener('click', () => {
+        const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = nextTheme;
+
+        try {
+            localStorage.setItem('theme', nextTheme);
+        } catch (_) {
+            // Theme selection still works for this page when storage is unavailable.
+        }
+
+        syncButton();
+    });
+
+    media.addEventListener?.('change', () => {
+        if (! root.dataset.theme) {
+            syncButton();
+        }
+    });
+
+    syncButton();
+})();
+</script>
+    </div>
+</header>
+<main id="main-content">
+    <article class="content talk-detail">
+    <header>
+        <p class="eyebrow">Palestra</p>
+        <p class="meta"><time datetime="2016-05-13">13/05/2016</time></p>        <h1>Apresentação feedback cool</h1>
+        <p class="lead">FeedbackCoolBot</p>            </header>
+    <div class="presentation-frame">
+        <div class="presentation-toolbar presentation-toolbar--archive">
+            <div class="presentation-toolbar__context">
+                <span class="presentation-toolbar__context-icon" aria-hidden="true">◫</span>
+                <span>Apresentação arquivada</span>
+                <small>SlideShare</small>
+            </div>
+            <div class="presentation-toolbar__actions">
+                                    <a class="presentation-action presentation-action--primary" href="https://pt.slideshare.net/slideshow/apresentao-feedback-cool/61993365" target="_blank" rel="external noopener noreferrer"><span aria-hidden="true">↗</span><span>Abrir original</span></a>
+                                                    <details class="presentation-action-menu">
+                        <summary class="presentation-action"><span aria-hidden="true">↓</span><span>Baixar</span><span aria-hidden="true">⌄</span></summary>
+                        <div class="presentation-action-menu__panel">
+                                                            <a href="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-61993365/slideshare-61993365.pdf" target="_blank" rel="external noopener noreferrer"><strong>PDF</strong><small>PDF arquivado</small></a>
+                                                                                        <a href="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-61993365/slideshare-61993365.pptx" target="_blank" rel="external noopener noreferrer"><strong>PPTX</strong><small>PowerPoint arquivado</small></a>
+                                                                                </div>
+                    </details>
+                                                    <a class="presentation-action presentation-action--secondary" href="https://vitormattos.github.io/pr-preview/pr-22/presentations/slideshare/61993365/metadata.json" download>JSON</a>
+                            </div>
+        </div>
+        <div class="presentation-stage">
+                            <img src="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-61993365/thumbnail.png" alt="Apresentação feedback cool" loading="lazy">
+                    </div>
+    </div>
+            <dl class="presentation-metadata">
+                        <div><dt>Idioma</dt><dd>pt</dd></div>                    </dl>
+            </article>
+</main>
+<footer>
+    <p>Conteúdo e código publicados com transparência e controle de versão.</p>
+    <p><a href="https://vitormattos.github.io/pt-BR/feed.xml">RSS</a></p>
+</footer>
+</body>
+</html>
