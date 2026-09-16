@@ -105,47 +105,65 @@ async function authenticate(context, username, secret) {
     console.log('Authenticating with SlideShare/Scribd...');
     await page.goto('https://www.slideshare.net/login', { waitUntil: 'domcontentloaded', timeout: 90_000 });
 
-    const emailInput = page.locator('input[type="email"], input[name*="email" i], input[autocomplete="username"]').first();
+    const emailChoice = page.getByText(/continue with email|continuar com e-?mail/i, { exact: true }).first();
+    if (await emailChoice.isVisible({ timeout: 10_000 }).catch(() => false)) {
+      console.log('Selecting email sign-in method...');
+      await emailChoice.click();
+      await page.waitForTimeout(500);
+    }
+
+    const emailInput = page.locator('input[type="email"], input[name*="email" i], input[autocomplete="username"], input[name="login"]').first();
     if (!(await emailInput.isVisible({ timeout: 10_000 }).catch(() => false))) {
-      throw new Error(`login email field not found at ${page.url()}`);
+      throw new Error(`login email field not found after selecting email sign-in at ${page.url()}`);
     }
     await emailInput.fill(username);
 
-    const passwordInput = page.locator('input[type="password"], input[autocomplete="current-password"]').first();
-    if (!(await passwordInput.isVisible({ timeout: 3_000 }).catch(() => false))) {
-      const next = page.getByRole('button', { name: /continue|next|continuar|avançar|entrar/i }).first();
-      if (await next.isVisible({ timeout: 2_000 }).catch(() => false)) {
+    let passwordField = page.locator('input[type="password"], input[autocomplete="current-password"]').first();
+    if (!(await passwordField.isVisible({ timeout: 2_000 }).catch(() => false))) {
+      const next = page.getByRole('button', { name: /continue|next|continuar|avançar|entrar|sign in/i }).first();
+      if (await next.isVisible({ timeout: 3_000 }).catch(() => false)) {
         await next.click();
-        await page.waitForLoadState('domcontentloaded').catch(() => {});
+        await page.waitForTimeout(700);
+      } else {
+        await emailInput.press('Enter');
+        await page.waitForTimeout(700);
       }
     }
 
-    const passwordField = page.locator('input[type="password"], input[autocomplete="current-password"]').first();
+    passwordField = page.locator('input[type="password"], input[autocomplete="current-password"]').first();
     if (!(await passwordField.isVisible({ timeout: 10_000 }).catch(() => false))) {
       throw new Error(`login password field not found at ${page.url()}`);
     }
     await passwordField.fill(secret);
 
-    const submit = page.locator('button[type="submit"], input[type="submit"]').first();
+    const submit = page.getByRole('button', { name: /sign in|log in|entrar|continue|continuar/i }).first();
     if (await submit.isVisible({ timeout: 3_000 }).catch(() => false)) {
       await submit.click();
     } else {
       await passwordField.press('Enter');
     }
 
-    await page.waitForLoadState('domcontentloaded', { timeout: 30_000 }).catch(() => {});
     await page.waitForTimeout(2_000);
+    await page.waitForLoadState('domcontentloaded', { timeout: 30_000 }).catch(() => {});
 
-    const stillHasPassword = await page.locator('input[type="password"]').isVisible().catch(() => false);
-    const url = page.url();
-    if (stillHasPassword || /\/login(?:[/?#]|$)|\/sign-?in(?:[/?#]|$)/i.test(url)) {
-      const message = await page.locator('[role="alert"], .error, [class*="error" i]').first().textContent().catch(() => null);
-      throw new Error(`authentication was not confirmed${message ? `: ${message.trim().slice(0, 200)}` : ''}`);
+    const errorText = await page.locator('[role="alert"], .error, [class*="error" i]').allTextContents().catch(() => []);
+    const visiblePassword = await page.locator('input[type="password"]').first().isVisible().catch(() => false);
+    if (visiblePassword) {
+      const message = errorText.map((value) => value.trim()).filter(Boolean).join(' ').slice(0, 300);
+      throw new Error(`authentication was not confirmed${message ? `: ${message}` : ''}`);
+    }
+
+    await page.goto('https://www.slideshare.net/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    const signInLink = page.getByRole('link', { name: /^sign in$/i }).first();
+    const stillSignedOut = await signInLink.isVisible({ timeout: 3_000 }).catch(() => false);
+    if (stillSignedOut) {
+      throw new Error('authentication was not confirmed: SlideShare still exposes the Sign in link after login.');
     }
 
     const cookies = await context.cookies();
-    if (cookies.length === 0) throw new Error('authentication produced no session cookies.');
-    console.log(`Authentication confirmed; session established with ${cookies.length} cookies.`);
+    const sessionCookies = cookies.filter((cookie) => /slideshare|scribd/i.test(cookie.domain));
+    if (sessionCookies.length === 0) throw new Error('authentication produced no SlideShare/Scribd session cookies.');
+    console.log(`Authentication confirmed; session established with ${sessionCookies.length} SlideShare/Scribd cookies.`);
   } finally {
     await page.close();
   }
