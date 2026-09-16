@@ -20,6 +20,8 @@ presentation:
   metadata: /presentations/slideshare/75733906/metadata.json
   thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75733906/thumbnail.png"
   pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75733906/slideshare-75733906.pdf"
+  thumbnailWidth: 1280
+  thumbnailHeight: 720
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

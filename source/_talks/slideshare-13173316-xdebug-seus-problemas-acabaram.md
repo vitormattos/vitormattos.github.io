@@ -21,6 +21,8 @@ presentation:
   thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-13173316/thumbnail.png"
   pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-13173316/slideshare-13173316.pdf"
   pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-13173316/slideshare-13173316.pptx"
+  thumbnailWidth: 1280
+  thumbnailHeight: 960
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->
