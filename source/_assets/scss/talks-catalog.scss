@@ -47,7 +47,7 @@
     height: 3.25rem;
     object-fit: cover;
     border: 1px solid var(--border);
-    border-radius: 0.6rem;
+    border-radius: 50%;
 }
 
 .talks-profile__links {
@@ -285,6 +285,17 @@
         z-index: 1;
         max-height: calc(100vh + 4.75rem);
         margin-top: -4.75rem;
+        padding-top: 1.5rem;
+        background: var(--surface);
+        overflow: visible auto;
+    }
+
+    .talks-sidebar::before {
+        position: absolute;
+        inset-block: 0;
+        right: 100%;
+        width: 2rem;
+        content: '';
         background: var(--surface);
     }
 }
