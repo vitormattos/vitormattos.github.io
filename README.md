@@ -31,19 +31,3 @@ composer serve
 ```
 
 Styles are authored in SCSS under `source/_assets/scss/` and compiled by Vite through `@tighten/jigsaw-vite-plugin`.
-
-## Quality
-
-Checks are intentionally split into independent GitHub Actions workflows so failures are attributable to one concern:
-
-- Composer validation and security audit
-- PHP syntax lint
-- PHP coding standards
-- REUSE/SPDX licensing compliance
-- Vite/SCSS production build and smoke tests
-
-Dependencies are monitored by Dependabot for Composer, npm and GitHub Actions.
-
-## License
-
-Software is licensed under `AGPL-3.0-or-later`. SPDX metadata is required for source files. Content may adopt another explicit free-content license later.
