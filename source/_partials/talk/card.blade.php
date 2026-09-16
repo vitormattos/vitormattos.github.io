@@ -12,12 +12,20 @@
     $encodedTags = htmlspecialchars(json_encode($topicKeys, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8');
 
     $thumbnail = $presentation['thumbnail'] ?? null;
+    $thumbnailWidth = (int) ($presentation['thumbnailWidth'] ?? $presentation['width'] ?? 0);
+    $thumbnailHeight = (int) ($presentation['thumbnailHeight'] ?? $presentation['height'] ?? 0);
     $hasArchivedPdf = false;
     if ($talk->slidesId ?? false) {
-        $deckDir = 'presentations/slides.com/' . $talk->slidesId;
+        $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
+        $deckDir = 'presentations/' . $sourceDirectory . '/' . $talk->slidesId;
         $localThumbnails = glob($deckDir . '/thumbnail.*') ?: [];
         if ($localThumbnails !== []) {
             $thumbnail = '/' . $localThumbnails[0];
+            $imageSize = @getimagesize($localThumbnails[0]);
+            if (is_array($imageSize)) {
+                $thumbnailWidth = (int) $imageSize[0];
+                $thumbnailHeight = (int) $imageSize[1];
+            }
         }
 
         $manifestPath = $deckDir . '/export.json';
@@ -34,7 +42,7 @@
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
         @if ($thumbnail)
-            <img src="{{ str_starts_with($thumbnail, '/') ? $page->baseUrl . $thumbnail : $thumbnail }}" alt="" loading="lazy">
+            <img src="{{ str_starts_with($thumbnail, '/') ? $page->baseUrl . $thumbnail : $thumbnail }}" alt="" loading="lazy" @if ($thumbnailWidth > 0 && $thumbnailHeight > 0) width="{{ $thumbnailWidth }}" height="{{ $thumbnailHeight }}" @endif>
         @elseif ($type === 'reveal' && $sourcePath)
             <div class="presentation-thumbnail" aria-hidden="true"><div class="reveal js-reveal-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail"><div class="slides"><section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}" data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$" data-separator-notes="^Notes?:"></section></div></div></div>
         @elseif (in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
@@ -49,22 +57,14 @@
         <p class="talk-card__description">{{ $talk->description }}</p>
 
         <div class="talk-card__meta-line">
-            @if ($talk->date ?? false)
-                <span><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>
-            @endif
-            @if ($presentation['slideCount'] ?? 0)
-                <span>{{ $presentation['slideCount'] }} {{ $isEnglish ? 'slides' : 'slides' }}</span>
-            @endif
-            @if ($presentation['language'] ?? false)
-                <span>{{ $presentation['language'] }}</span>
-            @endif
+            @if ($talk->date ?? false)<span><time datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>@endif
+            @if ($presentation['slideCount'] ?? 0)<span>{{ $presentation['slideCount'] }} slides</span>@endif
+            @if ($presentation['language'] ?? false)<span>{{ $presentation['language'] }}</span>@endif
         </div>
 
         @if ($topics !== [])
             <nav class="talk-card__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
-                @foreach ($topics as $topic => $label)
-                    <a class="talk-tag" href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($topic) }}">{{ $label }}</a>
-                @endforeach
+                @foreach ($topics as $topic => $label)<a class="talk-tag" href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($topic) }}">{{ $label }}</a>@endforeach
             </nav>
         @endif
 
@@ -73,11 +73,9 @@
                 <span class="format-badge">{{ $type }}</span>
                 @if ($presentation['localHtml'] ?? false)<span class="format-badge">HTML</span>@endif
                 @if ($hasArchivedPdf || ($presentation['localPdf'] ?? false) || ($presentation['pdf'] ?? false))<span class="format-badge">PDF</span>@endif
+                @if ($presentation['pptx'] ?? false)<span class="format-badge">PPTX</span>@endif
                 @if ($presentation['video'] ?? false)<span class="format-badge">{{ $isEnglish ? 'video' : 'vídeo' }}</span>@endif
             </div>
-            @if ($presentation['themeColor'] ?? false)
-                <span class="talk-card__theme">{{ $presentation['themeColor'] }}</span>
-            @endif
         </div>
     </div>
 </article>
