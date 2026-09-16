@@ -11,20 +11,35 @@ final class TalkHistory
 {
     public static function resolve(array $history, string $presentationUrl, string $talkSlug): array
     {
-        $presentationUrl = rtrim($presentationUrl, '/');
-        if ($presentationUrl !== '' && isset($history[$presentationUrl])) {
-            return (array) $history[$presentationUrl];
-        }
-
         $talkSlug = self::normalizeSlug($talkSlug);
-        if ($talkSlug === '') {
-            return [];
+        if ($talkSlug !== '' && isset($history[$talkSlug])) {
+            return (array) $history[$talkSlug];
         }
 
-        foreach ($history as $sourceUrl => $candidate) {
-            $path = (string) parse_url((string) $sourceUrl, PHP_URL_PATH);
-            if (self::normalizeSlug((string) basename($path)) === $talkSlug) {
-                return (array) $candidate;
+        $presentationUrl = rtrim($presentationUrl, '/');
+
+        foreach ($history as $key => $candidate) {
+            $candidate = (array) $candidate;
+
+            if ($talkSlug !== '' && self::normalizeSlug((string) $key) === $talkSlug) {
+                return $candidate;
+            }
+
+            foreach ((array) ($candidate['aliases'] ?? []) as $alias) {
+                $alias = rtrim((string) $alias, '/');
+
+                if ($presentationUrl !== '' && $alias === $presentationUrl) {
+                    return $candidate;
+                }
+
+                if ($talkSlug === '') {
+                    continue;
+                }
+
+                $path = (string) parse_url($alias, PHP_URL_PATH);
+                if (self::normalizeSlug((string) basename($path)) === $talkSlug) {
+                    return $candidate;
+                }
             }
         }
 
