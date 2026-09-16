@@ -5,8 +5,14 @@
     "src": "source/_assets/js/presentations.js",
     "isEntry": true
   },
+  "source/_assets/js/social-icons.js": {
+    "file": "assets/social-icons-CR1Co9hn.js",
+    "name": "social-icons",
+    "src": "source/_assets/js/social-icons.js",
+    "isEntry": true
+  },
   "source/_assets/scss/main.scss": {
-    "file": "assets/main-CBp19H1z.css",
+    "file": "assets/main-CXH2Loj5.css",
     "name": "main",
     "names": [
       "main.css"
