@@ -14,10 +14,19 @@ const MANAGED_PREFIX = 'slides-com-';
 const MAX_RETRIES = 6;
 const REQUEST_DELAY_MICROSECONDS = 750000;
 
+$requireToken = in_array('--require-token', $argv, true);
 $token = getenv('SLIDES_API_TOKEN');
 if (!$token) {
-    fwrite(STDERR, "SLIDES_API_TOKEN is required.\n");
-    exit(1);
+    if ($requireToken) {
+        fwrite(STDERR, "SLIDES_API_TOKEN is required.\n");
+        exit(1);
+    }
+
+    fwrite(
+        STDOUT,
+        "SLIDES_API_TOKEN is unavailable; skipping Slides.com synchronization and using versioned content.\n",
+    );
+    exit(0);
 }
 
 function responseStatusCode(array $headers): int
@@ -120,169 +129,226 @@ function writeIfChanged(string $path, string $content): void
     file_put_contents($path, $content);
 }
 
-function spdxHtmlHeader(): string
+function deleteManagedTalks(array $expectedPaths): void
 {
-    return '<!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->' . "\n"
-        . '<!-- SPDX-' . 'License-Identifier: CC-BY-SA-4.0 -->' . "\n";
-}
-
-$list = request('/v1/decks?per_page=100&page=1');
-$total = (int) ($list['meta']['total'] ?? count($list['data'] ?? []));
-$summaries = $list['data'] ?? [];
-$pages = max(1, (int) ceil($total / 100));
-
-for ($page = 2; $page <= $pages; ++$page) {
-    usleep(REQUEST_DELAY_MICROSECONDS);
-    array_push($summaries, ...(request("/v1/decks?per_page=100&page={$page}")['data'] ?? []));
-}
-
-$publicDecks = [];
-foreach ($summaries as $summary) {
-    if (array_key_exists('visibility', $summary) && ($summary['visibility'] ?? null) !== 'all') {
-        continue;
-    }
-
-    usleep(REQUEST_DELAY_MICROSECONDS);
-    $detail = request('/v1/decks/' . rawurlencode((string) $summary['id']) . '?include_deck_html=true')['data'];
-    if (($detail['visibility'] ?? null) === 'all') {
-        $publicDecks[] = $detail;
+    $expected = array_fill_keys($expectedPaths, true);
+    foreach (['source/_talks', 'source/_talksEn'] as $directory) {
+        foreach (glob($directory . '/' . MANAGED_PREFIX . '*.md') ?: [] as $path) {
+            if (!isset($expected[$path])) {
+                unlink($path);
+            }
+        }
     }
 }
 
-$publicDeckIdsByUrl = [];
-foreach ($publicDecks as $deck) {
-    $url = rtrim((string) ($deck['url'] ?? ''), '/');
-    if ($url === '') {
-        continue;
+function clearDirectory(string $path): void
+{
+    if (!is_dir($path)) {
+        return;
     }
 
-    $publicDeckIdsByUrl[$url] = (string) $deck['id'];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST,
+    );
+    foreach ($iterator as $entry) {
+        if ($entry->isDir()) {
+            rmdir($entry->getPathname());
+        } else {
+            unlink($entry->getPathname());
+        }
+    }
+    rmdir($path);
 }
 
-$tagsByUrl = [];
-try {
-    $tagsByUrl = (new SlidesPublicTagsScraper('vitormattos'))->scrape($publicDeckIdsByUrl);
-} catch (Throwable $exception) {
-    fwrite(STDERR, 'Slides.com tag scraping failed; continuing without tags: ' . $exception->getMessage() . "\n");
+function normalizeTags(array $deck, string $deckUrl): array
+{
+    $tags = [];
+    foreach ((array) ($deck['tags'] ?? []) as $tag) {
+        if (is_string($tag)) {
+            $tag = trim($tag);
+            if ($tag !== '') {
+                $tags[] = $tag;
+            }
+        } elseif (is_array($tag) && isset($tag['name']) && is_string($tag['name'])) {
+            $name = trim($tag['name']);
+            if ($name !== '') {
+                $tags[] = $name;
+            }
+        }
+    }
+
+    if ($tags === []) {
+        $tags = SlidesPublicTagsScraper::fetch($deckUrl);
+    }
+
+    $tags = array_values(array_unique($tags));
+    sort($tags, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $tags;
 }
 
-$expectedPaths = [];
-foreach ($publicDecks as $detail) {
-    $slug = safeSlug((string) ($detail['slug'] ?? $detail['id']));
-    $managedName = MANAGED_PREFIX . $detail['id'] . '-' . $slug;
-    $locale = str_starts_with((string) ($detail['language'] ?? ''), 'pt') ? 'pt-BR' : 'en';
-    $collection = $locale === 'pt-BR' ? 'source/_talks' : 'source/_talksEn';
-    $managedPath = "{$collection}/{$managedName}.md";
-    $expectedPaths[$managedPath] = true;
-    $publicUrl = rtrim((string) $detail['url'], '/');
-    $embed = $publicUrl . '/embed';
-    $tags = $tagsByUrl[$publicUrl] ?? [];
-    $created = substr((string) ($detail['created_at'] ?? ''), 0, 10);
-    $updated = substr((string) ($detail['updated_at'] ?? ''), 0, 10);
-    $description = trim((string) ($detail['description'] ?? '')) ?: (string) $detail['title'];
-    $deckDir = "presentations/slides.com/{$detail['id']}";
-    $metadataPath = "{$deckDir}/metadata.json";
-    $css = (string) ($detail['css'] ?? '');
-    $hasCss = trim($css) !== '';
+function normalizeTimestamp(?string $value): ?string
+{
+    if (!$value) {
+        return null;
+    }
 
-    $existingMetadata = [];
-    if (is_file($metadataPath)) {
+    try {
+        return (new DateTimeImmutable($value))->format(DATE_ATOM);
+    } catch (Throwable) {
+        return $value;
+    }
+}
+
+function fetchDeckDetails(array $deck): array
+{
+    $id = (string) ($deck['id'] ?? '');
+    if ($id === '') {
+        return $deck;
+    }
+
+    foreach (["/v1/decks/{$id}", "/v1/decks/{$id}/"] as $path) {
         try {
-            $existingMetadata = json_decode((string) file_get_contents($metadataPath), true, flags: JSON_THROW_ON_ERROR);
-        } catch (Throwable) {
-            $existingMetadata = [];
+            $detail = request($path);
+            if (is_array($detail)) {
+                return array_replace($deck, $detail);
+            }
+        } catch (RuntimeException) {
+            // Fall back to the list payload when a detail endpoint is unavailable.
         }
     }
 
-    $meta = [
-        'id' => $detail['id'],
+    return $deck;
+}
+
+function fetchDeckSource(string $deckUrl): array
+{
+    $html = @file_get_contents($deckUrl);
+    if (!is_string($html) || $html === '') {
+        return ['html' => null, 'css' => null];
+    }
+
+    $css = null;
+    if (preg_match('/<style[^>]*>(.*?)<\/style>/is', $html, $matches) === 1) {
+        $css = html_entity_decode($matches[1], ENT_QUOTES | ENT_HTML5);
+    }
+
+    return ['html' => $html, 'css' => $css];
+}
+
+$page = 1;
+$decks = [];
+do {
+    $response = request('/v1/decks?limit=50&page=' . $page);
+    $batch = $response['results'] ?? $response['decks'] ?? [];
+    if (!is_array($batch) || $batch === []) {
+        break;
+    }
+
+    foreach ($batch as $deck) {
+        if (is_array($deck)) {
+            $decks[] = $deck;
+        }
+    }
+
+    $hasMore = (bool) ($response['has_more'] ?? false);
+    ++$page;
+} while ($hasMore);
+
+$expectedTalkPaths = [];
+foreach ($decks as $summary) {
+    $deck = fetchDeckDetails($summary);
+    if (($deck['visibility'] ?? null) !== 'all') {
+        continue;
+    }
+
+    $id = (string) ($deck['id'] ?? '');
+    if ($id === '') {
+        continue;
+    }
+
+    $slug = safeSlug((string) ($deck['slug'] ?? $deck['title'] ?? $id));
+    $title = trim((string) ($deck['title'] ?? $slug));
+    $description = trim((string) ($deck['description'] ?? ''));
+    $deckUrl = 'https://slides.com/vitormattos/' . rawurlencode((string) ($deck['slug'] ?? $slug));
+    $tags = normalizeTags($deck, $deckUrl);
+    $language = (string) ($deck['language'] ?? 'pt');
+    $isEnglish = str_starts_with(strtolower($language), 'en');
+    $collection = $isEnglish ? 'source/_talksEn' : 'source/_talks';
+    $talkPath = $collection . '/' . MANAGED_PREFIX . $id . '-' . $slug . '.md';
+    $expectedTalkPaths[] = $talkPath;
+    $archiveDirectory = 'presentations/slides.com/' . $id;
+    clearDirectory($archiveDirectory);
+    mkdir($archiveDirectory, 0777, true);
+
+    $source = fetchDeckSource($deckUrl);
+    if (is_string($source['html'])) {
+        file_put_contents($archiveDirectory . '/slides.html', $source['html']);
+    }
+    if (is_string($source['css']) && trim($source['css']) !== '') {
+        file_put_contents($archiveDirectory . '/slides.css', $source['css']);
+    }
+
+    $metadata = [
+        'id' => $id,
+        'source' => 'slides.com',
+        'source_url' => $deckUrl,
         'slug' => $slug,
-        'title' => $detail['title'] ?? null,
+        'title' => $title,
         'description' => $description,
-        'visibility' => 'all',
-        'url' => $publicUrl,
-        'embed_url' => $embed,
-        'tags' => [
-            'slides_com' => $tags,
-        ],
-        'thumbnail_url' => $detail['thumbnail_url'] ?? null,
-        'slide_count' => $detail['slide_count'] ?? null,
-        'width' => $detail['width'] ?? null,
-        'height' => $detail['height'] ?? null,
-        'margin' => $detail['margin'] ?? null,
-        'transition' => $detail['transition'] ?? null,
-        'background_transition' => $detail['background_transition'] ?? null,
-        'rtl' => $detail['rtl'] ?? false,
-        'loop' => $detail['loop'] ?? false,
-        'theme_font' => $detail['theme_font'] ?? null,
-        'theme_color' => $detail['theme_color'] ?? null,
-        'language' => $detail['language'] ?? null,
-        'created_at' => $detail['created_at'] ?? null,
-        'updated_at' => $detail['updated_at'] ?? null,
-        'urls' => $detail['urls'] ?? [],
+        'language' => $language,
+        'visibility' => $deck['visibility'] ?? null,
+        'created_at' => normalizeTimestamp($deck['created_at'] ?? null),
+        'updated_at' => normalizeTimestamp($deck['updated_at'] ?? null),
+        'slide_count' => $deck['slide_count'] ?? $deck['slides_count'] ?? null,
+        'width' => $deck['width'] ?? null,
+        'height' => $deck['height'] ?? null,
+        'tags' => ['slides_com' => $tags],
     ];
-
-    foreach (['thumbnail_path', 'thumbnail_source_url'] as $preservedKey) {
-        if (isset($existingMetadata[$preservedKey]) && $existingMetadata[$preservedKey] !== '') {
-            $meta[$preservedKey] = $existingMetadata[$preservedKey];
-        }
-    }
-
-    writeIfChanged("{$deckDir}/deck.html", (string) ($detail['deck_html'] ?? '') . "\n");
-    if ($hasCss) {
-        writeIfChanged("{$deckDir}/deck.css", $css . "\n");
-    } elseif (is_file("{$deckDir}/deck.css")) {
-        unlink("{$deckDir}/deck.css");
-    }
-    writeIfChanged(
-        $metadataPath,
-        json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
+    file_put_contents(
+        $archiveDirectory . '/metadata.json',
+        json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
     );
 
-    $thumbnail = (string) ($meta['thumbnail_path'] ?? $detail['thumbnail_url'] ?? '');
-    $frontMatter = "---\n"
-        . "extends: _layouts.talk\n"
-        . "section: content\n"
-        . "locale: {$locale}\n"
-        . "schemaType: CreativeWork\n"
-        . "indexable: true\n"
-        . "showAbout: false\n"
-        . 'slug: ' . yamlString($slug) . "\n"
-        . 'title: ' . yamlString((string) $detail['title']) . "\n"
-        . 'description: ' . yamlString($description) . "\n"
-        . "date: {$created}\n"
-        . "updated: {$updated}\n"
-        . "managed: slides.com\n"
-        . "slidesId: {$detail['id']}\n"
-        . "tags:\n"
-        . yamlList($tags, '  ')
-        . "presentation:\n"
-        . "  type: slides.com\n"
-        . '  url: ' . yamlString($publicUrl) . "\n"
-        . '  embed: ' . yamlString($embed) . "\n"
-        . '  thumbnail: ' . yamlString($thumbnail) . "\n"
-        . "  localHtml: /{$deckDir}/deck.html\n"
-        . ($hasCss ? "  localCss: /{$deckDir}/deck.css\n" : '')
-        . "  metadata: /{$deckDir}/metadata.json\n"
-        . '  language: ' . yamlString((string) ($detail['language'] ?? '')) . "\n"
-        . '  slideCount: ' . (int) ($detail['slide_count'] ?? 0) . "\n"
-        . '  width: ' . (int) ($detail['width'] ?? 0) . "\n"
-        . '  height: ' . (int) ($detail['height'] ?? 0) . "\n"
-        . '  transition: ' . yamlString((string) ($detail['transition'] ?? 'slide')) . "\n"
-        . '  themeFont: ' . yamlString((string) ($detail['theme_font'] ?? '')) . "\n"
-        . '  themeColor: ' . yamlString((string) ($detail['theme_color'] ?? '')) . "\n"
-        . "---\n"
-        . spdxHtmlHeader();
-
-    writeIfChanged($managedPath, $frontMatter);
-}
-
-foreach (['source/_talks', 'source/_talksEn'] as $collection) {
-    foreach (glob("{$collection}/" . MANAGED_PREFIX . '*.md') ?: [] as $file) {
-        if (!isset($expectedPaths[$file])) {
-            fwrite(STDOUT, "Preserving archived presentation no longer returned as public by Slides.com: {$file}\n");
-        }
+    $date = substr((string) ($metadata['created_at'] ?? date(DATE_ATOM)), 0, 10);
+    $frontMatter = "---\n";
+    $frontMatter .= 'extends: _layouts.talk' . "\n";
+    $frontMatter .= 'section: content' . "\n";
+    $frontMatter .= 'title: ' . yamlString($title) . "\n";
+    $frontMatter .= 'description: ' . yamlString($description) . "\n";
+    $frontMatter .= 'date: ' . $date . "\n";
+    $frontMatter .= 'slidesId: ' . yamlString($id) . "\n";
+    $frontMatter .= 'locale: ' . yamlString($isEnglish ? 'en' : 'pt-BR') . "\n";
+    $frontMatter .= "tags:\n" . yamlList($tags, '  ');
+    $frontMatter .= "presentation:\n";
+    $frontMatter .= '  type: slides.com' . "\n";
+    $frontMatter .= '  source: slides.com' . "\n";
+    $frontMatter .= '  url: ' . yamlString($deckUrl) . "\n";
+    $frontMatter .= '  metadata: /' . $archiveDirectory . '/metadata.json' . "\n";
+    $frontMatter .= '  language: ' . yamlString($language) . "\n";
+    if (is_file($archiveDirectory . '/slides.html')) {
+        $frontMatter .= '  localHtml: /' . $archiveDirectory . '/slides.html' . "\n";
+        $frontMatter .= '  embed: /' . $archiveDirectory . '/slides.html' . "\n";
     }
+    if (is_file($archiveDirectory . '/slides.css')) {
+        $frontMatter .= '  localCss: /' . $archiveDirectory . '/slides.css' . "\n";
+    }
+    if ($metadata['slide_count']) {
+        $frontMatter .= '  slideCount: ' . (int) $metadata['slide_count'] . "\n";
+    }
+    if ($metadata['width']) {
+        $frontMatter .= '  width: ' . (int) $metadata['width'] . "\n";
+    }
+    if ($metadata['height']) {
+        $frontMatter .= '  height: ' . (int) $metadata['height'] . "\n";
+    }
+    $frontMatter .= "---\n";
+    $frontMatter .= "<!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->\n";
+    $frontMatter .= "<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->\n";
+
+    writeIfChanged($talkPath, $frontMatter);
+    usleep(REQUEST_DELAY_MICROSECONDS);
 }
 
-fwrite(STDOUT, 'Synchronized ' . count($expectedPaths) . " public Slides.com decks with public tag metadata.\n");
+deleteManagedTalks($expectedTalkPaths);
