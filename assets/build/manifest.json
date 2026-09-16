@@ -1,18 +1,18 @@
 {
   "source/_assets/js/presentations.js": {
-    "file": "assets/presentations-D2zuYefp.js",
+    "file": "assets/presentations-B9lae_RB.js",
     "name": "presentations",
     "src": "source/_assets/js/presentations.js",
     "isEntry": true
   },
   "source/_assets/js/social-icons.js": {
-    "file": "assets/social-icons-CR1Co9hn.js",
+    "file": "assets/social-icons-B4GgBORd.js",
     "name": "social-icons",
     "src": "source/_assets/js/social-icons.js",
     "isEntry": true
   },
   "source/_assets/scss/main.scss": {
-    "file": "assets/main-CXH2Loj5.css",
+    "file": "assets/main-vdub5niO.css",
     "name": "main",
     "names": [
       "main.css"
@@ -30,7 +30,7 @@
     "isEntry": true
   },
   "source/_assets/scss/talks-catalog.scss": {
-    "file": "assets/talks-catalog-Dr8WLw2p.css",
+    "file": "assets/talks-catalog-BxhbD22h.css",
     "name": "talks-catalog",
     "names": [
       "talks-catalog.css"
