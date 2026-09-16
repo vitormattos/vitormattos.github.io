@@ -33,8 +33,7 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
                     aria-expanded="false">
                     <span>Tags</span><span class="talk-tag-toggle__chevron" aria-hidden="true">⌄</span>
                 </button>
-                <nav id="talk-topic-filter" class="talk-tag-filter" data-talk-tag-filter
-                    aria-label="Filter talks by topic">
+                <nav id="talk-topic-filter" class="talk-tag-filter" data-talk-tag-filter aria-label="Filter talks by topic">
                     <p class="talk-tag-filter__label">Topics</p>
                     <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/talks/" data-talk-tag=""
                         aria-current="true"><span>All talks</span><span>{{ count($talkItems) }}</span></a>
@@ -52,15 +51,15 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
                 <div>
                     <p class="eyebrow">Speaking</p>
                     <h1 id="page-title">Talks</h1>
-                    <p class="lead">Talks and presentations about free software, PHP, LibreSign, software engineering and community building.</p>
+                    <p class="lead">Talks and presentations about free software, PHP, LibreSign, software engineering and
+                        community building.</p>
                 </div>
                 <div class="gallery-switcher" data-gallery-switcher>
-                    <button class="gallery-switcher__trigger" type="button" data-gallery-menu-trigger
-                        aria-expanded="false" aria-haspopup="true">
+                    <button class="gallery-switcher__trigger" type="button" data-gallery-menu-trigger aria-expanded="false"
+                        aria-haspopup="true">
                         <span>Layout:</span> <strong data-gallery-current>Grid</strong><span aria-hidden="true">⌄</span>
                     </button>
-                    <div class="gallery-switcher__menu" data-gallery-menu hidden role="group"
-                        aria-label="Select layout">
+                    <div class="gallery-switcher__menu" data-gallery-menu hidden role="group" aria-label="Select layout">
                         <strong class="gallery-switcher__title">Select layout</strong>
                         <button type="button" data-gallery-view="grid" aria-pressed="true">
                             <span><strong>Grid</strong><small>Big images, concise deck information</small></span><span
