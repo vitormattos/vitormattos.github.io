@@ -4,6 +4,7 @@ version = 1
 
 [[annotations]]
 path = [
+    ".prettierrc.json",
     ".stylelintrc.json",
     "composer.json",
     "package.json",
