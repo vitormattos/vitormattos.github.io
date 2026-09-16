@@ -52,4 +52,16 @@ final class TalkCatalogBuildTest extends TestCase
         self::assertSame($cardsWithPhp, $displayedCount);
         self::assertGreaterThan(0, $displayedCount);
     }
+
+    public function testTalkDetailRendersCuratedHistoryOutsideProviderMetadata(): void
+    {
+        $html = file_get_contents($this->buildDirectory() . '/talks/cloud-privacity/index.html');
+        self::assertIsString($html);
+
+        self::assertStringContainsString('Presentation history', $html);
+        self::assertStringContainsString('2022-08-03', $html);
+        self::assertStringContainsString('CICC - Centro Integrado de Comando e Controle', $html);
+        self::assertStringContainsString('https://www.youtube.com/watch?v=h2UF0h70NTA', $html);
+        self::assertStringContainsString('https://github.com/PHPRio/CFP/issues/146', $html);
+    }
 }
