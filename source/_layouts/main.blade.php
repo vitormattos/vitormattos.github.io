@@ -88,7 +88,8 @@
         <p>{{ $isEnglish ? 'Content and code published with transparency and version control.' : 'Conteúdo e código publicados com transparência e controle de versão.' }}
         </p>
         <p>
-            <a class="rss-link" href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
+            <a class="rss-link"
+                href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
                 <span class="rss-link__icon" data-ui-icon="rss" aria-hidden="true"></span>
                 <span>RSS</span>
             </a>
