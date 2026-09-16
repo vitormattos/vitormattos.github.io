@@ -19,7 +19,9 @@ return (new PhpCsFixer\Config())
             'allow_single_line_empty_anonymous_classes' => true,
         ],
         'control_structure_braces' => true,
+        'control_structure_continuation_position' => ['position' => 'same_line'],
         'statement_indentation' => true,
+        'no_multiple_statements_per_line' => true,
         'method_argument_space' => [
             'attribute_placement' => 'standalone',
             'keep_multiple_spaces_after_comma' => false,
