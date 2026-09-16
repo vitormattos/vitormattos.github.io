@@ -29,13 +29,12 @@
     $websiteId = $siteUrl . '/#website';
     $webpageId = $canonicalUrl . '#webpage';
     $contentId = $canonicalUrl . '#content';
-    $sameAs = array_values(array_map(
-        static fn (array $profile): string => $profile['url'],
-        array_filter(
-            $page->author['profiles'] ?? [],
-            static fn (array $profile): bool => $profile['sameAs'] ?? false,
-        ),
-    ));
+    $sameAs = [];
+    foreach (($page->author['profiles'] ?? []) as $profile) {
+        if ($profile['sameAs'] ?? false) {
+            $sameAs[] = $profile['url'];
+        }
+    }
     $updatedAt = null;
     if ($page->updated ?? false) {
         $updatedAt = is_int($page->updated)
