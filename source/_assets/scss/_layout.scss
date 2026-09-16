@@ -16,40 +16,28 @@
     justify-content: space-between;
     margin-inline: auto;
     max-width: $site-max-width;
-    min-height: 4.75rem;
+    min-height: 4.25rem;
 }
 
 .site-identity {
     align-items: center;
+    border: 1px solid var(--border);
+    border-radius: .65rem;
     color: var(--text);
     display: inline-flex;
     flex: 0 0 auto;
-    gap: .8rem;
+    font-size: .85rem;
+    font-weight: 700;
+    justify-content: center;
+    letter-spacing: .08em;
+    min-height: 2.25rem;
+    min-width: 2.6rem;
+    padding-inline: .55rem;
     text-decoration: none;
 }
 
-.site-identity__avatar {
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    display: block;
-    height: 2.8rem;
-    object-fit: cover;
-    width: 2.8rem;
-}
-
-.site-identity__copy {
-    display: grid;
-    line-height: 1.2;
-}
-
-.site-identity__copy strong {
-    font-size: 1.05rem;
-}
-
-.site-identity__copy span {
-    color: var(--text-muted);
-    font-size: .78rem;
-    margin-top: .2rem;
+.site-identity:hover {
+    background: var(--surface-muted);
 }
 
 .site-header__actions,
@@ -121,36 +109,40 @@ footer {
 }
 
 @media (max-width: 48rem) {
+    .site-header {
+        padding-inline: 0;
+    }
+
     .site-header__bar {
-        align-items: stretch;
-        flex-direction: column;
-        gap: .65rem;
-        padding-top: .8rem;
+        display: grid;
+        gap: 0;
+        grid-template-columns: auto 1fr auto;
+        min-height: auto;
+    }
+
+    .site-identity {
+        margin: .7rem 0 .7rem $page-gutter;
     }
 
     .site-header__actions {
         display: contents;
     }
 
-    .site-identity {
-        padding-right: 6rem;
-        position: relative;
-    }
-
     .site-controls {
         border: 0;
         gap: .45rem;
+        grid-column: 3;
+        grid-row: 1;
         padding: 0;
-        position: absolute;
-        right: $page-gutter;
-        top: .9rem;
+        margin-right: $page-gutter;
     }
 
     .site-nav {
         border-top: 1px solid var(--border);
         display: grid;
+        grid-column: 1 / -1;
+        grid-row: 2;
         grid-template-columns: repeat(3, 1fr);
-        margin-inline: calc($page-gutter * -1);
         padding-inline: $page-gutter;
     }
 
@@ -163,11 +155,5 @@ footer {
     .site-nav__link.is-active {
         background: transparent;
         box-shadow: inset 0 -2px 0 var(--link);
-    }
-}
-
-@media (max-width: 24rem) {
-    .site-identity__copy span {
-        display: none;
     }
 }
