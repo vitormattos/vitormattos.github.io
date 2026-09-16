@@ -29,10 +29,12 @@
     $websiteId = $siteUrl . '/#website';
     $webpageId = $canonicalUrl . '#webpage';
     $contentId = $canonicalUrl . '#content';
-    $sameAs = array_values(array_filter([
-        $page->author['github'] ?? null,
-        $page->author['linkedin'] ?? null,
-    ]));
+    $sameAs = [];
+    foreach (($page->author['profiles'] ?? []) as $profile) {
+        if ($profile['sameAs'] ?? false) {
+            $sameAs[] = $profile['url'];
+        }
+    }
     $updatedAt = null;
     if ($page->updated ?? false) {
         $updatedAt = is_int($page->updated)

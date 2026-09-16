@@ -34,6 +34,6 @@ alternateUrl: /about
     <p>Procuro manter o mesmo princípio entre essas diferentes áreas: trabalho técnico relevante deve ser compreensível, verificável e reutilizável por outras pessoas.</p>
 
     <h2>Outros canais</h2>
-    <p>Meu código e minha atividade técnica pública estão no <a href="{{ $page->author['github'] }}" target="_blank" rel="me external noopener noreferrer">GitHub</a>, e meu perfil profissional está no <a href="{{ $page->author['linkedin'] }}" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>.</p>
+    <p>@include('_partials.author.profile-links')</p>
 </article>
 @endsection

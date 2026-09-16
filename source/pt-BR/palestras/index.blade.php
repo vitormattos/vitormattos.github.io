@@ -26,17 +26,7 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
 @endphp
 <div class="talks-browser">
     <aside class="talks-sidebar" aria-label="Palestrante e tópicos">
-        <div class="talks-profile">
-            <div>
-                <p class="talks-profile__name">Vitor Mattos</p>
-                <p class="talks-profile__summary">CTO da LibreCode. Software livre, privacidade, PHP, assinaturas digitais e comunidades sustentáveis de software.</p>
-            </div>
-            <img class="talks-profile__avatar" src="https://github.com/vitormattos.png?size=112" alt="" width="56" height="56">
-            <div class="talks-profile__links">
-                <a href="https://github.com/vitormattos" target="_blank" rel="me external noopener noreferrer">GitHub</a>
-                <a href="https://www.linkedin.com/in/vitormattos/" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>
-            </div>
-        </div>
+        @include('_partials.author.profile', ['locale' => 'pt-BR'])
 
         @if ($topics !== [])
             <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filtrar palestras por tópico">

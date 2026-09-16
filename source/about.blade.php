@@ -34,6 +34,6 @@ alternateUrl: /pt-BR/sobre
     <p>I try to keep the same principle across these different areas: important technical work should be understandable, verifiable and reusable by other people.</p>
 
     <h2>Elsewhere</h2>
-    <p>You can follow my code and public technical activity on <a href="{{ $page->author['github'] }}" target="_blank" rel="me external noopener noreferrer">GitHub</a>, and my professional profile on <a href="{{ $page->author['linkedin'] }}" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>.</p>
+    <p>@include('_partials.author.profile-links')</p>
 </article>
 @endsection

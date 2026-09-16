@@ -3,7 +3,7 @@ permalink: /llms.txt
 ---
 {{-- SPDX-FileCopyrightText: 2026 Vitor Mattos --}}
 {{-- SPDX-License-Identifier: AGPL-3.0-or-later --}}
-# Vitor Mattos
+# {{ $page->author['name'] }}
 
 > Public professional archive about free software, PHP, Linux, LibreSign, software engineering, research, talks and sustainable software communities.
 
@@ -11,11 +11,12 @@ Canonical site: {{ rtrim($page->siteUrl, '/') }}/
 
 ## Identity
 
-- Name: Vitor Mattos
+- Name: {{ $page->author['name'] }}
 - Role: software developer, CTO and worker-owner at LibreCode; LibreSign maintainer
 - Organization: {{ $page->author['organization']['name'] }} — {{ $page->author['organization']['url'] }}
-- GitHub: {{ $page->author['github'] }}
-- LinkedIn: {{ $page->author['linkedin'] }}
+@foreach ($page->author['profiles'] as $profile)
+- {{ $profile['label'] }}: {{ $profile['url'] }}
+@endforeach
 
 ## Primary topics
 
