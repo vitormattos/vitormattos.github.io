@@ -9,25 +9,11 @@
     $tags = array_values(array_filter(array_map('strval', (array) ($page->tags ?? []))));
     $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
     $presentationUrl = rtrim((string) ($presentation['url'] ?? ''), '/');
-    $allTalkHistory = (array) ($page->talkHistory ?? []);
-    $talkHistory = (array) ($allTalkHistory[$presentationUrl] ?? []);
-
-    if ($talkHistory === []) {
-        $normalizeTalkSlug = static fn (string $value): string => trim(
-            strtolower((string) preg_replace('/[^a-z0-9]+/i', '-', str_replace('_', '-', $value))),
-            '-',
-        );
-        $pageSlug = $normalizeTalkSlug((string) ($page->slug ?? ''));
-        foreach ($allTalkHistory as $sourceUrl => $candidateHistory) {
-            $path = (string) parse_url((string) $sourceUrl, PHP_URL_PATH);
-            $sourceSlug = $normalizeTalkSlug((string) basename($path));
-            if ($sourceSlug === $pageSlug) {
-                $talkHistory = (array) $candidateHistory;
-                break;
-            }
-        }
-    }
-
+    $talkHistory = \App\Presentations\TalkHistory::resolve(
+        (array) ($page->talkHistory ?? []),
+        $presentationUrl,
+        (string) ($page->slug ?? ''),
+    );
     $appearances = (array) ($talkHistory['appearances'] ?? []);
     $recordings = (array) ($talkHistory['recordings'] ?? []);
     $alternateSlides = (array) ($talkHistory['alternateSlides'] ?? []);
