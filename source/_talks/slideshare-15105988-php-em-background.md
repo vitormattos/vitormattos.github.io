@@ -18,6 +18,9 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/php-em-background/15105988"
   metadata: /presentations/slideshare/15105988/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-15105988/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-15105988/slideshare-15105988.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-15105988/slideshare-15105988.pptx"
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

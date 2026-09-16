@@ -18,6 +18,9 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/composer-dependency-manager/81158564"
   metadata: /presentations/slideshare/81158564/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-81158564/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-81158564/slideshare-81158564.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-81158564/slideshare-81158564.pptx"
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

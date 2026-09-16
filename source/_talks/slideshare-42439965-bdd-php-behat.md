@@ -18,6 +18,9 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/bdd-php-behat/42439965"
   metadata: /presentations/slideshare/42439965/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-42439965/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-42439965/slideshare-42439965.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-42439965/slideshare-42439965.pptx"
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

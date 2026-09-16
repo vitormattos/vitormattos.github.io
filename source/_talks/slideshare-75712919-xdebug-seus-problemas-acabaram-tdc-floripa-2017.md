@@ -18,6 +18,9 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/xdebug-seus-problemas-acabaram-tdc-floripa-2017/75712919"
   metadata: /presentations/slideshare/75712919/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75712919/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75712919/slideshare-75712919.pdf"
+  pptx: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75712919/slideshare-75712919.pptx"
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

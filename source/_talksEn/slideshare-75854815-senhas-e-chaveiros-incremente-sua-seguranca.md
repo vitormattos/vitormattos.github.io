@@ -18,6 +18,8 @@ presentation:
   source: slideshare
   url: "https://www.slideshare.net/slideshow/senhas-e-chaveiros-incremente-sua-seguranca/75854815"
   metadata: /presentations/slideshare/75854815/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75854815/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75854815/slideshare-75854815.pdf"
   language: "en"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->

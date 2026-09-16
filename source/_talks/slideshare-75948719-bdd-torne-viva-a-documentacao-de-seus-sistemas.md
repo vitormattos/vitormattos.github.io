@@ -18,6 +18,8 @@ presentation:
   source: slideshare
   url: "https://pt.slideshare.net/slideshow/bdd-torne-viva-a-documentacao-de-seus-sistemas/75948719"
   metadata: /presentations/slideshare/75948719/metadata.json
+  thumbnail: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75948719/thumbnail.png"
+  pdf: "https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-75948719/slideshare-75948719.pdf"
   language: "pt"
 ---
 <!-- SPDX-FileCopyrightText: 2026 Vitor Mattos -->
