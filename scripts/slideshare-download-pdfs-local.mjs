@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const repository = 'vitormattos/vitormattos.github.io';
-const outputDir = '.cache/slideshare-pdf-backfill';
+const outputDir = '.cache/slideshare-asset-backfill';
 mkdirSync(outputDir, { recursive: true });
 
 checkCommand('gh', ['auth', 'status']);
@@ -34,90 +34,160 @@ if (await signIn.isVisible({ timeout: 3_000 }).catch(() => false)) {
 console.log('Authenticated browser session confirmed. Starting backfill.\n');
 await loginPage.close();
 
-let uploaded = 0;
-let skipped = 0;
-let failed = 0;
+let uploadedAssets = 0;
+let skippedAssets = 0;
+let presentationsWithFailures = 0;
 
 try {
   for (const metadataFile of metadataFiles) {
     const metadata = JSON.parse(readFileSync(metadataFile, 'utf8'));
     const id = String(metadata.id);
     const tag = `slideshare-${id}`;
-    const filename = `${tag}.pdf`;
-    const output = join(outputDir, filename);
+
+    ensureRelease(tag, metadata);
+    const existingAssets = releaseAssetNames(tag);
+    const missingTypes = ['pdf', 'pptx'].filter((type) => !existingAssets.has(`slideshare-${id}.${type}`));
+
+    if (missingTypes.length === 0) {
+      console.log(`${id}: release already has PDF and PPTX; skipping.`);
+      skippedAssets += 2;
+      continue;
+    }
+
+    console.log(`${id}: ${metadata.source_url}`);
+    const page = await context.newPage();
+    let failed = false;
 
     try {
-      ensureRelease(tag, metadata);
-      if (releaseHasPdf(tag)) {
-        console.log(`${id}: release already has a PDF; skipping.`);
-        skipped++;
-        continue;
-      }
+      await page.goto(metadata.source_url, { waitUntil: 'domcontentloaded', timeout: 90_000 });
+      await page.waitForTimeout(1500);
 
-      rmSync(output, { force: true });
-      const page = await context.newPage();
-      try {
-        console.log(`${id}: ${metadata.source_url}`);
-        await page.goto(metadata.source_url, { waitUntil: 'domcontentloaded', timeout: 90_000 });
-        await page.waitForTimeout(1500);
+      for (const type of missingTypes) {
+        const filename = `${tag}.${type}`;
+        const output = join(outputDir, filename);
+        rmSync(output, { force: true });
 
-        const saved = await downloadPdf(page, output);
-        if (!saved) {
-          console.log(`  No browser download detected automatically.`);
-          console.log(`  Click the SlideShare download button in the open browser if needed.`);
-          console.log(`  Then return here and press ENTER. The script will check the browser download event again by reopening the page.`);
-          await waitForEnter();
-          rmSync(output, { force: true });
-          await page.reload({ waitUntil: 'domcontentloaded', timeout: 90_000 });
-          await page.waitForTimeout(1000);
-          if (!(await downloadPdf(page, output))) {
-            throw new Error('no downloadable PDF was exposed by SlideShare');
+        try {
+          const saved = await downloadAsset(page, output, type);
+          if (!saved) {
+            console.log(`  ${type.toUpperCase()}: automatic download was not detected.`);
+            console.log(`  In the open browser, click Download and choose ${type.toUpperCase()}.`);
+            console.log('  When the download has started or finished, return here and press ENTER.');
+            const manual = await waitForManualDownload(page, output, type);
+            if (!manual) throw new Error(`no downloadable ${type.toUpperCase()} was exposed by SlideShare`);
           }
+
+          assertAsset(output, type);
+          console.log(`  Uploading ${filename} to ${tag}...`);
+          execFileSync('gh', ['release', 'upload', tag, output, '--repo', repository, '--clobber'], { stdio: 'inherit' });
+          uploadedAssets++;
+        } catch (error) {
+          failed = true;
+          console.error(`  ${type.toUpperCase()}: FAILED: ${error instanceof Error ? error.message : String(error)}`);
         }
-      } finally {
-        await page.close();
       }
 
-      assertPdf(output);
-      console.log(`  Uploading ${filename} to ${tag}...`);
-      execFileSync('gh', ['release', 'upload', tag, output, '--repo', repository, '--clobber'], { stdio: 'inherit' });
       execFileSync('gh', ['release', 'edit', tag, '--repo', repository, '--notes', releaseNotes(metadata)], { stdio: 'inherit' });
-      uploaded++;
-    } catch (error) {
-      failed++;
-      console.error(`${id}: FAILED: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      await page.close();
     }
+
+    if (failed) presentationsWithFailures++;
   }
 } finally {
   await context.close();
   await browser.close();
 }
 
-console.log(`\nFinished: ${uploaded} uploaded, ${skipped} already present, ${failed} failed.`);
-if (failed) process.exitCode = 2;
+console.log(`\nFinished: ${uploadedAssets} assets uploaded, ${skippedAssets} assets already present, ${presentationsWithFailures} presentations with failures.`);
+if (presentationsWithFailures) process.exitCode = 2;
 
-async function downloadPdf(page, output) {
-  const candidates = [
-    page.getByRole('link', { name: /download|baixar/i }),
-    page.getByRole('button', { name: /download|baixar/i }),
-    page.locator('a[download]'),
-    page.locator('a[href*="download" i]'),
+async function downloadAsset(page, output, type) {
+  const direct = type === 'pdf'
+    ? [/download pdf/i, /baixar pdf/i, /^pdf$/i]
+    : [/download pptx/i, /download powerpoint/i, /baixar pptx/i, /baixar powerpoint/i, /^pptx$/i, /^powerpoint$/i];
+
+  for (const pattern of direct) {
+    const candidate = page.getByRole('link', { name: pattern }).first();
+    if (await tryDownloadFromElement(page, candidate, output, type)) return true;
+    const button = page.getByRole('button', { name: pattern }).first();
+    if (await tryDownloadFromElement(page, button, output, type)) return true;
+  }
+
+  const genericCandidates = [
+    page.getByRole('button', { name: /download|baixar/i }).first(),
+    page.getByRole('link', { name: /download|baixar/i }).first(),
+    page.locator('a[href*="download" i]').first(),
   ];
 
-  for (const candidate of candidates) {
-    const element = candidate.first();
-    if (!(await element.isVisible({ timeout: 800 }).catch(() => false))) continue;
+  for (const trigger of genericCandidates) {
+    if (!(await trigger.isVisible({ timeout: 700 }).catch(() => false))) continue;
 
-    const download = await Promise.all([
-      page.waitForEvent('download', { timeout: 30_000 }),
-      element.click(),
-    ]).then(([event]) => event).catch(() => null);
+    const directDownload = await Promise.all([
+      page.waitForEvent('download', { timeout: 2500 }),
+      trigger.click(),
+    ]).then(([download]) => download).catch(() => null);
 
-    if (!download) continue;
-    await download.saveAs(output);
-    if (isPdf(output)) return true;
-    rmSync(output, { force: true });
+    if (directDownload) {
+      await directDownload.saveAs(output);
+      if (isAsset(output, type)) return true;
+      rmSync(output, { force: true });
+      continue;
+    }
+
+    await page.waitForTimeout(400);
+    if (await clickFormatOption(page, output, type)) return true;
   }
+
+  return false;
+}
+
+async function clickFormatOption(page, output, type) {
+  const patterns = type === 'pdf'
+    ? [/download pdf/i, /baixar pdf/i, /^pdf$/i]
+    : [/download pptx/i, /download powerpoint/i, /baixar pptx/i, /baixar powerpoint/i, /^pptx$/i, /^powerpoint$/i];
+
+  for (const frame of page.frames()) {
+    for (const pattern of patterns) {
+      for (const locator of [
+        frame.getByRole('menuitem', { name: pattern }).first(),
+        frame.getByRole('button', { name: pattern }).first(),
+        frame.getByRole('link', { name: pattern }).first(),
+        frame.getByText(pattern).first(),
+      ]) {
+        if (await tryDownloadFromElement(page, locator, output, type)) return true;
+      }
+    }
+  }
+  return false;
+}
+
+async function waitForManualDownload(page, output, type) {
+  console.log('  Waiting for your manual download...');
+  const downloadPromise = page.waitForEvent('download', { timeout: 120_000 }).catch(() => null);
+  await waitForEnter();
+  const download = await Promise.race([
+    downloadPromise,
+    new Promise((resolve) => setTimeout(() => resolve(null), 2_000)),
+  ]);
+
+  if (!download) return false;
+  await download.saveAs(output);
+  if (isAsset(output, type)) return true;
+  rmSync(output, { force: true });
+  return false;
+}
+
+async function tryDownloadFromElement(page, element, output, type) {
+  if (!(await element.isVisible({ timeout: 500 }).catch(() => false))) return false;
+  const download = await Promise.all([
+    page.waitForEvent('download', { timeout: 20_000 }),
+    element.click(),
+  ]).then(([event]) => event).catch(() => null);
+  if (!download) return false;
+  await download.saveAs(output);
+  if (isAsset(output, type)) return true;
+  rmSync(output, { force: true });
   return false;
 }
 
@@ -136,14 +206,14 @@ function ensureRelease(tag, metadata) {
   }
 }
 
-function releaseHasPdf(tag) {
+function releaseAssetNames(tag) {
   const names = execFileSync('gh', [
     'release', 'view', tag,
     '--repo', repository,
     '--json', 'assets',
     '--jq', '.assets[].name',
   ], { encoding: 'utf8' });
-  return names.split('\n').some((name) => name.trim().toLowerCase().endsWith('.pdf'));
+  return new Set(names.split('\n').map((name) => name.trim()).filter(Boolean));
 }
 
 function releaseNotes(metadata) {
@@ -156,20 +226,22 @@ function releaseNotes(metadata) {
     metadata.published_at ? `- **Published:** ${String(metadata.published_at).slice(0, 10)}` : null,
     metadata.language ? `- **Language:** ${metadata.language}` : null,
     '',
-    'The archived PDF was obtained from the authenticated download exposed by SlideShare.',
+    'Archived download assets were obtained from the authenticated download options exposed by SlideShare.',
     '',
     'This release is keyed by the immutable SlideShare presentation ID.',
   ].filter((line) => line !== null).join('\n');
 }
 
-function isPdf(path) {
-  return existsSync(path)
-    && statSync(path).size >= 1000
-    && readFileSync(path).subarray(0, 5).toString() === '%PDF-';
+function isAsset(path, type) {
+  if (!existsSync(path) || statSync(path).size < 1000) return false;
+  const header = readFileSync(path).subarray(0, 8);
+  if (type === 'pdf') return header.subarray(0, 5).toString() === '%PDF-';
+  if (type === 'pptx') return header.subarray(0, 2).toString() === 'PK';
+  return false;
 }
 
-function assertPdf(path) {
-  if (!isPdf(path)) throw new Error('downloaded file is not a valid PDF');
+function assertAsset(path, type) {
+  if (!isAsset(path, type)) throw new Error(`downloaded file is not a valid ${type.toUpperCase()}`);
 }
 
 function checkCommand(command, args) {
