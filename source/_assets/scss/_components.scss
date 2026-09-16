@@ -119,19 +119,22 @@
     gap: .35rem .75rem;
 }
 
-.profile-link {
+.profile-link,
+.rss-link {
     align-items: center;
     display: inline-flex;
     gap: .35rem;
 }
 
-.profile-link__icon {
+.profile-link__icon,
+.rss-link__icon {
     block-size: .9rem;
     display: inline-flex;
     inline-size: .9rem;
 }
 
-.profile-link__icon svg {
+.profile-link__icon svg,
+.rss-link__icon svg {
     block-size: 100%;
     display: block;
     inline-size: 100%;
