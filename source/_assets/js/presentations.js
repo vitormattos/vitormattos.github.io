@@ -101,9 +101,25 @@ function initializeTagFilter(gallery) {
     const filter = document.querySelector('[data-talk-tag-filter]');
     if (!filter) return;
 
+    const toggle = document.querySelector('[data-talk-tag-toggle]');
+    const browser = document.querySelector('.talks-browser');
+    const toggleLabel = toggle?.querySelector('span:first-child');
+    const defaultToggleLabel = toggleLabel?.textContent ?? 'Tags';
     const cards = [...gallery.querySelectorAll('.talk-card')];
     const status = document.querySelector('[data-talk-filter-status]');
     const empty = document.querySelector('[data-talk-filter-empty]');
+
+    const setFilterOpen = (open) => {
+        if (!toggle) return;
+        toggle.setAttribute('aria-expanded', String(open));
+        filter.classList.toggle('is-open', open);
+        browser?.classList.toggle('is-tag-filter-open', open);
+        if (toggleLabel) toggleLabel.textContent = open ? 'Close' : defaultToggleLabel;
+    };
+
+    toggle?.addEventListener('click', () => {
+        setFilterOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
 
     const applyTag = (tag, updateHistory = false) => {
         const normalized = normalizeTag(tag);
@@ -141,6 +157,7 @@ function initializeTagFilter(gallery) {
         if (!link) return;
         event.preventDefault();
         applyTag(link.dataset.talkTag ?? '', true);
+        if (window.matchMedia('(max-width: 62rem)').matches) setFilterOpen(false);
     });
 
     window.addEventListener('popstate', () => {

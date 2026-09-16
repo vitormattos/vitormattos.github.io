@@ -3,8 +3,8 @@
 
 .talks-browser {
     display: grid;
-    grid-template-columns: 15rem minmax(0, 1fr);
-    gap: 1.75rem;
+    grid-template-columns: clamp(12.5rem, 19vw, 16rem) minmax(0, 1fr);
+    gap: clamp(1.25rem, 2vw, 1.75rem);
     width: calc(100vw - 3rem);
     max-width: none;
     margin-inline: calc(50% - 50vw + 1.5rem);
@@ -22,8 +22,8 @@
 
 .talks-profile {
     display: grid;
-    grid-template-columns: 3.25rem minmax(0, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: 2.8rem minmax(0, 1fr);
+    gap: 0.8rem;
     align-items: center;
     padding-bottom: 1.15rem;
     border-bottom: 1px solid var(--border);
@@ -46,8 +46,8 @@
 .talks-profile__avatar {
     grid-column: 1;
     grid-row: 1;
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 2.8rem;
+    height: 2.8rem;
     object-fit: cover;
     border: 1px solid var(--border);
     border-radius: 50%;
@@ -78,13 +78,19 @@
     text-decoration: underline;
 }
 
+.talk-tag-toggle {
+    display: none;
+}
+
 .talk-tag-filter {
-    display: grid;
-    gap: 0.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
     margin-top: 0.9rem;
 }
 
 .talk-tag-filter__label {
+    flex-basis: 100%;
     margin: 0 0 0.4rem;
     color: var(--text-muted);
     font-size: 0.7rem;
@@ -94,41 +100,61 @@
 }
 
 .talk-tag--filter {
-    display: flex;
-    gap: 0.65rem;
+    display: inline-flex;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.45rem;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.55rem 0.65rem;
+    padding: 0.18rem 0.28rem 0.18rem 0.58rem;
     color: var(--text-muted);
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     line-height: 1.15;
     text-decoration: none;
-    border-radius: 0.5rem;
+    background: var(--surface-muted);
+    border: 1px solid transparent;
+    border-radius: 999px;
 }
 
 .talk-tag--filter:hover,
 .talk-tag--filter:focus-visible {
     color: var(--text);
-    background: var(--surface-muted);
+    border-color: var(--border);
 }
 
 .talk-tag--filter[aria-current='true'] {
     color: var(--text);
     font-weight: 600;
-    background: var(--surface-muted);
+    border-color: var(--border);
 }
 
-.talk-tag--filter span {
-    min-width: 1.4rem;
-    padding: 0.1rem 0.35rem;
-    color: var(--text-muted);
-    font-size: 0.66rem;
-    text-align: center;
-    background: color-mix(in srgb, currentcolor 9%, transparent);
+.talk-tag--filter > span:first-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.talk-tag--filter > span:last-child {
+    display: inline-flex;
+    min-width: 1.05rem;
+    height: 1.05rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.25rem;
+    color: var(--text);
+    font-size: 0.58rem;
+    font-weight: 700;
+    line-height: 1;
+    background: color-mix(in srgb, var(--text) 12%, transparent);
     border-radius: 999px;
 }
 
+.talk-tag--filter[aria-current='true'] > span:last-child {
+    background: color-mix(in srgb, var(--text) 18%, transparent);
+}
+
 .talks-catalog {
+    box-sizing: border-box;
     width: 100%;
     max-width: none;
     min-width: 0;
@@ -293,7 +319,7 @@
         z-index: 1;
         max-height: calc(100vh + 4.75rem);
         margin-top: -4.75rem;
-        padding-top: 1.5rem;
+        padding-top: 0.975rem;
         background: var(--surface);
         box-shadow: -1.5rem 0 0 var(--surface);
         overflow: visible auto;
@@ -302,7 +328,6 @@
 
 @media (min-width: 110rem) {
     .talks-browser {
-        grid-template-columns: 16rem minmax(0, 1fr);
         width: calc(100vw - 4rem);
         margin-inline: calc(50% - 50vw + 2rem);
     }
@@ -316,26 +341,6 @@
     }
 }
 
-@media (max-width: 78rem) {
-    .talks-browser {
-        grid-template-columns: 12.5rem minmax(0, 1fr);
-        gap: 1.25rem;
-    }
-
-    .talks-profile {
-        grid-template-columns: 3rem minmax(0, 1fr);
-    }
-
-    .talks-profile__avatar {
-        width: 3rem;
-        height: 3rem;
-    }
-
-    .talk-list[data-view='grid'] {
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
-    }
-}
-
 @media (max-width: 62rem) {
     .talks-browser {
         display: block;
@@ -346,11 +351,10 @@
     .talks-sidebar {
         position: static;
         max-height: none;
-        margin-bottom: 1.5rem;
-        padding: 0 0 1rem;
+        margin-bottom: 1rem;
+        padding: 0;
         overflow: visible;
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
+        border: 0;
         box-shadow: none;
     }
 
@@ -358,13 +362,37 @@
         display: none;
     }
 
-    .talk-tag-filter {
+    .talk-tag-toggle {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        margin-top: 0;
-        padding-bottom: 0.2rem;
-        overflow: visible;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.65rem 0;
+        color: var(--text);
+        font: inherit;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .talk-tag-toggle__chevron {
+        display: inline-block;
+        transition: transform 0.15s ease;
+    }
+
+    .talk-tag-toggle[aria-expanded='true'] .talk-tag-toggle__chevron {
+        transform: rotate(180deg);
+    }
+
+    .talk-tag-filter {
+        display: none;
+        gap: 0.45rem;
+        margin-top: 0.4rem;
+        padding-bottom: 0;
+    }
+
+    .talk-tag-filter.is-open {
+        display: flex;
     }
 
     .talk-tag-filter__label {
@@ -373,13 +401,22 @@
 
     .talk-tag--filter {
         flex: 0 1 auto;
-        padding: 0.45rem 0.6rem;
-        border: 1px solid var(--border);
-        border-radius: 999px;
+    }
+
+    .talks-browser.is-tag-filter-open .talks-catalog {
+        display: none;
     }
 }
 
 @media (max-width: 48rem) {
+    .talks-catalog {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+    }
+
     .talks-catalog__header {
         grid-template-columns: 1fr;
         gap: 0.8rem;
