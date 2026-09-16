@@ -29,7 +29,11 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
         @include('_partials.author.profile', ['locale' => 'en'])
 
         @if ($topics !== [])
-            <nav class="talk-tag-filter" data-talk-tag-filter aria-label="Filter talks by topic">
+            <button class="talk-tag-toggle" type="button" data-talk-tag-toggle aria-controls="talk-topic-filter"
+                aria-expanded="false">
+                <span>Tags</span><span class="talk-tag-toggle__chevron" aria-hidden="true">⌄</span>
+            </button>
+            <nav id="talk-topic-filter" class="talk-tag-filter" data-talk-tag-filter aria-label="Filter talks by topic">
                 <p class="talk-tag-filter__label">Topics</p>
                 <a class="talk-tag talk-tag--filter" href="{{ $page->baseUrl }}/talks/" data-talk-tag="" aria-current="true"><span>All talks</span><span>{{ count($talkItems) }}</span></a>
                 @foreach ($topics as $topic => $data)
