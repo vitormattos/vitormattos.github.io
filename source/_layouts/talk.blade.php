@@ -68,7 +68,7 @@
                                 @if ($appearance['venue'] ?? false) · {{ $appearance['venue'] }}@endif
                                 @if ($appearance['city'] ?? false) · {{ $appearance['city'] }}@endif
                                 @if ($appearance['country'] ?? false) · {{ $appearance['country'] }}@endif
-                                @if ($appearance['mode'] ?? false) · {{ $appearance['mode'] }}</span>@endif
+                                @if ($appearance['mode'] ?? false) · {{ $appearance['mode'] }}@endif
                             </div>
                             @if (($appearance['resources'] ?? []) !== [])
                                 <ul class="talk-history__links">
