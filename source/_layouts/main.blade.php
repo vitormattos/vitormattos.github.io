@@ -49,13 +49,8 @@
     <header class="site-header">
         <div class="site-header__bar">
             <a class="site-identity" href="{{ $page->baseUrl }}{{ $homePath }}"
-                aria-label="{{ $page->author['name'] }}">
-                <img class="site-identity__avatar" src="{{ $page->author['avatar'] }}" alt="" width="56"
-                    height="56">
-                <span class="site-identity__copy">
-                    <strong>{{ $page->author['name'] }}</strong>
-                    <span>{{ $isEnglish ? 'free software · technology' : 'software livre · tecnologia' }}</span>
-                </span>
+                aria-label="{{ $page->author['name'] }} — {{ $isEnglish ? 'home' : 'início' }}">
+                <span aria-hidden="true">VM</span>
             </a>
 
             <div class="site-header__actions">
