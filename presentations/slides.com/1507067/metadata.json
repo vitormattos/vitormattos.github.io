@@ -2,9 +2,15 @@
     "id": 1507067,
     "slug": "dojo",
     "title": "Coding Dojo",
+    "description": "Coding Dojo",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/dojo",
     "embed_url": "https://slides.com/vitormattos/dojo/embed",
+    "tags": {
+        "slides_com": [
+            "testes"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/0d3c7e17cc8c2d0c48b9ac10bb10bd26/thumb.jpg?1571836754",
     "slide_count": 24,
     "width": 1024,
@@ -25,7 +31,6 @@
         "edit": "https://slides.com/vitormattos/dojo/edit",
         "present": "https://slides.com/vitormattos/dojo/live"
     },
-    "description": "Coding Dojo",
     "thumbnail_path": "/presentations/slides.com/1507067/thumbnail.png",
     "thumbnail_source_url": "https://media.slid.es/thumbnails/0d3c7e17cc8c2d0c48b9ac10bb10bd26/thumb.jpg?1571836754"
 }

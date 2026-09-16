@@ -2,9 +2,16 @@
     "id": 1293276,
     "slug": "composer",
     "title": "Composer: PHP dependency manager",
+    "description": "Conheça mais sobre Composer, a ferramenta que trouxe uma das maiores revoluções para o PHP. Composer vai muito além de instalação de dependências, aprenda a poupar dias e meses de trabalho e passe a ser um dev feliz focado em trazer as melhores soluções técnicas para as necessidades do negócio.",
     "visibility": "all",
     "url": "https://slides.com/vitormattos/composer",
     "embed_url": "https://slides.com/vitormattos/composer/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php"
+        ]
+    },
     "thumbnail_url": "https://media.slid.es/thumbnails/0698c2d0ecc3f3db2da7b2a6d342e85c/thumb.jpg?1531501486",
     "slide_count": 80,
     "width": 1024,
@@ -25,7 +32,6 @@
         "edit": "https://slides.com/vitormattos/composer/edit",
         "present": "https://slides.com/vitormattos/composer/live"
     },
-    "description": "Conheça mais sobre Composer, a ferramenta que trouxe uma das maiores revoluções para o PHP. Composer vai muito além de instalação de dependências, aprenda a poupar dias e meses de trabalho e passe a ser um dev feliz focado em trazer as melhores soluções técnicas para as necessidades do negócio.",
     "thumbnail_path": "/presentations/slides.com/1293276/thumbnail.png",
     "thumbnail_source_url": "https://media.slid.es/thumbnails/0698c2d0ecc3f3db2da7b2a6d342e85c/thumb.jpg?1531501486"
 }
