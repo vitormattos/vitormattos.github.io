@@ -10,12 +10,12 @@
     "lint:blade": "prettier --check \"source/**/*.blade.php\""
   },
   "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@shufo/prettier-plugin-blade": "^1.16.2",
     "@tighten/jigsaw-vite-plugin": "^2.1.0",
     "prettier": "^3.6.2",
     "reveal.js": "^6.0.2",
     "sass-embedded": "^1.104.0",
-    "simple-icons": "^16.31.0",
     "stylelint": "^16.23.1",
     "stylelint-config-recommended-scss": "^16.0.2",
     "vite": "^8.3.0"
