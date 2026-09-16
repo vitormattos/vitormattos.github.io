@@ -43,25 +43,42 @@
     }
 
     $presentation = $page->presentation ?? [];
+    $academic = $page->academic ?? [];
     $pageSocialImage = $page->socialImage
         ?? $page->image
         ?? $page->thumbnail
-        ?? ($presentation['thumbnail'] ?? null);
+        ?? ($academic['socialImage'] ?? null)
+        ?? ($academic['image'] ?? null)
+        ?? ($academic['thumbnail'] ?? null);
+    $socialImageWidth = (int) ($page->socialImageWidth ?? $page->imageWidth ?? 0);
+    $socialImageHeight = (int) ($page->socialImageHeight ?? $page->imageHeight ?? 0);
+
+    if ($pageSocialImage === null && ($page->slidesId ?? false)) {
+        $presentationType = $presentation['type'] ?? 'external';
+        $sourceDirectory = $presentationType === 'slideshare' ? 'slideshare' : 'slides.com';
+        $deckDir = 'presentations/' . $sourceDirectory . '/' . $page->slidesId;
+        $localThumbnails = glob($deckDir . '/thumbnail.*') ?: [];
+        if ($localThumbnails !== []) {
+            $pageSocialImage = '/' . $localThumbnails[0];
+            $imageSize = @getimagesize($localThumbnails[0]);
+            if (is_array($imageSize)) {
+                $socialImageWidth = (int) $imageSize[0];
+                $socialImageHeight = (int) $imageSize[1];
+            }
+        }
+    }
+
+    if ($pageSocialImage === null && ($presentation['thumbnail'] ?? false)) {
+        $pageSocialImage = $presentation['thumbnail'];
+        $socialImageWidth = (int) ($presentation['thumbnailWidth'] ?? 0);
+        $socialImageHeight = (int) ($presentation['thumbnailHeight'] ?? 0);
+    }
+
     $socialImageCandidate = $pageSocialImage
         ?? ($page->author['socialImage'] ?? $page->author['avatar']);
     $socialImage = preg_match('#^https?://#i', (string) $socialImageCandidate)
         ? (string) $socialImageCandidate
         : $siteUrl . '/' . ltrim((string) $socialImageCandidate, '/');
-    $socialImageWidth = (int) (
-        $page->socialImageWidth
-        ?? $page->imageWidth
-        ?? ($presentation['thumbnailWidth'] ?? ($presentation['width'] ?? 0))
-    );
-    $socialImageHeight = (int) (
-        $page->socialImageHeight
-        ?? $page->imageHeight
-        ?? ($presentation['thumbnailHeight'] ?? ($presentation['height'] ?? 0))
-    );
     if ($pageSocialImage === null) {
         $socialImageWidth = 512;
         $socialImageHeight = 512;
