@@ -22,7 +22,7 @@
 
 .talks-profile {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 3.25rem;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
     gap: 0.75rem;
     align-items: start;
     padding-bottom: 1.15rem;
@@ -43,11 +43,18 @@
 }
 
 .talks-profile__avatar {
+    grid-column: 1;
+    grid-row: 1;
     width: 3.25rem;
     height: 3.25rem;
     object-fit: cover;
     border: 1px solid var(--border);
     border-radius: 50%;
+}
+
+.talks-profile__copy {
+    grid-column: 2;
+    grid-row: 1;
 }
 
 .talks-profile__links {
@@ -319,17 +326,16 @@
     }
 
     .talks-profile {
-        grid-template-columns: 1fr;
+        grid-template-columns: 3rem minmax(0, 1fr);
     }
 
     .talks-profile__avatar {
-        grid-row: 1;
         width: 3rem;
         height: 3rem;
     }
 
     .talks-profile__links {
-        grid-column: 1;
+        grid-column: 1 / -1;
     }
 
     .talk-list[data-view='grid'] {
