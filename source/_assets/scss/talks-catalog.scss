@@ -150,6 +150,7 @@
 }
 
 .talks-catalog {
+    box-sizing: border-box;
     width: 100%;
     max-width: none;
     min-width: 0;
@@ -422,6 +423,14 @@
 }
 
 @media (max-width: 48rem) {
+    .talks-catalog {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+    }
+
     .talks-catalog__header {
         grid-template-columns: 1fr;
         gap: 0.8rem;
