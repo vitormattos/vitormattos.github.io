@@ -43,8 +43,8 @@
         <nav aria-label="{{ $isEnglish ? 'Main' : 'Principal' }}">
             <a href="{{ $page->baseUrl }}{{ $articlesPath }}">{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
             <a href="{{ $page->baseUrl }}{{ $talksPath }}">{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
-            <a href="{{ $page->author['github'] }}" rel="me">GitHub</a>
-            <a href="{{ $page->author['linkedin'] }}" rel="me">LinkedIn</a>
+            <a href="{{ $page->author['github'] }}" target="_blank" rel="me external noopener noreferrer">GitHub</a>
+            <a href="{{ $page->author['linkedin'] }}" target="_blank" rel="me external noopener noreferrer">LinkedIn</a>
             @if ($alternatePath !== null)
                 <a href="{{ $page->baseUrl }}{{ $alternatePath }}" hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}">
                     {{ $isEnglish ? 'Português' : 'English' }}
