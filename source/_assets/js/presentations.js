@@ -102,6 +102,9 @@ function initializeTagFilter(gallery) {
     if (!filter) return;
 
     const toggle = document.querySelector('[data-talk-tag-toggle]');
+    const browser = document.querySelector('.talks-browser');
+    const toggleLabel = toggle?.querySelector('span:first-child');
+    const defaultToggleLabel = toggleLabel?.textContent ?? 'Tags';
     const cards = [...gallery.querySelectorAll('.talk-card')];
     const status = document.querySelector('[data-talk-filter-status]');
     const empty = document.querySelector('[data-talk-filter-empty]');
@@ -110,6 +113,8 @@ function initializeTagFilter(gallery) {
         if (!toggle) return;
         toggle.setAttribute('aria-expanded', String(open));
         filter.classList.toggle('is-open', open);
+        browser?.classList.toggle('is-tag-filter-open', open);
+        if (toggleLabel) toggleLabel.textContent = open ? 'Close' : defaultToggleLabel;
     };
 
     toggle?.addEventListener('click', () => {
