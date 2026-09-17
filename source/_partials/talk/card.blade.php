@@ -5,7 +5,10 @@
     $type = $presentation['type'] ?? 'external';
     $isEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $sourcePath = isset($presentation['source']) ? '/' . ltrim($presentation['source'], '/') : null;
-    $thumbnailId = $sourcePath ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
+    $revealPreviewable = $type === 'reveal' && $sourcePath;
+    $slidesComPreviewable = $type === 'slides.com' && ($presentation['embed'] ?? false);
+    $previewable = $revealPreviewable || $slidesComPreviewable;
+    $thumbnailId = $revealPreviewable ? 'thumb-' . substr(sha1((string) $sourcePath), 0, 10) : null;
     $topics = \App\Presentations\TalkTopics::localized(
         \App\Presentations\TalkTopics::resolve($talk),
         $isEnglish ? 'en' : 'pt-BR',
@@ -21,33 +24,77 @@
     $thumbnail = $page->presentationThumbnail($talk);
     $shareLabel = $isEnglish ? 'Share presentation' : 'Compartilhar apresentação';
     $copiedLabel = $isEnglish ? 'Link copied' : 'Link copiado';
+    $previewLabel = $isEnglish ? 'Preview' : 'Pré-visualizar';
+    $closePreviewLabel = $isEnglish ? 'Close preview' : 'Fechar pré-visualização';
+    $fullscreenLabel = $isEnglish ? 'Open presentation' : 'Abrir apresentação';
     $activityTimestamp = \App\Presentations\TalkTopics::activityTimestamp($talk);
     $publishedTimestamp = (int) ($talk->date ?? 0);
     $wasUpdated = $activityTimestamp > $publishedTimestamp;
     $activityLabel = $wasUpdated ? ($isEnglish ? 'Updated' : 'Atualizado') : ($isEnglish ? 'Published' : 'Publicado');
 @endphp
-<article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
-    <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
-        @if ($thumbnail)
-            <img src="{{ $thumbnail['url'] }}" alt="" loading="lazy"
-                @if ($thumbnail['width'] > 0 && $thumbnail['height'] > 0) width="{{ $thumbnail['width'] }}" height="{{ $thumbnail['height'] }}" @endif>
-        @elseif ($type === 'reveal' && $sourcePath)
-            <div class="presentation-thumbnail" aria-hidden="true">
-                <div class="reveal js-reveal-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
-                    <div class="slides">
-                        <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
-                            data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$"
-                            data-separator-notes="^Notes?:"></section>
+<article class="talk-card" data-talk-tags="{!! $encodedTags !!}"
+    @if ($previewable) data-talk-preview-card @endif>
+    <div class="talk-card__media" @if ($previewable) data-talk-preview-media @endif>
+        <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
+            @if ($thumbnail)
+                <img src="{{ $thumbnail['url'] }}" alt="" loading="lazy"
+                    @if ($thumbnail['width'] > 0 && $thumbnail['height'] > 0) width="{{ $thumbnail['width'] }}" height="{{ $thumbnail['height'] }}" @endif>
+            @elseif (!$previewable && in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
+                <iframe src="{{ $presentation['embed'] }}" title="" loading="lazy" tabindex="-1"
+                    aria-hidden="true"></iframe>
+            @elseif (!$previewable)
+                <div class="presentation-fallback"><strong>{{ $talk->title }}</strong></div>
+            @endif
+        </a>
+
+        @if ($previewable)
+            <div class="talk-card__live-preview" data-talk-live-preview
+                data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}"
+                @if ($thumbnail) hidden @endif>
+                @if ($revealPreviewable)
+                    <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}"
+                        data-presentation-mode="thumbnail">
+                        <div class="slides">
+                            <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
+                                data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$"
+                                data-separator-notes="^Notes?:"></section>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <iframe class="talk-card__preview-embed" data-talk-preview-embed
+                        data-src="{{ $presentation['embed'] }}" title="{{ $talk->title }}" loading="lazy"
+                        allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                @endif
             </div>
-        @elseif (in_array($type, ['slides.com', 'iframe'], true) && ($presentation['embed'] ?? false))
-            <iframe src="{{ $presentation['embed'] }}" title="" loading="lazy" tabindex="-1"
-                aria-hidden="true"></iframe>
-        @else
-            <div class="presentation-fallback"><strong>{{ $talk->title }}</strong></div>
+
+            <div class="talk-card__preview-actions">
+                <button class="talk-card__preview-action talk-card__preview-toggle" type="button"
+                    data-talk-preview-toggle data-tooltip="{{ $previewLabel }}" aria-label="{{ $previewLabel }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path>
+                        <circle cx="12" cy="12" r="2.6"></circle>
+                    </svg>
+                </button>
+                <button class="talk-card__preview-action talk-card__preview-active-action" type="button"
+                    data-talk-preview-fullscreen data-tooltip="{{ $fullscreenLabel }}"
+                    aria-label="{{ $fullscreenLabel }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path>
+                    </svg>
+                </button>
+                <button class="talk-card__preview-action talk-card__preview-active-action" type="button"
+                    data-talk-preview-close data-tooltip="{{ $closePreviewLabel }}"
+                    aria-label="{{ $closePreviewLabel }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M3 3l18 18"></path>
+                        <path
+                            d="M10.6 6.2A10.9 10.9 0 0 1 12 6c6.1 0 9.5 6 9.5 6a17 17 0 0 1-2.8 3.6M14.1 14.1A3 3 0 0 1 9.9 9.9M6.1 6.1C3.7 7.9 2.5 12 2.5 12s3.4 6 9.5 6a10.8 10.8 0 0 0 4.1-.8">
+                        </path>
+                    </svg>
+                </button>
+            </div>
         @endif
-    </a>
+    </div>
 
     <div class="talk-card__body">
         <h2 class="talk-card__title"><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h2>
