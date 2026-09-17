@@ -1,0 +1,51 @@
+/* SPDX-FileCopyrightText: 2026 Vitor Mattos */
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+
+/*
+ * List view deliberately uses a float instead of a two-column grid.
+ * This lets long descriptions reclaim the space below the thumbnail,
+ * reducing card height without truncating the text.
+ */
+.talk-list[data-view='list'] .talk-card {
+    display: block;
+}
+
+.talk-list[data-view='list'] .talk-card__preview {
+    float: left;
+    width: clamp(11rem, 14vw, 15rem);
+    height: auto;
+    min-height: 0;
+    margin: 0.8rem 1rem 0.8rem 0.8rem;
+    aspect-ratio: 16 / 9;
+}
+
+.talk-list[data-view='list'] .talk-card__body {
+    display: block;
+    min-height: 0;
+    padding: 0.8rem 1rem;
+}
+
+.talk-list[data-view='list'] .talk-card__description {
+    display: block;
+    max-width: none;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+}
+
+@media (max-width: 48rem) {
+    .talk-list[data-view='list'] .talk-card__preview {
+        width: 8rem;
+    }
+}
+
+@media (max-width: 36rem) {
+    .talk-list[data-view='list'] .talk-card {
+        display: flex;
+    }
+
+    .talk-list[data-view='list'] .talk-card__preview {
+        float: none;
+        width: 100%;
+        margin: 0;
+    }
+}
