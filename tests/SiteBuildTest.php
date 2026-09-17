@@ -57,8 +57,8 @@ final class SiteBuildTest extends TestCase
         $english = $this->read('index.html');
         $portuguese = $this->read('pt-BR/index.html');
 
-        self::assertStringContainsString('<html lang="en">', $english);
-        self::assertStringContainsString('<html lang="pt-BR">', $portuguese);
+        self::assertStringContainsString('<html lang="en"', $english);
+        self::assertStringContainsString('<html lang="pt-BR"', $portuguese);
         self::assertStringContainsString('hreflang="en" href="' . self::SITE_URL . '/"', $english);
         self::assertStringContainsString('hreflang="pt-BR" href="' . self::SITE_URL . '/pt-BR"', $english);
         self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $english);
@@ -79,6 +79,27 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('data-theme-toggle', $portuguese);
         self::assertStringContainsString('data-label-light="Usar tema claro"', $portuguese);
         self::assertStringContainsString('data-label-dark="Usar tema escuro"', $portuguese);
+    }
+
+    public function testLanguagePreferenceUsesBrowserLocaleUntilManuallySelected(): void
+    {
+        $english = $this->read('index.html');
+        $portuguese = $this->read('pt-BR/index.html');
+
+        foreach ([$english, $portuguese] as $html) {
+            self::assertStringContainsString("const storageKey = 'site-locale'", $html);
+            self::assertStringContainsString('navigator.languages?.[0]', $html);
+            self::assertStringContainsString("browserLocale.startsWith('pt') ? 'pt-BR' : 'en'", $html);
+            self::assertStringContainsString('window.location.replace(alternateUrl)', $html);
+            self::assertStringContainsString('localStorage.getItem(storageKey)', $html);
+            self::assertStringContainsString('localStorage.setItem(storageKey, selectedLocale)', $html);
+            self::assertStringContainsString('data-language-switch', $html);
+        }
+
+        self::assertStringContainsString('data-alternate-locale="pt-BR"', $english);
+        self::assertStringContainsString('data-locale="pt-BR"', $english);
+        self::assertStringContainsString('data-alternate-locale="en"', $portuguese);
+        self::assertStringContainsString('data-locale="en"', $portuguese);
     }
 
     public function testSimontonMonographUsesSourceRepositoryMetadata(): void

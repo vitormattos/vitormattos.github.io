@@ -2,9 +2,10 @@
 {{-- SPDX-License-Identifier: AGPL-3.0-or-later --}}
 @php
     $presentation = $talk->presentation ?? [];
-    $isEnglish = ($talk->locale ?? 'en') === 'en';
+    $talkIsEnglish = ($talk->locale ?? 'en') === 'en';
+    $pageIsEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $slug = $talk->slug ?? null;
-    $talkPath = $slug ? ($isEnglish ? '/talks/' : '/pt-BR/palestras/') . $slug : '/' . ltrim($talk->getPath(), '/');
+    $talkPath = $slug ? ($talkIsEnglish ? '/talks/' : '/pt-BR/palestras/') . $slug : '/' . ltrim($talk->getPath(), '/');
     $talkUrl = rtrim($page->baseUrl, '/') . $talkPath;
     $thumbnail = $page->presentationThumbnail($talk);
 @endphp
@@ -21,7 +22,7 @@
         <div class="home-talk-card__meta">
             @if ($talk->date ?? false)
                 <time
-                    datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time>
+                    datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($pageIsEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time>
             @endif
             @if ($presentation['slideCount'] ?? 0)
                 <span>{{ $presentation['slideCount'] }} slides</span>
