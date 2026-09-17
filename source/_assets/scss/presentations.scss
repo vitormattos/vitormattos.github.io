@@ -569,9 +569,12 @@
     }
 
     .presentation-action-menu__panel {
+        box-sizing: border-box;
         right: auto;
         left: 0;
-        min-width: min(17rem, calc(100vw - 3rem));
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
     }
 
     .talk-list {
