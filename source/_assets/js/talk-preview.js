@@ -62,7 +62,16 @@ function initializeVisibleDeck(root) {
 function ensureEmbed(card) {
     const iframe = card.querySelector('[data-talk-preview-embed]');
     if (!iframe || iframe.src) return;
-    iframe.src = iframe.dataset.src ?? '';
+
+    const source = iframe.dataset.src ?? '';
+    if (!source) return;
+
+    const url = new URL(source, window.location.href);
+    if (url.hostname === 'slides.com' || url.hostname.endsWith('.slides.com')) {
+        url.searchParams.set('style', 'hidden');
+    }
+
+    iframe.src = url.toString();
 }
 
 async function activatePreview(card) {
