@@ -16,26 +16,6 @@
     );
 
     $thumbnail = $page->presentationThumbnail($talk);
-    $archivedPdf = $presentation['localPdf'] ?? ($presentation['pdf'] ?? null);
-    if ($talk->slidesId ?? false) {
-        $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
-        $deckDir = 'presentations/' . $sourceDirectory . '/' . $talk->slidesId;
-        $manifestPath = $deckDir . '/export.json';
-        if (is_file($manifestPath)) {
-            try {
-                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                $archivedPdf ??= $manifest['assets']['pdf']['url'] ?? ($manifest['pdf']['url'] ?? null);
-            } catch (Throwable) {
-                // Keep front matter values when the archive manifest is unavailable or malformed.
-            }
-        }
-    }
-    $pdfHref = null;
-    if (is_string($archivedPdf) && $archivedPdf !== '') {
-        $pdfHref = str_starts_with($archivedPdf, 'http')
-            ? $archivedPdf
-            : rtrim((string) $page->baseUrl, '/') . '/' . ltrim($archivedPdf, '/');
-    }
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
@@ -78,16 +58,6 @@
                         href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($topic) }}">{{ $label }}</a>
                 @endforeach
             </nav>
-        @endif
-
-        @if ($pdfHref)
-            <div class="talk-card__footer">
-                <div class="talk-card__formats" aria-label="{{ $isEnglish ? 'Downloads' : 'Downloads' }}">
-                    <a class="format-badge" href="{{ $pdfHref }}" target="_blank"
-                        rel="external noopener noreferrer"
-                        aria-label="{{ $isEnglish ? 'Download PDF' : 'Baixar PDF' }}">PDF</a>
-                </div>
-            </div>
         @endif
     </div>
 </article>
