@@ -28,6 +28,14 @@ final class TalkTopics
         return $topics;
     }
 
+    public static function activityTimestamp(object $talk): int
+    {
+        return max(
+            self::timestamp($talk->date ?? null),
+            self::timestamp($talk->updated ?? null),
+        );
+    }
+
     public static function mergeCatalog(iterable $preferred, iterable $fallback): array
     {
         $items = [];
@@ -45,10 +53,14 @@ final class TalkTopics
             }
         }
 
-        usort(
-            $items,
-            static fn(object $left, object $right): int => (int) ($right->date ?? 0) <=> (int) ($left->date ?? 0),
-        );
+        usort($items, static function (object $left, object $right): int {
+            $byActivity = self::activityTimestamp($right) <=> self::activityTimestamp($left);
+            if ($byActivity !== 0) {
+                return $byActivity;
+            }
+
+            return strnatcasecmp((string) ($left->title ?? ''), (string) ($right->title ?? ''));
+        });
 
         return $items;
     }
@@ -170,5 +182,23 @@ final class TalkTopics
             : strtolower($current);
 
         return $current === $currentLower && $candidate !== $candidateLower;
+    }
+
+    private static function timestamp(mixed $value): int
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->getTimestamp();
+        }
+        if (is_int($value)) {
+            return $value;
+        }
+        if (is_numeric($value)) {
+            return (int) $value;
+        }
+        if (is_string($value) && trim($value) !== '') {
+            return strtotime($value) ?: 0;
+        }
+
+        return 0;
     }
 }
