@@ -43,7 +43,7 @@ final class SlideShareArchiveTest extends TestCase
         }
     }
 
-    public function testReleaseMetadataSupportsSlideShareAssetsAndHistoricalDate(): void
+    public function testReleaseMetadataSupportsSlideShareThumbnailAndDatedStatisticsSnapshot(): void
     {
         $metadata = [
             'source' => 'slideshare',
@@ -54,9 +54,14 @@ final class SlideShareArchiveTest extends TestCase
             'language' => 'pt',
             'source_url' => 'https://pt.slideshare.net/slideshow/jasperreports/10406513',
             'published_at' => '2011-11-30T17:55:49Z',
+            'statistics_captured_at' => '2026-09-15',
             'tags' => ['PHP', 'JasperReports'],
             'statistics' => [
                 'total_views' => 1197,
+                'slideshare_views' => 1174,
+                'embed_views' => 23,
+                'likes' => 2,
+                'comments' => 2,
                 'downloads' => 45,
             ],
             'width' => 1024,
@@ -78,9 +83,26 @@ final class SlideShareArchiveTest extends TestCase
         self::assertStringContainsString('**Archived PDF:** https://example.invalid/archive.pdf', $body);
         self::assertStringContainsString('**Original archived file:** https://example.invalid/original.ppt', $body);
         self::assertStringNotContainsString('**Language:**', $body);
+        self::assertStringContainsString('### Historical statistics', $body);
+        self::assertStringContainsString('**Captured:** 2026-09-15', $body);
+        self::assertStringContainsString('**Total views:** 1197', $body);
+        self::assertStringContainsString('**Downloads:** 45', $body);
+        self::assertStringContainsString('historical snapshot', $body);
+    }
+
+    public function testSlideShareStatisticsAreHiddenWithoutCaptureDate(): void
+    {
+        $body = PresentationReleaseMetadata::body(
+            [
+                'source' => 'slideshare',
+                'id' => '10406513',
+                'statistics' => ['total_views' => 1197],
+            ],
+            'vitormattos/vitormattos.github.io',
+        );
+
         self::assertStringNotContainsString('Historical statistics', $body);
         self::assertStringNotContainsString('Total views', $body);
-        self::assertStringNotContainsString('Downloads:', $body);
     }
 
     private static function assertNoForbiddenKeys(array $value, array $forbidden, string $file): void
