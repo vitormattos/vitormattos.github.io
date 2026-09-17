@@ -16,6 +16,8 @@
     );
 
     $thumbnail = $page->presentationThumbnail($talk);
+    $shareLabel = $isEnglish ? 'Share presentation' : 'Compartilhar apresentação';
+    $copiedLabel = $isEnglish ? 'Link copied' : 'Link copiado';
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
@@ -44,12 +46,22 @@
         <h2 class="talk-card__title"><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h2>
         <p class="talk-card__description">{{ $talk->description }}</p>
 
-        @if ($talk->date ?? false)
-            <div class="talk-card__meta-line">
+        <div class="talk-card__meta-line">
+            @if ($talk->date ?? false)
                 <span><time
                         datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>
-            </div>
-        @endif
+            @endif
+            <button class="talk-card__share" type="button" data-talk-share data-talk-url="{{ $talk->getUrl() }}"
+                data-talk-title="{{ $talk->title }}" data-share-label="{{ $shareLabel }}"
+                data-copied-label="{{ $copiedLabel }}" aria-label="{{ $shareLabel }}" title="{{ $shareLabel }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="18" cy="5" r="2.5"></circle>
+                    <circle cx="6" cy="12" r="2.5"></circle>
+                    <circle cx="18" cy="19" r="2.5"></circle>
+                    <path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"></path>
+                </svg>
+            </button>
+        </div>
 
         @if ($topics !== [])
             <nav class="talk-card__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
