@@ -11,9 +11,19 @@ use App\Presentations\PresentationReleaseMetadata;
 
 $repository = getenv('GITHUB_REPOSITORY') ?: 'vitormattos/vitormattos.github.io';
 $updated = 0;
+$importMetadata = json_decode(
+    (string) file_get_contents('presentations/slideshare/import.json'),
+    true,
+    flags: JSON_THROW_ON_ERROR,
+);
+$statisticsCapturedAt = trim((string) ($importMetadata['export_received_at'] ?? ''));
 
 foreach (glob('presentations/slideshare/*/metadata.json') ?: [] as $metadataPath) {
     $metadata = json_decode((string) file_get_contents($metadataPath), true, flags: JSON_THROW_ON_ERROR);
+    if ($statisticsCapturedAt !== '') {
+        $metadata['statistics_captured_at'] = $statisticsCapturedAt;
+    }
+
     $id = basename(dirname($metadataPath));
     $tag = 'slideshare-' . $id;
     $release = runJson(['gh', 'release', 'view', $tag, '--repo', $repository, '--json', 'assets']);
