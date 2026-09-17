@@ -23,7 +23,7 @@ presentation:
   url: "/presentations/latex/open-source-ecosystem-review/open-source-ecosystem-review.pdf"
   source: "presentations/latex/open-source-ecosystem-review/main.tex"
   language: "pt-BR"
-  slideCount: 10
+  slideCount: 16
   width: 1920
   height: 1080
 ---
