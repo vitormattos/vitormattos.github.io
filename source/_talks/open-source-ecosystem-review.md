@@ -32,7 +32,9 @@ presentation:
 
 Este material é um **seminário acadêmico de leitura crítica**. Ele não é um artigo autoral completo nem uma palestra pública independente. No portfólio, fica na coleção de apresentações/palestras porque seu artefato principal são slides apresentados oralmente; a página, porém, o identifica semanticamente como seminário acadêmico.
 
-A apresentação analisa _From proprietary to open source: Growing an open source ecosystem_, de Kilamo et al. (2012). A leitura destaca as questões de pesquisa, a combinação de construção de artefatos com pesquisa-ação, o framework OSCOMM, o modelo de avaliação R3 e o estudo de caso Gurux. A análise crítica separa o que os casos sustentam do que ainda exigiria evidência causal, longitudinal ou mais ampla.
+A apresentação analisa [_From proprietary to open source: Growing an open source ecosystem_](https://www.sciencedirect.com/science/article/pii/S0164121211001683), de Terhi Kilamo, Imed Hammouda, Tommi Mikkonen e Timo Aaltonen, publicado no *Journal of Systems and Software* em 2012. DOI: [10.1016/j.jss.2011.06.071](https://doi.org/10.1016/j.jss.2011.06.071).
+
+A leitura destaca as questões de pesquisa, a combinação de construção de artefatos com pesquisa-ação, o framework OSCOMM, o modelo de avaliação R3 e o estudo de caso Gurux. A análise crítica separa o que os casos sustentam do que ainda exigiria evidência causal, longitudinal ou mais ampla.
 
 A experiência profissional com comunidades de software livre é usada apenas como lente de interpretação e contraste, sem ser apresentada como evidência do estudo analisado.
 
