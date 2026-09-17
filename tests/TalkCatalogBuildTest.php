@@ -24,8 +24,31 @@ final class TalkCatalogBuildTest extends TestCase
         foreach ([$portuguese, $english] as $html) {
             self::assertStringContainsString('JasperReports', $html);
             self::assertStringContainsString('Seja subversivo, faça testes', $html);
-            self::assertStringContainsString('slideshare', $html);
         }
+    }
+
+    public function testCatalogCardsExposeOnlyPdfAsPresentationFormat(): void
+    {
+        $html = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
+        self::assertIsString($html);
+
+        self::assertStringNotContainsString('<span class="format-badge">slideshare</span>', $html);
+        self::assertStringNotContainsString('<span class="format-badge">slides.com</span>', $html);
+        self::assertStringNotContainsString('<span class="format-badge">HTML</span>', $html);
+        self::assertStringNotContainsString('<span class="format-badge">PPTX</span>', $html);
+        self::assertStringNotContainsString(' slides</span>', $html);
+        self::assertStringNotContainsString('>pt-BR</span>', $html);
+        self::assertMatchesRegularExpression('/<a class="format-badge" href="[^"]+\.pdf"[^>]*>PDF<\/a>/', $html);
+    }
+
+    public function testTalkDetailKeepsSlideCountButOmitsLanguageLabel(): void
+    {
+        $html = file_get_contents($this->buildDirectory() . '/talks/slides-com-1659891-bdd/index.html');
+        self::assertIsString($html);
+
+        self::assertStringContainsString('<dt>Slides</dt>', $html);
+        self::assertStringNotContainsString('<dt>Language</dt>', $html);
+        self::assertStringNotContainsString('<dt>Idioma</dt>', $html);
     }
 
     public function testTopicTaxonomyIsCaseInsensitiveAndCountsRenderedCards(): void
