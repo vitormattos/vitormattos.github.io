@@ -16,12 +16,20 @@
         $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
         $alternatePath = $rawAlternatePath === '/' ? '/' : rtrim($rawAlternatePath, '/');
     }
-    $alternateCanonicalUrl =
-        $alternatePath !== null ? $siteUrl . ($alternatePath === '/' ? '/' : $alternatePath) : null;
-    $englishCanonicalUrl = $isEnglish ? $canonicalUrl : $alternateCanonicalUrl ?? $siteUrl . '/';
+    $alternateCanonicalUrl = null;
+    if ($alternatePath !== null) {
+        $alternateCanonicalUrl = $siteUrl . ($alternatePath === '/' ? '/' : $alternatePath);
+    }
+    $englishCanonicalUrl = $canonicalUrl;
+    if (!$isEnglish) {
+        $englishCanonicalUrl = $alternateCanonicalUrl ?? $siteUrl . '/';
+    }
     $schemaType = $page->schemaType ?? null;
     $isProfilePage = in_array($path, ['/', '/pt-BR'], true);
-    $pageType = $page->pageType ?? ($isProfilePage ? 'ProfilePage' : 'WebPage');
+    $pageType = $page->pageType ?? 'WebPage';
+    if ($isProfilePage && !($page->pageType ?? false)) {
+        $pageType = 'ProfilePage';
+    }
     $personId = $page->author['id'];
     $websiteId = $siteUrl . '/#website';
     $webpageId = $canonicalUrl . '#webpage';
@@ -34,23 +42,53 @@
     }
     $updatedAt = null;
     if ($page->updated ?? false) {
-        $updatedAt = is_int($page->updated) ? $page->updated : (strtotime((string) $page->updated) ?: null);
+        if (is_int($page->updated)) {
+            $updatedAt = $page->updated;
+        } else {
+            $parsedUpdatedAt = strtotime((string) $page->updated);
+            if ($parsedUpdatedAt !== false) {
+                $updatedAt = $parsedUpdatedAt;
+            }
+        }
     }
 
     $presentation = $page->presentation ?? [];
     $academic = $page->academic ?? [];
-    $pageSocialImage =
-        $page->socialImage ??
-        ($page->image ??
-            ($page->thumbnail ??
-                ($academic['socialImage'] ??
-                    (null ?? ($academic['image'] ?? (null ?? ($academic['thumbnail'] ?? null)))))));
-    $socialImageWidth = (int) ($page->socialImageWidth ?? ($page->imageWidth ?? 0));
-    $socialImageHeight = (int) ($page->socialImageHeight ?? ($page->imageHeight ?? 0));
+    $pageSocialImage = null;
+    foreach ([
+        $page->socialImage ?? null,
+        $page->image ?? null,
+        $page->thumbnail ?? null,
+        $academic['socialImage'] ?? null,
+        $academic['image'] ?? null,
+        $academic['thumbnail'] ?? null,
+    ] as $candidateImage) {
+        if ($candidateImage !== null && $candidateImage !== '') {
+            $pageSocialImage = $candidateImage;
+            break;
+        }
+    }
+
+    $socialImageWidth = 0;
+    if ($page->socialImageWidth ?? false) {
+        $socialImageWidth = (int) $page->socialImageWidth;
+    } elseif ($page->imageWidth ?? false) {
+        $socialImageWidth = (int) $page->imageWidth;
+    }
+
+    $socialImageHeight = 0;
+    if ($page->socialImageHeight ?? false) {
+        $socialImageHeight = (int) $page->socialImageHeight;
+    } elseif ($page->imageHeight ?? false) {
+        $socialImageHeight = (int) $page->imageHeight;
+    }
 
     if ($pageSocialImage === null && ($page->slidesId ?? false)) {
         $presentationType = $presentation['type'] ?? 'external';
-        $sourceDirectory = $presentationType === 'slideshare' ? 'slideshare' : 'slides.com';
+        $sourceDirectory = 'slides.com';
+        if ($presentationType === 'slideshare') {
+            $sourceDirectory = 'slideshare';
+        }
         $deckDir = 'presentations/' . $sourceDirectory . '/' . $page->slidesId;
         $localThumbnails = glob($deckDir . '/thumbnail.*') ?: [];
         if ($localThumbnails !== []) {
@@ -69,16 +107,31 @@
         $socialImageHeight = (int) ($presentation['thumbnailHeight'] ?? 0);
     }
 
-    $socialImageCandidate = $pageSocialImage ?? ($page->author['socialImage'] ?? $page->author['avatar']);
-    $socialImage = preg_match('#^https?://#i', (string) $socialImageCandidate)
-        ? (string) $socialImageCandidate
-        : $siteUrl . '/' . ltrim((string) $socialImageCandidate, '/');
+    $socialImageCandidate = $pageSocialImage;
+    if ($socialImageCandidate === null || $socialImageCandidate === '') {
+        $socialImageCandidate = $page->author['socialImage'] ?? $page->author['avatar'];
+    }
+
+    if (preg_match('#^https?://#i', (string) $socialImageCandidate)) {
+        $socialImage = (string) $socialImageCandidate;
+    } else {
+        $socialImage = $siteUrl . '/' . ltrim((string) $socialImageCandidate, '/');
+    }
+
     if ($pageSocialImage === null) {
         $socialImageWidth = 512;
         $socialImageHeight = 512;
     }
-    $socialImageAlt = $page->socialImageAlt ?? ($isProfilePage ? $page->author['name'] : $pageTitle);
-    $twitterCard = $pageSocialImage !== null ? 'summary_large_image' : 'summary';
+
+    $socialImageAlt = $page->socialImageAlt ?? null;
+    if (!$socialImageAlt) {
+        $socialImageAlt = $isProfilePage ? $page->author['name'] : $pageTitle;
+    }
+
+    $twitterCard = 'summary';
+    if ($pageSocialImage !== null) {
+        $twitterCard = 'summary_large_image';
+    }
 
     $graph = [
         [
@@ -170,14 +223,13 @@
         $graph[2]['mainEntity'] = ['@id' => $contentId];
 
         $isArticle = in_array($schemaType, ['Article', 'ScholarlyArticle'], true);
-        $sectionPath = $isArticle
-            ? ($isEnglish
-                ? '/articles'
-                : '/pt-BR/artigos')
-            : ($isEnglish
-                ? '/talks'
-                : '/pt-BR/palestras');
-        $sectionName = $isArticle ? ($isEnglish ? 'Articles' : 'Artigos') : ($isEnglish ? 'Talks' : 'Palestras');
+        if ($isArticle) {
+            $sectionPath = $isEnglish ? '/articles' : '/pt-BR/artigos';
+            $sectionName = $isEnglish ? 'Articles' : 'Artigos';
+        } else {
+            $sectionPath = $isEnglish ? '/talks' : '/pt-BR/palestras';
+            $sectionName = $isEnglish ? 'Talks' : 'Palestras';
+        }
         $breadcrumbId = $canonicalUrl . '#breadcrumb';
 
         $graph[] = [
