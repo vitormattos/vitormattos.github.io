@@ -48,8 +48,14 @@ final class TalkCatalogBuildTest extends TestCase
             self::assertMatchesRegularExpression('/^[A-Z][a-z]{2} \d{2}, \d{4}$/', $date);
         }
 
-        self::assertStringContainsString('Atualizado <time datetime="2023-08-10">10/08/2023</time>', $portuguese);
-        self::assertStringContainsString('Updated <time datetime="2023-08-10">Aug 10, 2023</time>', $english);
+        self::assertMatchesRegularExpression(
+            '/Atualizado\s+<time\s+datetime="2023-08-10">10\/08\/2023<\/time>/',
+            $portuguese,
+        );
+        self::assertMatchesRegularExpression(
+            '/Updated\s+<time\s+datetime="2023-08-10">Aug 10, 2023<\/time>/',
+            $english,
+        );
     }
 
     public function testCatalogCardsDoNotExposePresentationFormatsOrDownloadActions(): void
