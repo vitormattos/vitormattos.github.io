@@ -51,4 +51,25 @@ final class PresentationMetadataOverridesTest extends TestCase
             PresentationMetadataOverrides::apply($source, $curated),
         );
     }
+
+    public function testEveryArchivedPresentationHasAnEditorialTagDecision(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $overrides = require $root . '/data/presentation-overrides.php';
+
+        foreach (['slides.com', 'slideshare'] as $source) {
+            $metadataFiles = glob($root . '/presentations/' . $source . '/*/metadata.json') ?: [];
+            self::assertNotEmpty($metadataFiles, 'Expected archived presentations for ' . $source);
+
+            foreach ($metadataFiles as $metadataFile) {
+                $id = basename(dirname($metadataFile));
+                self::assertArrayHasKey($id, $overrides[$source] ?? [], $source . '/' . $id . ' has no curation');
+
+                $tags = $overrides[$source][$id]['tags'] ?? null;
+                self::assertIsArray($tags, $source . '/' . $id . ' must define tags');
+                self::assertGreaterThanOrEqual(2, count($tags), $source . '/' . $id . ' has too few tags');
+                self::assertLessThanOrEqual(5, count($tags), $source . '/' . $id . ' has too many tags');
+            }
+        }
+    }
 }
