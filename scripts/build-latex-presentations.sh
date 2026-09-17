@@ -30,6 +30,18 @@ for tex_file in "${tex_files[@]}"; do
 
   mkdir -p "$output_dir"
   cp "$build_dir/main.pdf" "$output_dir/$slug.pdf"
-  rm -rf "$build_dir"
 
+  pdftoppm \
+    -f 1 \
+    -singlefile \
+    -png \
+    -r 150 \
+    "$build_dir/main.pdf" \
+    "$output_dir/thumbnail"
+
+  if [ -f "$presentation_dir/metadata.json" ]; then
+    cp "$presentation_dir/metadata.json" "$output_dir/metadata.json"
+  fi
+
+  rm -rf "$build_dir"
 done
