@@ -42,6 +42,25 @@ final class TalkCatalogBuildTest extends TestCase
         self::assertStringNotContainsString('>pt-BR</span>', $html);
     }
 
+    public function testCatalogCardsExposeShareActionAlongsideDate(): void
+    {
+        $html = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
+        self::assertIsString($html);
+
+        self::assertStringContainsString('class="talk-card__share"', $html);
+        self::assertStringContainsString('data-talk-share', $html);
+        self::assertStringContainsString('aria-label="Compartilhar apresentação"', $html);
+        self::assertMatchesRegularExpression(
+            '/<div class="talk-card__meta-line">.*?<time[^>]*>.*?<\/time>.*?<button class="talk-card__share"/s',
+            $html,
+        );
+
+        $scss = file_get_contents(__DIR__ . '/../source/_assets/scss/talks-catalog.scss');
+        self::assertIsString($scss);
+        self::assertStringNotContainsString('min-height: 8rem', $scss);
+        self::assertStringContainsString('.talk-card__share', $scss);
+    }
+
     public function testTalkDetailKeepsSlideCountButOmitsLanguageLabel(): void
     {
         $html = file_get_contents($this->buildDirectory() . '/talks/bdd/index.html');
