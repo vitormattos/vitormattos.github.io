@@ -3,7 +3,7 @@
 @php
     $presentation = $talk->presentation ?? [];
     $talkIsEnglish = ($talk->locale ?? 'en') === 'en';
-    $pageIsEnglish = ($page->locale ?? $page->defaultLocale ?? 'en') === 'en';
+    $pageIsEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $slug = $talk->slug ?? null;
     $talkPath = $slug ? ($talkIsEnglish ? '/talks/' : '/pt-BR/palestras/') . $slug : '/' . ltrim($talk->getPath(), '/');
     $talkUrl = rtrim($page->baseUrl, '/') . $talkPath;
