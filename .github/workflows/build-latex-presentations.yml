@@ -46,18 +46,27 @@ jobs:
       - name: Install project dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
-      - name: Install LaTeX and rendering dependencies
+      - name: Install cached TeX Live
+        uses: zauguin/install-texlive@f5e7d0b117035fff797d4392ea94131747e03d60 # v4
+        with:
+          texlive_version: 2026
+          packages: |
+            scheme-basic
+            latexmk
+            lmodern
+            collection-fontsrecommended
+            collection-langportuguese
+            collection-latexextra
+            collection-latexrecommended
+            collection-pictures
+
+      - name: Ensure PDF rendering tools
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            latexmk \
-            lmodern \
-            poppler-utils \
-            texlive-fonts-recommended \
-            texlive-lang-portuguese \
-            texlive-latex-base \
-            texlive-latex-extra \
-            texlive-latex-recommended
+          if ! command -v pdftoppm >/dev/null || ! command -v pdfinfo >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends poppler-utils
+          fi
 
       - name: Test LaTeX publication policy
         run: vendor/bin/phpunit tests/Presentations/LatexPresentationTest.php
