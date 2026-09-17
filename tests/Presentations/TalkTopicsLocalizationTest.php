@@ -15,12 +15,12 @@ final class TalkTopicsLocalizationTest extends TestCase
     public function testLocalizesLabelsWithoutChangingCanonicalKeys(): void
     {
         $topics = TalkTopics::resolve((object) ['tags' => ['Software Livre', 'Privacidade', 'PHP']]);
+        $localized = TalkTopics::localized($topics, 'en');
 
-        self::assertSame(
-            ['Free Software', 'Privacy', 'PHP'],
-            array_values(TalkTopics::localized($topics, 'en')),
-        );
-        self::assertSame(array_keys($topics), array_keys(TalkTopics::localized($topics, 'en')));
+        self::assertSame('Free Software', $localized['software livre']);
+        self::assertSame('Privacy', $localized['privacidade']);
+        self::assertSame('PHP', $localized['php']);
+        self::assertSame(array_keys($topics), array_keys($localized));
     }
 
     public function testPortugueseLabelsRemainPortuguese(): void
