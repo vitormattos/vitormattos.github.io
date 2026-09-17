@@ -15,8 +15,7 @@ final class LatexPresentation
     public function __construct(
         public readonly string $directory,
         public readonly array $metadata,
-    ) {
-    }
+    ) {}
 
     public static function fromMetadataFile(string $path): self
     {
