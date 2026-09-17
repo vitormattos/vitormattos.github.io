@@ -90,6 +90,7 @@
 </head>
 
 <body>
+    @include('_partials.preview-badge')
     <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
     <header @class(['site-header', 'site-header--talks' => $isTalks])>
         <div class="site-header__bar">
