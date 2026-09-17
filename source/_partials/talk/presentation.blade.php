@@ -80,12 +80,14 @@
 
                 @if ($archivedPdf)
                     <a class="presentation-action" href="{{ $archivedPdf }}" target="_blank"
-                        rel="external noopener noreferrer"><span aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download PDF' : 'Baixar PDF' }}</span></a>
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download PDF' : 'Baixar PDF' }}</span></a>
                 @endif
 
                 @if ($presentation['video'] ?? false)
                     <a class="presentation-action" href="{{ $presentation['video'] }}" target="_blank"
-                        rel="external noopener noreferrer"><span aria-hidden="true">▶</span><span>{{ $isEnglish ? 'Video' : 'Vídeo' }}</span></a>
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">▶</span><span>{{ $isEnglish ? 'Video' : 'Vídeo' }}</span></a>
                 @endif
 
                 <details class="presentation-action-menu">
@@ -127,7 +129,8 @@
                 @if (count($slideShareDownloads) === 1)
                     @php($download = reset($slideShareDownloads))
                     <a class="presentation-action" href="{{ $download['href'] }}" target="_blank"
-                        rel="external noopener noreferrer"><span aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download ' : 'Baixar ' }}{{ $download['label'] }}</span></a>
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download ' : 'Baixar ' }}{{ $download['label'] }}</span></a>
                 @elseif (count($slideShareDownloads) > 1)
                     <details class="presentation-action-menu">
                         <summary class="presentation-action"><span
