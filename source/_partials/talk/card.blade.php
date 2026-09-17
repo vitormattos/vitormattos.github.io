@@ -30,7 +30,8 @@
     $wasUpdated = $activityTimestamp > $publishedTimestamp;
     $activityLabel = $wasUpdated ? ($isEnglish ? 'Updated' : 'Atualizado') : ($isEnglish ? 'Published' : 'Publicado');
 @endphp
-<article class="talk-card" data-talk-tags="{!! $encodedTags !!}" @if ($previewable) data-talk-preview-card @endif>
+<article class="talk-card" data-talk-tags="{!! $encodedTags !!}"
+    @if ($previewable) data-talk-preview-card @endif>
     <div class="talk-card__media" @if ($previewable) data-talk-preview-media @endif>
         <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
             @if ($thumbnail)
@@ -46,7 +47,8 @@
 
         @if ($previewable)
             <div class="talk-card__live-preview" data-talk-live-preview
-                data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}" @if ($thumbnail) hidden @endif>
+                data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}"
+                @if ($thumbnail) hidden @endif>
                 <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
                     <div class="slides">
                         <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
@@ -65,16 +67,20 @@
                     </svg>
                 </button>
                 <button class="talk-card__preview-action talk-card__preview-active-action" type="button"
-                    data-talk-preview-fullscreen data-tooltip="{{ $fullscreenLabel }}" aria-label="{{ $fullscreenLabel }}">
+                    data-talk-preview-fullscreen data-tooltip="{{ $fullscreenLabel }}"
+                    aria-label="{{ $fullscreenLabel }}">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path>
                     </svg>
                 </button>
                 <button class="talk-card__preview-action talk-card__preview-active-action" type="button"
-                    data-talk-preview-close data-tooltip="{{ $closePreviewLabel }}" aria-label="{{ $closePreviewLabel }}">
+                    data-talk-preview-close data-tooltip="{{ $closePreviewLabel }}"
+                    aria-label="{{ $closePreviewLabel }}">
                     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <path d="M3 3l18 18"></path>
-                        <path d="M10.6 6.2A10.9 10.9 0 0 1 12 6c6.1 0 9.5 6 9.5 6a17 17 0 0 1-2.8 3.6M14.1 14.1A3 3 0 0 1 9.9 9.9M6.1 6.1C3.7 7.9 2.5 12 2.5 12s3.4 6 9.5 6a10.8 10.8 0 0 0 4.1-.8"></path>
+                        <path
+                            d="M10.6 6.2A10.9 10.9 0 0 1 12 6c6.1 0 9.5 6 9.5 6a17 17 0 0 1-2.8 3.6M14.1 14.1A3 3 0 0 1 9.9 9.9M6.1 6.1C3.7 7.9 2.5 12 2.5 12s3.4 6 9.5 6a10.8 10.8 0 0 0 4.1-.8">
+                        </path>
                     </svg>
                 </button>
             </div>
