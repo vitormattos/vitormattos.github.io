@@ -54,9 +54,9 @@
 }
 
 \newcommand{\source}[1]{\vfill{\scriptsize\color{muted}#1}}
-\newcommand{\claim}[1]{\begin{center}\Large\bfseries #1\end{center}}
+\newcommand{\bigclaim}[1]{\begin{center}\Large\bfseries #1\end{center}}
 \newcommand{\pill}[2]{\tikz[baseline=(n.base)]\node[rounded corners=4pt,fill=#1,inner xsep=6pt,inner ysep=3pt](n){\scriptsize #2};}
-\newcommand{\boxword}[2]{\begin{tikzpicture}\node[align=center,rounded corners=7pt,fill=#1,inner sep=10pt,text width=3.3cm]{\Large\bfseries #2};\end{tikzpicture}}
+\newcommand{\card}[3]{\node[rounded corners=7pt,fill=#1,draw=#2,thick,inner sep=7pt,text width=2.75cm,align=center] {#3};}
 
 \title{Do software proprietário ao ecossistema aberto}
 \subtitle{Leitura crítica de Kilamo et al. (2012)}
@@ -69,241 +69,175 @@
 \begin{frame}[plain]
   \vspace{0.45cm}
   {\huge\bfseries Do software proprietário ao ecossistema aberto}\par
-  \vspace{0.22cm}
+  \vspace{0.20cm}
   {\large Leitura crítica de Kilamo et al. (2012)}\par
-  \vspace{0.70cm}
+  \vspace{0.75cm}
   \begin{center}
-  \begin{tikzpicture}[node distance=1.0cm]
-    \node[rounded corners=7pt,fill=utfprdark,text=white,minimum width=3.2cm,minimum height=1.1cm] (p) {proprietário};
-    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,right=of p,minimum width=3.2cm,minimum height=1.1cm] (a) {código aberto};
-    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of a,minimum width=3.2cm,minimum height=1.1cm] (e) {ecossistema};
-    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfpryellow] (p)--(a);
-    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfprteal] (a)--(e);
+  \begin{tikzpicture}[node distance=0.75cm]
+    \node[rounded corners=8pt,fill=utfprdark,text=white,minimum width=3.0cm,minimum height=1.05cm] (a) {produto fechado};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of a,minimum width=3.0cm,minimum height=1.05cm] (b) {abertura};
+    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of b,minimum width=3.0cm,minimum height=1.05cm] (c) {ecossistema};
+    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfpryellow] (a)--(b);
+    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfprteal] (b)--(c);
   \end{tikzpicture}
   \end{center}
-  \vspace{0.55cm}
+  \vspace{0.45cm}
   {\small Terhi Kilamo, Imed Hammouda, Tommi Mikkonen, Timo Aaltonen. \textit{From proprietary to open source: Growing an open source ecosystem}. Journal of Systems and Software, 2012.}
   \source{Seminário acadêmico. DOI: 10.1016/j.jss.2011.06.071.}
 \end{frame}
 
-\begin{frame}{Tese da apresentação}
-  \vspace{0.80cm}
-  \claim{Abrir código é condição inicial, não resultado final.}
-  \vspace{0.65cm}
+\begin{frame}{Tese da leitura}
+  \vspace{0.70cm}
+  \bigclaim{Abrir o código não cria, por si só, um ecossistema.}
+  \vspace{0.60cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.55cm]
+    \node[rounded corners=5pt,fill=softgray,draw=muted,minimum width=2.3cm,minimum height=0.78cm] (repo) {repositório};
+    \node[rounded corners=5pt,fill=softblue,draw=utfprblue,right=of repo,minimum width=2.3cm,minimum height=0.78cm] (rules) {regras};
+    \node[rounded corners=5pt,fill=softyellow,draw=utfpryellow,right=of rules,minimum width=2.3cm,minimum height=0.78cm] (trust) {confiança};
+    \node[rounded corners=5pt,fill=softgreen,draw=utfprteal,right=of trust,minimum width=2.3cm,minimum height=0.78cm] (work) {continuidade};
+    \draw[-{Stealth[length=2mm]},line width=0.9pt] (repo)--(rules);
+    \draw[-{Stealth[length=2mm]},line width=0.9pt] (rules)--(trust);
+    \draw[-{Stealth[length=2mm]},line width=0.9pt] (trust)--(work);
+  \end{tikzpicture}
+  \end{center}
+  \source{O artigo trata a abertura como processo socio-técnico, não como mera publicação de código.}
+\end{frame}
+
+\begin{frame}{Problema e pergunta de pesquisa}
+  \vspace{0.40cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+      \begin{tikzpicture}
+        \node[rounded corners=8pt,fill=softred,draw=muted,inner sep=10pt,text width=5.2cm,align=center]
+        {\Large Empresas liberam software proprietário};
+      \end{tikzpicture}
+    \column{0.49\textwidth}
+      \begin{tikzpicture}
+        \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,inner sep=10pt,text width=5.2cm,align=center]
+        {\Large Mas precisam formar comunidade};
+      \end{tikzpicture}
+  \end{columns}
+  \vspace{0.55cm}
+  \begin{center}
+  \begin{tikzpicture}
+    \node[rounded corners=6pt,fill=softblue,draw=utfprblue,thick,inner sep=12pt,text width=10.4cm,align=center]
+    {\large Que critérios, processos e métricas ajudam uma empresa a transformar software fechado em ecossistema aberto sustentável?};
+  \end{tikzpicture}
+  \end{center}
+  \source{Pergunta reconstruída a partir das cinco questões de pesquisa listadas pelos autores.}
+\end{frame}
+
+\begin{frame}{Como o estudo foi conduzido}
+  \vspace{0.50cm}
   \begin{center}
   \begin{tikzpicture}[node distance=0.9cm]
-    \node[rounded corners=6pt,fill=softyellow,draw=utfpryellow,thick,minimum width=3.0cm,minimum height=0.95cm] (a) {acesso};
-    \node[rounded corners=6pt,fill=softblue,draw=utfprblue,thick,right=of a,minimum width=3.0cm,minimum height=0.95cm] (b) {participação};
-    \node[rounded corners=6pt,fill=softgreen,draw=utfprteal,thick,right=of b,minimum width=3.0cm,minimum height=0.95cm] (c) {sustentação};
-    \draw[-{Stealth[length=3mm]},line width=1.1pt] (a)--(b);
-    \draw[-{Stealth[length=3mm]},line width=1.1pt] (b)--(c);
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,minimum width=4.0cm,minimum height=1.0cm] (c) {fase construtiva};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of c,minimum width=4.0cm,minimum height=1.0cm] (p) {pesquisa-ação};
+    \draw[-{Stealth[length=3mm]},line width=1.0pt] (c)--(p);
   \end{tikzpicture}
   \end{center}
-  \source{A apresentação reconstrói o argumento do artigo a partir dessa passagem.}
+  \vspace{0.45cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.33\textwidth}\centering\pill{softgray}{ferramentas}\par\small R3 e BULB
+    \column{0.33\textwidth}\centering\pill{softgray}{casos}\par\small 4 empresas
+    \column{0.33\textwidth}\centering\pill{softgray}{dados}\par\small produto, equipe, logs
+  \end{columns}
+  \source{Os autores combinam criação de modelos com aplicação em empresas, não um experimento controlado.}
 \end{frame}
 
-\begin{frame}{Problema empírico}
+\begin{frame}{OSCOMM em três fases}
   \vspace{0.55cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.65cm]
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,text width=3.05cm,align=center,minimum height=1.25cm] (r) {1\par Preparar\par \scriptsize prontidão};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of r,text width=3.05cm,align=center,minimum height=1.25cm] (e) {2\par Abrir\par \scriptsize engenharia};
+    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of e,text width=3.05cm,align=center,minimum height=1.25cm] (w) {3\par Observar\par \scriptsize comunidade};
+    \draw[-{Stealth[length=3mm]},line width=1.1pt] (r)--(e);
+    \draw[-{Stealth[length=3mm]},line width=1.1pt] (e)--(w);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.40cm}
+  \begin{center}\large O modelo transforma abertura em um processo de decisão.\end{center}
+  \source{Framework OSCOMM: Release Readiness Rating, Open Source Engineering e Community Watchdog.}
+\end{frame}
+
+\begin{frame}{R3: prontidão antes da abertura}
+  \vspace{0.45cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.42cm]
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,text width=2.55cm,align=center,minimum height=1.0cm] (sw) {software\par\scriptsize código, arquitetura, qualidade};
+    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of sw,text width=2.55cm,align=center,minimum height=1.0cm] (co) {comunidade\par\scriptsize propósito, usuários, parceiros};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of co,text width=2.55cm,align=center,minimum height=1.0cm] (le) {legal\par\scriptsize direitos, licença, marca};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of le,text width=2.55cm,align=center,minimum height=1.0cm] (au) {autoridade\par\scriptsize cultura, processo, suporte};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.40cm}
+  \bigclaim{O resultado não é “abrir ou não abrir”.}
+  \begin{center}\large É um mapa de gargalos para a fase seguinte.\end{center}
+  \source{No artigo, as quatro dimensões do R3 recebem peso igual; os itens internos têm pesos diferentes.}
+\end{frame}
+
+\begin{frame}{Gurux: o caso que torna o custo visível}
+  \vspace{0.40cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.33\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,inner sep=9pt,text width=3.1cm,align=center]{\Large 6 pessoas\\\small em tempo integral};\end{tikzpicture}
+      \end{center}
+    \column{0.33\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,inner sep=9pt,text width=3.1cm,align=center]{\Large 6 meses\\\small de preparação};\end{tikzpicture}
+      \end{center}
+    \column{0.33\textwidth}
+      \begin{center}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,inner sep=9pt,text width=3.1cm,align=center]{\Large 200 usuários\\\small após seis meses};\end{tikzpicture}
+      \end{center}
+  \end{columns}
+  \vspace{0.42cm}
+  \begin{center}\large O esforço foi subestimado; documentação e reescrita levaram quase o dobro do planejado.\end{center}
+  \source{Caso Gurux: abertura em 2009, refatoração, documentação, fórum, rastreador de erros e monitoramento da comunidade.}
+\end{frame}
+
+\begin{frame}{O que o artigo demonstra e o que não demonstra}
+  \vspace{0.45cm}
   \begin{columns}[T,onlytextwidth]
     \column{0.48\textwidth}
-      \begin{center}\boxword{softgray}{empresa fechada}\end{center}
-      \begin{itemize}
-        \item controle central
-        \item conhecimento interno
-        \item cliente consumidor
-      \end{itemize}
-    \column{0.04\textwidth}
-      \vspace{0.95cm}{\Huge $\rightarrow$}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,inner sep=10pt,text width=5.1cm]{\bfseries Demonstra\par\vspace{0.2cm}\small um vocabulário útil para planejar abertura; uma sequência plausível de ações; tipos de evidência a monitorar.};\end{tikzpicture}
     \column{0.48\textwidth}
-      \begin{center}\boxword{softgreen}{comunidade aberta}\end{center}
-      \begin{itemize}
-        \item atores externos
-        \item regras públicas
-        \item contribuição recorrente
-      \end{itemize}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softred,draw=muted,thick,inner sep=10pt,text width=5.1cm]{\bfseries Não demonstra\par\vspace{0.2cm}\small causalidade; generalização forte; receita suficiente para sustentabilidade; efeito de longo prazo.};\end{tikzpicture}
   \end{columns}
-  \source{Reconstituído a partir do objetivo do artigo e do modelo OSCOMM.}
+  \source{Os próprios autores reconhecem limites de validade: confidencialidade, poucos casos, granularidade desigual e participação ativa dos pesquisadores.}
 \end{frame}
 
-\begin{frame}{Questão reconstruída}
-  \vspace{0.9cm}
-  \begin{center}
-    \begin{tikzpicture}
-      \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,inner sep=15pt,text width=10.5cm,align=center]
-      {\Large Como transformar um produto proprietário em uma comunidade aberta sustentável?};
-    \end{tikzpicture}
-  \end{center}
-  \vspace{0.55cm}
-  \begin{center}
-    \pill{softred}{observação metodológica}\quad
-    O artigo não formula uma pergunta numerada.
-  \end{center}
-\end{frame}
-
-\begin{frame}{Contribuição principal}
-  \vspace{0.25cm}
-  \claim{OSCOMM: um modelo de maturidade comunitária}
-  \vspace{0.25cm}
-  \begin{center}
-  \begin{tikzpicture}[scale=0.72,every node/.style={font=\small}]
-    \node[circle,fill=utfprdark,text=white,minimum size=1.55cm,align=center] (core) {OSCOMM};
-    \foreach \name/\ang/\txt in {produto/90/Produto,processo/30/Processo,infra/-30/Infraestrutura,govern/-90/Governança,negocio/-150/Negócio,comunidade/150/Comunidade}{
-      \node[circle,fill=softblue,draw=utfprblue,thick,minimum size=1.35cm,align=center] (\name) at (\ang:2.45cm) {\txt};
-      \draw[-{Stealth[length=2mm]},muted] (core) -- (\name);
-    }
-  \end{tikzpicture}
-  \end{center}
-  \source{OSCOMM: Open Source Community Maturity Model, conforme Kilamo et al. (2012).}
-\end{frame}
-
-\begin{frame}{Fase 1: antes de abrir}
-  \vspace{0.80cm}
-  \claim{A abertura começa antes da publicação.}
+\begin{frame}{Confronto com a prática: LibreSign}
   \vspace{0.55cm}
   \begin{center}
   \begin{tikzpicture}[node distance=0.55cm]
-    \node[rounded corners=5pt,fill=softgray,draw=muted,minimum width=2.4cm,minimum height=0.85cm] (l) {licença};
-    \node[rounded corners=5pt,fill=softgray,draw=muted,right=of l,minimum width=2.4cm,minimum height=0.85cm] (d) {documentação};
-    \node[rounded corners=5pt,fill=softgray,draw=muted,right=of d,minimum width=2.4cm,minimum height=0.85cm] (i) {infraestrutura};
-    \node[rounded corners=5pt,fill=softgray,draw=muted,right=of i,minimum width=2.4cm,minimum height=0.85cm] (g) {governança};
+    \node[rounded corners=7pt,fill=utfprdark,text=white,minimum width=2.45cm,minimum height=0.9cm] (repo) {código};
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,right=of repo,minimum width=2.45cm,minimum height=0.9cm] (qual) {qualidade};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,right=of qual,minimum width=2.45cm,minimum height=0.9cm] (docs) {entrada};
+    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,right=of docs,minimum width=2.45cm,minimum height=0.9cm] (gov) {governança};
+    \draw[-{Stealth[length=2mm]},line width=0.9pt] (repo)--(qual);
+    \draw[-{Stealth[length=2mm]},line width=0.9pt] (qual)--(docs);
+    \draw[-{Stealth[length=2mm]},line width=0.9pt] (docs)--(gov);
   \end{tikzpicture}
   \end{center}
-\end{frame}
-
-\begin{frame}{Fase 2: abertura pública}
-  \vspace{0.70cm}
-  \begin{center}
-  \begin{tikzpicture}[x=1cm,y=1cm]
-    \node[rounded corners=7pt,fill=utfprdark,text=white,minimum width=3.0cm,minimum height=1.0cm] (repo) at (1.7,0) {repositório};
-    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,minimum width=3.0cm,minimum height=1.0cm] (canal) at (5.4,0) {canais};
-    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,minimum width=3.0cm,minimum height=1.0cm] (entrada) at (9.1,0) {contribuição};
-    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfpryellow] (repo)--(canal);
-    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfprteal] (canal)--(entrada);
-    \node[align=center,text width=10cm] at (5.4,-1.35) {\large Abertura precisa produzir \textbf{interação}, não apenas visibilidade.};
-  \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Fase 3: ecossistema}
-  \vspace{0.50cm}
-  \begin{center}
-  \begin{tikzpicture}[every node/.style={font=\small}]
-    \node[circle,fill=utfprteal,text=white,minimum size=1.55cm] (m) at (0,0) {núcleo};
-    \foreach \name/\x/\y/\txt in {u/-2.6/1.2/usuários,c/2.6/1.2/clientes,p/-2.8/-1.2/parceiros,d/2.8/-1.2/desenvolvedores,e/0/-2.2/extensões}{
-      \node[circle,fill=softgreen,draw=utfprteal,minimum size=1.55cm,align=center] (\name) at (\x,\y) {\txt};
-      \draw[utfprteal!65,line width=1pt] (m)--(\name);
-    }
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.12cm}
-  \begin{center}\large Comunidade madura = atores externos com poder real de ação.\end{center}
-\end{frame}
-
-\begin{frame}{Evidência usada}
   \vspace{0.55cm}
-  \begin{center}
-  \begin{tikzpicture}[x=1cm,y=1cm]
-    \draw[muted,line width=0.8pt] (0,0)--(10.6,0);
-    \foreach \x/\lab in {0.8/Notava,3.0/ITMill,5.2/Sesca,7.4/Gurux}{
-      \fill[utfprblue] (\x,0) circle (3pt);
-      \node[above=0.18cm,align=center] at (\x,0) {\bfseries \lab};
-    }
-    \node[rounded corners=5pt,fill=softyellow,draw=utfpryellow,text width=2.4cm,align=center] at (9.5,0.65) {casos de aplicação};
-    \draw[-{Stealth[length=2mm]},utfpryellow] (8.45,0.50)--(7.55,0.08);
-    \node[below=0.45cm,text width=10.5cm,align=center] at (5.3,0) {O artigo ilustra e refina o modelo; não testa causalmente sua eficácia.};
-  \end{tikzpicture}
-  \end{center}
+  \begin{center}\large A experiência prática serve como lente crítica, não como evidência do artigo.\end{center}
+  \source{A ponte com LibreSign/LibreCode ajuda a formular hipóteses futuras: qualidade, entrada de contribuidores, governança e sustentabilidade.}
 \end{frame}
 
-\begin{frame}{O que o artigo faz bem}
-  \vspace{0.60cm}
-  \begin{columns}[T,onlytextwidth]
-    \column{0.33\textwidth}
-      \begin{center}\boxword{softgreen}{estrutura}\end{center}
-      \centering\small Organiza dimensões normalmente tratadas em separado.
-    \column{0.33\textwidth}
-      \begin{center}\boxword{softgreen}{linguagem}\end{center}
-      \centering\small Discute maturidade sem depender só de intuição.
-    \column{0.33\textwidth}
-      \begin{center}\boxword{softgreen}{transição}\end{center}
-      \centering\small Trata abertura como processo, não evento único.
-  \end{columns}
-\end{frame}
-
-\begin{frame}{O que o artigo não prova}
-  \vspace{0.60cm}
-  \begin{columns}[T,onlytextwidth]
-    \column{0.33\textwidth}
-      \begin{center}\boxword{softred}{causalidade}\end{center}
-      \centering\small O modelo não é testado como causa de crescimento.
-    \column{0.33\textwidth}
-      \begin{center}\boxword{softred}{generalização}\end{center}
-      \centering\small Os casos limitam extrapolações fortes.
-    \column{0.33\textwidth}
-      \begin{center}\boxword{softred}{operação}\end{center}
-      \centering\small O modelo orienta, mas não resolve a rotina da governança.
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Código aberto e software livre}
-  \vspace{0.65cm}
-  \begin{center}
-  \begin{tikzpicture}[x=1cm,y=1cm]
-    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,minimum width=4.5cm,minimum height=1.3cm,align=center] (ca) at (3.3,0) {\Large código aberto\\\small acesso e colaboração};
-    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,minimum width=4.5cm,minimum height=1.3cm,align=center] (sl) at (8.2,0) {\Large software livre\\\small liberdade e governança};
-    \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]},line width=1pt,muted] (ca)--(sl);
-    \node[text width=10.8cm,align=center] at (5.75,-1.45) {\large O artigo usa a linguagem de \textit{open source}; nossa leitura explicita o que isso pode deixar fora.};
-  \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Confronto com a prática}
-  \vspace{0.60cm}
-  \begin{columns}[T,onlytextwidth]
-    \column{0.48\textwidth}
-      \begin{center}\boxword{softyellow}{LibreSign\\LibreCode}\end{center}
-    \column{0.04\textwidth}
-      \vspace{0.7cm}{\Huge $\neq$}
-    \column{0.48\textwidth}
-      \begin{center}\boxword{softgray}{evidência\\do artigo}\end{center}
-  \end{columns}
+\begin{frame}{Síntese crítica}
   \vspace{0.55cm}
-  \begin{center}
-    \large Experiência profissional é \textbf{lente crítica}, não prova empírica.
-  \end{center}
-\end{frame}
-
-\begin{frame}{Perguntas que ficam}
-  \vspace{0.42cm}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.42cm]
-    \node[rounded corners=6pt,fill=softgray,draw=muted,text width=9.4cm,align=center,minimum height=0.78cm] (q1) {Quem decide quando comunidade e empresa discordam?};
-    \node[rounded corners=6pt,fill=softgray,draw=muted,text width=9.4cm,align=center,minimum height=0.78cm,below=of q1] (q2) {Como medir maturidade sem confundir movimento com saúde?};
-    \node[rounded corners=6pt,fill=softgray,draw=muted,text width=9.4cm,align=center,minimum height=0.78cm,below=of q2] (q3) {Quando abertura vira estratégia comercial sem reciprocidade?};
-    \node[rounded corners=6pt,fill=softgray,draw=muted,text width=9.4cm,align=center,minimum height=0.78cm,below=of q3] (q4) {Que evidências indicam sustentabilidade de longo prazo?};
-  \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Fechamento}
-  \vspace{0.80cm}
-  \claim{A pergunta não é: ``o código está aberto?''}
-  \vspace{0.55cm}
-  \begin{center}
-    \begin{tikzpicture}
-      \node[rounded corners=8pt,fill=utfprdark,text=white,inner sep=14pt,text width=10.2cm,align=center]
-      {\Large A pergunta mais exigente é: \textbf{quem consegue participar, decidir e sustentar o projeto?}};
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-\begin{frame}[allowframebreaks]{Referências}
-  \footnotesize
-  \begin{thebibliography}{9}
-    \bibitem{kilamo2012} Kilamo, T.; Hammouda, I.; Mikkonen, T.; Aaltonen, T. \textit{From proprietary to open source: Growing an open source ecosystem}. Journal of Systems and Software, 85(7), 1467--1478, 2012. DOI: 10.1016/j.jss.2011.06.071.
-    \bibitem{wohlina} Wohlin, C. et al. \textit{Experimentation in Software Engineering}. Springer, 2012.
-    \bibitem{shull} Shull, F.; Singer, J.; Sjøberg, D. I. K. \textit{Guide to Advanced Empirical Software Engineering}. Springer, 2008.
-  \end{thebibliography}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.33\textwidth}\centering\pill{softgreen}{sólido}\par\small abertura exige preparação, processo e monitoramento.
+    \column{0.33\textwidth}\centering\pill{softyellow}{revisar}\par\small evidência ainda é exploratória e dependente de contexto.
+    \column{0.33\textwidth}\centering\pill{softred}{incômodo}\par\small quando comunidade vira ecossistema de fato?
+  \end{columns}
+  \vspace{0.75cm}
+  \bigclaim{O artigo é melhor como instrumento de diagnóstico do que como prova de sucesso.}
+  \source{Conclusão: OSCOMM documenta elementos necessários, mas os autores afirmam que mais casos reais são necessários para consolidar a área.}
 \end{frame}
 
 \end{document}
