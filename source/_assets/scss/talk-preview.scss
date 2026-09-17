@@ -25,9 +25,15 @@
     display: none;
 }
 
-.talk-card__live-preview .reveal {
+.talk-card__live-preview .reveal,
+.talk-card__preview-embed {
     width: 100%;
     height: 100%;
+}
+
+.talk-card__preview-embed {
+    display: block;
+    border: 0;
 }
 
 .talk-card__preview-actions {
