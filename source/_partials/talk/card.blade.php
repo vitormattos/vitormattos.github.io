@@ -18,6 +18,7 @@
     $previewable = $revealPreviewable || $slidesComPreviewable;
     $previewSource = $sourcePath ?? $localHtml;
     $thumbnailId = $previewable ? 'thumb-' . substr(sha1((string) $previewSource), 0, 10) : null;
+    $slidesTheme = $slidesComPreviewable ? (string) ($presentation['themeColor'] ?? '') : '';
     $topics = \App\Presentations\TalkTopics::localized(
         \App\Presentations\TalkTopics::resolve($talk),
         $isEnglish ? 'en' : 'pt-BR',
@@ -61,7 +62,7 @@
                 data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}"
                 @if ($thumbnail) hidden @endif>
                 <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail"
-                    @if ($slidesComPreviewable) data-preview-html="{{ $page->baseUrl }}{{ $localHtml }}" @endif
+                    @if ($slidesComPreviewable) data-preview-html="{{ $page->baseUrl }}{{ $localHtml }}" data-slides-theme="{{ $slidesTheme }}" @endif
                     @if ($slidesComPreviewable && $localCss) data-preview-css="{{ $page->baseUrl }}{{ $localCss }}" @endif>
                     <div class="slides">
                         @if ($revealPreviewable)
