@@ -27,6 +27,28 @@ final class TalkCatalogBuildTest extends TestCase
         }
     }
 
+    public function testCatalogDatesFollowPageLocale(): void
+    {
+        $portuguese = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
+        $english = file_get_contents($this->buildDirectory() . '/talks/index.html');
+        self::assertIsString($portuguese);
+        self::assertIsString($english);
+
+        preg_match_all('/<time datetime="\d{4}-\d{2}-\d{2}">([^<]+)<\/time>/', $portuguese, $portugueseDates);
+        preg_match_all('/<time datetime="\d{4}-\d{2}-\d{2}">([^<]+)<\/time>/', $english, $englishDates);
+
+        self::assertNotEmpty($portugueseDates[1]);
+        self::assertNotEmpty($englishDates[1]);
+
+        foreach ($portugueseDates[1] as $date) {
+            self::assertMatchesRegularExpression('/^\d{2}\/\d{2}\/\d{4}$/', $date);
+        }
+
+        foreach ($englishDates[1] as $date) {
+            self::assertMatchesRegularExpression('/^[A-Z][a-z]{2} \d{2}, \d{4}$/', $date);
+        }
+    }
+
     public function testCatalogCardsDoNotExposePresentationFormatsOrDownloadActions(): void
     {
         $html = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
