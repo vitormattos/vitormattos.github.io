@@ -6,6 +6,7 @@ import Markdown from 'reveal.js/plugin/markdown';
 
 const decks = new Map();
 const initializations = new Map();
+const loadedStylesheets = new Set();
 
 function previewConfiguration(active = false) {
     return {
@@ -26,17 +27,46 @@ function previewConfiguration(active = false) {
     };
 }
 
-function ensureDeck(root) {
-    if (decks.has(root.id)) return Promise.resolve(decks.get(root.id));
+function ensureStylesheet(href) {
+    if (!href || loadedStylesheets.has(href)) return;
+    loadedStylesheets.add(href);
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.dataset.talkPreviewStylesheet = 'true';
+    document.head.append(link);
+}
+
+async function ensureLocalSlides(root) {
+    const htmlUrl = root.dataset.previewHtml;
+    if (!htmlUrl || root.dataset.previewHtmlReady === 'true') return;
+
+    const response = await fetch(htmlUrl, { credentials: 'same-origin' });
+    if (!response.ok) throw new Error(`Unable to load presentation HTML: ${response.status}`);
+
+    const html = await response.text();
+    const slides = root.querySelector('.slides');
+    if (!slides) return;
+
+    slides.innerHTML = html;
+    root.dataset.previewHtmlReady = 'true';
+    ensureStylesheet(root.dataset.previewCss);
+}
+
+async function ensureDeck(root) {
+    if (decks.has(root.id)) return decks.get(root.id);
     if (initializations.has(root.id)) return initializations.get(root.id);
 
-    const deck = new Reveal(root, previewConfiguration(false));
-    decks.set(root.id, deck);
+    const initialization = (async () => {
+        await ensureLocalSlides(root);
 
-    const initialization = deck.initialize().then(() => {
+        const deck = new Reveal(root, previewConfiguration(false));
+        decks.set(root.id, deck);
+        await deck.initialize();
         root.dataset.previewReady = 'true';
         return deck;
-    }).finally(() => {
+    })().finally(() => {
         initializations.delete(root.id);
     });
 
@@ -46,42 +76,37 @@ function ensureDeck(root) {
 
 function initializeVisibleDeck(root) {
     if (!('IntersectionObserver' in window)) {
-        ensureDeck(root);
+        void ensureDeck(root);
         return;
     }
 
     const observer = new IntersectionObserver((entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
         observer.disconnect();
-        ensureDeck(root);
+        void ensureDeck(root);
     }, { rootMargin: '240px' });
 
     observer.observe(root);
 }
 
-function ensureEmbed(card) {
-    const iframe = card.querySelector('[data-talk-preview-embed]');
-    if (!iframe || iframe.src) return;
-    iframe.src = iframe.dataset.src ?? '';
-}
-
 async function activatePreview(card) {
     const livePreview = card.querySelector('[data-talk-live-preview]');
-    if (!livePreview) return;
+    const root = card.querySelector('.js-talk-preview-deck');
+    if (!livePreview || !root) return;
 
     livePreview.hidden = false;
     card.classList.add('is-previewing');
 
-    const root = card.querySelector('.js-talk-preview-deck');
-    if (root) {
+    try {
         const deck = await ensureDeck(root);
         deck.configure(previewConfiguration(true));
         deck.layout();
         root.focus();
-        return;
+    } catch (error) {
+        card.classList.remove('is-previewing');
+        if (livePreview.dataset.previewOverlay === 'true') livePreview.hidden = true;
+        console.error(error);
     }
-
-    ensureEmbed(card);
 }
 
 function deactivatePreview(card) {
