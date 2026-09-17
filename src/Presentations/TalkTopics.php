@@ -14,12 +14,18 @@ final class TalkTopics
     public static function resolve(object $talk): array
     {
         $topics = [];
-        self::collect($topics, $talk->tags ?? []);
-        $presentation = $talk->presentation ?? [];
-        if (is_array($presentation)) {
-            $metadataPath = trim((string) ($presentation['metadata'] ?? ''));
-            if ($metadataPath !== '') {
-                self::collectFromMetadata($topics, $metadataPath);
+        $curatedTags = self::curatedTags($talk);
+
+        if ($curatedTags !== null) {
+            self::collect($topics, $curatedTags);
+        } else {
+            self::collect($topics, $talk->tags ?? []);
+            $presentation = $talk->presentation ?? [];
+            if (is_array($presentation)) {
+                $metadataPath = trim((string) ($presentation['metadata'] ?? ''));
+                if ($metadataPath !== '') {
+                    self::collectFromMetadata($topics, $metadataPath);
+                }
             }
         }
 
@@ -66,9 +72,9 @@ final class TalkTopics
     }
 
     /**
-     * The catalog filter intentionally exposes only recurring topics. All
-     * original tags remain attached to each talk and in source metadata, so
-     * this presentation rule is non-destructive and can be changed later.
+     * The catalog filter intentionally exposes only recurring topics. Provider
+     * tags remain preserved in source metadata, while curated tags replace
+     * them only in the editorial taxonomy exposed by this site.
      *
      * @return array{items: list<object>, topics: array<string, array{label: string, count: int}>}
      */
@@ -123,6 +129,38 @@ final class TalkTopics
         }
 
         return 'slug:' . (string) ($talk->slug ?? $talk->title ?? spl_object_id($talk));
+    }
+
+    /** @return list<mixed>|null */
+    private static function curatedTags(object $talk): ?array
+    {
+        $presentation = $talk->presentation ?? [];
+        if (!is_array($presentation)) {
+            return null;
+        }
+
+        $source = trim((string) ($presentation['type'] ?? $presentation['source'] ?? ''));
+        $id = trim((string) ($talk->slidesId ?? ''));
+        if ($source === '' || $id === '') {
+            return null;
+        }
+
+        $path = dirname(__DIR__, 2) . '/data/presentation-overrides.php';
+        if (!is_file($path)) {
+            return null;
+        }
+
+        $overrides = require $path;
+        if (!is_array($overrides)) {
+            return null;
+        }
+
+        $override = $overrides[$source][$id] ?? null;
+        if (!is_array($override) || !array_key_exists('tags', $override)) {
+            return null;
+        }
+
+        return (array) $override['tags'];
     }
 
     private static function collect(array &$topics, mixed $value): void
