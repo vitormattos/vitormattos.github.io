@@ -1,0 +1,12 @@
+/* SPDX-FileCopyrightText: 2026 Vitor Mattos */
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+
+@use 'variables' as *;
+
+@media (max-width: 48rem) {
+    .talk-detail {
+        margin-inline: calc($page-gutter * -1);
+        border-inline: 0;
+        border-radius: 0;
+    }
+}
