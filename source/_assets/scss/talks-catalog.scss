@@ -37,6 +37,12 @@
     text-decoration: none;
 }
 
+.talks-profile__name {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 650;
+}
+
 .talks-profile__identity:hover .talks-profile__name,
 .talks-profile__identity:focus-visible .talks-profile__name {
     color: var(--link);
@@ -47,12 +53,6 @@
     outline: 2px solid var(--link);
     outline-offset: 0.3rem;
     border-radius: 0.4rem;
-}
-
-.talks-profile__name {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 650;
 }
 
 .talks-profile__summary {
