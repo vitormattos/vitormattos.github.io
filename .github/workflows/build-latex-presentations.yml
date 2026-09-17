@@ -7,15 +7,19 @@ on:
   pull_request:
     paths:
       - 'presentations/latex/**'
-      - 'scripts/build-latex-presentations.sh'
-      - 'scripts/publish-latex-presentations.sh'
+      - 'scripts/build-latex-presentations.php'
+      - 'scripts/publish-latex-presentations.php'
+      - 'src/Presentations/LatexPresentation.php'
+      - 'tests/Presentations/LatexPresentationTest.php'
       - '.github/workflows/build-latex-presentations.yml'
   push:
     branches: [main]
     paths:
       - 'presentations/latex/**'
-      - 'scripts/build-latex-presentations.sh'
-      - 'scripts/publish-latex-presentations.sh'
+      - 'scripts/build-latex-presentations.php'
+      - 'scripts/publish-latex-presentations.php'
+      - 'src/Presentations/LatexPresentation.php'
+      - 'tests/Presentations/LatexPresentationTest.php'
       - '.github/workflows/build-latex-presentations.yml'
   workflow_dispatch:
 
@@ -34,11 +38,18 @@ jobs:
         with:
           persist-credentials: ${{ github.event_name == 'push' }}
 
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Install project dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
       - name: Install LaTeX and rendering dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            jq \
             latexmk \
             poppler-utils \
             texlive-fonts-recommended \
@@ -47,8 +58,18 @@ jobs:
             texlive-latex-extra \
             texlive-latex-recommended
 
+      - name: Test LaTeX publication policy
+        run: vendor/bin/phpunit tests/Presentations/LatexPresentationTest.php
+
       - name: Build presentation PDFs and thumbnails
-        run: bash scripts/build-latex-presentations.sh
+        run: php scripts/build-latex-presentations.php
+
+      - name: Validate generated files
+        run: |
+          test -s source/presentations/latex/open-source-ecosystem-review/open-source-ecosystem-review.pdf
+          test -s source/presentations/latex/open-source-ecosystem-review/thumbnail.png
+          test -s source/presentations/latex/open-source-ecosystem-review/metadata.json
+          pdfinfo source/presentations/latex/open-source-ecosystem-review/open-source-ecosystem-review.pdf | grep -q '^Pages:'
 
       - name: Upload generated presentation artifacts
         uses: actions/upload-artifact@v4
@@ -64,13 +85,11 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bash scripts/publish-latex-presentations.sh
+        run: php scripts/publish-latex-presentations.php
 
       - name: Commit synchronized release manifests
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        shell: bash
         run: |
-          set -euo pipefail
           git add presentations/latex/*/export.json
 
           if git diff --cached --quiet; then
