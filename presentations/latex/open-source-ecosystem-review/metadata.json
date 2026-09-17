@@ -2,7 +2,7 @@
   "schema": 1,
   "slug": "open-source-ecosystem-review",
   "title": "Do software proprietário ao ecossistema aberto",
-  "description": "Seminário acadêmico de leitura crítica do artigo de Kilamo et al. (2012) sobre a passagem de um produto proprietário para uma comunidade aberta. O material discute o modelo OSCOMM, diferencia abertura de código, participação e sustentação comunitária e examina os limites metodológicos da evidência apresentada no artigo.",
+  "description": "Seminário acadêmico de leitura crítica de Kilamo et al. (2012) sobre como transformar software proprietário em um ecossistema aberto. A apresentação examina as questões de pesquisa, o método baseado em construção de artefatos e pesquisa-ação, as três fases do OSCOMM, o modelo R3, o caso Gurux e os limites da evidência empírica, relacionando-os criticamente à prática contemporânea de comunidades de software livre.",
   "kind": "academic-seminar",
   "language": "pt-BR",
   "date": "2026-09-17",
@@ -10,14 +10,15 @@
   "institution": "Universidade Tecnológica Federal do Paraná (UTFPR)",
   "course": "Software Livre",
   "source": "main.tex",
-  "slide_count": 16,
+  "slide_count": 10,
   "width": 1920,
   "height": 1080,
   "tags": [
     "software livre",
     "open source",
     "ecossistemas de tecnologia",
-    "desenvolvimento de software"
+    "comunidades de software",
+    "engenharia de software empírica"
   ],
   "reviewed_work": {
     "title": "From proprietary to open source: Growing an open source ecosystem",
