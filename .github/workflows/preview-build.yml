@@ -94,7 +94,7 @@ jobs:
 
       - name: Build LaTeX presentation PDFs
         if: github.event.action != 'closed'
-        run: bash scripts/build-latex-presentations.sh
+        run: php scripts/build-latex-presentations.php
 
       - name: Build preview
         if: github.event.action != 'closed'
