@@ -20,6 +20,7 @@
     $isAbout = $currentPath === $aboutPath;
     $isArticles = $currentPath === $articlesPath || str_starts_with($currentPath, $articlesPath . '/');
     $isTalks = $currentPath === $talksPath || str_starts_with($currentPath, $talksPath . '/');
+    $isTalksCatalog = $currentPath === $talksPath;
 @endphp
 <!doctype html>
 <html lang="{{ $locale }}"
@@ -92,7 +93,7 @@
 <body>
     @include('_partials.preview-badge')
     <a class="skip-link" href="#main-content">{{ $isEnglish ? 'Skip to content' : 'Pular para o conteúdo' }}</a>
-    <header @class(['site-header', 'site-header--talks' => $isTalks])>
+    <header @class(['site-header', 'site-header--talks' => $isTalksCatalog])>
         <div class="site-header__bar">
             <a class="site-identity" href="{{ $page->baseUrl }}{{ $homePath }}"
                 aria-label="{{ $page->author['name'] }}">
