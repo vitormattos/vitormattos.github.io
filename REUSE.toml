@@ -7,6 +7,7 @@ path = [
     ".prettierrc.json",
     ".stylelintrc.json",
     "composer.json",
+    "composer.lock",
     "package.json",
     "source/robots.txt.blade.php"
 ]
