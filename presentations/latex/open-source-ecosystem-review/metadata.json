@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "slug": "open-source-ecosystem-review",
+  "title": "Do software proprietário ao ecossistema aberto",
+  "description": "Seminário acadêmico de leitura crítica do artigo de Kilamo et al. (2012) sobre a passagem de um produto proprietário para uma comunidade aberta. O material discute o modelo OSCOMM, diferencia abertura de código, participação e sustentação comunitária e examina os limites metodológicos da evidência apresentada no artigo.",
+  "kind": "academic-seminar",
+  "language": "pt-BR",
+  "date": "2026-09-17",
+  "author": "Vitor Mattos",
+  "institution": "Universidade Tecnológica Federal do Paraná (UTFPR)",
+  "course": "Software Livre",
+  "source": "main.tex",
+  "slide_count": 16,
+  "width": 1920,
+  "height": 1080,
+  "tags": [
+    "software livre",
+    "open source",
+    "ecossistemas de tecnologia",
+    "desenvolvimento de software"
+  ],
+  "reviewed_work": {
+    "title": "From proprietary to open source: Growing an open source ecosystem",
+    "authors": [
+      "Terhi Kilamo",
+      "Imed Hammouda",
+      "Tommi Mikkonen",
+      "Timo Aaltonen"
+    ],
+    "year": 2012,
+    "doi": "10.1016/j.jss.2011.06.071"
+  }
+}
