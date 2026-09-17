@@ -37,5 +37,14 @@
     ],
     "src": "source/_assets/scss/talks-catalog.scss",
     "isEntry": true
+  },
+  "source/_assets/scss/talks-list-flow.scss": {
+    "file": "assets/talks-list-flow-BkkcH-BC.css",
+    "name": "talks-list-flow",
+    "names": [
+      "talks-list-flow.css"
+    ],
+    "src": "source/_assets/scss/talks-list-flow.scss",
+    "isEntry": true
   }
 }
