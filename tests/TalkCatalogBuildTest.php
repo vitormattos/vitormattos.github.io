@@ -27,18 +27,19 @@ final class TalkCatalogBuildTest extends TestCase
         }
     }
 
-    public function testCatalogCardsExposeOnlyPdfAsPresentationFormat(): void
+    public function testCatalogCardsDoNotExposePresentationFormatsOrDownloadActions(): void
     {
         $html = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
         self::assertIsString($html);
 
+        self::assertStringNotContainsString('class="format-badge"', $html);
+        self::assertStringNotContainsString('class="talk-card__formats"', $html);
         self::assertStringNotContainsString('<span class="format-badge">slideshare</span>', $html);
         self::assertStringNotContainsString('<span class="format-badge">slides.com</span>', $html);
         self::assertStringNotContainsString('<span class="format-badge">HTML</span>', $html);
         self::assertStringNotContainsString('<span class="format-badge">PPTX</span>', $html);
         self::assertStringNotContainsString(' slides</span>', $html);
         self::assertStringNotContainsString('>pt-BR</span>', $html);
-        self::assertMatchesRegularExpression('/<a class="format-badge" href="[^"]+\.pdf"[^>]*>PDF<\/a>/', $html);
     }
 
     public function testTalkDetailKeepsSlideCountButOmitsLanguageLabel(): void
