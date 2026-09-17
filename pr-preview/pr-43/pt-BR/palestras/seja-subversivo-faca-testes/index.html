@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-BR"
+    >
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <script>
+        (() => {
+            const storageKey = 'site-locale';
+            const root = document.documentElement;
+            const currentLocale = root.lang === 'pt-BR' ? 'pt-BR' : 'en';
+            const alternateLocale = root.dataset.alternateLocale;
+            const alternateUrl = root.dataset.alternateUrl;
+            let preferredLocale = null;
+
+            try {
+                const storedLocale = localStorage.getItem(storageKey);
+                if (storedLocale === 'en' || storedLocale === 'pt-BR') {
+                    preferredLocale = storedLocale;
+                }
+            } catch (_) {
+                // Fall back to the browser language when storage is unavailable.
+            }
+
+            if (preferredLocale === null) {
+                const browserLocale = (navigator.languages?.[0] ?? navigator.language ?? 'en').toLowerCase();
+                preferredLocale = browserLocale.startsWith('pt') ? 'pt-BR' : 'en';
+            }
+
+            if (alternateUrl && alternateLocale === preferredLocale && currentLocale !== preferredLocale) {
+                window.location.replace(alternateUrl);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const languageSwitch = document.querySelector('[data-language-switch]');
+                languageSwitch?.addEventListener('click', () => {
+                    const selectedLocale = languageSwitch.dataset.locale;
+                    if (selectedLocale !== 'en' && selectedLocale !== 'pt-BR') return;
+
+                    try {
+                        localStorage.setItem(storageKey, selectedLocale);
+                    } catch (_) {
+                        // Navigation still works when storage is unavailable.
+                    }
+                });
+            });
+        })();
+    </script>
+    <title>Seja subversivo, faça testes · Vitor Mattos</title>
+    <meta name="description" content="Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Seja subversivo, faça testes · Vitor Mattos">
+<meta property="og:description" content="Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não.">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png">
+<meta property="og:image:secure_url" content="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+<meta property="og:image:alt" content="Seja subversivo, faça testes">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Seja subversivo, faça testes · Vitor Mattos">
+<meta name="twitter:description" content="Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não.">
+<meta name="twitter:image" content="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png">
+<meta name="twitter:image:alt" content="Seja subversivo, faça testes">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","image":"https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&r=g","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes#webpage","url":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes","name":"Seja subversivo, faça testes","description":"Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não.","image":"https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png","primaryImageOfPage":{"@type":"ImageObject","url":"https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png"},"inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes#breadcrumb"}},{"@type":"CreativeWork","@id":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes#content","url":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes","name":"Seja subversivo, faça testes","headline":"Seja subversivo, faça testes","description":"Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não.","image":"https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png","inLanguage":"pt-BR","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes#webpage"},"datePublished":"2016-07-17T00:00:00+00:00","dateModified":"2016-07-17T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://vitormattos.github.io/pt-BR"},{"@type":"ListItem","position":2,"name":"Palestras","item":"https://vitormattos.github.io/pt-BR/palestras"},{"@type":"ListItem","position":3,"name":"Seja subversivo, faça testes","item":"https://vitormattos.github.io/pt-BR/palestras/seja-subversivo-faca-testes"}]}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-43/assets/build/assets/main-XJsUUkok.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-43/assets/build/assets/presentations-CLqoI4TW.css">
+    </head>
+
+<body>
+    <div class="preview-badge" aria-hidden="true">
+        <span>PR</span>
+    </div>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+    <header class="site-header site-header--talks">
+        <div class="site-header__bar">
+            <a class="site-identity" href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR"
+                aria-label="Vitor Mattos">
+                <img class="site-identity__avatar" src="https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=112&amp;r=g" alt="" width="56"
+                    height="56">
+                <span class="site-identity__copy">
+                    <strong>Vitor Mattos</strong>
+                    <span>software livre · tecnologia</span>
+                </span>
+            </a>
+
+            <div class="site-header__actions">
+                <nav class="site-nav" aria-label="Principal">
+                    <a class="site-nav__link" href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/sobre"
+                        >Sobre</a>
+                    <a class="site-nav__link" href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/artigos"
+                        >Artigos</a>
+                    <a class="site-nav__link is-active" href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/palestras"
+                         aria-current="page" >Palestras</a>
+                </nav>
+
+                <div class="site-controls">
+                                        <button class="theme-toggle" type="button" data-theme-toggle
+    data-label-light="Usar tema claro"
+    data-label-dark="Usar tema escuro" aria-pressed="false">
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Tema</span>
+</button>
+
+<script>
+    (() => {
+        const button = document.currentScript.previousElementSibling;
+        const root = document.documentElement;
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+        const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+        const syncButton = () => {
+            const theme = currentTheme();
+            const isDark = theme === 'dark';
+            button.setAttribute('aria-pressed', String(isDark));
+            button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+        };
+
+        button.addEventListener('click', () => {
+            const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+            root.dataset.theme = nextTheme;
+
+            try {
+                localStorage.setItem('theme', nextTheme);
+            } catch (_) {
+                // Theme selection still works for this page when storage is unavailable.
+            }
+
+            syncButton();
+        });
+
+        media.addEventListener?.('change', () => {
+            if (!root.dataset.theme) {
+                syncButton();
+            }
+        });
+
+        syncButton();
+    })();
+</script>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="main-content">
+            <article class="content talk-detail">
+        <header>
+            <p class="eyebrow">Palestra</p>
+                            <p class="meta"><time
+                        datetime="2016-07-17">17/07/2016</time>
+                </p>
+                        <h1>Seja subversivo, faça testes</h1>
+                            <p class="lead">Quem nunca trabalhou em uma empresa que diz que testes automatizados, seja BDD ou TDD só atrasam o tempo de desenvolvimento de uma tarefa e não servem para nada? Ou, quem nunca trabalhou em uma empresa que não sabe o que é automatização de testes? Se este é o seu caso, descubra alguns segredos que irão revolucionar sua rotina de trabalho e te permitirão fazer testes mesmo que teu chefe diga não.</p>
+                                        <nav class="talk-detail__tags" aria-label="Tópicos">
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/palestras/?tag=bdd">BDD</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/palestras/?tag=php">PHP</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/palestras/?tag=tdd">TDD</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-43/pt-BR/palestras/?tag=testes%20de%20software">Testes de Software</a>
+                                    </nav>
+                    </header>
+        <div class="presentation-frame">
+        <div class="presentation-toolbar presentation-toolbar--archive">
+            <div class="presentation-toolbar__context">
+                <span class="presentation-toolbar__context-icon" aria-hidden="true">◫</span>
+                <span>Apresentação arquivada</span>
+                <small>SlideShare</small>
+            </div>
+            <div class="presentation-toolbar__actions">
+                                    <a class="presentation-action presentation-action--primary" href="https://pt.slideshare.net/slideshow/seja-subversivo-faa-testes/64103619"
+                        target="_blank" rel="external noopener noreferrer"><span
+                            aria-hidden="true">↗</span><span>Abrir original</span></a>
+                                                    <details class="presentation-action-menu">
+                        <summary class="presentation-action"><span
+                                aria-hidden="true">↓</span><span>Baixar</span><span
+                                aria-hidden="true">⌄</span></summary>
+                        <div class="presentation-action-menu__panel">
+                                                            <a href="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/slideshare-64103619.pdf" target="_blank"
+                                    rel="external noopener noreferrer"><strong>PDF</strong><small>PDF arquivado</small></a>
+                                                            <a href="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/slideshare-64103619.pptx" target="_blank"
+                                    rel="external noopener noreferrer"><strong>PPTX</strong><small>PowerPoint arquivado</small></a>
+                                                    </div>
+                    </details>
+                                                    <a class="presentation-action presentation-action--secondary"
+                        href="https://vitormattos.github.io/pr-preview/pr-43/presentations/slideshare/64103619/metadata.json" download>JSON</a>
+                            </div>
+        </div>
+        <div class="presentation-stage">
+                            <img src="https://github.com/vitormattos/vitormattos.github.io/releases/download/slideshare-64103619/thumbnail.png"
+                    alt="Seja subversivo, faça testes" loading="lazy">
+                    </div>
+    </div>
+                            </article>
+    </main>
+    <footer>
+        <p>Conteúdo e código publicados com transparência e controle de versão.
+        </p>
+        <p>
+            <a class="rss-link"
+                href="https://vitormattos.github.io/pt-BR/feed.xml">
+                <span class="rss-link__icon" data-ui-icon="rss" aria-hidden="true"></span>
+                <span>RSS</span>
+            </a>
+        </p>
+    </footer>
+    <script type="module" src="https://vitormattos.github.io/pr-preview/pr-43/assets/build/assets/social-icons-B4GgBORd.js"></script>
+    </body>
+
+</html>
