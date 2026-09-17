@@ -27,6 +27,23 @@ final class TalkCatalogBuildTest extends TestCase
         }
     }
 
+    public function testTalkProfileIdentityLinksToLocaleHome(): void
+    {
+        $portuguese = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
+        $english = file_get_contents($this->buildDirectory() . '/talks/index.html');
+        self::assertIsString($portuguese);
+        self::assertIsString($english);
+
+        self::assertMatchesRegularExpression(
+            '/<a class="talks-profile__identity" href="[^"]*\/pt-BR"\s+aria-label="Vitor Mattos · Início">/',
+            $portuguese,
+        );
+        self::assertMatchesRegularExpression(
+            '/<a class="talks-profile__identity" href="[^"]*\/"\s+aria-label="Vitor Mattos · Home">/',
+            $english,
+        );
+    }
+
     public function testCatalogDatesFollowPageLocale(): void
     {
         $portuguese = file_get_contents($this->buildDirectory() . '/pt-BR/palestras/index.html');
