@@ -6,6 +6,11 @@
     $needsReveal = ($presentation['type'] ?? null) === 'reveal' || (bool) ($presentation['localHtml'] ?? false);
     $isEnglish = ($page->locale ?? 'en') === 'en';
     $showAbout = $page->showAbout ?? true;
+    $workKind = (string) ($page->workKind ?? 'talk');
+    $workLabel = match ($workKind) {
+        'academic-seminar' => $isEnglish ? 'Academic seminar' : 'Seminário acadêmico',
+        default => $isEnglish ? 'Talk' : 'Palestra',
+    };
     $tags = \App\Presentations\TalkTopics::localized(
         \App\Presentations\TalkTopics::resolve($page),
         $isEnglish ? 'en' : 'pt-BR',
@@ -43,7 +48,7 @@
 @section('body')
     <article class="content talk-detail">
         <header>
-            <p class="eyebrow">{{ $isEnglish ? 'Talk' : 'Palestra' }}</p>
+            <p class="eyebrow">{{ $workLabel }}</p>
             @if ($page->date ?? false)
                 <p class="meta"><time
                         datetime="{{ date('Y-m-d', $page->date) }}">{{ date($isEnglish ? 'Y-m-d' : 'd/m/Y', $page->date) }}</time>
@@ -146,7 +151,7 @@
         @endif
         @if ($showAbout)
             <section aria-labelledby="talk-about-title">
-                <h2 id="talk-about-title">{{ $isEnglish ? 'About this talk' : 'Sobre esta palestra' }}</h2>
+                <h2 id="talk-about-title">{{ $isEnglish ? 'About this presentation' : 'Sobre esta apresentação' }}</h2>
                 @yield('content')
             </section>
         @endif

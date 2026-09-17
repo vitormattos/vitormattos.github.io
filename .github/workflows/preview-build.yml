@@ -79,6 +79,24 @@ jobs:
         if: github.event.action != 'closed'
         run: npm install --no-audit --no-fund
 
+      - name: Install LaTeX and rendering dependencies
+        if: github.event.action != 'closed'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            lmodern \
+            poppler-utils \
+            texlive-fonts-recommended \
+            texlive-lang-portuguese \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-latex-recommended
+
+      - name: Build LaTeX presentation PDFs
+        if: github.event.action != 'closed'
+        run: php scripts/build-latex-presentations.php
+
       - name: Build preview
         if: github.event.action != 'closed'
         run: npm run preview
