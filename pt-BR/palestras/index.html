@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR"
+     data-alternate-locale="en" data-alternate-url="https://vitormattos.github.io/talks" >
 
 <head>
     <meta charset="utf-8">
@@ -14,6 +15,48 @@
             } catch (_) {
                 // Fall back to prefers-color-scheme when storage is unavailable.
             }
+        })();
+    </script>
+    <script>
+        (() => {
+            const storageKey = 'site-locale';
+            const root = document.documentElement;
+            const currentLocale = root.lang === 'pt-BR' ? 'pt-BR' : 'en';
+            const alternateLocale = root.dataset.alternateLocale;
+            const alternateUrl = root.dataset.alternateUrl;
+            let preferredLocale = null;
+
+            try {
+                const storedLocale = localStorage.getItem(storageKey);
+                if (storedLocale === 'en' || storedLocale === 'pt-BR') {
+                    preferredLocale = storedLocale;
+                }
+            } catch (_) {
+                // Fall back to the browser language when storage is unavailable.
+            }
+
+            if (preferredLocale === null) {
+                const browserLocale = (navigator.languages?.[0] ?? navigator.language ?? 'en').toLowerCase();
+                preferredLocale = browserLocale.startsWith('pt') ? 'pt-BR' : 'en';
+            }
+
+            if (alternateUrl && alternateLocale === preferredLocale && currentLocale !== preferredLocale) {
+                window.location.replace(alternateUrl);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const languageSwitch = document.querySelector('[data-language-switch]');
+                languageSwitch?.addEventListener('click', () => {
+                    const selectedLocale = languageSwitch.dataset.locale;
+                    if (selectedLocale !== 'en' && selectedLocale !== 'pt-BR') return;
+
+                    try {
+                        localStorage.setItem(storageKey, selectedLocale);
+                    } catch (_) {
+                        // Navigation still works when storage is unavailable.
+                    }
+                });
+            });
         })();
     </script>
     <title>Palestras · Vitor Mattos</title>
@@ -74,7 +117,8 @@
 
                 <div class="site-controls">
                                             <a class="language-switch" href="https://vitormattos.github.io/talks"
-                            hreflang="en"
+                            hreflang="en" data-language-switch
+                            data-locale="en"
                             aria-label="View this page in English">
                             EN
                         </a>
@@ -257,10 +301,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2026-07-03">Jul 03, 2026</time></span>
+                        datetime="2026-07-03">03/07/2026</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/quem-controla-sua-tecnologia-controla-seu-futuro"
-                data-talk-title="Quem controla sua tecnologia controla seu futuro - UFPB" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Quem controla sua tecnologia controla seu futuro - UFPB" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -284,10 +328,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2026-06-09">Jun 09, 2026</time></span>
+                        datetime="2026-06-09">09/06/2026</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/controle-tecnologia"
-                data-talk-title="Quem controla sua tecnologia controla seu futuro - Rio Web Summit 2026" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Quem controla sua tecnologia controla seu futuro - Rio Web Summit 2026" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -338,10 +382,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2026-03-11">Mar 11, 2026</time></span>
+                        datetime="2026-03-11">11/03/2026</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/apagao-digital"
-                data-talk-title="Apagão digital: o risco não calculado no turismo" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Apagão digital: o risco não calculado no turismo" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -365,10 +409,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2025-11-06">Nov 06, 2025</time></span>
+                        datetime="2025-11-06">06/11/2025</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/tecnologia-e-privacidade-no-contexto-da-comunhao-crista"
-                data-talk-title="Tecnologia e privacidade no contexto da comunhão cristã" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Tecnologia e privacidade no contexto da comunhão cristã" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -392,10 +436,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2025-10-28">Oct 28, 2025</time></span>
+                        datetime="2025-10-28">28/10/2025</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/assine-contratos-com-php-cc183f"
-                data-talk-title="Copy of Assine contratos com PHP" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Copy of Assine contratos com PHP" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -419,10 +463,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2025-10-03">Oct 03, 2025</time></span>
+                        datetime="2025-10-03">03/10/2025</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/assine-contratos-com-php"
-                data-talk-title="Assine contratos com PHP" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Assine contratos com PHP" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -446,10 +490,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2025-05-15">May 15, 2025</time></span>
+                        datetime="2025-05-15">15/05/2025</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/igrejas-digitais"
-                data-talk-title="Igrejas digitais" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Igrejas digitais" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -473,10 +517,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2025-02-05">Feb 05, 2025</time></span>
+                        datetime="2025-02-05">05/02/2025</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/tecnologia-comunhao-crista"
-                data-talk-title="Tecnologia e privacidade no contexto da comunhão cristã" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Tecnologia e privacidade no contexto da comunhão cristã" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -500,10 +544,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2024-09-02">Sep 02, 2024</time></span>
+                        datetime="2024-09-02">02/09/2024</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/cooperacao-e-inovacao"
-                data-talk-title="Cooperação e inovação tecnológica" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Cooperação e inovação tecnológica" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -527,10 +571,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2024-07-31">Jul 31, 2024</time></span>
+                        datetime="2024-07-31">31/07/2024</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/libresign-ecidade"
-                data-talk-title="Integração: LibreSign + e-Cidade" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Integração: LibreSign + e-Cidade" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -581,10 +625,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2024-03-26">Mar 26, 2024</time></span>
+                        datetime="2024-03-26">26/03/2024</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/docker-dev-to-prod"
-                data-talk-title="Containers docker" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Containers docker" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -608,10 +652,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2023-10-18">Oct 18, 2023</time></span>
+                        datetime="2023-10-18">18/10/2023</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/libresign-latinoware-2023"
-                data-talk-title="LibreSign" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="LibreSign" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -635,10 +679,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2023-07-13">Jul 13, 2023</time></span>
+                        datetime="2023-07-13">13/07/2023</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/trabalho-colaborativo-software"
-                data-talk-title="Trabalho colaborativo na produção de software" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Trabalho colaborativo na produção de software" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -697,10 +741,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2022-11-25">Nov 25, 2022</time></span>
+                        datetime="2022-11-25">25/11/2022</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/libresign-integracoes"
-                data-talk-title="Copy of LibreSign - Integrações" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Copy of LibreSign - Integrações" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -710,7 +754,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -730,10 +774,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2022-08-03">Aug 03, 2022</time></span>
+                        datetime="2022-08-03">03/08/2022</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/cloud-privacity"
-                data-talk-title="Privacy and security in cloud systems" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Privacy and security in cloud systems" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -757,10 +801,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2022-05-20">May 20, 2022</time></span>
+                        datetime="2022-05-20">20/05/2022</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/testes-api"
-                data-talk-title="Testes automatizados em API" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Testes automatizados em API" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -770,7 +814,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -792,10 +836,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2022-04-22">Apr 22, 2022</time></span>
+                        datetime="2022-04-22">22/04/2022</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/nextcloud-app"
-                data-talk-title="Nextcloud app tutorial" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Nextcloud app tutorial" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -819,10 +863,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2022-01-26">Jan 26, 2022</time></span>
+                        datetime="2022-01-26">26/01/2022</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/libresign-integracao"
-                data-talk-title="LibreSign - Integrações" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="LibreSign - Integrações" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -832,7 +876,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -852,10 +896,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2021-04-24">Apr 24, 2021</time></span>
+                        datetime="2021-04-24">24/04/2021</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/libresign"
-                data-talk-title="LibreSign" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="LibreSign" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -865,7 +909,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -885,10 +929,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2020-09-23">Sep 23, 2020</time></span>
+                        datetime="2020-09-23">23/09/2020</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/caminhos-na-area-de-ti-ea0342"
-                data-talk-title="Caminhos na área de TI" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Caminhos na área de TI" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -898,7 +942,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=carreira">Carreira</a>
                             </nav>
@@ -916,10 +960,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2020-08-20">Aug 20, 2020</time></span>
+                        datetime="2020-08-20">20/08/2020</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/celular-floss"
-                data-talk-title="Tenha um celular 100% FLOSS" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Tenha um celular 100% FLOSS" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -929,7 +973,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -949,10 +993,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2020-04-23">Apr 23, 2020</time></span>
+                        datetime="2020-04-23">23/04/2020</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/xdebug"
-                data-talk-title="xdebug" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="xdebug" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -962,7 +1006,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -984,10 +1028,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-12-05">Dec 05, 2019</time></span>
+                        datetime="2019-12-05">05/12/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/webscraping"
-                data-talk-title="web scraping" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="web scraping" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -997,7 +1041,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1017,10 +1061,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-12-04">Dec 04, 2019</time></span>
+                        datetime="2019-12-04">04/12/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/nextcloud"
-                data-talk-title="Nextcloud" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Nextcloud" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1030,7 +1074,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1052,10 +1096,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-11-28">Nov 28, 2019</time></span>
+                        datetime="2019-11-28">28/11/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/bdd"
-                data-talk-title="BDD + PHP = Behat" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="BDD + PHP = Behat" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1065,7 +1109,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1087,10 +1131,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-05-18">May 18, 2019</time></span>
+                        datetime="2019-05-18">18/05/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/dojo"
-                data-talk-title="Coding Dojo" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Coding Dojo" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1100,7 +1144,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=testes">testes</a>
                             </nav>
@@ -1118,10 +1162,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-05-13">May 13, 2019</time></span>
+                        datetime="2019-05-13">13/05/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/data-detox"
-                data-talk-title="Data detox" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Data detox" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1131,7 +1175,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1151,10 +1195,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-02-27">Feb 27, 2019</time></span>
+                        datetime="2019-02-27">27/02/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/trabalho-colaborativo"
-                data-talk-title="Trabalho colaborativo" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Trabalho colaborativo" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1164,7 +1208,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=carreira">Carreira</a>
                                     <a class="talk-tag"
@@ -1184,10 +1228,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2019-02-13">Feb 13, 2019</time></span>
+                        datetime="2019-02-13">13/02/2019</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/porque-fazer-testes"
-                data-talk-title="Porque fazer testes?" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Porque fazer testes?" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1197,7 +1241,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=testes">testes</a>
                             </nav>
@@ -1215,10 +1259,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-12-20">Dec 20, 2018</time></span>
+                        datetime="2018-12-20">20/12/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/webinar-senhas"
-                data-talk-title="Webinar - Senhas e chaveiros: incremente sua segurança" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Webinar - Senhas e chaveiros: incremente sua segurança" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1242,10 +1286,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-12-14">Dec 14, 2018</time></span>
+                        datetime="2018-12-14">14/12/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/php-primeiros-passos"
-                data-talk-title="PHP: Primeiros passos" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="PHP: Primeiros passos" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1255,7 +1299,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1275,10 +1319,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-12-05">Dec 05, 2018</time></span>
+                        datetime="2018-12-05">05/12/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/distribuicoes-linux"
-                data-talk-title="Distribuições Linux" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Distribuições Linux" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1288,7 +1332,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                             </nav>
@@ -1306,10 +1350,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-12-01">Dec 01, 2018</time></span>
+                        datetime="2018-12-01">01/12/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/senhas"
-                data-talk-title=" Senhas e chaveiros: incremente sua segurança" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title=" Senhas e chaveiros: incremente sua segurança" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1319,7 +1363,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1339,10 +1383,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-09-30">Sep 30, 2018</time></span>
+                        datetime="2018-09-30">30/09/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/seguranca"
-                data-talk-title="Segurança de aplicações web" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Segurança de aplicações web" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1352,7 +1396,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1374,10 +1418,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-07-14">Jul 14, 2018</time></span>
+                        datetime="2018-07-14">14/07/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre"
-                data-talk-title="Contribuindo e criando software livre" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Contribuindo e criando software livre" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1387,7 +1431,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=carreira">Carreira</a>
                                     <a class="talk-tag"
@@ -1407,10 +1451,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-07-14">Jul 14, 2018</time></span>
+                        datetime="2018-07-14">14/07/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/que-as-oportunidades-me-encontrem"
-                data-talk-title="Que as oportunidades me encontrem!" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Que as oportunidades me encontrem!" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1420,7 +1464,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=carreira">Carreira</a>
                             </nav>
@@ -1438,10 +1482,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-07-13">Jul 13, 2018</time></span>
+                        datetime="2018-07-13">13/07/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/composer"
-                data-talk-title="Composer: PHP dependency manager" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Composer: PHP dependency manager" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1451,7 +1495,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1471,10 +1515,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-07-08">Jul 08, 2018</time></span>
+                        datetime="2018-07-08">08/07/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/telegrambots-entre-nesta-onda"
-                data-talk-title="TelegramBots:Entre nesta onda" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="TelegramBots:Entre nesta onda" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1484,7 +1528,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=opensource">opensource</a>
                                     <a class="talk-tag"
@@ -1506,10 +1550,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2018-07-06">Jul 06, 2018</time></span>
+                        datetime="2018-07-06">06/07/2018</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/arquitetura-de-aplicacoes-web"
-                data-talk-title="Arquitetura de aplicações web" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Arquitetura de aplicações web" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1519,7 +1563,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=carreira">Carreira</a>
                             </nav>
@@ -1695,10 +1739,10 @@
 
         <div class="talk-card__meta-line">
                             <span><time
-                        datetime="2017-05-10">May 10, 2017</time></span>
+                        datetime="2017-05-10">10/05/2017</time></span>
                         <button class="talk-card__share" type="button" data-talk-share data-talk-url="https://vitormattos.github.io/talks/senhas-e-chaveiros-incremente-sua-seguranca"
-                data-talk-title="Senhas e chaveiros incremente sua seguranca" data-share-label="Share presentation"
-                data-copied-label="Link copied" aria-label="Share presentation" title="Share presentation">
+                data-talk-title="Senhas e chaveiros incremente sua seguranca" data-share-label="Compartilhar apresentação"
+                data-copied-label="Link copiado" aria-label="Compartilhar apresentação" title="Compartilhar apresentação">
                 <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                     <circle cx="18" cy="5" r="2.5"></circle>
                     <circle cx="6" cy="12" r="2.5"></circle>
@@ -1708,7 +1752,7 @@
             </button>
         </div>
 
-                    <nav class="talk-card__tags" aria-label="Topics">
+                    <nav class="talk-card__tags" aria-label="Tópicos">
                                     <a class="talk-tag"
                         href="https://vitormattos.github.io/pt-BR/palestras/?tag=2fa">2fa</a>
                                     <a class="talk-tag"
