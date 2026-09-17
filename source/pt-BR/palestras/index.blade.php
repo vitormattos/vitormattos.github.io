@@ -12,6 +12,7 @@ description: Palestras e apresentações de Vitor Mattos sobre software livre, P
 @push('head')
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/talks-catalog.scss') }}">
+    <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/talks-list-flow.scss') }}">
 @endpush
 @push('scripts')
     <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/presentations.js') }}"></script>
