@@ -32,7 +32,9 @@ presentation:
 
 This material is an **academic critical-reading seminar**. It is neither a full original research article nor an independent public talk. It remains in the presentations/talks collection because its primary artifact is a slide deck delivered orally, while the page identifies it semantically as an academic seminar.
 
-The presentation reviews _From proprietary to open source: Growing an open source ecosystem_ by Kilamo et al. (2012). It highlights the research questions, the combination of constructive work and action research, the OSCOMM framework, the R3 evaluation model, and the Gurux case study. The critical reading separates conclusions supported by the cases from claims that would require causal, longitudinal, or broader evidence.
+The presentation reviews [_From proprietary to open source: Growing an open source ecosystem_](https://www.sciencedirect.com/science/article/pii/S0164121211001683), by Terhi Kilamo, Imed Hammouda, Tommi Mikkonen, and Timo Aaltonen, published in the *Journal of Systems and Software* in 2012. DOI: [10.1016/j.jss.2011.06.071](https://doi.org/10.1016/j.jss.2011.06.071).
+
+It highlights the research questions, the combination of constructive work and action research, the OSCOMM framework, the R3 evaluation model, and the Gurux case study. The critical reading separates conclusions supported by the cases from claims that would require causal, longitudinal, or broader evidence.
 
 Professional experience with free-software communities is used only as an interpretive and comparative lens, not as evidence from the study itself.
 
