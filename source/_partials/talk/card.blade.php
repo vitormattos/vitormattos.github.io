@@ -16,7 +16,7 @@
     );
 
     $thumbnail = $page->presentationThumbnail($talk);
-    $hasArchivedPdf = false;
+    $archivedPdf = $presentation['localPdf'] ?? ($presentation['pdf'] ?? null);
     if ($talk->slidesId ?? false) {
         $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
         $deckDir = 'presentations/' . $sourceDirectory . '/' . $talk->slidesId;
@@ -24,11 +24,17 @@
         if (is_file($manifestPath)) {
             try {
                 $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                $hasArchivedPdf = isset($manifest['pdf']['url']) && $manifest['pdf']['url'] !== '';
+                $archivedPdf ??= $manifest['assets']['pdf']['url'] ?? ($manifest['pdf']['url'] ?? null);
             } catch (Throwable) {
-                $hasArchivedPdf = false;
+                // Keep front matter values when the archive manifest is unavailable or malformed.
             }
         }
+    }
+    $pdfHref = null;
+    if (is_string($archivedPdf) && $archivedPdf !== '') {
+        $pdfHref = str_starts_with($archivedPdf, 'http')
+            ? $archivedPdf
+            : rtrim((string) $page->baseUrl, '/') . '/' . ltrim($archivedPdf, '/');
     }
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
@@ -58,18 +64,12 @@
         <h2 class="talk-card__title"><a href="{{ $talk->getUrl() }}">{{ $talk->title }}</a></h2>
         <p class="talk-card__description">{{ $talk->description }}</p>
 
-        <div class="talk-card__meta-line">
-            @if ($talk->date ?? false)
+        @if ($talk->date ?? false)
+            <div class="talk-card__meta-line">
                 <span><time
                         datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>
-            @endif
-            @if ($presentation['slideCount'] ?? 0)
-                <span>{{ $presentation['slideCount'] }} slides</span>
-            @endif
-            @if ($presentation['language'] ?? false)
-                <span>{{ $presentation['language'] }}</span>
-            @endif
-        </div>
+            </div>
+        @endif
 
         @if ($topics !== [])
             <nav class="talk-card__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
@@ -80,23 +80,14 @@
             </nav>
         @endif
 
-        <div class="talk-card__footer">
-            <div class="talk-card__formats"
-                aria-label="{{ $isEnglish ? 'Available formats' : 'Formatos disponíveis' }}">
-                <span class="format-badge">{{ $type }}</span>
-                @if ($presentation['localHtml'] ?? false)
-                    <span class="format-badge">HTML</span>
-                @endif
-                @if ($hasArchivedPdf || ($presentation['localPdf'] ?? false) || ($presentation['pdf'] ?? false))
-                    <span class="format-badge">PDF</span>
-                @endif
-                @if ($presentation['pptx'] ?? false)
-                    <span class="format-badge">PPTX</span>
-                @endif
-                @if ($presentation['video'] ?? false)
-                    <span class="format-badge">{{ $isEnglish ? 'video' : 'vídeo' }}</span>
-                @endif
+        @if ($pdfHref)
+            <div class="talk-card__footer">
+                <div class="talk-card__formats"
+                    aria-label="{{ $isEnglish ? 'Downloads' : 'Downloads' }}">
+                    <a class="format-badge" href="{{ $pdfHref }}" target="_blank" rel="external noopener noreferrer"
+                        aria-label="{{ $isEnglish ? 'Download PDF' : 'Baixar PDF' }}">PDF</a>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </article>
