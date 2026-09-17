@@ -13,6 +13,8 @@
         $alternatePath = $rawAlternatePath === '/' ? '/' : rtrim($rawAlternatePath, '/');
     }
 
+    $alternateLocale = $isEnglish ? 'pt-BR' : 'en';
+    $alternateHref = $alternatePath !== null ? rtrim((string) $page->baseUrl, '/') . $alternatePath : null;
     $currentPath = '/' . trim((string) $page->getPath(), '/');
     $currentPath = $currentPath === '/' ? '/' : rtrim($currentPath, '/');
     $isAbout = $currentPath === $aboutPath;
@@ -20,7 +22,7 @@
     $isTalks = $currentPath === $talksPath || str_starts_with($currentPath, $talksPath . '/');
 @endphp
 <!doctype html>
-<html lang="{{ $locale }}">
+<html lang="{{ $locale }}" @if ($alternateHref !== null) data-alternate-locale="{{ $alternateLocale }}" data-alternate-url="{{ $alternateHref }}" @endif>
 
 <head>
     <meta charset="utf-8">
@@ -35,6 +37,48 @@
             } catch (_) {
                 // Fall back to prefers-color-scheme when storage is unavailable.
             }
+        })();
+    </script>
+    <script>
+        (() => {
+            const storageKey = 'site-locale';
+            const root = document.documentElement;
+            const currentLocale = root.lang === 'pt-BR' ? 'pt-BR' : 'en';
+            const alternateLocale = root.dataset.alternateLocale;
+            const alternateUrl = root.dataset.alternateUrl;
+            let preferredLocale = null;
+
+            try {
+                const storedLocale = localStorage.getItem(storageKey);
+                if (storedLocale === 'en' || storedLocale === 'pt-BR') {
+                    preferredLocale = storedLocale;
+                }
+            } catch (_) {
+                // Fall back to the browser language when storage is unavailable.
+            }
+
+            if (preferredLocale === null) {
+                const browserLocale = (navigator.languages?.[0] ?? navigator.language ?? 'en').toLowerCase();
+                preferredLocale = browserLocale.startsWith('pt') ? 'pt-BR' : 'en';
+            }
+
+            if (alternateUrl && alternateLocale === preferredLocale && currentLocale !== preferredLocale) {
+                window.location.replace(alternateUrl);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const languageSwitch = document.querySelector('[data-language-switch]');
+                languageSwitch?.addEventListener('click', () => {
+                    const selectedLocale = languageSwitch.dataset.locale;
+                    if (selectedLocale !== 'en' && selectedLocale !== 'pt-BR') return;
+
+                    try {
+                        localStorage.setItem(storageKey, selectedLocale);
+                    } catch (_) {
+                        // Navigation still works when storage is unavailable.
+                    }
+                });
+            });
         })();
     </script>
     <title>{{ $page->title ? $page->title . ' · ' : '' }}{{ $page->siteName }}</title>
@@ -71,7 +115,7 @@
                 <div class="site-controls">
                     @if ($alternatePath !== null)
                         <a class="language-switch" href="{{ $page->baseUrl }}{{ $alternatePath }}"
-                            hreflang="{{ $isEnglish ? 'pt-BR' : 'en' }}"
+                            hreflang="{{ $alternateLocale }}" data-language-switch data-locale="{{ $alternateLocale }}"
                             aria-label="{{ $isEnglish ? 'Ver esta página em português' : 'View this page in English' }}">
                             {{ $isEnglish ? 'PT' : 'EN' }}
                         </a>
