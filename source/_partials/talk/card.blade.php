@@ -21,9 +21,7 @@
     $activityTimestamp = \App\Presentations\TalkTopics::activityTimestamp($talk);
     $publishedTimestamp = (int) ($talk->date ?? 0);
     $wasUpdated = $activityTimestamp > $publishedTimestamp;
-    $activityLabel = $wasUpdated
-        ? ($isEnglish ? 'Updated' : 'Atualizado')
-        : ($isEnglish ? 'Published' : 'Publicado');
+    $activityLabel = $wasUpdated ? ($isEnglish ? 'Updated' : 'Atualizado') : ($isEnglish ? 'Published' : 'Publicado');
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
