@@ -31,7 +31,6 @@
 \setbeamerfont{frametitle}{series=\bfseries,size=\Large}
 \setbeamerfont{title}{series=\bfseries,size=\huge}
 \setbeamertemplate{itemize item}{\color{utfpryellow}$\blacktriangleright$}
-\setbeamertemplate{itemize subitem}{\color{utfprblue}$\bullet$}
 
 \setbeamertemplate{frametitle}{%
   \nointerlineskip
@@ -56,8 +55,7 @@
 \newcommand{\source}[1]{\vfill{\scriptsize\color{muted}#1}}
 \newcommand{\bigclaim}[1]{\begin{center}\Large\bfseries #1\end{center}}
 \newcommand{\pill}[2]{\tikz[baseline=(n.base)]\node[rounded corners=4pt,fill=#1,inner xsep=6pt,inner ysep=3pt](n){\scriptsize #2};}
-\newcommand{\tagbox}[3]{\node[rounded corners=7pt,fill=#1,draw=#2,thick,inner sep=7pt,text width=2.7cm,align=center] {#3};}
-\newcommand{\stage}[4]{\node[rounded corners=8pt,fill=#2,draw=#3,thick,minimum width=3.1cm,minimum height=1.1cm,align=center] (#1) {#4};}
+\newcommand{\stage}[4]{\node[rounded corners=8pt,fill=#2,draw=#3,thick,minimum width=3.0cm,minimum height=1.05cm,align=center] (#1) {#4};}
 
 \title{Do software proprietário ao ecossistema aberto}
 \subtitle{Leitura crítica de Kilamo et al. (2012)}
@@ -72,9 +70,9 @@
   {\huge\bfseries Do software proprietário ao ecossistema aberto}\par
   \vspace{0.15cm}
   {\large Leitura crítica de Kilamo et al. (2012)}\par
-  \vspace{0.65cm}
+  \vspace{0.60cm}
   \begin{center}
-  \begin{tikzpicture}[node distance=0.72cm]
+  \begin{tikzpicture}[node distance=0.70cm]
     \stage{a}{utfprdark}{utfprdark}{\color{white}produto\\fechado}
     \stage{b}{softyellow}{utfpryellow}{abertura}
     \stage{c}{softgreen}{utfprteal}{ecossistema\\aberto}
@@ -82,19 +80,17 @@
     \draw[-{Stealth[length=3mm]},line width=1.1pt,utfprteal] (b)--(c);
   \end{tikzpicture}
   \end{center}
-  \vspace{0.45cm}
-  {\small Terhi Kilamo, Imed Hammouda, Tommi Mikkonen, Timo Aaltonen. \textit{From proprietary to open source: Growing an open source ecosystem}. \textit{Journal of Systems and Software}, 85(7), 1467--1478, 2012.}
-  \source{DOI: \href{https://doi.org/10.1016/j.jss.2011.06.071}{10.1016/j.jss.2011.06.071} \hspace{0.5em}|\hspace{0.5em} Fonte: \href{https://www.sciencedirect.com/science/article/pii/S0164121211001683}{ScienceDirect}}
+  \vspace{0.35cm}
+  {\small Terhi Kilamo, Imed Hammouda, Tommi Mikkonen, Timo Aaltonen. \textit{Journal of Systems and Software}, 85(7), 1467--1478, 2012.}
+  \source{DOI: \href{https://doi.org/10.1016/j.jss.2011.06.071}{10.1016/j.jss.2011.06.071} \hspace{0.5em}|\hspace{0.5em} \href{https://www.sciencedirect.com/science/article/pii/S0164121211001683}{ScienceDirect}}
 \end{frame}
 
 \begin{frame}{Abrir o código não basta}
-  \vspace{0.55cm}
-  \bigclaim{O problema do artigo é transformar abertura em continuidade.}
-  \vspace{0.45cm}
+  \vspace{0.35cm}
   \begin{center}
-  \begin{tikzpicture}[node distance=0.48cm]
+  \begin{tikzpicture}[node distance=0.45cm]
     \stage{code}{softgray}{muted}{código}
-    \stage{entry}{softblue}{utfprblue}{entrada\\de pessoas}
+    \stage{entry}{softblue}{utfprblue}{pessoas}
     \stage{rules}{softyellow}{utfpryellow}{coordenação}
     \stage{eco}{softgreen}{utfprteal}{ecossistema}
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (code)--(entry);
@@ -102,183 +98,148 @@
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (rules)--(eco);
   \end{tikzpicture}
   \end{center}
-  \vspace{0.35cm}
-  \begin{center}\small\color{muted}Gatilho de fala: repositório público não equivale a comunidade sustentável.\end{center}
-  \source{O artigo parte da lacuna de diretrizes para abrir software proprietário e sustentar uma comunidade FLOSS.}
+  \vspace{0.40cm}
+  \begin{center}
+    \pill{softblue}{software}\hspace{0.25em}
+    \pill{softgray}{infraestrutura}\hspace{0.25em}
+    \pill{softyellow}{processo}\hspace{0.25em}
+    \pill{softred}{legalidade}\hspace{0.25em}
+    \pill{softgreen}{marketing}\hspace{0.25em}
+    \pill{softblue}{comunidade}
+  \end{center}
+  \vspace{0.45cm}
+  \bigclaim{O artigo trata a abertura como processo, não como publicação de código.}
+  \source{Seis dimensões aparecem na preparação: software, infraestrutura, processo, legalidade, marketing e comunidade.}
 \end{frame}
 
-\begin{frame}{Abertura é um problema de várias dimensões}
-  \vspace{0.45cm}
+\begin{frame}{A comunidade precisa de um centro}
+  \vspace{0.20cm}
   \begin{center}
-  \begin{tikzpicture}[node distance=0.34cm]
-    \tagbox{s}{softblue}{utfprblue}{software}
-    \tagbox{i}{softgray}{muted}{infraestrutura}
-    \tagbox{p}{softyellow}{utfpryellow}{processo}
-    \tagbox{l}{softred}{muted}{legalidade}
-    \tagbox{m}{softgreen}{utfprteal}{marketing}
-    \tagbox{c}{softblue}{utfprblue}{comunidade}
-    \node[fit=(s)(i)(p)(l)(m)(c),draw=utfprdark,rounded corners=10pt,inner sep=10pt,label={[font=\small\bfseries]above:seis frentes da abertura}] {};
+  \begin{tikzpicture}[scale=0.82]
+    \fill[softgreen] (0,0) circle (2.55);
+    \fill[softyellow] (0,0) circle (1.98);
+    \fill[softblue] (0,0) circle (1.42);
+    \fill[softred] (0,0) circle (0.90);
+    \fill[utfprdark] (0,0) circle (0.40);
+    \node[text=white,font=\bfseries\scriptsize] at (0,0) {líder};
+    \node[font=\bfseries\scriptsize] at (0,0.78) {núcleo};
+    \node[font=\bfseries\scriptsize] at (0,1.30) {ativos};
+    \node[font=\bfseries\scriptsize] at (0,1.84) {periféricos};
+    \node[font=\bfseries\scriptsize] at (0,2.36) {usuários};
+    \node[rounded corners=8pt,fill=softgray,draw=muted,thick,text width=4.4cm,align=left,inner sep=8pt] at (5.0,0.7) {\bfseries Quem entra primeiro?\par\small equipe original\par parceiros industriais\par comunidades existentes};
   \end{tikzpicture}
   \end{center}
-  \vspace{0.55cm}
-  \begin{center}\Large\bfseries A contribuição do artigo é organizar essas frentes em um processo.\end{center}
-  \source{Software, infraestrutura, processo, legalidade, marketing e comunidade aparecem como dimensões da abertura.}
+  \source{Os autores retomam o modelo em cebola e discutem entidade publicadora, parceiros e atores externos como base da comunidade nascente.}
 \end{frame}
 
-\begin{frame}{Comunidade tem camadas}
+\begin{frame}{Cinco perguntas orientam o estudo}
   \vspace{0.25cm}
   \begin{center}
-  \begin{tikzpicture}[scale=0.88]
-    \fill[softgreen] (0,0) circle (2.6);
-    \fill[softyellow] (0,0) circle (2.05);
-    \fill[softblue] (0,0) circle (1.5);
-    \fill[softred] (0,0) circle (0.95);
-    \fill[utfprdark] (0,0) circle (0.42);
-    \node[text=white,font=\bfseries\scriptsize] at (0,0) {líder};
-    \node[font=\bfseries\scriptsize] at (0,0.82) {núcleo};
-    \node[font=\bfseries\scriptsize] at (0,1.35) {ativos};
-    \node[font=\bfseries\scriptsize] at (0,1.9) {periféricos};
-    \node[font=\bfseries\scriptsize] at (0,2.45) {usuários};
-    \node[align=left,text width=4.4cm] at (5.0,0.6) {\Large\bfseries A empresa precisa formar o centro antes de esperar a periferia.};
-  \end{tikzpicture}
-  \end{center}
-  \source{Modelo em cebola de comunidades FLOSS, retomado pelos autores para discutir papéis e engajamento.}
-\end{frame}
-
-\begin{frame}{O artigo pergunta como sistematizar a abertura}
-  \vspace{0.35cm}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.35cm]
-    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,text width=2.1cm,align=center,minimum height=1.0cm] (q1) {critérios\\\scriptsize prontidão};
-    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of q1,text width=2.1cm,align=center,minimum height=1.0cm] (q2) {atores\\\scriptsize plano};
-    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of q2,text width=2.1cm,align=center,minimum height=1.0cm] (q3) {dados\\\scriptsize avaliação};
-    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of q3,text width=2.1cm,align=center,minimum height=1.0cm] (q4) {uso\\\scriptsize resultados};
-    \node[rounded corners=7pt,fill=softred,draw=muted,thick,right=of q4,text width=2.1cm,align=center,minimum height=1.0cm] (q5) {medição\\\scriptsize comunidade};
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.75cm}
-  \begin{center}\Large\bfseries A pergunta não é ideológica; é operacional.\end{center}
-  \source{Os autores listam cinco questões: avaliar prontidão, planejar, coletar dados, usar resultados e medir a comunidade nascente.}
-\end{frame}
-
-\begin{frame}{Método: proximidade com a prática}
-  \vspace{0.35cm}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.55cm]
-    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,minimum width=2.9cm,minimum height=0.92cm] (lit) {literatura};
-    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of lit,minimum width=2.9cm,minimum height=0.92cm] (work) {workshops};
-    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of work,minimum width=2.9cm,minimum height=0.92cm] (cases) {4 empresas};
-    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,below=0.8cm of work,minimum width=4.2cm,minimum height=1.0cm] (model) {OSCOMM};
-    \draw[-{Stealth[length=2.4mm]},line width=0.9pt] (lit)--(model);
-    \draw[-{Stealth[length=2.4mm]},line width=0.9pt] (work)--(model);
-    \draw[-{Stealth[length=2.4mm]},line width=0.9pt] (cases)--(model);
+  \begin{tikzpicture}[node distance=0.28cm]
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,text width=2.05cm,align=center,minimum height=0.98cm] (q1) {critérios\\\scriptsize prontidão};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of q1,text width=2.05cm,align=center,minimum height=0.98cm] (q2) {atores\\\scriptsize planejamento};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of q2,text width=2.05cm,align=center,minimum height=0.98cm] (q3) {dados\\\scriptsize avaliação};
+    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of q3,text width=2.05cm,align=center,minimum height=0.98cm] (q4) {uso\\\scriptsize resultados};
+    \node[rounded corners=7pt,fill=softred,draw=muted,thick,right=of q4,text width=2.05cm,align=center,minimum height=0.98cm] (q5) {medição\\\scriptsize comunidade};
   \end{tikzpicture}
   \end{center}
   \vspace{0.55cm}
-  \begin{columns}[T,onlytextwidth]
-    \column{0.48\textwidth}\centering\pill{softgreen}{força}\par\small contexto industrial real
-    \column{0.48\textwidth}\centering\pill{softred}{risco}\par\small evidência pouco controlada
-  \end{columns}
-  \source{Abordagem construtiva e pesquisa-ação com Nokia, Sesca, IT Mill e Gurux.}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.45cm]
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,minimum width=2.5cm] (lit) {literatura};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of lit,minimum width=2.5cm] (work) {workshops};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of work,minimum width=2.5cm] (cases) {4 empresas};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,below=0.48cm of work,minimum width=3.6cm] (model) {OSCOMM};
+    \draw[-{Stealth[length=2.2mm]}] (lit)--(model);
+    \draw[-{Stealth[length=2.2mm]}] (work)--(model);
+    \draw[-{Stealth[length=2.2mm]}] (cases)--(model);
+  \end{tikzpicture}
+  \end{center}
+  \source{Abordagem construtiva + pesquisa-ação com Nokia, Sesca, IT Mill e Gurux.}
 \end{frame}
 
-\begin{frame}{OSCOMM: três momentos da abertura}
-  \vspace{0.55cm}
+\begin{frame}{OSCOMM: antes, durante e depois}
+  \vspace{0.45cm}
   \begin{center}
-  \begin{tikzpicture}[node distance=0.75cm]
-    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,text width=3.15cm,align=center,minimum height=1.38cm] (r3) {\Large R3\\\small prontidão};
-    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of r3,text width=3.15cm,align=center,minimum height=1.38cm] (eng) {\Large engenharia\\\small abertura};
-    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of eng,text width=3.15cm,align=center,minimum height=1.38cm] (bulb) {\Large BULB\\\small acompanhamento};
+  \begin{tikzpicture}[node distance=0.70cm]
+    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,text width=3.05cm,align=center,minimum height=1.35cm] (r3) {\Large R3\\\small prontidão};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of r3,text width=3.05cm,align=center,minimum height=1.35cm] (eng) {\Large engenharia\\\small abertura};
+    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of eng,text width=3.05cm,align=center,minimum height=1.35cm] (bulb) {\Large BULB\\\small acompanhamento};
     \draw[-{Stealth[length=3mm]},line width=1.1pt] (r3)--(eng);
     \draw[-{Stealth[length=3mm]},line width=1.1pt] (eng)--(bulb);
   \end{tikzpicture}
   \end{center}
-  \vspace{0.55cm}
-  \bigclaim{Antes, durante e depois da liberação.}
-  \source{O OSCOMM organiza avaliação de prontidão, engenharia de abertura e acompanhamento da comunidade.}
+  \vspace{0.60cm}
+  \begin{center}\large\bfseries avaliar gargalos \hspace{1.2em}$\rightarrow$\hspace{1.2em} corrigir \hspace{1.2em}$\rightarrow$\hspace{1.2em} observar evolução\end{center}
+  \source{Esta sequência organiza a principal contribuição prática do artigo.}
 \end{frame}
 
-\begin{frame}{R3: antes de abrir, diagnosticar}
-  \vspace{0.45cm}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.42cm]
-    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,text width=2.55cm,align=center,minimum height=1.0cm] (sw) {software\\\scriptsize código, arquitetura, qualidade};
-    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of sw,text width=2.55cm,align=center,minimum height=1.0cm] (co) {comunidade\\\scriptsize propósito, usuários, parceiros};
-    \node[rounded corners=8pt,fill=softred,draw=muted,thick,right=of co,text width=2.55cm,align=center,minimum height=1.0cm] (le) {legalidade\\\scriptsize copyright, licença, marca};
-    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of le,text width=2.55cm,align=center,minimum height=1.0cm] (au) {autoridade\\\scriptsize cultura, processo, suporte};
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.55cm}
-  \begin{center}\Large\bfseries O R3 não decide sozinho; ele revela gargalos.\end{center}
-  \source{As quatro dimensões do R3 têm peso igual, mas os itens internos recebem pesos diferentes.}
-\end{frame}
-
-\begin{frame}{Engenharia para abertura: transformar diagnóstico em trabalho}
-  \vspace{0.30cm}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.28cm]
-    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,text width=2.35cm,align=center,minimum height=0.9cm] (ref) {refatorar};
-    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,right=of ref,text width=2.35cm,align=center,minimum height=0.9cm] (doc) {documentar};
-    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of doc,text width=2.35cm,align=center,minimum height=0.9cm] (infra) {infraestrutura};
-    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of infra,text width=2.35cm,align=center,minimum height=0.9cm] (proc) {processo};
-    \node[rounded corners=7pt,fill=softred,draw=muted,thick,below=0.42cm of doc,text width=2.35cm,align=center,minimum height=0.9cm] (lic) {licença};
-    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,right=of lic,text width=2.35cm,align=center,minimum height=0.9cm] (comm) {entrada};
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.55cm}
-  \bigclaim{A abertura consome esforço antes de produzir comunidade.}
-  \source{A fase de engenharia trabalha os problemas encontrados na avaliação de prontidão.}
-\end{frame}
-
-\begin{frame}{Acompanhamento: medir se a comunidade existe}
+\begin{frame}{R3: prontidão em quatro frentes}
   \vspace{0.35cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.36cm]
+    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,text width=2.45cm,align=center,minimum height=1.05cm] (sw) {software\\\scriptsize código • arquitetura • qualidade};
+    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of sw,text width=2.45cm,align=center,minimum height=1.05cm] (co) {comunidade\\\scriptsize propósito • usuários • parceiros};
+    \node[rounded corners=8pt,fill=softred,draw=muted,thick,right=of co,text width=2.45cm,align=center,minimum height=1.05cm] (le) {legalidade\\\scriptsize copyright • licença • marca};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of le,text width=2.45cm,align=center,minimum height=1.05cm] (au) {autoridade\\\scriptsize cultura • processo • suporte};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.55cm}
+  \begin{center}\Large\bfseries Não é um ``passa / não passa'': é um mapa de gargalos.\end{center}
+  \vspace{0.25cm}
+  \begin{center}\small\color{muted}As dimensões têm peso igual; os itens internos têm pesos diferentes e o modelo deve ser adaptado ao caso.\end{center}
+  \source{R3 é descrito como template a ser instanciado conforme produto e objetivo da empresa.}
+\end{frame}
+
+\begin{frame}{Depois do diagnóstico: preparar e medir}
+  \vspace{0.25cm}
   \begin{columns}[T,onlytextwidth]
-    \column{0.50\textwidth}
-      \begin{tikzpicture}[node distance=0.25cm]
-        \node[rounded corners=6pt,fill=softblue,draw=utfprblue,thick,text width=4.6cm,align=center] {downloads};
-        \node[rounded corners=6pt,fill=softgray,draw=muted,thick,text width=4.6cm,align=center,below=of current bounding box.south] {bugs e pedidos};
+    \column{0.48\textwidth}
+      \begin{tikzpicture}
+      \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,inner sep=8pt,text width=5.05cm]{\bfseries Engenharia para abertura\par\vspace{0.2cm}\small refatorar\par documentar\par infraestrutura\par processo\par licença / entrada};
       \end{tikzpicture}
-    \column{0.50\textwidth}
-      \begin{tikzpicture}[node distance=0.25cm]
-        \node[rounded corners=6pt,fill=softyellow,draw=utfpryellow,thick,text width=4.6cm,align=center] {comunicação};
-        \node[rounded corners=6pt,fill=softgreen,draw=utfprteal,thick,text width=4.6cm,align=center,below=of current bounding box.south] {contribuições};
+    \column{0.48\textwidth}
+      \begin{tikzpicture}
+      \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,inner sep=8pt,text width=5.05cm]{\bfseries Acompanhamento (BULB)\par\vspace{0.2cm}\small downloads\par bugs e pedidos\par comunicação\par contribuições\par atividade};
       \end{tikzpicture}
   \end{columns}
-  \vspace{0.70cm}
-  \begin{center}\Large\bfseries A comunidade vira objeto de observação contínua.\end{center}
-  \source{O modelo BULB coleta sinais como atividade, tamanho da comunidade, comunicação, downloads e contribuições.}
+  \vspace{0.45cm}
+  \bigclaim{Abrir consome esforço; sustentar exige observação contínua.}
+  \source{O artigo conecta correção dos gargalos à medição posterior da comunidade.}
 \end{frame}
 
-\begin{frame}{Gurux: o custo concreto da abertura}
-  \vspace{0.35cm}
+\begin{frame}{Gurux: seis meses para tornar a abertura possível}
+  \vspace{0.30cm}
   \begin{columns}[T,onlytextwidth]
     \column{0.25\textwidth}\centering\pill{softgray}{avaliação}\par\Huge 4\par\small pessoas
     \column{0.25\textwidth}\centering\pill{softyellow}{preparação}\par\Huge 6\par\small meses
     \column{0.25\textwidth}\centering\pill{softblue}{equipe}\par\Huge 6\par\small tempo integral
-    \column{0.25\textwidth}\centering\pill{softgreen}{comunidade}\par\Huge 200\par\small usuários
-  \end{columns}
-  \vspace{0.65cm}
-  \begin{center}\Large\bfseries Documentação e reescrita custaram quase o dobro do previsto.\end{center}
-  \source{Caso Gurux: abertura em 2009, preparação de infraestrutura, documentação, exemplos, fórum e acompanhamento.}
-\end{frame}
-
-\begin{frame}{O artigo é forte como guia, fraco como prova}
-  \vspace{0.40cm}
-  \begin{columns}[T,onlytextwidth]
-    \column{0.48\textwidth}
-      \begin{tikzpicture}\node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,inner sep=10pt,text width=5.0cm]{\bfseries Forças\par\vspace{0.2cm}\small visão integrada\par utilidade industrial\par modelo operacional\par linguagem para decisão};\end{tikzpicture}
-    \column{0.48\textwidth}
-      \begin{tikzpicture}\node[rounded corners=8pt,fill=softred,draw=muted,thick,inner sep=10pt,text width=5.0cm]{\bfseries Limites\par\vspace{0.2cm}\small poucos casos\par dados confidenciais\par viés de participação\par causalidade fraca};\end{tikzpicture}
+    \column{0.25\textwidth}\centering\pill{softgreen}{comunidade}\par\Huge 200\par\small usuários / 6 meses
   \end{columns}
   \vspace{0.55cm}
-  \begin{center}\large\bfseries Ele organiza o problema melhor do que comprova a solução.\end{center}
-  \source{Os autores reconhecem que há dados reais, mas ainda insuficientes para evidência conclusiva.}
+  \begin{center}\Large\bfseries Documentação e reescrita exigiram quase o dobro do esforço previsto.\end{center}
+  \vspace{0.22cm}
+  \begin{center}\small\color{muted}Fórum • bug tracker • documentação • exemplos • tutoriais • refatoração • processo aberto\end{center}
+  \source{Caso Gurux: software proprietário aberto em 2009; 100 usuários após poucos meses e cerca de 200 após seis meses.}
 \end{frame}
 
-\begin{frame}{Implicação prática: construir comunidade é engenharia}
+\begin{frame}{O artigo organiza bem o problema — mas não prova sucesso}
+  \vspace{0.28cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,inner sep=9pt,text width=5.0cm]{\bfseries O que sustenta\par\vspace{0.2cm}\small visão integrada\par sequência plausível\par critérios operacionais\par aplicabilidade industrial};\end{tikzpicture}
+    \column{0.48\textwidth}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softred,draw=muted,thick,inner sep=9pt,text width=5.0cm]{\bfseries O que não sustenta\par\vspace{0.2cm}\small causalidade\par receita universal\par generalização forte\par efeito de longo prazo};\end{tikzpicture}
+  \end{columns}
+  \vspace{0.48cm}
+  \begin{center}\large\bfseries Limites reconhecidos: participação dos pesquisadores, confidencialidade, granularidade desigual e poucos informantes.\end{center}
+  \source{Os próprios autores dizem que os dados reais ainda não são suficientes para evidência conclusiva.}
+\end{frame}
+
+\begin{frame}{Síntese: comunidade também precisa ser projetada}
   \vspace{0.45cm}
   \begin{center}
-  \begin{tikzpicture}[node distance=0.47cm]
+  \begin{tikzpicture}[node distance=0.43cm]
     \stage{c1}{utfprdark}{utfprdark}{\color{white}código}
     \stage{c2}{softblue}{utfprblue}{qualidade}
     \stage{c3}{softyellow}{utfpryellow}{entrada}
@@ -288,9 +249,11 @@
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (c3)--(c4);
   \end{tikzpicture}
   \end{center}
-  \vspace{0.60cm}
-  \bigclaim{A lição para projetos como LibreSign: abertura precisa virar processo social sustentável.}
-  \source{A experiência prática funciona aqui como lente crítica, não como evidência adicional do estudo.}
+  \vspace{0.55cm}
+  \bigclaim{O OSCOMM é mais convincente como instrumento de diagnóstico do que como prova de sucesso.}
+  \vspace{0.20cm}
+  \begin{center}\small\color{muted}Na prática, projetos como LibreSign reforçam a pergunta: como converter abertura em participação duradoura?\end{center}
+  \source{A experiência prática é usada como lente de contraste, não como evidência do artigo.}
 \end{frame}
 
 \end{document}
