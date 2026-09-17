@@ -30,12 +30,21 @@
     "isEntry": true
   },
   "source/_assets/scss/talks-catalog.scss": {
-    "file": "assets/talks-catalog-z0KaHiRk.css",
+    "file": "assets/talks-catalog-CRyU7_jg.css",
     "name": "talks-catalog",
     "names": [
       "talks-catalog.css"
     ],
     "src": "source/_assets/scss/talks-catalog.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/talks-list-flow.scss": {
+    "file": "assets/talks-list-flow-BkkcH-BC.css",
+    "name": "talks-list-flow",
+    "names": [
+      "talks-list-flow.css"
+    ],
+    "src": "source/_assets/scss/talks-list-flow.scss",
     "isEntry": true
   }
 }
