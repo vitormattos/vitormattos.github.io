@@ -43,7 +43,7 @@ final class TalkCatalogBuildTest extends TestCase
 
     public function testTalkDetailKeepsSlideCountButOmitsLanguageLabel(): void
     {
-        $html = file_get_contents($this->buildDirectory() . '/talks/slides-com-1659891-bdd/index.html');
+        $html = file_get_contents($this->buildDirectory() . '/talks/bdd/index.html');
         self::assertIsString($html);
 
         self::assertStringContainsString('<dt>Slides</dt>', $html);
