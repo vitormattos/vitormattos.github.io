@@ -67,6 +67,23 @@ final class SiteBuildTest extends TestCase
         self::assertStringContainsString('hreflang="x-default" href="' . self::SITE_URL . '/"', $portuguese);
     }
 
+    public function testHomeShowsSameTalksInBothSiteLanguages(): void
+    {
+        $english = $this->read('index.html');
+        $portuguese = $this->read('pt-BR/index.html');
+
+        preg_match_all('/<article class="home-talk-card">.*?<h3><a href="([^"]+)">([^<]+)<\/a><\/h3>.*?<\/article>/s', $english, $englishTalks, PREG_SET_ORDER);
+        preg_match_all('/<article class="home-talk-card">.*?<h3><a href="([^"]+)">([^<]+)<\/a><\/h3>.*?<\/article>/s', $portuguese, $portugueseTalks, PREG_SET_ORDER);
+
+        self::assertCount(4, $englishTalks);
+        self::assertCount(4, $portugueseTalks);
+
+        $englishItems = array_map(static fn(array $match): array => [$match[1], $match[2]], $englishTalks);
+        $portugueseItems = array_map(static fn(array $match): array => [$match[1], $match[2]], $portugueseTalks);
+
+        self::assertSame($englishItems, $portugueseItems);
+    }
+
     public function testThemeToggleIsAvailableInBothLanguages(): void
     {
         $english = $this->read('index.html');

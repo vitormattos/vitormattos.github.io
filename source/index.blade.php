@@ -7,6 +7,9 @@ alternateUrl: /pt-BR/
 @extends('_layouts.main')
 
 @section('body')
+@php
+    $homeTalks = \App\Presentations\TalkTopics::mergeCatalog($talksEn, $talks);
+@endphp
 <section class="hero" aria-labelledby="page-title">
     <p class="eyebrow">Free software · PHP · research · community</p>
     <h1 id="page-title">Vitor Mattos</h1>
@@ -19,7 +22,7 @@ alternateUrl: /pt-BR/
         <a href="{{ rtrim($page->baseUrl, '/') }}/talks/">View all talks →</a>
     </div>
     <div class="home-talks__grid">
-        @foreach ($talksEn->take(4) as $talk)
+        @foreach (array_slice($homeTalks, 0, 4) as $talk)
             @include('_partials.talk.home-card', ['talk' => $talk])
         @endforeach
     </div>
