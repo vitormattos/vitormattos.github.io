@@ -107,7 +107,7 @@ final class GenerateSitemap
 
     private function isIndexableHtmlPath(string $path): bool
     {
-        if (str_starts_with($path, '/assets/')) {
+        if (str_starts_with($path, '/assets/') || str_starts_with($path, '/presentations/')) {
             return false;
         }
 
