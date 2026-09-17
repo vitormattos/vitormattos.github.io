@@ -6,7 +6,10 @@
     $isEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $sourcePath = isset($presentation['source']) ? '/' . ltrim($presentation['source'], '/') : null;
     $thumbnailId = $sourcePath ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
-    $topics = \App\Presentations\TalkTopics::resolve($talk);
+    $topics = \App\Presentations\TalkTopics::localized(
+        \App\Presentations\TalkTopics::resolve($talk),
+        $isEnglish ? 'en' : 'pt-BR',
+    );
     $topicKeys = array_keys($topics);
     $tagIndexPath = $tagIndexPath ?? ($isEnglish ? '/talks/' : '/pt-BR/palestras/');
     $encodedTags = htmlspecialchars(

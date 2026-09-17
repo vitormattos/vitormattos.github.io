@@ -21,7 +21,7 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
 @section('body')
     @php
         $mergedTalks = \App\Presentations\TalkTopics::mergeCatalog($talksEn, $talks);
-        $catalog = \App\Presentations\TalkTopics::taxonomy($mergedTalks);
+        $catalog = \App\Presentations\TalkTopics::taxonomy($mergedTalks, 'en');
         $talkItems = $catalog['items'];
         $topics = $catalog['topics'];
     @endphp

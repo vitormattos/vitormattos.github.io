@@ -6,7 +6,10 @@
     $needsReveal = ($presentation['type'] ?? null) === 'reveal' || (bool) ($presentation['localHtml'] ?? false);
     $isEnglish = ($page->locale ?? 'en') === 'en';
     $showAbout = $page->showAbout ?? true;
-    $tags = array_values(array_filter(array_map('strval', (array) ($page->tags ?? []))));
+    $tags = \App\Presentations\TalkTopics::localized(
+        \App\Presentations\TalkTopics::resolve($page),
+        $isEnglish ? 'en' : 'pt-BR',
+    );
     $tagIndexPath = $isEnglish ? '/talks/' : '/pt-BR/palestras/';
     $presentationUrl = rtrim((string) ($presentation['url'] ?? ''), '/');
     $rawTalkMetadata = $page->talkMetadata ?? [];
@@ -52,9 +55,9 @@
             @endif
             @if ($tags !== [])
                 <nav class="talk-detail__tags" aria-label="{{ $isEnglish ? 'Topics' : 'Tópicos' }}">
-                    @foreach ($tags as $tag)
+                    @foreach ($tags as $tag => $label)
                         <a class="talk-tag"
-                            href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($tag) }}">{{ $tag }}</a>
+                            href="{{ $page->baseUrl }}{{ $tagIndexPath }}?tag={{ rawurlencode($tag) }}">{{ $label }}</a>
                     @endforeach
                 </nav>
             @endif
