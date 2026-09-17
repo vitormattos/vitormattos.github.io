@@ -22,7 +22,7 @@ final class LatexPresentationTest extends TestCase
         self::assertSame('open-source-ecosystem-review', $presentation->slug());
         self::assertSame('latex-open-source-ecosystem-review', $presentation->releaseTag());
         self::assertFileExists($presentation->sourcePath());
-        self::assertSame(16, $presentation->metadata['slide_count']);
+        self::assertSame(10, $presentation->metadata['slide_count']);
         self::assertSame('pt-BR', $presentation->metadata['language']);
     }
 
