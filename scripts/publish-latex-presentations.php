@@ -58,7 +58,44 @@ foreach (glob('presentations/latex/*/metadata.json') ?: [] as $metadataPath) {
     }
 
     synchronizeRelease($repository, $presentation, $urls);
+    writeManifest($presentation, $assets, $urls, [
+        'source_sha' => $sourceSha,
+        'pdf_sha' => $pdfSha,
+        'thumbnail_sha' => $thumbSha,
+        'metadata_sha' => $metadataSha,
+    ]);
     fwrite(STDOUT, "Published LaTeX presentation release: {$presentation->releaseTag()}\n");
+}
+
+function writeManifest(LatexPresentation $presentation, array $assets, array $urls, array $hashes): void
+{
+    $manifest = [
+        'schema' => 1,
+        'source' => [
+            'path' => (string) $presentation->metadata['source'],
+            'sha256' => $hashes['source_sha'],
+        ],
+        'render' => [
+            'format' => 'pdf',
+            'engine' => 'latexmk',
+            'thumbnail' => 'first-page',
+        ],
+        'release' => [
+            'tag' => $presentation->releaseTag(),
+            'title' => (string) $presentation->metadata['title'],
+            'assets' => [
+                'pdf' => ['name' => $assets['pdf'][1], 'sha256' => $hashes['pdf_sha'], 'url' => $urls['pdf_url']],
+                'source' => ['name' => $assets['source'][1], 'sha256' => $hashes['source_sha'], 'url' => $urls['source_url']],
+                'thumbnail' => ['name' => $assets['thumbnail'][1], 'sha256' => $hashes['thumbnail_sha'], 'url' => $urls['thumbnail_url']],
+                'metadata' => ['name' => $assets['metadata'][1], 'sha256' => $hashes['metadata_sha'], 'url' => $urls['metadata_url']],
+            ],
+        ],
+    ];
+
+    file_put_contents(
+        $presentation->directory . '/export.json',
+        json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n",
+    );
 }
 
 function synchronizeRelease(string $repository, LatexPresentation $presentation, array $urls): void
