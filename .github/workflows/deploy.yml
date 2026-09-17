@@ -11,8 +11,6 @@ on:
 permissions:
   contents: write
 
-# Only the newest production deploy matters. Keep this group separate from
-# pull-request previews so a preview can never cancel a production release.
 concurrency:
   group: github-pages-production
   cancel-in-progress: true
@@ -53,7 +51,7 @@ jobs:
             texlive-latex-recommended
 
       - name: Build LaTeX presentation PDFs
-        run: bash scripts/build-latex-presentations.sh
+        run: php scripts/build-latex-presentations.php
 
       - name: Lint SCSS
         run: npm run lint:scss
