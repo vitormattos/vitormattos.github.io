@@ -312,6 +312,12 @@
     border-radius: 0.55rem;
 }
 
+.talk-list[data-view='list'] .talk-card__preview {
+    align-self: start;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+}
+
 .talk-list[data-view='list'] .talk-card__body {
     padding: 0.8rem 1rem;
 }
@@ -321,10 +327,13 @@
 }
 
 .talk-list[data-view='list'] .talk-card__description {
+    display: block;
+    max-width: none;
     margin-top: 0.35rem;
+    overflow: visible;
     font-size: 0.8rem;
     line-height: 1.45;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: unset;
 }
 
 .talk-list[data-view='list'] .talk-card__tags {
@@ -479,5 +488,9 @@
 
     .talk-list[data-view='list'] .talk-card {
         display: flex;
+    }
+
+    .talk-list[data-view='list'] .talk-card__preview {
+        align-self: stretch;
     }
 }
