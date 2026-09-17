@@ -82,9 +82,9 @@
 
         @if ($pdfHref)
             <div class="talk-card__footer">
-                <div class="talk-card__formats"
-                    aria-label="{{ $isEnglish ? 'Downloads' : 'Downloads' }}">
-                    <a class="format-badge" href="{{ $pdfHref }}" target="_blank" rel="external noopener noreferrer"
+                <div class="talk-card__formats" aria-label="{{ $isEnglish ? 'Downloads' : 'Downloads' }}">
+                    <a class="format-badge" href="{{ $pdfHref }}" target="_blank"
+                        rel="external noopener noreferrer"
                         aria-label="{{ $isEnglish ? 'Download PDF' : 'Baixar PDF' }}">PDF</a>
                 </div>
             </div>
