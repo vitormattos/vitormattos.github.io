@@ -79,12 +79,13 @@ jobs:
         if: github.event.action != 'closed'
         run: npm install --no-audit --no-fund
 
-      - name: Install LaTeX dependencies
+      - name: Install LaTeX and rendering dependencies
         if: github.event.action != 'closed'
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             latexmk \
+            poppler-utils \
             texlive-fonts-recommended \
             texlive-lang-portuguese \
             texlive-latex-base \
