@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pt-BR"
+    >
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <script>
+        (() => {
+            const storageKey = 'site-locale';
+            const root = document.documentElement;
+            const currentLocale = root.lang === 'pt-BR' ? 'pt-BR' : 'en';
+            const alternateLocale = root.dataset.alternateLocale;
+            const alternateUrl = root.dataset.alternateUrl;
+            let preferredLocale = null;
+
+            try {
+                const storedLocale = localStorage.getItem(storageKey);
+                if (storedLocale === 'en' || storedLocale === 'pt-BR') {
+                    preferredLocale = storedLocale;
+                }
+            } catch (_) {
+                // Fall back to the browser language when storage is unavailable.
+            }
+
+            if (preferredLocale === null) {
+                const browserLocale = (navigator.languages?.[0] ?? navigator.language ?? 'en').toLowerCase();
+                preferredLocale = browserLocale.startsWith('pt') ? 'pt-BR' : 'en';
+            }
+
+            if (alternateUrl && alternateLocale === preferredLocale && currentLocale !== preferredLocale) {
+                window.location.replace(alternateUrl);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const languageSwitch = document.querySelector('[data-language-switch]');
+                languageSwitch?.addEventListener('click', () => {
+                    const selectedLocale = languageSwitch.dataset.locale;
+                    if (selectedLocale !== 'en' && selectedLocale !== 'pt-BR') return;
+
+                    try {
+                        localStorage.setItem(storageKey, selectedLocale);
+                    } catch (_) {
+                        // Navigation still works when storage is unavailable.
+                    }
+                });
+            });
+        })();
+    </script>
+    <title>MediaWiki: Oficina de criação de conteúdo · Vitor Mattos</title>
+    <meta name="description" content="Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina">
+<link rel="alternate" hreflang="pt-BR" href="https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Artigos" href="https://vitormattos.github.io/pt-BR/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MediaWiki: Oficina de criação de conteúdo · Vitor Mattos">
+<meta property="og:description" content="Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.">
+<meta property="og:url" content="https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://vitormattos.github.io/presentations/slides.com/3221966/thumbnail.png">
+<meta property="og:image:secure_url" content="https://vitormattos.github.io/presentations/slides.com/3221966/thumbnail.png">
+    <meta property="og:image:width" content="500">
+    <meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="MediaWiki: Oficina de criação de conteúdo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MediaWiki: Oficina de criação de conteúdo · Vitor Mattos">
+<meta name="twitter:description" content="Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.">
+<meta name="twitter:image" content="https://vitormattos.github.io/presentations/slides.com/3221966/thumbnail.png">
+<meta name="twitter:image:alt" content="MediaWiki: Oficina de criação de conteúdo">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","image":"https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&r=g","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina#webpage","url":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina","name":"MediaWiki: Oficina de criação de conteúdo","description":"Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.","image":"https://vitormattos.github.io/presentations/slides.com/3221966/thumbnail.png","primaryImageOfPage":{"@type":"ImageObject","url":"https://vitormattos.github.io/presentations/slides.com/3221966/thumbnail.png"},"inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina#breadcrumb"}},{"@type":"CreativeWork","@id":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina#content","url":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina","name":"MediaWiki: Oficina de criação de conteúdo","headline":"MediaWiki: Oficina de criação de conteúdo","description":"Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.","image":"https://vitormattos.github.io/presentations/slides.com/3221966/thumbnail.png","inLanguage":"pt-BR","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina#webpage"},"datePublished":"2024-07-04T00:00:00+00:00","dateModified":"2025-08-05T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Início","item":"https://vitormattos.github.io/pt-BR"},{"@type":"ListItem","position":2,"name":"Palestras","item":"https://vitormattos.github.io/pt-BR/palestras"},{"@type":"ListItem","position":3,"name":"MediaWiki: Oficina de criação de conteúdo","item":"https://vitormattos.github.io/pt-BR/palestras/mediawiki-oficina"}]}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-40/assets/build/assets/main-C26NAo9Y.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-40/assets/build/assets/presentations-BejEjNuL.css">
+    </head>
+
+<body>
+    <div class="preview-badge" aria-hidden="true">
+        <span>PR</span>
+    </div>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+    <header class="site-header site-header--talks">
+        <div class="site-header__bar">
+            <a class="site-identity" href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR"
+                aria-label="Vitor Mattos">
+                <img class="site-identity__avatar" src="https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=112&amp;r=g" alt="" width="56"
+                    height="56">
+                <span class="site-identity__copy">
+                    <strong>Vitor Mattos</strong>
+                    <span>software livre · tecnologia</span>
+                </span>
+            </a>
+
+            <div class="site-header__actions">
+                <nav class="site-nav" aria-label="Principal">
+                    <a class="site-nav__link" href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/sobre"
+                        >Sobre</a>
+                    <a class="site-nav__link" href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/artigos"
+                        >Artigos</a>
+                    <a class="site-nav__link is-active" href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/palestras"
+                         aria-current="page" >Palestras</a>
+                </nav>
+
+                <div class="site-controls">
+                                        <button class="theme-toggle" type="button" data-theme-toggle
+    data-label-light="Usar tema claro"
+    data-label-dark="Usar tema escuro" aria-pressed="false">
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Tema</span>
+</button>
+
+<script>
+    (() => {
+        const button = document.currentScript.previousElementSibling;
+        const root = document.documentElement;
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+        const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+        const syncButton = () => {
+            const theme = currentTheme();
+            const isDark = theme === 'dark';
+            button.setAttribute('aria-pressed', String(isDark));
+            button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+        };
+
+        button.addEventListener('click', () => {
+            const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+            root.dataset.theme = nextTheme;
+
+            try {
+                localStorage.setItem('theme', nextTheme);
+            } catch (_) {
+                // Theme selection still works for this page when storage is unavailable.
+            }
+
+            syncButton();
+        });
+
+        media.addEventListener?.('change', () => {
+            if (!root.dataset.theme) {
+                syncButton();
+            }
+        });
+
+        syncButton();
+    })();
+</script>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="main-content">
+            <article class="content talk-detail">
+        <header>
+            <p class="eyebrow">Palestra</p>
+                            <p class="meta"><time
+                        datetime="2024-07-04">04/07/2024</time>
+                </p>
+                        <h1>MediaWiki: Oficina de criação de conteúdo</h1>
+                            <p class="lead">Descubra a evolução da Wikipedia desde o seu início até a introdução do VisualEditor em 2013. Descubra o funcionamento interno desta plataforma e mergulhe no mundo do hacking.</p>
+                                        <nav class="talk-detail__tags" aria-label="Tópicos">
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/palestras/?tag=conhecimento%20colaborativo">Conhecimento Colaborativo</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/palestras/?tag=mediawiki">MediaWiki</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/palestras/?tag=php">PHP</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/palestras/?tag=software%20livre">Software Livre</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-40/pt-BR/palestras/?tag=wiki">Wiki</a>
+                                    </nav>
+                    </header>
+        <div class="presentation-frame">
+        <div class="presentation-toolbar presentation-toolbar--archive">
+            <div class="presentation-toolbar__context">
+                <span class="presentation-toolbar__context-icon" aria-hidden="true">◫</span>
+                <span>Apresentação web</span>
+                <small>Arquivada do Slides.com</small>
+            </div>
+            <div class="presentation-toolbar__actions">
+                                    <a class="presentation-action presentation-action--primary" href="https://slides.com/vitormattos/mediawiki-oficina"
+                        target="_blank" rel="external noopener noreferrer">
+                        <span aria-hidden="true">↗</span>
+                        <span>Abrir original</span>
+                    </a>
+                
+                                    <a class="presentation-action" href="https://github.com/vitormattos/vitormattos.github.io/releases/download/slides-com-3221966/slides-com-3221966-02c4836a3769.pdf" target="_blank"
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">↓</span><span>Baixar PDF</span></a>
+                
+                
+                <details class="presentation-action-menu">
+                    <summary class="presentation-action presentation-action--secondary"><span
+                            aria-hidden="true">&lt;/&gt;</span><span>Fonte</span><span
+                            aria-hidden="true">⌄</span></summary>
+                    <div class="presentation-action-menu__panel">
+                        <a href="https://vitormattos.github.io/pr-preview/pr-40/presentations/slides.com/3221966/deck.html"
+                            download><strong>HTML</strong><small>Marcação arquivada dos slides</small></a>
+                                                                            <a href="https://vitormattos.github.io/pr-preview/pr-40/presentations/slides.com/3221966/metadata.json"
+                                download><strong>JSON</strong><small>Metadados sincronizados</small></a>
+                                            </div>
+                </details>
+            </div>
+        </div>
+        <div class="presentation-stage"><iframe src="https://slides.com/vitormattos/mediawiki-oficina/embed" title="MediaWiki: Oficina de criação de conteúdo"
+                loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    </div>
+                    <dl class="presentation-metadata">
+                                    <div>
+                        <dt>Slides</dt>
+                        <dd>20</dd>
+                    </div>
+                                                    <div>
+                        <dt>Tela</dt>
+                        <dd>1024 × 576</dd>
+                    </div>
+                            </dl>
+                            </article>
+    </main>
+    <footer>
+        <p>Conteúdo e código publicados com transparência e controle de versão.
+        </p>
+        <p>
+            <a class="rss-link"
+                href="https://vitormattos.github.io/pt-BR/feed.xml">
+                <span class="rss-link__icon" data-ui-icon="rss" aria-hidden="true"></span>
+                <span>RSS</span>
+            </a>
+        </p>
+    </footer>
+    <script type="module" src="https://vitormattos.github.io/pr-preview/pr-40/assets/build/assets/social-icons-B4GgBORd.js"></script>
+            <script type="module" src="https://vitormattos.github.io/pr-preview/pr-40/assets/build/assets/presentations-DKZxlUYR.js"></script>
+    </body>
+
+</html>
