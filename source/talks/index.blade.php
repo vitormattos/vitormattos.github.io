@@ -13,9 +13,11 @@ description: Talks and presentations by Vitor Mattos about free software, PHP, L
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/presentations.scss') }}">
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/talks-catalog.scss') }}">
     <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/talks-list-flow.scss') }}">
+    <link rel="stylesheet" href="{{ $page->baseUrl }}{{ vite('source/_assets/scss/talk-preview.scss') }}">
 @endpush
 @push('scripts')
     <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/presentations.js') }}"></script>
+    <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/talk-preview.js') }}"></script>
 @endpush
 
 @section('body')
