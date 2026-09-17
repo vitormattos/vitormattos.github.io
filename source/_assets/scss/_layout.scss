@@ -169,11 +169,26 @@ footer {
 
     .site-controls {
         border: 0;
-        gap: .45rem;
+        gap: .25rem;
         grid-column: 2;
         grid-row: 1;
         margin-right: $page-gutter;
         padding: .65rem 0;
+    }
+
+    .language-switch {
+        align-items: center;
+        border-radius: .45rem;
+        display: inline-flex;
+        justify-content: center;
+        min-height: 2.25rem;
+        min-width: 2.25rem;
+        padding: .35rem;
+    }
+
+    .language-switch:focus-visible {
+        outline: 2px solid var(--link);
+        outline-offset: 2px;
     }
 
     .site-nav {
