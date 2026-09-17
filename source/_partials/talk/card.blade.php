@@ -52,7 +52,8 @@
                 data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}"
                 @if ($thumbnail) hidden @endif>
                 @if ($revealPreviewable)
-                    <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
+                    <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}"
+                        data-presentation-mode="thumbnail">
                         <div class="slides">
                             <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
                                 data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$"
