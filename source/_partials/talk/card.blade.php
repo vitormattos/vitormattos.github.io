@@ -15,23 +15,11 @@
         'UTF-8',
     );
 
-    $thumbnail = $presentation['thumbnail'] ?? null;
-    $thumbnailWidth = (int) ($presentation['thumbnailWidth'] ?? ($presentation['width'] ?? 0));
-    $thumbnailHeight = (int) ($presentation['thumbnailHeight'] ?? ($presentation['height'] ?? 0));
+    $thumbnail = $page->presentationThumbnail($talk);
     $hasArchivedPdf = false;
     if ($talk->slidesId ?? false) {
         $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
         $deckDir = 'presentations/' . $sourceDirectory . '/' . $talk->slidesId;
-        $localThumbnails = glob($deckDir . '/thumbnail.*') ?: [];
-        if ($localThumbnails !== []) {
-            $thumbnail = '/' . $localThumbnails[0];
-            $imageSize = @getimagesize($localThumbnails[0]);
-            if (is_array($imageSize)) {
-                $thumbnailWidth = (int) $imageSize[0];
-                $thumbnailHeight = (int) $imageSize[1];
-            }
-        }
-
         $manifestPath = $deckDir . '/export.json';
         if (is_file($manifestPath)) {
             try {
@@ -46,9 +34,8 @@
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
         @if ($thumbnail)
-            <img src="{{ str_starts_with($thumbnail, '/') ? $page->baseUrl . $thumbnail : $thumbnail }}" alt=""
-                loading="lazy"
-                @if ($thumbnailWidth > 0 && $thumbnailHeight > 0) width="{{ $thumbnailWidth }}" height="{{ $thumbnailHeight }}" @endif>
+            <img src="{{ $thumbnail['url'] }}" alt="" loading="lazy"
+                @if ($thumbnail['width'] > 0 && $thumbnail['height'] > 0) width="{{ $thumbnail['width'] }}" height="{{ $thumbnail['height'] }}" @endif>
         @elseif ($type === 'reveal' && $sourcePath)
             <div class="presentation-thumbnail" aria-hidden="true">
                 <div class="reveal js-reveal-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
