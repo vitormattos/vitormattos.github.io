@@ -37,6 +37,7 @@ class PresentationReleaseMetadata
         $slideCount = (int) ($metadata['slide_count'] ?? 0);
         $publishedAt = self::date((string) ($metadata['published_at'] ?? $metadata['created_at'] ?? ''));
         $updatedAt = self::date((string) ($metadata['updated_at'] ?? ''));
+        $statisticsCapturedAt = self::date((string) ($metadata['statistics_captured_at'] ?? ''));
         $tags = self::tags($metadata, $source);
 
         $lines = [];
@@ -84,6 +85,21 @@ class PresentationReleaseMetadata
             $lines[] = '- **Tags:** ' . implode(', ', $tags);
         }
 
+        if ($source === 'slideshare' && $statisticsCapturedAt !== '') {
+            $statistics = (array) ($metadata['statistics'] ?? []);
+            $statisticLines = self::statistics($statistics);
+            if ($statisticLines !== []) {
+                $lines[] = '';
+                $lines[] = '### Historical statistics';
+                $lines[] = '';
+                $lines[] = '**Captured:** ' . $statisticsCapturedAt;
+                $lines[] = '';
+                array_push($lines, ...$statisticLines);
+                $lines[] = '';
+                $lines[] = '_These values are a historical snapshot and are not live SlideShare statistics._';
+            }
+        }
+
         $lines[] = '';
         $lines[] = 'The release is keyed by the immutable source presentation ID. Historical assets are preserved when a new archived snapshot is published.';
 
@@ -102,6 +118,28 @@ class PresentationReleaseMetadata
             array_map(static fn($tag): string => trim((string) $tag), (array) $tags),
             static fn(string $tag): bool => $tag !== '',
         ));
+    }
+
+    private static function statistics(array $statistics): array
+    {
+        $labels = [
+            'total_views' => 'Total views',
+            'slideshare_views' => 'SlideShare views',
+            'embed_views' => 'Embedded views',
+            'likes' => 'Likes',
+            'comments' => 'Comments',
+            'downloads' => 'Downloads',
+        ];
+        $lines = [];
+
+        foreach ($labels as $key => $label) {
+            if (!array_key_exists($key, $statistics)) {
+                continue;
+            }
+            $lines[] = '- **' . $label . ':** ' . (int) $statistics[$key];
+        }
+
+        return $lines;
     }
 
     private static function thumbnailHtml(array $metadata, string $thumbnailUrl): string
