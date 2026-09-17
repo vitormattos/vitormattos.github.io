@@ -40,6 +40,20 @@ jobs:
       - name: Install frontend dependencies
         run: npm install --no-audit --no-fund
 
+      - name: Install LaTeX dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-fonts-recommended \
+            texlive-lang-portuguese \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-latex-recommended
+
+      - name: Build LaTeX presentation PDFs
+        run: bash scripts/build-latex-presentations.sh
+
       - name: Lint SCSS
         run: npm run lint:scss
 
