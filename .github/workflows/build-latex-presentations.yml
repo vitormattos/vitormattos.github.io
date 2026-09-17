@@ -4,14 +4,6 @@
 name: Build LaTeX presentations
 
 on:
-  pull_request:
-    paths:
-      - 'presentations/latex/**'
-      - 'scripts/build-latex-presentations.php'
-      - 'scripts/publish-latex-presentations.php'
-      - 'src/Presentations/LatexPresentation.php'
-      - 'tests/Presentations/LatexPresentationTest.php'
-      - '.github/workflows/build-latex-presentations.yml'
   push:
     branches: [main]
     paths:
@@ -33,6 +25,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -52,13 +45,17 @@ jobs:
           texlive_version: 2026
           packages: |
             scheme-basic
+            latex
+            latex-bin
             latexmk
-            lmodern
-            collection-fontsrecommended
-            collection-langportuguese
-            collection-latexextra
-            collection-latexrecommended
-            collection-pictures
+            beamer
+            babel-portuges
+            hyphen-portuguese
+            lm
+            microtype
+            xcolor
+            pgf
+            hyperref
 
       - name: Ensure PDF rendering tools
         shell: bash
