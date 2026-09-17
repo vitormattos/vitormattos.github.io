@@ -29,6 +29,7 @@ final class TalkTopics
             }
         }
 
+        self::expandRelatedTopics($topics);
         ksort($topics, SORT_NATURAL | SORT_FLAG_CASE);
 
         return $topics;
@@ -161,6 +162,44 @@ final class TalkTopics
         }
 
         return (array) $override['tags'];
+    }
+
+    private static function expandRelatedTopics(array &$topics): void
+    {
+        $path = dirname(__DIR__, 2) . '/data/topic-relations.php';
+        if (!is_file($path)) {
+            return;
+        }
+
+        $relations = require $path;
+        if (!is_array($relations)) {
+            return;
+        }
+
+        $queue = array_keys($topics);
+        $processed = [];
+
+        while ($queue !== []) {
+            $key = array_shift($queue);
+            if (!is_string($key) || isset($processed[$key])) {
+                continue;
+            }
+
+            $processed[$key] = true;
+            $related = $relations[$key] ?? [];
+            if (!is_array($related)) {
+                continue;
+            }
+
+            $before = array_keys($topics);
+            self::collect($topics, $related);
+            $added = array_diff(array_keys($topics), $before);
+            foreach ($added as $addedKey) {
+                if (!isset($processed[$addedKey])) {
+                    $queue[] = $addedKey;
+                }
+            }
+        }
     }
 
     private static function collect(array &$topics, mixed $value): void
