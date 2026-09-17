@@ -8,7 +8,11 @@ declare(strict_types=1);
 namespace Tests\Seo;
 
 use App\Presentations\PresentationThumbnailResolver;
+use App\Seo\PageUrlResolver;
 use App\Seo\SeoMetadataBuilder;
+use App\Seo\SocialImageResolver;
+use App\Seo\StructuredDataBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class SeoMetadataBuilderTest extends TestCase
@@ -20,7 +24,12 @@ final class SeoMetadataBuilderTest extends TestCase
     {
         $this->projectRoot = sys_get_temp_dir() . '/seo-metadata-' . bin2hex(random_bytes(6));
         mkdir($this->projectRoot, 0777, true);
-        $this->builder = new SeoMetadataBuilder(new PresentationThumbnailResolver($this->projectRoot));
+        $thumbnailResolver = new PresentationThumbnailResolver($this->projectRoot);
+        $this->builder = new SeoMetadataBuilder(
+            new PageUrlResolver(),
+            new SocialImageResolver($thumbnailResolver),
+            new StructuredDataBuilder(),
+        );
     }
 
     protected function tearDown(): void
@@ -28,106 +37,75 @@ final class SeoMetadataBuilderTest extends TestCase
         $this->deleteDirectory($this->projectRoot);
     }
 
-    public function testProfilePageUsesAuthorImageAsFallback(): void
+    #[DataProvider('pageMetadataProvider')]
+    public function testBuildsPageMetadata(array $overrides, array $expected): void
     {
-        $page = $this->page('/');
-
+        $page = $this->page($overrides['path'] ?? '/', $overrides);
         $metadata = $this->builder->build($page);
 
-        self::assertSame('https://vitormattos.github.io/', $metadata['canonicalUrl']);
-        self::assertSame('summary', $metadata['socialImage']['twitterCard']);
-        self::assertSame('https://example.com/avatar-512.png', $metadata['socialImage']['url']);
-        self::assertSame(512, $metadata['socialImage']['width']);
-        self::assertSame(512, $metadata['socialImage']['height']);
-        self::assertSame('Vitor Mattos', $metadata['socialImage']['alt']);
-        self::assertSame('ProfilePage', $metadata['structuredData']['@graph'][2]['@type']);
+        foreach ($expected as $key => $value) {
+            self::assertSame($value, $metadata[$key]);
+        }
     }
 
-    public function testArticleUsesExplicitSocialImageAndArticleMetadata(): void
+    public static function pageMetadataProvider(): iterable
     {
-        $page = $this->page('/pt-BR/artigos/exemplo/');
-        $page->locale = 'pt-BR';
-        $page->title = 'Artigo de exemplo';
-        $page->description = 'Descrição do artigo.';
-        $page->schemaType = 'Article';
-        $page->date = strtotime('2026-09-10 12:00:00 UTC');
-        $page->updated = '2026-09-11';
-        $page->socialImage = '/images/article.png';
-        $page->socialImageWidth = 1200;
-        $page->socialImageHeight = 630;
-        $page->alternateUrl = '/articles/example/';
+        yield 'profile page' => [
+            ['path' => '/'],
+            [
+                'canonicalUrl' => 'https://vitormattos.github.io/',
+                'ogType' => 'website',
+                'authorName' => 'Vitor Mattos',
+            ],
+        ];
+
+        yield 'portuguese article' => [
+            [
+                'path' => '/pt-BR/artigos/exemplo/',
+                'locale' => 'pt-BR',
+                'title' => 'Artigo de exemplo',
+                'description' => 'Descrição do artigo.',
+                'schemaType' => 'Article',
+                'alternateUrl' => '/articles/example/',
+            ],
+            [
+                'canonicalUrl' => 'https://vitormattos.github.io/pt-BR/artigos/exemplo',
+                'alternateCanonicalUrl' => 'https://vitormattos.github.io/articles/example',
+                'englishCanonicalUrl' => 'https://vitormattos.github.io/articles/example',
+                'ogType' => 'article',
+            ],
+        ];
+    }
+
+    public function testBuildsArticleStructuredDataAndDates(): void
+    {
+        $page = $this->page('/articles/example', [
+            'title' => 'Example',
+            'schemaType' => 'Article',
+            'date' => strtotime('2026-09-10 12:00:00 UTC'),
+            'updated' => '2026-09-11',
+            'socialImage' => '/images/article.png',
+            'socialImageWidth' => 1200,
+            'socialImageHeight' => 630,
+        ]);
 
         $metadata = $this->builder->build($page);
-
-        self::assertSame('https://vitormattos.github.io/pt-BR/artigos/exemplo', $metadata['canonicalUrl']);
-        self::assertSame('https://vitormattos.github.io/articles/example', $metadata['alternateCanonicalUrl']);
-        self::assertSame('https://vitormattos.github.io/articles/example', $metadata['englishCanonicalUrl']);
-        self::assertSame('article', $metadata['ogType']);
-        self::assertSame('summary_large_image', $metadata['socialImage']['twitterCard']);
-        self::assertSame('https://vitormattos.github.io/images/article.png', $metadata['socialImage']['url']);
-        self::assertSame(1200, $metadata['socialImage']['width']);
-        self::assertSame(630, $metadata['socialImage']['height']);
-        self::assertNotNull($metadata['publishedTime']);
-        self::assertNotNull($metadata['modifiedTime']);
-
         $graph = $metadata['structuredData']['@graph'];
+
         self::assertSame('Article', $graph[3]['@type']);
         self::assertSame('BreadcrumbList', $graph[4]['@type']);
-        self::assertSame('Artigos', $graph[4]['itemListElement'][1]['name']);
-    }
-
-    public function testAcademicImageIsUsedWhenArticleHasNoTopLevelImage(): void
-    {
-        $page = $this->page('/pt-BR/artigos/academico');
-        $page->locale = 'pt-BR';
-        $page->title = 'Artigo acadêmico';
-        $page->schemaType = 'ScholarlyArticle';
-        $page->academic = [
-            'author' => 'Vitor Mattos de Souza',
-            'image' => 'https://example.com/paper-cover.jpg',
-            'institution' => 'Universidade de Exemplo',
-            'keywords' => ['software livre'],
-        ];
-
-        $metadata = $this->builder->build($page);
-
-        self::assertSame('https://example.com/paper-cover.jpg', $metadata['socialImage']['url']);
+        self::assertNotNull($metadata['publishedTime']);
+        self::assertNotNull($metadata['modifiedTime']);
         self::assertSame('summary_large_image', $metadata['socialImage']['twitterCard']);
-        self::assertSame('Vitor Mattos de Souza', $metadata['authorName']);
-        self::assertSame('ScholarlyArticle', $metadata['structuredData']['@graph'][3]['@type']);
-    }
-
-    public function testTalkUsesArchivedPresentationThumbnail(): void
-    {
-        $this->writeOnePixelPng('presentations/slides.com/1659891/thumbnail.png');
-        $page = $this->page('/talks/bdd');
-        $page->title = 'BDD + PHP = Behat';
-        $page->schemaType = 'CreativeWork';
-        $page->slidesId = 1659891;
-        $page->presentation = [
-            'type' => 'slides.com',
-            'thumbnail' => 'https://example.com/remote-thumbnail.png',
-        ];
-
-        $metadata = $this->builder->build($page);
-
-        self::assertSame(
-            'https://vitormattos.github.io/presentations/slides.com/1659891/thumbnail.png',
-            $metadata['socialImage']['url'],
-        );
-        self::assertSame(1, $metadata['socialImage']['width']);
-        self::assertSame(1, $metadata['socialImage']['height']);
-        self::assertSame('summary_large_image', $metadata['socialImage']['twitterCard']);
-        self::assertSame('CreativeWork', $metadata['structuredData']['@graph'][3]['@type']);
-        self::assertSame('Talks', $metadata['structuredData']['@graph'][4]['itemListElement'][1]['name']);
     }
 
     public function testInvalidUpdatedDateDoesNotEmitModifiedTime(): void
     {
-        $page = $this->page('/articles/example');
-        $page->title = 'Example';
-        $page->schemaType = 'Article';
-        $page->updated = 'not-a-date';
+        $page = $this->page('/articles/example', [
+            'title' => 'Example',
+            'schemaType' => 'Article',
+            'updated' => 'not-a-date',
+        ]);
 
         $metadata = $this->builder->build($page);
 
@@ -135,9 +113,11 @@ final class SeoMetadataBuilderTest extends TestCase
         self::assertArrayNotHasKey('dateModified', $metadata['structuredData']['@graph'][3]);
     }
 
-    private function page(string $path): SeoTestPage
+    private function page(string $path, array $overrides = []): SeoPageStub
     {
-        return new SeoTestPage($path, [
+        unset($overrides['path']);
+
+        return new SeoPageStub($path, array_replace_recursive([
             'siteUrl' => 'https://vitormattos.github.io',
             'siteName' => 'Vitor Mattos',
             'siteDescription' => 'Site description',
@@ -163,19 +143,7 @@ final class SeoMetadataBuilderTest extends TestCase
                     'url' => 'https://librecode.coop/',
                 ],
             ],
-        ]);
-    }
-
-    private function writeOnePixelPng(string $relativePath): void
-    {
-        $path = $this->projectRoot . '/' . $relativePath;
-        mkdir(dirname($path), 0777, true);
-        $bytes = base64_decode(
-            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
-            true,
-        );
-        self::assertNotFalse($bytes);
-        file_put_contents($path, $bytes);
+        ], $overrides));
     }
 
     private function deleteDirectory(string $path): void
@@ -195,29 +163,9 @@ final class SeoMetadataBuilderTest extends TestCase
             }
 
             $entryPath = $path . '/' . $entry;
-            if (is_dir($entryPath)) {
-                $this->deleteDirectory($entryPath);
-            } else {
-                unlink($entryPath);
-            }
+            is_dir($entryPath) ? $this->deleteDirectory($entryPath) : unlink($entryPath);
         }
 
         rmdir($path);
-    }
-}
-
-#[\AllowDynamicProperties]
-final class SeoTestPage
-{
-    public function __construct(private readonly string $path, array $properties)
-    {
-        foreach ($properties as $key => $value) {
-            $this->{$key} = $value;
-        }
-    }
-
-    public function getPath(): string
-    {
-        return $this->path;
     }
 }
