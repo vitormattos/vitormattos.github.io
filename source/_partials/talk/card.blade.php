@@ -3,7 +3,7 @@
 @php
     $presentation = $talk->presentation ?? [];
     $type = $presentation['type'] ?? 'external';
-    $isEnglish = ($page->locale ?? $page->defaultLocale ?? 'en') === 'en';
+    $isEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $sourcePath = isset($presentation['source']) ? '/' . ltrim($presentation['source'], '/') : null;
     $thumbnailId = $sourcePath ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
     $topics = \App\Presentations\TalkTopics::resolve($talk);
