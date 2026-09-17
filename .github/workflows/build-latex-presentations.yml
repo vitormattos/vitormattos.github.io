@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Build LaTeX presentations
+
+on:
+  pull_request:
+    paths:
+      - 'presentations/latex/**'
+      - 'scripts/build-latex-presentations.sh'
+      - '.github/workflows/build-latex-presentations.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'presentations/latex/**'
+      - 'scripts/build-latex-presentations.sh'
+      - '.github/workflows/build-latex-presentations.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: latex-presentations-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install LaTeX dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-fonts-recommended \
+            texlive-lang-portuguese \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-latex-recommended
+
+      - name: Build presentation PDFs
+        run: bash scripts/build-latex-presentations.sh
+
+      - name: Upload generated PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: latex-presentations
+          path: source/presentations/latex/**/*.pdf
+          if-no-files-found: error
