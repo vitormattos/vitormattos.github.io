@@ -167,12 +167,63 @@ function initializeTagFilter(gallery) {
     applyTag(new URL(window.location.href).searchParams.get('tag') ?? '');
 }
 
+async function copyText(text) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.append(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    textarea.remove();
+}
+
+function initializeTalkSharing(gallery) {
+    gallery.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-talk-share]');
+        if (!button || !gallery.contains(button)) return;
+
+        const url = new URL(button.dataset.talkUrl ?? '', window.location.href).href;
+        const title = button.dataset.talkTitle ?? document.title;
+        const shareLabel = button.dataset.shareLabel ?? 'Share';
+        const copiedLabel = button.dataset.copiedLabel ?? 'Link copied';
+
+        if (navigator.share) {
+            try {
+                await navigator.share({ title, url });
+                return;
+            } catch (error) {
+                if (error?.name === 'AbortError') return;
+            }
+        }
+
+        try {
+            await copyText(url);
+            button.setAttribute('aria-label', copiedLabel);
+            button.setAttribute('title', copiedLabel);
+            window.setTimeout(() => {
+                button.setAttribute('aria-label', shareLabel);
+                button.setAttribute('title', shareLabel);
+            }, 1600);
+        } catch {
+            window.prompt(shareLabel, url);
+        }
+    });
+}
+
 function initializeGallery() {
     const gallery = document.querySelector('[data-talk-gallery]');
     const switcher = document.querySelector('[data-gallery-switcher]');
     if (!gallery || !switcher) return;
 
     initializeTagFilter(gallery);
+    initializeTalkSharing(gallery);
 
     const trigger = switcher.querySelector('[data-gallery-menu-trigger]');
     const menu = switcher.querySelector('[data-gallery-menu]');

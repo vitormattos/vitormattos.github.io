@@ -6,7 +6,6 @@ on:
   workflow_run:
     workflows:
       - Publish Slides.com PDFs
-      - Publish SlideShare archive
     types:
       - completed
   workflow_dispatch:

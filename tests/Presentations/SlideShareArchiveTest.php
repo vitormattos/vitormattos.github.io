@@ -55,6 +55,10 @@ final class SlideShareArchiveTest extends TestCase
             'source_url' => 'https://pt.slideshare.net/slideshow/jasperreports/10406513',
             'published_at' => '2011-11-30T17:55:49Z',
             'tags' => ['PHP', 'JasperReports'],
+            'statistics' => [
+                'total_views' => 1197,
+                'downloads' => 45,
+            ],
             'width' => 1024,
             'height' => 768,
         ];
@@ -73,6 +77,10 @@ final class SlideShareArchiveTest extends TestCase
         self::assertStringContainsString('**SlideShare:** https://pt.slideshare.net/slideshow/jasperreports/10406513', $body);
         self::assertStringContainsString('**Archived PDF:** https://example.invalid/archive.pdf', $body);
         self::assertStringContainsString('**Original archived file:** https://example.invalid/original.ppt', $body);
+        self::assertStringNotContainsString('**Language:**', $body);
+        self::assertStringNotContainsString('Historical statistics', $body);
+        self::assertStringNotContainsString('Total views', $body);
+        self::assertStringNotContainsString('Downloads:', $body);
     }
 
     private static function assertNoForbiddenKeys(array $value, array $forbidden, string $file): void

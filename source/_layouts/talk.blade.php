@@ -60,21 +60,12 @@
             @endif
         </header>
         @include('_partials.talk.presentation')
-        @if (
-            ($presentation['slideCount'] ?? 0) ||
-                ($presentation['language'] ?? false) ||
-                (($presentation['width'] ?? 0) && ($presentation['height'] ?? 0)))
+        @if (($presentation['slideCount'] ?? 0) || (($presentation['width'] ?? 0) && ($presentation['height'] ?? 0)))
             <dl class="presentation-metadata">
                 @if ($presentation['slideCount'] ?? 0)
                     <div>
                         <dt>Slides</dt>
                         <dd>{{ $presentation['slideCount'] }}</dd>
-                    </div>
-                @endif
-                @if ($presentation['language'] ?? false)
-                    <div>
-                        <dt>{{ $isEnglish ? 'Language' : 'Idioma' }}</dt>
-                        <dd>{{ $presentation['language'] }}</dd>
                     </div>
                 @endif
                 @if (($presentation['width'] ?? 0) && ($presentation['height'] ?? 0))

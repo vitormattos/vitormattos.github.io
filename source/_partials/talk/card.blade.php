@@ -16,20 +16,8 @@
     );
 
     $thumbnail = $page->presentationThumbnail($talk);
-    $hasArchivedPdf = false;
-    if ($talk->slidesId ?? false) {
-        $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
-        $deckDir = 'presentations/' . $sourceDirectory . '/' . $talk->slidesId;
-        $manifestPath = $deckDir . '/export.json';
-        if (is_file($manifestPath)) {
-            try {
-                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                $hasArchivedPdf = isset($manifest['pdf']['url']) && $manifest['pdf']['url'] !== '';
-            } catch (Throwable) {
-                $hasArchivedPdf = false;
-            }
-        }
-    }
+    $shareLabel = $isEnglish ? 'Share presentation' : 'Compartilhar apresentação';
+    $copiedLabel = $isEnglish ? 'Link copied' : 'Link copiado';
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
@@ -63,12 +51,16 @@
                 <span><time
                         datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>
             @endif
-            @if ($presentation['slideCount'] ?? 0)
-                <span>{{ $presentation['slideCount'] }} slides</span>
-            @endif
-            @if ($presentation['language'] ?? false)
-                <span>{{ $presentation['language'] }}</span>
-            @endif
+            <button class="talk-card__share" type="button" data-talk-share data-talk-url="{{ $talk->getUrl() }}"
+                data-talk-title="{{ $talk->title }}" data-share-label="{{ $shareLabel }}"
+                data-copied-label="{{ $copiedLabel }}" aria-label="{{ $shareLabel }}" title="{{ $shareLabel }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="18" cy="5" r="2.5"></circle>
+                    <circle cx="6" cy="12" r="2.5"></circle>
+                    <circle cx="18" cy="19" r="2.5"></circle>
+                    <path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"></path>
+                </svg>
+            </button>
         </div>
 
         @if ($topics !== [])
@@ -79,24 +71,5 @@
                 @endforeach
             </nav>
         @endif
-
-        <div class="talk-card__footer">
-            <div class="talk-card__formats"
-                aria-label="{{ $isEnglish ? 'Available formats' : 'Formatos disponíveis' }}">
-                <span class="format-badge">{{ $type }}</span>
-                @if ($presentation['localHtml'] ?? false)
-                    <span class="format-badge">HTML</span>
-                @endif
-                @if ($hasArchivedPdf || ($presentation['localPdf'] ?? false) || ($presentation['pdf'] ?? false))
-                    <span class="format-badge">PDF</span>
-                @endif
-                @if ($presentation['pptx'] ?? false)
-                    <span class="format-badge">PPTX</span>
-                @endif
-                @if ($presentation['video'] ?? false)
-                    <span class="format-badge">{{ $isEnglish ? 'video' : 'vídeo' }}</span>
-                @endif
-            </div>
-        </div>
     </div>
 </article>

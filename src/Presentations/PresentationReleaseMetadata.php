@@ -34,12 +34,10 @@ class PresentationReleaseMetadata
         $sourceLabel = $source === 'slideshare' ? 'SlideShare' : 'Slides.com';
         $description = trim((string) ($metadata['description'] ?? ''));
         $url = trim((string) ($metadata['source_url'] ?? $metadata['url'] ?? ''));
-        $language = trim((string) ($metadata['language'] ?? ''));
         $slideCount = (int) ($metadata['slide_count'] ?? 0);
         $publishedAt = self::date((string) ($metadata['published_at'] ?? $metadata['created_at'] ?? ''));
         $updatedAt = self::date((string) ($metadata['updated_at'] ?? ''));
         $tags = self::tags($metadata, $source);
-        $statistics = is_array($metadata['statistics'] ?? null) ? $metadata['statistics'] : [];
 
         $lines = [];
         if ($description !== '') {
@@ -73,9 +71,6 @@ class PresentationReleaseMetadata
         if ($url !== '') {
             $lines[] = '- **' . $sourceLabel . ':** ' . $url;
         }
-        if ($language !== '') {
-            $lines[] = '- **Language:** ' . $language;
-        }
         if ($slideCount > 0) {
             $lines[] = '- **Slides:** ' . $slideCount;
         }
@@ -87,28 +82,6 @@ class PresentationReleaseMetadata
         }
         if ($tags !== []) {
             $lines[] = '- **Tags:** ' . implode(', ', $tags);
-        }
-
-        $statLabels = [
-            'total_views' => 'Total views',
-            'slideshare_views' => 'SlideShare views',
-            'embed_views' => 'Embedded views',
-            'likes' => 'Likes',
-            'comments' => 'Comments',
-            'downloads' => 'Downloads',
-        ];
-        $availableStats = array_intersect_key($statistics, $statLabels);
-        if ($availableStats !== []) {
-            $lines[] = '';
-            $lines[] = '### Historical statistics';
-            foreach ($statLabels as $key => $label) {
-                if (array_key_exists($key, $availableStats)) {
-                    $lines[] = '- **' . $label . ':** '
-                        . number_format((int) $availableStats[$key], 0, '.', ',');
-                }
-            }
-            $lines[] = '';
-            $lines[] = '_Statistics are preserved from the source archive and represent the values captured during migration._';
         }
 
         $lines[] = '';

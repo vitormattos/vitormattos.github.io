@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 $repository = getenv('GITHUB_REPOSITORY') ?: '';
 $releaseTag = trim((string) (getenv('RELEASE_TAG') ?: ''));
+$releasePrefix = trim((string) (getenv('RELEASE_PREFIX') ?: ''));
 
 if ($repository === '') {
     fwrite(STDERR, "GITHUB_REPOSITORY is required.\n");
@@ -26,7 +27,7 @@ foreach ($releases as $release) {
     }
 
     $tag = trim((string) ($release['tagName'] ?? ''));
-    if ($tag === '') {
+    if ($tag === '' || ($releasePrefix !== '' && !str_starts_with($tag, $releasePrefix))) {
         continue;
     }
 
