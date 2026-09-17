@@ -34,8 +34,8 @@ final class TalkCatalogBuildTest extends TestCase
         self::assertIsString($portuguese);
         self::assertIsString($english);
 
-        preg_match_all('/<time datetime="\d{4}-\d{2}-\d{2}">([^<]+)<\/time>/', $portuguese, $portugueseDates);
-        preg_match_all('/<time datetime="\d{4}-\d{2}-\d{2}">([^<]+)<\/time>/', $english, $englishDates);
+        preg_match_all('/<time\s+datetime="\d{4}-\d{2}-\d{2}">([^<]+)<\/time>/', $portuguese, $portugueseDates);
+        preg_match_all('/<time\s+datetime="\d{4}-\d{2}-\d{2}">([^<]+)<\/time>/', $english, $englishDates);
 
         self::assertNotEmpty($portugueseDates[1]);
         self::assertNotEmpty($englishDates[1]);
