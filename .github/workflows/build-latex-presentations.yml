@@ -8,17 +8,19 @@ on:
     paths:
       - 'presentations/latex/**'
       - 'scripts/build-latex-presentations.sh'
+      - 'scripts/publish-latex-presentations.sh'
       - '.github/workflows/build-latex-presentations.yml'
   push:
     branches: [main]
     paths:
       - 'presentations/latex/**'
       - 'scripts/build-latex-presentations.sh'
+      - 'scripts/publish-latex-presentations.sh'
       - '.github/workflows/build-latex-presentations.yml'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: latex-presentations-${{ github.ref }}
@@ -30,25 +32,54 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          persist-credentials: ${{ github.event_name == 'push' }}
 
-      - name: Install LaTeX dependencies
+      - name: Install LaTeX and rendering dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
+            jq \
             latexmk \
+            poppler-utils \
             texlive-fonts-recommended \
             texlive-lang-portuguese \
             texlive-latex-base \
             texlive-latex-extra \
             texlive-latex-recommended
 
-      - name: Build presentation PDFs
+      - name: Build presentation PDFs and thumbnails
         run: bash scripts/build-latex-presentations.sh
 
-      - name: Upload generated PDFs
+      - name: Upload generated presentation artifacts
         uses: actions/upload-artifact@v4
         with:
           name: latex-presentations
-          path: source/presentations/latex/**/*.pdf
+          path: |
+            source/presentations/latex/**/*.pdf
+            source/presentations/latex/**/thumbnail.png
+            source/presentations/latex/**/metadata.json
           if-no-files-found: error
+
+      - name: Publish GitHub releases and synchronize release manifests
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/publish-latex-presentations.sh
+
+      - name: Commit synchronized release manifests
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add presentations/latex/*/export.json
+
+          if git diff --cached --quiet; then
+            echo 'LaTeX release manifests are already up to date.'
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'content: synchronize LaTeX presentation release assets'
+          git pull --rebase origin main
+          git push origin HEAD:main
