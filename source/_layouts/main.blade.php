@@ -22,7 +22,8 @@
     $isTalks = $currentPath === $talksPath || str_starts_with($currentPath, $talksPath . '/');
 @endphp
 <!doctype html>
-<html lang="{{ $locale }}" @if ($alternateHref !== null) data-alternate-locale="{{ $alternateLocale }}" data-alternate-url="{{ $alternateHref }}" @endif>
+<html lang="{{ $locale }}"
+    @if ($alternateHref !== null) data-alternate-locale="{{ $alternateLocale }}" data-alternate-url="{{ $alternateHref }}" @endif>
 
 <head>
     <meta charset="utf-8">
@@ -115,7 +116,8 @@
                 <div class="site-controls">
                     @if ($alternatePath !== null)
                         <a class="language-switch" href="{{ $page->baseUrl }}{{ $alternatePath }}"
-                            hreflang="{{ $alternateLocale }}" data-language-switch data-locale="{{ $alternateLocale }}"
+                            hreflang="{{ $alternateLocale }}" data-language-switch
+                            data-locale="{{ $alternateLocale }}"
                             aria-label="{{ $isEnglish ? 'Ver esta página em português' : 'View this page in English' }}">
                             {{ $isEnglish ? 'PT' : 'EN' }}
                         </a>
