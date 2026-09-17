@@ -31,6 +31,27 @@ final class TalkTopicsTest extends TestCase
         self::assertArrayHasKey('software testing', $topics);
     }
 
+    public function testCuratedTagsReplaceImportedTagsForKnownPresentation(): void
+    {
+        $talk = (object) [
+            'slidesId' => 1293276,
+            'tags' => ['opensource', 'php'],
+            'presentation' => [
+                'type' => 'slides.com',
+                'metadata' => '/presentations/slides.com/1293276/metadata.json',
+            ],
+        ];
+
+        $topics = TalkTopics::resolve($talk);
+
+        self::assertSame(
+            ['composer', 'gestão de dependências', 'packagist', 'php'],
+            array_keys($topics),
+        );
+        self::assertSame('Composer', $topics['composer']);
+        self::assertArrayNotHasKey('opensource', $topics);
+    }
+
     public function testTaxonomyCountsEachTalkOncePerNormalizedTopicAndExposesOnlyRecurringTopics(): void
     {
         $talks = [
