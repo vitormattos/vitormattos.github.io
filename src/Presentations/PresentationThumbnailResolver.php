@@ -9,9 +9,7 @@ namespace App\Presentations;
 
 final class PresentationThumbnailResolver
 {
-    public function __construct(private readonly string $projectRoot)
-    {
-    }
+    public function __construct(private readonly string $projectRoot) {}
 
     /**
      * @return array{path: string, width: int, height: int}|null

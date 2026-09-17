@@ -11,9 +11,7 @@ use App\Presentations\PresentationThumbnailResolver;
 
 final class SeoMetadataBuilder
 {
-    public function __construct(private readonly PresentationThumbnailResolver $thumbnailResolver)
-    {
-    }
+    public function __construct(private readonly PresentationThumbnailResolver $thumbnailResolver) {}
 
     /**
      * @return array<string, mixed>
