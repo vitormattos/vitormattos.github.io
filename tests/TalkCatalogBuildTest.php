@@ -131,7 +131,7 @@ final class TalkCatalogBuildTest extends TestCase
         self::assertArrayHasKey(1, $counterMatch);
         $displayedCount = (int) $counterMatch[1];
 
-        preg_match_all('/<article class="talk-card" data-talk-tags="([^"]*)">/', $html, $cardMatches);
+        preg_match_all('/<article class="talk-card"[^>]*data-talk-tags="([^"]*)"[^>]*>/', $html, $cardMatches);
         $cardsWithPhp = 0;
         foreach ($cardMatches[1] as $encodedTopics) {
             $topics = json_decode(html_entity_decode($encodedTopics, ENT_QUOTES | ENT_HTML5, 'UTF-8'), true);
