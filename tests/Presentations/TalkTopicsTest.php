@@ -54,6 +54,7 @@ final class TalkTopicsTest extends TestCase
             (object) [
                 'title' => 'English variant',
                 'date' => 100,
+                'updated' => 300,
                 'presentation' => ['metadata' => '/presentations/example/1/metadata.json'],
             ],
         ];
@@ -61,11 +62,13 @@ final class TalkTopicsTest extends TestCase
             (object) [
                 'title' => 'Portuguese variant',
                 'date' => 100,
+                'updated' => 300,
                 'presentation' => ['metadata' => '/presentations/example/1/metadata.json'],
             ],
             (object) [
                 'title' => 'SlideShare only',
                 'date' => 200,
+                'updated' => 200,
                 'presentation' => ['metadata' => '/presentations/slideshare/2/metadata.json'],
             ],
         ];
@@ -73,7 +76,21 @@ final class TalkTopicsTest extends TestCase
         $merged = TalkTopics::mergeCatalog($preferred, $fallback);
 
         self::assertCount(2, $merged);
-        self::assertSame('SlideShare only', $merged[0]->title);
-        self::assertSame('English variant', $merged[1]->title);
+        self::assertSame('English variant', $merged[0]->title);
+        self::assertSame('SlideShare only', $merged[1]->title);
+    }
+
+    public function testActivityTimestampUsesMostRecentRecordedPresentationDate(): void
+    {
+        $updatedAfterPublication = (object) [
+            'date' => '2020-04-23',
+            'updated' => '2023-08-10',
+        ];
+        $publicationOnly = (object) [
+            'date' => '2024-03-26',
+        ];
+
+        self::assertSame(strtotime('2023-08-10'), TalkTopics::activityTimestamp($updatedAfterPublication));
+        self::assertSame(strtotime('2024-03-26'), TalkTopics::activityTimestamp($publicationOnly));
     }
 }

@@ -8,6 +8,16 @@
     $talkPath = $slug ? ($talkIsEnglish ? '/talks/' : '/pt-BR/palestras/') . $slug : '/' . ltrim($talk->getPath(), '/');
     $talkUrl = rtrim($page->baseUrl, '/') . $talkPath;
     $thumbnail = $page->presentationThumbnail($talk);
+    $activityTimestamp = \App\Presentations\TalkTopics::activityTimestamp($talk);
+    $publishedTimestamp = (int) ($talk->date ?? 0);
+    $wasUpdated = $activityTimestamp > $publishedTimestamp;
+    $activityLabel = $wasUpdated
+        ? ($pageIsEnglish
+            ? 'Updated'
+            : 'Atualizado')
+        : ($pageIsEnglish
+            ? 'Published'
+            : 'Publicado');
 @endphp
 <article class="home-talk-card">
     <a class="home-talk-card__preview" href="{{ $talkUrl }}" aria-label="{{ $talk->title }}">
@@ -20,9 +30,9 @@
     </a>
     <div class="home-talk-card__body">
         <div class="home-talk-card__meta">
-            @if ($talk->date ?? false)
-                <time
-                    datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($pageIsEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time>
+            @if ($activityTimestamp > 0)
+                <time datetime="{{ date('Y-m-d', $activityTimestamp) }}">{{ $activityLabel }}
+                    {{ date($pageIsEnglish ? 'M d, Y' : 'd/m/Y', $activityTimestamp) }}</time>
             @endif
             @if ($presentation['slideCount'] ?? 0)
                 <span>{{ $presentation['slideCount'] }} slides</span>
