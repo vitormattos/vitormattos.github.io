@@ -476,7 +476,17 @@
     }
 
     .gallery-switcher {
-        justify-self: start;
+        width: 100%;
+        justify-self: stretch;
+    }
+
+    .gallery-switcher__menu {
+        right: auto;
+        left: 0;
+        box-sizing: border-box;
+        width: min(20rem, 100%);
+        min-width: 0;
+        max-width: 100%;
     }
 
     .talks-catalog__toolbar {
