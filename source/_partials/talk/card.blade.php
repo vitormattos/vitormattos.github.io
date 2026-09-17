@@ -5,8 +5,10 @@
     $type = $presentation['type'] ?? 'external';
     $isEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $sourcePath = isset($presentation['source']) ? '/' . ltrim($presentation['source'], '/') : null;
-    $thumbnailId = $sourcePath ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
-    $previewable = $type === 'reveal' && $sourcePath;
+    $revealPreviewable = $type === 'reveal' && $sourcePath;
+    $slidesComPreviewable = $type === 'slides.com' && ($presentation['embed'] ?? false);
+    $previewable = $revealPreviewable || $slidesComPreviewable;
+    $thumbnailId = $revealPreviewable ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
     $topics = \App\Presentations\TalkTopics::localized(
         \App\Presentations\TalkTopics::resolve($talk),
         $isEnglish ? 'en' : 'pt-BR',
@@ -49,13 +51,19 @@
             <div class="talk-card__live-preview" data-talk-live-preview
                 data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}"
                 @if ($thumbnail) hidden @endif>
-                <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
-                    <div class="slides">
-                        <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
-                            data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$"
-                            data-separator-notes="^Notes?:"></section>
+                @if ($revealPreviewable)
+                    <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
+                        <div class="slides">
+                            <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
+                                data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$"
+                                data-separator-notes="^Notes?:"></section>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <iframe class="talk-card__preview-embed" data-talk-preview-embed
+                        data-src="{{ $presentation['embed'] }}" title="{{ $talk->title }}" loading="lazy"
+                        allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                @endif
             </div>
 
             <div class="talk-card__preview-actions">
