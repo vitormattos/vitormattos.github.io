@@ -5,10 +5,19 @@
     $type = $presentation['type'] ?? 'external';
     $isEnglish = ($page->locale ?? ($page->defaultLocale ?? 'en')) === 'en';
     $sourcePath = isset($presentation['source']) ? '/' . ltrim($presentation['source'], '/') : null;
+    $localHtml = $presentation['localHtml'] ?? null;
+    $localCss = $presentation['localCss'] ?? null;
+    if (!$localCss && $localHtml) {
+        $cssCandidate = preg_replace('/\.html$/', '.css', $localHtml);
+        if (is_string($cssCandidate) && is_file(ltrim($cssCandidate, '/'))) {
+            $localCss = $cssCandidate;
+        }
+    }
     $revealPreviewable = $type === 'reveal' && $sourcePath;
-    $slidesComPreviewable = $type === 'slides.com' && ($presentation['embed'] ?? false);
+    $slidesComPreviewable = $type === 'slides.com' && $localHtml;
     $previewable = $revealPreviewable || $slidesComPreviewable;
-    $thumbnailId = $revealPreviewable ? 'thumb-' . substr(sha1($sourcePath), 0, 10) : null;
+    $previewSource = $sourcePath ?? $localHtml;
+    $thumbnailId = $previewable ? 'thumb-' . substr(sha1((string) $previewSource), 0, 10) : null;
     $topics = \App\Presentations\TalkTopics::localized(
         \App\Presentations\TalkTopics::resolve($talk),
         $isEnglish ? 'en' : 'pt-BR',
@@ -51,19 +60,17 @@
             <div class="talk-card__live-preview" data-talk-live-preview
                 data-preview-overlay="{{ $thumbnail ? 'true' : 'false' }}"
                 @if ($thumbnail) hidden @endif>
-                @if ($revealPreviewable)
-                    <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail">
-                        <div class="slides">
+                <div class="reveal js-talk-preview-deck" id="{{ $thumbnailId }}" data-presentation-mode="thumbnail"
+                    @if ($slidesComPreviewable) data-preview-html="{{ $page->baseUrl }}{{ $localHtml }}" @endif
+                    @if ($slidesComPreviewable && $localCss) data-preview-css="{{ $page->baseUrl }}{{ $localCss }}" @endif>
+                    <div class="slides">
+                        @if ($revealPreviewable)
                             <section data-markdown="{{ $page->baseUrl }}{{ $sourcePath }}"
                                 data-separator="^\r?\n---\r?\n$" data-separator-vertical="^\r?\n--\r?\n$"
                                 data-separator-notes="^Notes?:"></section>
-                        </div>
+                        @endif
                     </div>
-                @else
-                    <iframe class="talk-card__preview-embed" data-talk-preview-embed
-                        data-src="{{ $presentation['embed'] }}" title="{{ $talk->title }}" loading="lazy"
-                        allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                @endif
+                </div>
             </div>
 
             <div class="talk-card__preview-actions">
