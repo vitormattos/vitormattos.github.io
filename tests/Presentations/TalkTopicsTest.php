@@ -31,6 +31,69 @@ final class TalkTopicsTest extends TestCase
         self::assertArrayHasKey('software testing', $topics);
     }
 
+    public function testCuratedTagsReplaceImportedTagsForKnownPresentation(): void
+    {
+        $talk = (object) [
+            'slidesId' => 1293276,
+            'tags' => ['opensource', 'php'],
+            'presentation' => [
+                'type' => 'slides.com',
+                'metadata' => '/presentations/slides.com/1293276/metadata.json',
+            ],
+        ];
+
+        $topics = TalkTopics::resolve($talk);
+
+        self::assertSame(
+            ['composer', 'gestão de dependências', 'packagist', 'php'],
+            array_keys($topics),
+        );
+        self::assertSame('Composer', $topics['composer']);
+        self::assertArrayNotHasKey('opensource', $topics);
+    }
+
+    public function testRelatedTechnologyTopicsAreExpandedTransitively(): void
+    {
+        $talk = (object) ['tags' => ['LibreSign']];
+
+        $topics = TalkTopics::resolve($talk);
+
+        self::assertSame(
+            ['libresign', 'nextcloud', 'php'],
+            array_keys($topics),
+        );
+        self::assertSame('Nextcloud', $topics['nextcloud']);
+        self::assertSame('PHP', $topics['php']);
+    }
+
+    public function testPhpProjectsAreDiscoverableUnderPhp(): void
+    {
+        foreach (['e-Cidade', 'i-Educar', 'Nextcloud', 'MediaWiki', 'GLPI'] as $project) {
+            $topics = TalkTopics::resolve((object) ['tags' => [$project]]);
+
+            self::assertArrayHasKey('php', $topics, $project . ' should imply PHP');
+            self::assertSame('PHP', $topics['php']);
+        }
+    }
+
+    public function testLibreSignECidadePresentationExpandsToNextcloudAndPhp(): void
+    {
+        $talk = (object) [
+            'slidesId' => 3238741,
+            'presentation' => [
+                'type' => 'slides.com',
+                'metadata' => '/presentations/slides.com/3238741/metadata.json',
+            ],
+        ];
+
+        $topics = TalkTopics::resolve($talk);
+
+        self::assertArrayHasKey('libresign', $topics);
+        self::assertArrayHasKey('e-cidade', $topics);
+        self::assertArrayHasKey('nextcloud', $topics);
+        self::assertArrayHasKey('php', $topics);
+    }
+
     public function testTaxonomyCountsEachTalkOncePerNormalizedTopicAndExposesOnlyRecurringTopics(): void
     {
         $talks = [
