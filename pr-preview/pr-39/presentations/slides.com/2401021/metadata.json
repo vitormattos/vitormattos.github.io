@@ -1,0 +1,38 @@
+{
+    "id": 2401021,
+    "slug": "testes-api",
+    "title": "Testes automatizados em API",
+    "description": "Testes automatizados em API",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/testes-api",
+    "embed_url": "https://slides.com/vitormattos/testes-api/embed",
+    "tags": {
+        "slides_com": [
+            "opensource",
+            "php",
+            "testes"
+        ]
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/e75865de41f3bfe5bf85d9a1fc21d470/thumb.jpg?1653062560",
+    "slide_count": 39,
+    "width": 960,
+    "height": 700,
+    "margin": 0.05,
+    "transition": "none",
+    "background_transition": "none",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "helvetica",
+    "theme_color": "black-mint",
+    "language": "en",
+    "created_at": "2022-05-20T15:58:43.385Z",
+    "updated_at": "2023-10-06T03:03:45.223Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/testes-api",
+        "fullscreen": "https://slides.com/vitormattos/testes-api/fullscreen",
+        "edit": "https://slides.com/vitormattos/testes-api/edit",
+        "present": "https://slides.com/vitormattos/testes-api/live"
+    },
+    "thumbnail_path": "/presentations/slides.com/2401021/thumbnail.png",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/e75865de41f3bfe5bf85d9a1fc21d470/thumb.jpg?1653062560"
+}
