@@ -3,13 +3,6 @@
 name: Publish SlideShare archive
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'presentations/slideshare/*/metadata.json'
-      - 'scripts/publish-slideshare.php'
-      - 'src/Presentations/PresentationReleaseMetadata.php'
   workflow_dispatch:
 
 permissions:
