@@ -33,6 +33,31 @@
             }
         }
     }
+
+    $slideShareDownloads = [];
+    if ($archivedPdf) {
+        $slideShareDownloads[$archivedPdf] = [
+            'href' => $archivedPdf,
+            'label' => 'PDF',
+            'description' => $isEnglish ? 'Archived PDF' : 'PDF arquivado',
+        ];
+    }
+    if ($archivedPptx) {
+        $slideShareDownloads[$archivedPptx] = [
+            'href' => $archivedPptx,
+            'label' => 'PPTX',
+            'description' => $isEnglish ? 'Archived PowerPoint' : 'PowerPoint arquivado',
+        ];
+    }
+    if ($archivedOriginal) {
+        $originalPath = parse_url($archivedOriginal, PHP_URL_PATH) ?: '';
+        $originalExtension = strtoupper(pathinfo($originalPath, PATHINFO_EXTENSION));
+        $slideShareDownloads[$archivedOriginal] ??= [
+            'href' => $archivedOriginal,
+            'label' => $originalExtension ?: ($isEnglish ? 'Original' : 'Original'),
+            'description' => $isEnglish ? 'Original SlideShare file' : 'Arquivo original do SlideShare',
+        ];
+    }
 @endphp
 @if ($type === 'reveal')
     @include('_partials.talk.reveal')
@@ -53,22 +78,16 @@
                     </a>
                 @endif
 
-                @if ($archivedPdf || ($presentation['video'] ?? false))
-                    <details class="presentation-action-menu">
-                        <summary class="presentation-action"><span
-                                aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span
-                                aria-hidden="true">⌄</span></summary>
-                        <div class="presentation-action-menu__panel">
-                            @if ($archivedPdf)
-                                <a href="{{ $archivedPdf }}" target="_blank"
-                                    rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF snapshot' : 'Snapshot PDF arquivado' }}</small></a>
-                            @endif
-                            @if ($presentation['video'] ?? false)
-                                <a href="{{ $presentation['video'] }}" target="_blank"
-                                    rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Video' : 'Vídeo' }}</strong><small>{{ $isEnglish ? 'Watch recording' : 'Assistir gravação' }}</small></a>
-                            @endif
-                        </div>
-                    </details>
+                @if ($archivedPdf)
+                    <a class="presentation-action" href="{{ $archivedPdf }}" target="_blank"
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download PDF' : 'Baixar PDF' }}</span></a>
+                @endif
+
+                @if ($presentation['video'] ?? false)
+                    <a class="presentation-action" href="{{ $presentation['video'] }}" target="_blank"
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">▶</span><span>{{ $isEnglish ? 'Video' : 'Vídeo' }}</span></a>
                 @endif
 
                 <details class="presentation-action-menu">
@@ -107,24 +126,21 @@
                         target="_blank" rel="external noopener noreferrer"><span
                             aria-hidden="true">↗</span><span>{{ $isEnglish ? 'Open original' : 'Abrir original' }}</span></a>
                 @endif
-                @if ($archivedPdf || $archivedPptx || $archivedOriginal)
+                @if (count($slideShareDownloads) === 1)
+                    @php($download = reset($slideShareDownloads))
+                    <a class="presentation-action" href="{{ $download['href'] }}" target="_blank"
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download ' : 'Baixar ' }}{{ $download['label'] }}</span></a>
+                @elseif (count($slideShareDownloads) > 1)
                     <details class="presentation-action-menu">
                         <summary class="presentation-action"><span
                                 aria-hidden="true">↓</span><span>{{ $isEnglish ? 'Download' : 'Baixar' }}</span><span
                                 aria-hidden="true">⌄</span></summary>
                         <div class="presentation-action-menu__panel">
-                            @if ($archivedPdf)
-                                <a href="{{ $archivedPdf }}" target="_blank"
-                                    rel="external noopener noreferrer"><strong>PDF</strong><small>{{ $isEnglish ? 'Archived PDF' : 'PDF arquivado' }}</small></a>
-                            @endif
-                            @if ($archivedPptx)
-                                <a href="{{ $archivedPptx }}" target="_blank"
-                                    rel="external noopener noreferrer"><strong>PPTX</strong><small>{{ $isEnglish ? 'Archived PowerPoint' : 'PowerPoint arquivado' }}</small></a>
-                            @endif
-                            @if ($archivedOriginal && $archivedOriginal !== $archivedPdf && $archivedOriginal !== $archivedPptx)
-                                <a href="{{ $archivedOriginal }}" target="_blank"
-                                    rel="external noopener noreferrer"><strong>{{ $isEnglish ? 'Original' : 'Original' }}</strong><small>{{ $isEnglish ? 'Original SlideShare file' : 'Arquivo original do SlideShare' }}</small></a>
-                            @endif
+                            @foreach ($slideShareDownloads as $download)
+                                <a href="{{ $download['href'] }}" target="_blank"
+                                    rel="external noopener noreferrer"><strong>{{ $download['label'] }}</strong><small>{{ $download['description'] }}</small></a>
+                            @endforeach
                         </div>
                     </details>
                 @endif
