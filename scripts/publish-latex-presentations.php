@@ -51,10 +51,29 @@ foreach (glob('presentations/latex/*/metadata.json') ?: [] as $metadataPath) {
 
     synchronizeRelease($repository, $presentation, $urls);
 
-    foreach ($assets as [$path, $name]) {
-        if (!releaseAssetExists($repository, $presentation->releaseTag(), $name)) {
-            run(['gh', 'release', 'upload', $presentation->releaseTag(), $path . '#' . $name, '--repo', $repository]);
+    $stagingDirectory = sys_get_temp_dir() . '/latex-release-' . bin2hex(random_bytes(6));
+    if (!mkdir($stagingDirectory, 0700, true) && !is_dir($stagingDirectory)) {
+        throw new RuntimeException("Could not create release staging directory: {$stagingDirectory}");
+    }
+
+    try {
+        foreach ($assets as [$path, $name]) {
+            if (releaseAssetExists($repository, $presentation->releaseTag(), $name)) {
+                continue;
+            }
+
+            $stagedPath = $stagingDirectory . '/' . $name;
+            if (!copy($path, $stagedPath)) {
+                throw new RuntimeException("Could not stage release asset: {$path}");
+            }
+
+            run(['gh', 'release', 'upload', $presentation->releaseTag(), $stagedPath, '--repo', $repository]);
         }
+    } finally {
+        foreach (glob($stagingDirectory . '/*') ?: [] as $stagedPath) {
+            @unlink($stagedPath);
+        }
+        @rmdir($stagingDirectory);
     }
 
     synchronizeRelease($repository, $presentation, $urls);
