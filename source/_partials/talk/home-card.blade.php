@@ -12,8 +12,12 @@
     $publishedTimestamp = (int) ($talk->date ?? 0);
     $wasUpdated = $activityTimestamp > $publishedTimestamp;
     $activityLabel = $wasUpdated
-        ? ($pageIsEnglish ? 'Updated' : 'Atualizado')
-        : ($pageIsEnglish ? 'Published' : 'Publicado');
+        ? ($pageIsEnglish
+            ? 'Updated'
+            : 'Atualizado')
+        : ($pageIsEnglish
+            ? 'Published'
+            : 'Publicado');
 @endphp
 <article class="home-talk-card">
     <a class="home-talk-card__preview" href="{{ $talkUrl }}" aria-label="{{ $talk->title }}">
