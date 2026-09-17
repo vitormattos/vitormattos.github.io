@@ -18,6 +18,12 @@
     $thumbnail = $page->presentationThumbnail($talk);
     $shareLabel = $isEnglish ? 'Share presentation' : 'Compartilhar apresentação';
     $copiedLabel = $isEnglish ? 'Link copied' : 'Link copiado';
+    $activityTimestamp = \App\Presentations\TalkTopics::activityTimestamp($talk);
+    $publishedTimestamp = (int) ($talk->date ?? 0);
+    $wasUpdated = $activityTimestamp > $publishedTimestamp;
+    $activityLabel = $wasUpdated
+        ? ($isEnglish ? 'Updated' : 'Atualizado')
+        : ($isEnglish ? 'Published' : 'Publicado');
 @endphp
 <article class="talk-card" data-talk-tags="{!! $encodedTags !!}">
     <a class="talk-card__preview" href="{{ $talk->getUrl() }}" aria-label="{{ $talk->title }}">
@@ -47,9 +53,9 @@
         <p class="talk-card__description">{{ $talk->description }}</p>
 
         <div class="talk-card__meta-line">
-            @if ($talk->date ?? false)
-                <span><time
-                        datetime="{{ date('Y-m-d', $talk->date) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $talk->date) }}</time></span>
+            @if ($activityTimestamp > 0)
+                <span>{{ $activityLabel }} <time
+                        datetime="{{ date('Y-m-d', $activityTimestamp) }}">{{ date($isEnglish ? 'M d, Y' : 'd/m/Y', $activityTimestamp) }}</time></span>
             @endif
             <button class="talk-card__share" type="button" data-talk-share data-talk-url="{{ $talk->getUrl() }}"
                 data-talk-title="{{ $talk->title }}" data-share-label="{{ $shareLabel }}"
