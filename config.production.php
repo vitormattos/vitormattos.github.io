@@ -9,4 +9,5 @@ return [
     'baseUrl' => 'https://vitormattos.github.io',
     'production' => true,
     'indexable' => true,
+    'environment' => 'production',
 ];
