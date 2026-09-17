@@ -217,26 +217,6 @@
     display: none;
 }
 
-.talk-list[data-view='grid'] {
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-}
-
-.talk-list[data-view='grid'] .talk-card {
-    border-radius: 0.55rem;
-}
-
-.talk-list[data-view='grid'] .talk-card__body {
-    padding: 0.8rem 0.9rem;
-}
-
-.talk-list[data-view='grid'] .talk-card__title {
-    font-size: 0.96rem;
-}
-
-.talk-list[data-view='grid'] .talk-card__meta-line {
-    margin-top: 0.55rem;
-}
-
 .talk-card__meta-line {
     display: flex;
     gap: 0.5rem;
@@ -274,6 +254,26 @@
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-width: 1.7;
+}
+
+.talk-list[data-view='grid'] {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+}
+
+.talk-list[data-view='grid'] .talk-card {
+    border-radius: 0.55rem;
+}
+
+.talk-list[data-view='grid'] .talk-card__body {
+    padding: 0.8rem 0.9rem;
+}
+
+.talk-list[data-view='grid'] .talk-card__title {
+    font-size: 0.96rem;
+}
+
+.talk-list[data-view='grid'] .talk-card__meta-line {
+    margin-top: 0.55rem;
 }
 
 .talk-card__tags,
