@@ -59,18 +59,29 @@ function initializeVisibleDeck(root) {
     observer.observe(root);
 }
 
+function ensureEmbed(card) {
+    const iframe = card.querySelector('[data-talk-preview-embed]');
+    if (!iframe || iframe.src) return;
+    iframe.src = iframe.dataset.src ?? '';
+}
+
 async function activatePreview(card) {
     const livePreview = card.querySelector('[data-talk-live-preview]');
-    const root = card.querySelector('.js-talk-preview-deck');
-    if (!livePreview || !root) return;
+    if (!livePreview) return;
 
     livePreview.hidden = false;
     card.classList.add('is-previewing');
 
-    const deck = await ensureDeck(root);
-    deck.configure(previewConfiguration(true));
-    deck.layout();
-    root.focus();
+    const root = card.querySelector('.js-talk-preview-deck');
+    if (root) {
+        const deck = await ensureDeck(root);
+        deck.configure(previewConfiguration(true));
+        deck.layout();
+        root.focus();
+        return;
+    }
+
+    ensureEmbed(card);
 }
 
 function deactivatePreview(card) {
