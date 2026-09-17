@@ -9,4 +9,6 @@ return [
     'baseUrl' => getenv('PREVIEW_BASE_URL') ?: '',
     'production' => false,
     'indexable' => false,
+    'environment' => 'preview',
+    'previewLabel' => getenv('PREVIEW_LABEL') ?: 'PR Preview',
 ];
