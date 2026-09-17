@@ -139,6 +139,9 @@ final class LatexPresentation
             if (($reviewed['doi'] ?? '') !== '') {
                 $lines[] = '- **DOI:** https://doi.org/' . $reviewed['doi'];
             }
+            if (($reviewed['url'] ?? '') !== '') {
+                $lines[] = '- **Fonte:** ' . $reviewed['url'];
+            }
         }
 
         $lines = [...$lines, '', 'A tag da release identifica a apresentação. Alterações geram novos ativos identificados pelo hash do conteúdo, sem sobrescrever instantâneos anteriores.'];
