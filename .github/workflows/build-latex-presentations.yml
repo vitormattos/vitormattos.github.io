@@ -79,7 +79,7 @@ jobs:
           pdfinfo source/presentations/latex/open-source-ecosystem-review/open-source-ecosystem-review.pdf | grep -q '^Pages:'
 
       - name: Upload generated presentation artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: latex-presentations
           path: |
