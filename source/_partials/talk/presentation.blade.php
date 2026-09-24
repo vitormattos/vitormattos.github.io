@@ -9,6 +9,19 @@
     $archivedPptx = $presentation['pptx'] ?? null;
     $archivedThumbnail = $presentation['thumbnail'] ?? null;
 
+    if (($page->managed ?? null) === 'latex' && ($page->slug ?? false)) {
+        $manifestPath = 'presentations/latex/' . $page->slug . '/export.json';
+        if (is_file($manifestPath)) {
+            try {
+                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+                $presentation['url'] = $manifest['release']['assets']['pdf']['url'] ?? ($presentation['url'] ?? null);
+                $archivedThumbnail = $manifest['release']['assets']['thumbnail']['url'] ?? $archivedThumbnail;
+            } catch (Throwable) {
+                // Keep front matter values when the LaTeX release manifest is unavailable or malformed.
+            }
+        }
+    }
+
     if ($page->slidesId ?? false) {
         $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
         $manifestPath = 'presentations/' . $sourceDirectory . '/' . $page->slidesId . '/export.json';
