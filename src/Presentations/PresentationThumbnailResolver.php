@@ -34,7 +34,11 @@ final class PresentationThumbnailResolver
             $presentation = [];
         }
 
-        [$width, $height] = $this->dimensions($path, $presentation);
+        [$width, $height] = $this->dimensions(
+            $path,
+            $presentation,
+            ($item->managed ?? null) === 'latex',
+        );
 
         return [
             'path' => $path,
@@ -48,8 +52,16 @@ final class PresentationThumbnailResolver
      *
      * @return array{0: int, 1: int}
      */
-    private function dimensions(string $path, array $presentation): array
+    private function dimensions(string $path, array $presentation, bool $preferPresentationDimensions): array
     {
+        if ($preferPresentationDimensions) {
+            $width = $this->positiveInt($presentation['width'] ?? null);
+            $height = $this->positiveInt($presentation['height'] ?? null);
+            if ($width > 0 && $height > 0) {
+                return [$width, $height];
+            }
+        }
+
         $localPath = $this->localPath($path);
         if ($localPath !== null && is_file($localPath)) {
             $dimensions = @getimagesize($localPath);
