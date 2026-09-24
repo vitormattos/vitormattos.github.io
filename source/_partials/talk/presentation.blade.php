@@ -171,7 +171,8 @@
         <div class="presentation-stage">
             @if ($archivedThumbnail)
                 <a class="presentation-pdf-preview" href="{{ $presentation['url'] }}" target="_blank"
-                    rel="external noopener noreferrer" aria-label="{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}">
+                    rel="external noopener noreferrer"
+                    aria-label="{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}">
                     <img src="{{ str_starts_with($archivedThumbnail, 'http') ? $archivedThumbnail : $page->baseUrl . $archivedThumbnail }}"
                         alt="{{ $page->title }}" loading="lazy">
                 </a>
