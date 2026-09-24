@@ -27,9 +27,32 @@ alternateUrl: /pt-BR/
     <aside class="home-signal" aria-label="Current focus">
         <p class="home-signal__label">Current focus</p>
         <ul>
-            <li><strong>CTO & worker-owner</strong><span>LibreCode</span></li>
-            <li><strong>Maintainer</strong><span>LibreSign</span></li>
-            <li><strong>Research & public work</strong><span>Software engineering and free software</span></li>
+            <li>
+                <a class="home-signal__link" href="https://librecode.coop/" target="_blank"
+                    rel="external noopener noreferrer">
+                    <span><strong>CTO & worker-owner</strong><small>LibreCode</small></span>
+                    <span class="home-signal__arrow" aria-hidden="true">↗</span>
+                </a>
+            </li>
+            <li>
+                <a class="home-signal__link" href="https://libresign.coop/" target="_blank"
+                    rel="external noopener noreferrer">
+                    <span><strong>Maintainer</strong><small>LibreSign</small></span>
+                    <span class="home-signal__arrow" aria-hidden="true">↗</span>
+                </a>
+            </li>
+            <li>
+                <a class="home-signal__link" href="{{ rtrim($page->baseUrl, '/') }}/articles/">
+                    <span><strong>Research & writing</strong><small>Articles and academic work</small></span>
+                    <span class="home-signal__arrow" aria-hidden="true">→</span>
+                </a>
+            </li>
+            <li>
+                <a class="home-signal__link" href="{{ rtrim($page->baseUrl, '/') }}/talks/">
+                    <span><strong>Speaking & community</strong><small>Talks and public knowledge sharing</small></span>
+                    <span class="home-signal__arrow" aria-hidden="true">→</span>
+                </a>
+            </li>
         </ul>
     </aside>
 </section>
