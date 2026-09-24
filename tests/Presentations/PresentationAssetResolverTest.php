@@ -50,6 +50,37 @@ final class PresentationAssetResolverTest extends TestCase
         );
     }
 
+    public function testCacheBustsManagedLatexPreviewAssetsFromGeneratedContent(): void
+    {
+        $directory = $this->projectRoot . '/source/presentations/latex/example';
+        mkdir($directory, 0777, true);
+        file_put_contents($directory . '/example.pdf', 'preview-pdf');
+        file_put_contents($directory . '/thumbnail.png', 'preview-thumbnail');
+
+        $item = (object) [
+            'managed' => 'latex',
+            'slug' => 'example',
+            'presentation' => ['type' => 'pdf'],
+        ];
+
+        $assets = (new PresentationAssetResolver($this->projectRoot))->resolve(
+            $item,
+            'preview',
+            'https://example.test/pr-preview/pr-1',
+        );
+
+        self::assertSame(
+            'https://example.test/pr-preview/pr-1/presentations/latex/example/example.pdf?v='
+                . substr(hash('sha256', 'preview-pdf'), 0, 12),
+            $assets['url'],
+        );
+        self::assertSame(
+            'https://example.test/pr-preview/pr-1/presentations/latex/example/thumbnail.png?v='
+                . substr(hash('sha256', 'preview-thumbnail'), 0, 12),
+            $assets['thumbnail'],
+        );
+    }
+
     public function testResolvesManagedLatexProductionFromReleaseManifest(): void
     {
         $directory = $this->projectRoot . '/presentations/latex/example';
