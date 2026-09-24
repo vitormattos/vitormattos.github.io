@@ -75,13 +75,33 @@ final class SiteBuildTest extends TestCase
         preg_match_all('/<article class="home-talk-card">.*?<h3><a href="([^"]+)">([^<]+)<\/a><\/h3>.*?<\/article>/s', $english, $englishTalks, PREG_SET_ORDER);
         preg_match_all('/<article class="home-talk-card">.*?<h3><a href="([^"]+)">([^<]+)<\/a><\/h3>.*?<\/article>/s', $portuguese, $portugueseTalks, PREG_SET_ORDER);
 
-        self::assertCount(4, $englishTalks);
-        self::assertCount(4, $portugueseTalks);
+        self::assertCount(3, $englishTalks);
+        self::assertCount(3, $portugueseTalks);
 
         $englishItems = array_map(static fn(array $match): array => [$match[1], $match[2]], $englishTalks);
         $portugueseItems = array_map(static fn(array $match): array => [$match[1], $match[2]], $portugueseTalks);
 
         self::assertSame($englishItems, $portugueseItems);
+    }
+
+    public function testHomePrioritizesVerifiableProfessionalEvidence(): void
+    {
+        $english = $this->read('index.html');
+        $portuguese = $this->read('pt-BR/index.html');
+
+        foreach ([$english, $portuguese] as $html) {
+            self::assertSame(1, preg_match_all('/<h1\\b/', $html));
+            self::assertStringContainsString('https://libresign.coop/', $html);
+            self::assertStringContainsString('https://github.com/LibreSign/libresign', $html);
+            self::assertStringContainsString('https://www.digitalpublicgoods.net/r/libresign', $html);
+            self::assertStringContainsString('https://librecode.coop/', $html);
+            self::assertStringContainsString('https://github.com/LibreCodeCoop', $html);
+            self::assertStringContainsString('https://github.com/PHPRio', $html);
+            self::assertStringNotContainsString('Global Talent', $html);
+        }
+
+        self::assertStringContainsString('Building open technology, communities, and digital infrastructure.', $english);
+        self::assertStringContainsString('Construindo tecnologia aberta, comunidades e infraestrutura digital.', $portuguese);
     }
 
     public function testThemeToggleIsAvailableInBothLanguages(): void
