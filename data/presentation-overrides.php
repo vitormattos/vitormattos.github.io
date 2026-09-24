@@ -41,7 +41,10 @@ return [
         '2384412' => ['tags' => ['Nextcloud', 'PHP', 'Desenvolvimento de Apps', 'APIs']],
         '2401021' => ['tags' => ['Testes de API', 'APIs', 'Testes Automatizados', 'PHP']],
         '2440085' => ['tags' => ['Privacidade', 'Cloud Computing', 'Self-Hosting', 'Soberania Digital', 'Nextcloud']],
-        '2508353' => ['tags' => ['LibreSign', 'Nextcloud', 'APIs', 'Integração de Sistemas', 'GLPI']],
+        '2508353' => [
+            'catalog' => false,
+            'tags' => ['LibreSign', 'Nextcloud', 'APIs', 'Integração de Sistemas', 'GLPI'],
+        ],
         '2649437' => ['tags' => ['Colaboração', 'Desenvolvimento de Software', 'Git', 'Code Review']],
         '3038098' => ['tags' => ['LibreSign', 'Assinatura Eletrônica', 'Nextcloud', 'Software Livre']],
         '3154117' => ['tags' => ['Docker', 'Containers', 'DevOps', 'CI/CD']],
