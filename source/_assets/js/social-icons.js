@@ -13,19 +13,32 @@ const uiIcons = {
     rss: faRss,
 };
 
-function renderIcon(container, icon) {
-    if (!icon) {
-        return;
-    }
+export function iconMarkup(icon) {
+    if (!icon) return '';
 
     const [width, height, , , path] = icon.icon;
-    container.innerHTML = `<svg viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><path fill="currentColor" d="${path}"></path></svg>`;
+
+    return `<svg viewBox="0 0 ${width} ${height}" aria-hidden="true" focusable="false"><path fill="currentColor" d="${path}"></path></svg>`;
 }
 
-document.querySelectorAll('[data-brand-icon]').forEach((container) => {
-    renderIcon(container, brandIcons[container.dataset.brandIcon]);
-});
+export function renderIcon(container, icon) {
+    const markup = iconMarkup(icon);
+    if (markup === '') return false;
 
-document.querySelectorAll('[data-ui-icon]').forEach((container) => {
-    renderIcon(container, uiIcons[container.dataset.uiIcon]);
-});
+    container.innerHTML = markup;
+    return true;
+}
+
+export function initializeIcons(root = document) {
+    root.querySelectorAll('[data-brand-icon]').forEach((container) => {
+        renderIcon(container, brandIcons[container.dataset.brandIcon]);
+    });
+
+    root.querySelectorAll('[data-ui-icon]').forEach((container) => {
+        renderIcon(container, uiIcons[container.dataset.uiIcon]);
+    });
+}
+
+if (typeof document !== 'undefined') {
+    initializeIcons(document);
+}
