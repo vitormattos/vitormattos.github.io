@@ -135,7 +135,12 @@
     <footer>
         <p>{{ $isEnglish ? 'Content and code published with transparency and version control.' : 'Conteúdo e código publicados com transparência e controle de versão.' }}
         </p>
-        <p>
+        <p class="site-footer__links">
+            <a class="source-link" href="{{ $page->sourceRepository }}" target="_blank"
+                rel="external noopener noreferrer">
+                <span class="source-link__icon" data-brand-icon="github" aria-hidden="true"></span>
+                <span>{{ $isEnglish ? 'Source code' : 'Código-fonte' }}</span>
+            </a>
             <a class="rss-link"
                 href="{{ rtrim($page->siteUrl, '/') }}{{ $isEnglish ? '/feed.xml' : '/pt-BR/feed.xml' }}">
                 <span class="rss-link__icon" data-ui-icon="rss" aria-hidden="true"></span>
