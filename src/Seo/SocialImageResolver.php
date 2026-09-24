@@ -21,7 +21,10 @@ final class SocialImageResolver
         $image = $this->pageImage($page);
         $thumbnail = null;
         if ($image === null) {
-            $thumbnail = $this->thumbnailResolver->resolve($page);
+            $thumbnail = $this->thumbnailResolver->resolve(
+                $page,
+                preferLocalLatex: ($page->environment ?? null) === 'preview',
+            );
             $image = $thumbnail['path'] ?? null;
         }
 
