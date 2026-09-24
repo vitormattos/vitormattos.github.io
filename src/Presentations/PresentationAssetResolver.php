@@ -61,10 +61,16 @@ final class PresentationAssetResolver
         }
 
         if ($environment === 'preview') {
-            $prefix = rtrim($baseUrl, '/') . '/presentations/latex/' . $slug . '/';
-            $assets['url'] = $prefix . $slug . '.pdf';
+            $relativeDirectory = 'presentations/latex/' . $slug;
+            $assets['url'] = $this->previewAssetUrl(
+                $relativeDirectory . '/' . $slug . '.pdf',
+                $baseUrl,
+            );
             $assets['pdf'] = $assets['url'];
-            $assets['thumbnail'] = $prefix . 'thumbnail.png';
+            $assets['thumbnail'] = $this->previewAssetUrl(
+                $relativeDirectory . '/thumbnail.png',
+                $baseUrl,
+            );
 
             return $assets;
         }
@@ -115,6 +121,23 @@ final class PresentationAssetResolver
             ?? $assets['thumbnail'];
 
         return $assets;
+    }
+
+    private function previewAssetUrl(string $relativePath, string $baseUrl): string
+    {
+        $url = rtrim($baseUrl, '/') . '/' . ltrim($relativePath, '/');
+        $path = $this->projectPath('source/' . ltrim($relativePath, '/'));
+
+        if (!is_file($path)) {
+            return $url;
+        }
+
+        $hash = hash_file('sha256', $path);
+        if ($hash === false) {
+            return $url;
+        }
+
+        return $url . '?v=' . substr($hash, 0, 12);
     }
 
     private function findLocalThumbnail(string $relativeDirectory): ?string
