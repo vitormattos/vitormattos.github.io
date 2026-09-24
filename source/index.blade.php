@@ -13,9 +13,10 @@ alternateUrl: /pt-BR/
 
 <section class="home-hero" aria-labelledby="page-title">
     <div class="home-hero__copy">
-        <p class="eyebrow">Vitor Mattos · software engineer · open technology</p>
-        <h1 id="page-title">Building open technology, communities, and digital infrastructure.</h1>
-        <p class="home-hero__lead">I am a software engineer and CTO with more than two decades of experience in web technologies, focused on free software, technical leadership, privacy, and sustainable open-source communities.</p>
+        <p class="eyebrow">Vitor Mattos</p>
+        <h1 id="page-title">Software engineer and open-source maintainer.</h1>
+        <p class="home-hero__positioning">CTO at LibreCode · LibreSign maintainer · free software community builder</p>
+        <p class="home-hero__lead">More than two decades working with web technologies, technical leadership, privacy, and sustainable open-source communities.</p>
         <div class="home-hero__actions" aria-label="Primary links">
             <a class="button-link" href="#selected-work">Selected work</a>
             <a class="text-link" href="{{ rtrim($page->baseUrl, '/') }}/about">About me →</a>
@@ -36,8 +37,8 @@ alternateUrl: /pt-BR/
 <section id="selected-work" class="home-section" aria-labelledby="selected-work-title">
     <div class="section-heading section-heading--home">
         <div>
-            <p class="eyebrow">Selected work</p>
-            <h2 id="selected-work-title">Work that can be inspected, used, and verified</h2>
+            <p class="eyebrow">Evidence</p>
+            <h2 id="selected-work-title">Selected work</h2>
         </div>
     </div>
 
