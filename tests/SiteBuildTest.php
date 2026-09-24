@@ -101,7 +101,7 @@ final class SiteBuildTest extends TestCase
         }
 
         self::assertStringContainsString('Software engineer and open-source maintainer.', $english);
-        self::assertStringContainsString('Engenheiro de software e mantenedor de software livre.', $portuguese);
+        self::assertStringContainsString('Desenvolvedor de software e mantenedor de software livre.', $portuguese);
     }
 
     public function testThemeToggleIsAvailableInBothLanguages(): void
