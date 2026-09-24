@@ -99,16 +99,20 @@ final class PresentationAssetResolver
         $relativeDirectory = 'presentations/' . $sourceDirectory . '/' . $slidesId;
         $manifest = $this->readJson($relativeDirectory . '/export.json');
 
+        $manifestThumbnail = null;
         if ($manifest !== null) {
             $assets['pdf'] ??=
                 $this->stringOrNull($manifest['assets']['pdf']['url'] ?? null)
                 ?? $this->stringOrNull($manifest['pdf']['url'] ?? null);
             $assets['original'] ??= $this->stringOrNull($manifest['assets']['original']['url'] ?? null);
             $assets['pptx'] ??= $this->stringOrNull($manifest['assets']['pptx']['url'] ?? null);
-            $assets['thumbnail'] ??= $this->stringOrNull($manifest['assets']['thumbnail']['url'] ?? null);
+            $manifestThumbnail = $this->stringOrNull($manifest['assets']['thumbnail']['url'] ?? null);
         }
 
-        $assets['thumbnail'] ??= $this->findLocalThumbnail($relativeDirectory);
+        $assets['thumbnail'] =
+            $this->findLocalThumbnail($relativeDirectory)
+            ?? $manifestThumbnail
+            ?? $assets['thumbnail'];
 
         return $assets;
     }
