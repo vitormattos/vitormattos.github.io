@@ -18,7 +18,7 @@ concurrency:
 
 env:
   PREVIEW_BASE_URL: https://vitormattos.github.io/pr-preview/pr-${{ github.event.pull_request.number }}
-  PREVIEW_LABEL: PR #${{ github.event.pull_request.number }}
+  PREVIEW_LABEL: 'PR #${{ github.event.pull_request.number }}'
 
 jobs:
   preview:
