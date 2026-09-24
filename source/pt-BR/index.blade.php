@@ -51,7 +51,8 @@ alternateUrl: /
                 </li>
                 <li>
                     <a class="home-signal__link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/palestras/">
-                        <span><strong>Palestras e comunidade</strong><small>Palestras e compartilhamento de conhecimento</small></span>
+                        <span><strong>Palestras e comunidade</strong><small>Palestras e compartilhamento de
+                                conhecimento</small></span>
                         <span class="home-signal__arrow" aria-hidden="true">→</span>
                     </a>
                 </li>
