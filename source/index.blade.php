@@ -18,7 +18,7 @@ alternateUrl: /pt-BR/
         <p class="home-hero__positioning">CTO at LibreCode · LibreSign maintainer · free software community builder</p>
         <p class="home-hero__lead">More than two decades working with web technologies, technical leadership, privacy, and sustainable open-source communities.</p>
         <div class="home-hero__actions" aria-label="Primary links">
-            <a class="button-link" href="#selected-work">Selected work</a>
+            <a class="button-link" href="#selected-work">Explore my work</a>
             <a class="text-link" href="{{ rtrim($page->baseUrl, '/') }}/about">About me →</a>
         </div>
         <p class="home-hero__profiles">@include('_partials.author.profile-links', ['separator' => ' · '])</p>
@@ -60,7 +60,7 @@ alternateUrl: /pt-BR/
 <section id="selected-work" class="home-section" aria-labelledby="selected-work-title">
     <div class="section-heading section-heading--home">
         <div>
-            <h2 id="selected-work-title">Selected work</h2>
+            <h2 id="selected-work-title">Projects and public work</h2>
             <p class="section-intro">Projects, leadership, and public work with links to the work itself.</p>
         </div>
     </div>
@@ -104,7 +104,7 @@ alternateUrl: /pt-BR/
     <div class="section-heading section-heading--home">
         <div>
             <p class="eyebrow">Speaking</p>
-            <h2 id="talks-title">Selected talks</h2>
+            <h2 id="talks-title">Recent talks</h2>
         </div>
         <a href="{{ rtrim($page->baseUrl, '/') }}/talks/">View all talks →</a>
     </div>
