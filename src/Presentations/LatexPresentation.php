@@ -144,7 +144,7 @@ final class LatexPresentation
             }
         }
 
-        $lines = [...$lines, '', 'A tag da release identifica a apresentação. Alterações geram novos ativos identificados pelo hash do conteúdo, sem sobrescrever instantâneos anteriores.'];
+        $lines = [...$lines, '', 'A tag da release identifica a apresentação e mantém apenas os ativos correspondentes à versão atual da fonte.'];
 
         return rtrim(implode("\n", $lines)) . "\n";
     }
