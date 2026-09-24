@@ -14,7 +14,7 @@ alternateUrl: /
     <section class="home-hero" aria-labelledby="page-title">
         <div class="home-hero__copy">
             <p class="eyebrow">Vitor Mattos</p>
-            <h1 id="page-title">Engenheiro de software e mantenedor de software livre.</h1>
+            <h1 id="page-title">Desenvolvedor de software e mantenedor de software livre.</h1>
             <p class="home-hero__positioning">CTO na LibreCode · mantenedor do LibreSign · construtor de comunidades de
                 software livre</p>
             <p class="home-hero__lead">Mais de duas décadas trabalhando com tecnologias web, liderança técnica, privacidade e
