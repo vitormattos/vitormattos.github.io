@@ -59,7 +59,7 @@ final class PresentationThumbnailResolverTest extends TestCase
 
         $thumbnail = (new PresentationThumbnailResolver($this->projectRoot))->resolve(
             $item,
-            preferLocalLatex: true,
+            environment: 'preview',
         );
 
         self::assertSame('/presentations/latex/example/thumbnail.png', $thumbnail['path']);
