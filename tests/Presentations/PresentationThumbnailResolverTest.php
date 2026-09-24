@@ -62,7 +62,11 @@ final class PresentationThumbnailResolverTest extends TestCase
             environment: 'preview',
         );
 
-        self::assertSame('/presentations/latex/example/thumbnail.png', $thumbnail['path']);
+        self::assertSame(
+            '/presentations/latex/example/thumbnail.png?v='
+                . substr(hash_file('sha256', $this->projectRoot . '/source/presentations/latex/example/thumbnail.png'), 0, 12),
+            $thumbnail['path'],
+        );
         self::assertSame(1920, $thumbnail['width']);
         self::assertSame(1080, $thumbnail['height']);
     }
