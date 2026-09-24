@@ -20,7 +20,10 @@ $seoMetadataBuilder = new SeoMetadataBuilder(
 
 return [
     'presentationThumbnail' => static function ($page, object $item) use ($thumbnailResolver): ?array {
-        $thumbnail = $thumbnailResolver->resolve($item);
+        $thumbnail = $thumbnailResolver->resolve(
+            $item,
+            preferLocalLatex: ($page->environment ?? null) === 'preview',
+        );
         if ($thumbnail === null) {
             return null;
         }
