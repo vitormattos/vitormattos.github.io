@@ -33,10 +33,12 @@ foreach (glob('presentations/latex/*/metadata.json') ?: [] as $metadataPath) {
     $thumbSha = hash_file('sha256', $thumbnailPath) ?: throw new RuntimeException('Could not hash thumbnail.');
     $metadataSha = hash_file('sha256', $metadataPath) ?: throw new RuntimeException('Could not hash metadata.');
 
+    // Rendered derivatives use the source fingerprint so repeated builds of the
+    // same LaTeX source keep stable public URLs even when PDF metadata differs.
     $assets = [
-        'pdf' => [$pdfPath, $presentation->assetName('pdf', $pdfSha)],
+        'pdf' => [$pdfPath, $presentation->assetName('pdf', $sourceSha)],
         'source' => [$sourcePath, $presentation->assetName('source', $sourceSha)],
-        'thumbnail' => [$thumbnailPath, $presentation->assetName('thumbnail', $thumbSha)],
+        'thumbnail' => [$thumbnailPath, $presentation->assetName('thumbnail', $sourceSha)],
         'metadata' => [$metadataPath, $presentation->assetName('metadata', $metadataSha)],
     ];
 
@@ -50,6 +52,11 @@ foreach (glob('presentations/latex/*/metadata.json') ?: [] as $metadataPath) {
     ];
 
     synchronizeRelease($repository, $presentation, $urls);
+    removeStaleReleaseAssets(
+        $repository,
+        $presentation->releaseTag(),
+        array_map(static fn(array $asset): string => $asset[1], $assets),
+    );
 
     $stagingDirectory = sys_get_temp_dir() . '/latex-release-' . bin2hex(random_bytes(6));
     if (!mkdir($stagingDirectory, 0700, true) && !is_dir($stagingDirectory)) {
@@ -58,16 +65,21 @@ foreach (glob('presentations/latex/*/metadata.json') ?: [] as $metadataPath) {
 
     try {
         foreach ($assets as [$path, $name]) {
-            if (releaseAssetExists($repository, $presentation->releaseTag(), $name)) {
-                continue;
-            }
-
             $stagedPath = $stagingDirectory . '/' . $name;
             if (!copy($path, $stagedPath)) {
                 throw new RuntimeException("Could not stage release asset: {$path}");
             }
 
-            run(['gh', 'release', 'upload', $presentation->releaseTag(), $stagedPath, '--repo', $repository]);
+            run([
+                'gh',
+                'release',
+                'upload',
+                $presentation->releaseTag(),
+                $stagedPath,
+                '--clobber',
+                '--repo',
+                $repository,
+            ]);
         }
     } finally {
         foreach (glob($stagingDirectory . '/*') ?: [] as $stagedPath) {
@@ -132,8 +144,9 @@ function synchronizeRelease(string $repository, LatexPresentation $presentation,
     run(['gh', 'release', 'edit', $tag, '--repo', $repository, '--title', $title, '--notes', $body]);
 }
 
-function releaseAssetExists(string $repository, string $tag, string $asset): bool
+function removeStaleReleaseAssets(string $repository, string $tag, array $expectedAssets): void
 {
+    $output = [];
     exec(sprintf(
         'gh release view %s --repo %s --json assets --jq %s 2>/dev/null',
         escapeshellarg($tag),
@@ -141,7 +154,17 @@ function releaseAssetExists(string $repository, string $tag, string $asset): boo
         escapeshellarg('.assets[].name'),
     ), $output, $exitCode);
 
-    return $exitCode === 0 && in_array($asset, $output, true);
+    if ($exitCode !== 0) {
+        throw new RuntimeException("Could not list release assets for {$tag}.");
+    }
+
+    foreach ($output as $asset) {
+        if (in_array($asset, $expectedAssets, true)) {
+            continue;
+        }
+
+        run(['gh', 'release', 'delete-asset', $tag, $asset, '--yes', '--repo', $repository]);
+    }
 }
 
 function run(array $arguments): void

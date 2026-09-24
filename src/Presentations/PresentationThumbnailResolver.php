@@ -21,6 +21,11 @@ final class PresentationThumbnailResolver
             $presentation = [];
         }
 
+        $latex = $this->latexThumbnail($item, $presentation);
+        if ($latex !== null) {
+            return $latex;
+        }
+
         $archived = $this->archivedThumbnail($item, $presentation);
         if ($archived !== null) {
             return $archived;
@@ -45,6 +50,54 @@ final class PresentationThumbnailResolver
             'path' => $path,
             'width' => $width,
             'height' => $height,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $presentation
+     *
+     * @return array{path: string, width: int, height: int}|null
+     */
+    private function latexThumbnail(object $item, array $presentation): ?array
+    {
+        if (($item->managed ?? null) !== 'latex' && ($presentation['type'] ?? null) !== 'pdf') {
+            return null;
+        }
+
+        $slug = $this->nonEmptyString($item->slug ?? null);
+        if ($slug === null) {
+            return null;
+        }
+
+        $manifestPath = rtrim($this->projectRoot, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . 'presentations'
+            . DIRECTORY_SEPARATOR
+            . 'latex'
+            . DIRECTORY_SEPARATOR
+            . $slug
+            . DIRECTORY_SEPARATOR
+            . 'export.json';
+
+        if (!is_file($manifestPath)) {
+            return null;
+        }
+
+        try {
+            $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            return null;
+        }
+
+        $path = $this->nonEmptyString($manifest['release']['assets']['thumbnail']['url'] ?? null);
+        if ($path === null) {
+            return null;
+        }
+
+        return [
+            'path' => $path,
+            'width' => $this->positiveInt($presentation['width'] ?? null),
+            'height' => $this->positiveInt($presentation['height'] ?? null),
         ];
     }
 

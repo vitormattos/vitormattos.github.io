@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - 'presentations/latex/**'
+      - '!presentations/latex/**/export.json'
       - 'scripts/build-latex-presentations.php'
       - 'scripts/publish-latex-presentations.php'
       - 'src/Presentations/LatexPresentation.php'
