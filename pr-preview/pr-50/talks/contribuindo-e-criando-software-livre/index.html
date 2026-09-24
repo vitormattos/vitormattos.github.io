@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en"
+    >
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        (() => {
+            try {
+                const storedTheme = localStorage.getItem('theme');
+                if (storedTheme === 'light' || storedTheme === 'dark') {
+                    document.documentElement.dataset.theme = storedTheme;
+                }
+            } catch (_) {
+                // Fall back to prefers-color-scheme when storage is unavailable.
+            }
+        })();
+    </script>
+    <script>
+        (() => {
+            const storageKey = 'site-locale';
+            const root = document.documentElement;
+            const currentLocale = root.lang === 'pt-BR' ? 'pt-BR' : 'en';
+            const alternateLocale = root.dataset.alternateLocale;
+            const alternateUrl = root.dataset.alternateUrl;
+            let preferredLocale = null;
+
+            try {
+                const storedLocale = localStorage.getItem(storageKey);
+                if (storedLocale === 'en' || storedLocale === 'pt-BR') {
+                    preferredLocale = storedLocale;
+                }
+            } catch (_) {
+                // Fall back to the browser language when storage is unavailable.
+            }
+
+            if (preferredLocale === null) {
+                const browserLocale = (navigator.languages?.[0] ?? navigator.language ?? 'en').toLowerCase();
+                preferredLocale = browserLocale.startsWith('pt') ? 'pt-BR' : 'en';
+            }
+
+            if (alternateUrl && alternateLocale === preferredLocale && currentLocale !== preferredLocale) {
+                window.location.replace(alternateUrl);
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const languageSwitch = document.querySelector('[data-language-switch]');
+                languageSwitch?.addEventListener('click', () => {
+                    const selectedLocale = languageSwitch.dataset.locale;
+                    if (selectedLocale !== 'en' && selectedLocale !== 'pt-BR') return;
+
+                    try {
+                        localStorage.setItem(storageKey, selectedLocale);
+                    } catch (_) {
+                        // Navigation still works when storage is unavailable.
+                    }
+                });
+            });
+        })();
+    </script>
+    <title>Contribuindo e criando software livre · Vitor Mattos</title>
+    <meta name="description" content="O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz">
+<meta name="author" content="Vitor Mattos">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+<link rel="canonical" href="https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre">
+<link rel="alternate" hreflang="en" href="https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre">
+<link rel="alternate" hreflang="x-default" href="https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre">
+<link rel="alternate" type="application/rss+xml" title="Vitor Mattos — Articles" href="https://vitormattos.github.io/feed.xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Contribuindo e criando software livre · Vitor Mattos">
+<meta property="og:description" content="O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz">
+<meta property="og:url" content="https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre">
+<meta property="og:site_name" content="Vitor Mattos">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:image" content="https://vitormattos.github.io/presentations/slides.com/1293538/thumbnail.png">
+<meta property="og:image:secure_url" content="https://vitormattos.github.io/presentations/slides.com/1293538/thumbnail.png">
+    <meta property="og:image:width" content="500">
+    <meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Contribuindo e criando software livre">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Contribuindo e criando software livre · Vitor Mattos">
+<meta name="twitter:description" content="O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz">
+<meta name="twitter:image" content="https://vitormattos.github.io/presentations/slides.com/1293538/thumbnail.png">
+<meta name="twitter:image:alt" content="Contribuindo e criando software livre">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","image":"https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&r=g","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre#webpage","url":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre","name":"Contribuindo e criando software livre","description":"O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz","image":"https://vitormattos.github.io/presentations/slides.com/1293538/thumbnail.png","primaryImageOfPage":{"@type":"ImageObject","url":"https://vitormattos.github.io/presentations/slides.com/1293538/thumbnail.png"},"inLanguage":"en","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"},"mainEntity":{"@id":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre#content"},"breadcrumb":{"@id":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre#breadcrumb"}},{"@type":"CreativeWork","@id":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre#content","url":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre","name":"Contribuindo e criando software livre","headline":"Contribuindo e criando software livre","description":"O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz","image":"https://vitormattos.github.io/presentations/slides.com/1293538/thumbnail.png","inLanguage":"en","author":{"@id":"https://vitormattos.github.io/#person"},"publisher":{"@id":"https://vitormattos.github.io/#person"},"mainEntityOfPage":{"@id":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre#webpage"},"datePublished":"2018-07-14T00:00:00+00:00","dateModified":"2019-02-14T00:00:00+00:00"},{"@type":"BreadcrumbList","@id":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://vitormattos.github.io/"},{"@type":"ListItem","position":2,"name":"Talks","item":"https://vitormattos.github.io/talks"},{"@type":"ListItem","position":3,"name":"Contribuindo e criando software livre","item":"https://vitormattos.github.io/talks/contribuindo-e-criando-software-livre"}]}]}</script>
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-50/assets/build/assets/main-XJsUUkok.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-50/assets/build/assets/presentations-CLqoI4TW.css">
+    </head>
+
+<body>
+    <div class="preview-badge" aria-hidden="true">
+        <span>PR #50</span>
+    </div>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+        <div class="site-header__bar">
+            <a class="site-identity" href="https://vitormattos.github.io/pr-preview/pr-50/"
+                aria-label="Vitor Mattos">
+                <img class="site-identity__avatar" src="https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=112&amp;r=g" alt="" width="56"
+                    height="56">
+                <span class="site-identity__copy">
+                    <strong>Vitor Mattos</strong>
+                    <span>free software · technology</span>
+                </span>
+            </a>
+
+            <div class="site-header__actions">
+                <nav class="site-nav" aria-label="Main">
+                    <a class="site-nav__link" href="https://vitormattos.github.io/pr-preview/pr-50/about"
+                        >About</a>
+                    <a class="site-nav__link" href="https://vitormattos.github.io/pr-preview/pr-50/articles"
+                        >Articles</a>
+                    <a class="site-nav__link is-active" href="https://vitormattos.github.io/pr-preview/pr-50/talks"
+                         aria-current="page" >Talks</a>
+                </nav>
+
+                <div class="site-controls">
+                                        <button class="theme-toggle" type="button" data-theme-toggle
+    data-label-light="Use light theme"
+    data-label-dark="Use dark theme" aria-pressed="false">
+    <span class="theme-toggle__icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Theme</span>
+</button>
+
+<script>
+    (() => {
+        const button = document.currentScript.previousElementSibling;
+        const root = document.documentElement;
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+        const currentTheme = () => root.dataset.theme || (media.matches ? 'dark' : 'light');
+
+        const syncButton = () => {
+            const theme = currentTheme();
+            const isDark = theme === 'dark';
+            button.setAttribute('aria-pressed', String(isDark));
+            button.setAttribute('aria-label', isDark ? button.dataset.labelLight : button.dataset.labelDark);
+        };
+
+        button.addEventListener('click', () => {
+            const nextTheme = currentTheme() === 'dark' ? 'light' : 'dark';
+            root.dataset.theme = nextTheme;
+
+            try {
+                localStorage.setItem('theme', nextTheme);
+            } catch (_) {
+                // Theme selection still works for this page when storage is unavailable.
+            }
+
+            syncButton();
+        });
+
+        media.addEventListener?.('change', () => {
+            if (!root.dataset.theme) {
+                syncButton();
+            }
+        });
+
+        syncButton();
+    })();
+</script>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main id="main-content">
+            <article class="content talk-detail">
+        <header>
+            <p class="eyebrow">Talk</p>
+                            <p class="meta"><time
+                        datetime="2018-07-14">2018-07-14</time>
+                </p>
+                        <h1>Contribuindo e criando software livre</h1>
+                            <p class="lead">O que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  Após esta palestra você certamente saberá como criar um projeto livre em PHP. Abordaremos diversas dicas como: PSR, diversos tipos de testes e ferramentas para testes, análise de sintaxe, como documentar um projeto de forma saudável evitando retrabalho, distribuição do seu software, como interagir com outros profissionais.  Existem milhares de desenvolvedores PHP pelo Brasil, também temos dezenas de comunidades PHP e de todas estas pessoas, quantas delas contribuem ou já contribuíram para algum projeto livre de alguma forma? Mas enfim, o que é software livre? Tem diferença entre software livre e open source? Como devo iniciar um projeto de software livre em PHP? Qual licença devo utilizar em meu projeto? Como garantir a qualidade do meu código?  São muitas perguntas a serem respondidas, nesta talk encontraremos luz</p>
+                                        <nav class="talk-detail__tags" aria-label="Topics">
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-50/talks/?tag=comunidade">Comunidade</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-50/talks/?tag=contribui%C3%A7%C3%A3o%20open%20source">Open Source Contribution</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-50/talks/?tag=git">Git</a>
+                                            <a class="talk-tag"
+                            href="https://vitormattos.github.io/pr-preview/pr-50/talks/?tag=software%20livre">Free Software</a>
+                                    </nav>
+                    </header>
+        <div class="presentation-frame">
+        <div class="presentation-toolbar presentation-toolbar--archive">
+            <div class="presentation-toolbar__context">
+                <span class="presentation-toolbar__context-icon" aria-hidden="true">◫</span>
+                <span>Web presentation</span>
+                <small>Archived from Slides.com</small>
+            </div>
+            <div class="presentation-toolbar__actions">
+                                    <a class="presentation-action presentation-action--primary" href="https://slides.com/vitormattos/contribuindo-e-criando-software-livre"
+                        target="_blank" rel="external noopener noreferrer">
+                        <span aria-hidden="true">↗</span>
+                        <span>Open original</span>
+                    </a>
+                
+                                    <a class="presentation-action" href="https://github.com/vitormattos/vitormattos.github.io/releases/download/slides-com-1293538/slides-com-1293538-ca60c16be3ee.pdf" target="_blank"
+                        rel="external noopener noreferrer"><span
+                            aria-hidden="true">↓</span><span>Download PDF</span></a>
+                
+                
+                <details class="presentation-action-menu">
+                    <summary class="presentation-action presentation-action--secondary"><span
+                            aria-hidden="true">&lt;/&gt;</span><span>Source</span><span
+                            aria-hidden="true">⌄</span></summary>
+                    <div class="presentation-action-menu__panel">
+                        <a href="https://vitormattos.github.io/pr-preview/pr-50/presentations/slides.com/1293538/deck.html"
+                            download><strong>HTML</strong><small>Archived slide markup</small></a>
+                                                                            <a href="https://vitormattos.github.io/pr-preview/pr-50/presentations/slides.com/1293538/metadata.json"
+                                download><strong>JSON</strong><small>Synced metadata</small></a>
+                                            </div>
+                </details>
+            </div>
+        </div>
+        <div class="presentation-stage"><iframe src="https://slides.com/vitormattos/contribuindo-e-criando-software-livre/embed" title="Contribuindo e criando software livre"
+                loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    </div>
+                    <dl class="presentation-metadata">
+                                    <div>
+                        <dt>Slides</dt>
+                        <dd>62</dd>
+                    </div>
+                                                    <div>
+                        <dt>Canvas</dt>
+                        <dd>1024 × 576</dd>
+                    </div>
+                            </dl>
+                            <section class="talk-history" aria-labelledby="talk-history-title">
+                <h2 id="talk-history-title">Presentation history</h2>
+                                                    <h3>Related resources</h3>
+                    <ul class="talk-history__links">
+                                                    <li><a href="http://hemingway.softwarelivre.org/fisl18/high/Sala%203/sala3-high-201807141605.ogv" target="_blank"
+                                    rel="external noopener noreferrer">FISL 2018</a>
+                            </li>
+                                                    <li><a href="https://www.slideshare.net/vitormattosrj/contribuindo-e-criando-software-livre" target="_blank"
+                                    rel="external noopener noreferrer">SlideShare</a>
+                            </li>
+                                            </ul>
+                                                    <h3>Sources</h3>
+                    <ul class="talk-history__links">
+                                                    <li><a href="https://github.com/PHPRio/CFP/issues/12" target="_blank"
+                                    rel="external noopener noreferrer">PHPRio CFP</a>
+                            </li>
+                                            </ul>
+                            </section>
+                    </article>
+    </main>
+    <footer>
+        <p>Content and code published with transparency and version control.
+        </p>
+        <p>
+            <a class="rss-link"
+                href="https://vitormattos.github.io/feed.xml">
+                <span class="rss-link__icon" data-ui-icon="rss" aria-hidden="true"></span>
+                <span>RSS</span>
+            </a>
+        </p>
+    </footer>
+    <script type="module" src="https://vitormattos.github.io/pr-preview/pr-50/assets/build/assets/social-icons-B4GgBORd.js"></script>
+            <script type="module" src="https://vitormattos.github.io/pr-preview/pr-50/assets/build/assets/presentations-DhgiAIxy.js"></script>
+    </body>
+
+</html>
