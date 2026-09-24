@@ -20,7 +20,7 @@ alternateUrl: /
             <p class="home-hero__lead">Mais de duas décadas trabalhando com tecnologias web, liderança técnica, privacidade e
                 comunidades abertas sustentáveis.</p>
             <div class="home-hero__actions" aria-label="Links principais">
-                <a class="button-link" href="#trabalho-selecionado">Trabalho selecionado</a>
+                <a class="button-link" href="#trabalho-selecionado">Ver minha atuação</a>
                 <a class="text-link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/sobre">Sobre mim →</a>
             </div>
             <p class="home-hero__profiles">@include('_partials.author.profile-links', ['separator' => ' · '])</p>
@@ -63,7 +63,7 @@ alternateUrl: /
     <section id="trabalho-selecionado" class="home-section" aria-labelledby="selected-work-title">
         <div class="section-heading section-heading--home">
             <div>
-                <h2 id="selected-work-title">Trabalho selecionado</h2>
+                <h2 id="selected-work-title">Projetos e atuação pública</h2>
                 <p class="section-intro">Projetos, liderança e trabalho público com links para o próprio trabalho.</p>
             </div>
         </div>
@@ -118,7 +118,7 @@ alternateUrl: /
         <div class="section-heading section-heading--home">
             <div>
                 <p class="eyebrow">Palestras</p>
-                <h2 id="talks-title">Palestras selecionadas</h2>
+                <h2 id="talks-title">Palestras recentes</h2>
             </div>
             <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/palestras/">Ver todas as palestras →</a>
         </div>
