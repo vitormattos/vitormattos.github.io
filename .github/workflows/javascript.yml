@@ -26,5 +26,12 @@ jobs:
         with:
           node-version: '24'
       - run: npm install --no-audit --no-fund
-      - run: npm run lint:js
+      - name: Check JavaScript formatting
+        run: |
+          npx prettier --write "source/_assets/js/**/*.js" "tests-js/**/*.js"
+          if ! git diff --quiet -- source/_assets/js tests-js; then
+            echo "JavaScript files are not canonically formatted. Apply the diff below:"
+            git diff -- source/_assets/js tests-js
+            exit 1
+          fi
       - run: npm run test:js
