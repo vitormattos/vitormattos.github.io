@@ -13,11 +13,10 @@ alternateUrl: /
 
     <section class="home-hero" aria-labelledby="page-title">
         <div class="home-hero__copy">
-            <p class="eyebrow">Vitor Mattos · engenheiro de software · tecnologia aberta</p>
-            <h1 id="page-title">Construindo tecnologia aberta, comunidades e infraestrutura digital.</h1>
-            <p class="home-hero__lead">Sou engenheiro de software e CTO com mais de duas décadas de experiência em
-                tecnologias web, com foco em software livre, liderança técnica, privacidade e comunidades abertas
-                sustentáveis.</p>
+            <p class="eyebrow">Vitor Mattos</p>
+            <h1 id="page-title">Engenheiro de software e mantenedor de software livre.</h1>
+            <p class="home-hero__positioning">CTO na LibreCode · mantenedor do LibreSign · construtor de comunidades de software livre</p>
+            <p class="home-hero__lead">Mais de duas décadas trabalhando com tecnologias web, liderança técnica, privacidade e comunidades abertas sustentáveis.</p>
             <div class="home-hero__actions" aria-label="Links principais">
                 <a class="button-link" href="#trabalho-selecionado">Trabalho selecionado</a>
                 <a class="text-link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/sobre">Sobre mim →</a>
@@ -38,8 +37,8 @@ alternateUrl: /
     <section id="trabalho-selecionado" class="home-section" aria-labelledby="selected-work-title">
         <div class="section-heading section-heading--home">
             <div>
-                <p class="eyebrow">Trabalho selecionado</p>
-                <h2 id="selected-work-title">Trabalho que pode ser inspecionado, usado e verificado</h2>
+                <p class="eyebrow">Evidências</p>
+                <h2 id="selected-work-title">Trabalho selecionado</h2>
             </div>
         </div>
 
