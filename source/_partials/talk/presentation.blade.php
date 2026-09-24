@@ -11,16 +11,26 @@
 
     if (($page->managed ?? null) === 'latex' && ($page->slug ?? false)) {
         if (($page->environment ?? null) === 'preview') {
-            $presentation['url'] = rtrim((string) $page->baseUrl, '/')
-                . '/presentations/latex/' . $page->slug . '/' . $page->slug . '.pdf';
-            $archivedThumbnail = rtrim((string) $page->baseUrl, '/')
-                . '/presentations/latex/' . $page->slug . '/thumbnail.png';
+            $presentation['url'] =
+                rtrim((string) $page->baseUrl, '/') .
+                '/presentations/latex/' .
+                $page->slug .
+                '/' .
+                $page->slug .
+                '.pdf';
+            $archivedThumbnail =
+                rtrim((string) $page->baseUrl, '/') . '/presentations/latex/' . $page->slug . '/thumbnail.png';
         } else {
             $manifestPath = 'presentations/latex/' . $page->slug . '/export.json';
             if (is_file($manifestPath)) {
                 try {
-                    $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                    $presentation['url'] = $manifest['release']['assets']['pdf']['url'] ?? ($presentation['url'] ?? null);
+                    $manifest = json_decode(
+                        (string) file_get_contents($manifestPath),
+                        true,
+                        flags: JSON_THROW_ON_ERROR,
+                    );
+                    $presentation['url'] =
+                        $manifest['release']['assets']['pdf']['url'] ?? ($presentation['url'] ?? null);
                     $archivedThumbnail = $manifest['release']['assets']['thumbnail']['url'] ?? $archivedThumbnail;
                 } catch (Throwable) {
                     // Keep front matter values when the LaTeX release manifest is unavailable or malformed.
