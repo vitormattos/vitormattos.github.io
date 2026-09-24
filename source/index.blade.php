@@ -20,7 +20,7 @@ alternateUrl: /pt-BR/
             <a class="button-link" href="#selected-work">Selected work</a>
             <a class="text-link" href="{{ rtrim($page->baseUrl, '/') }}/about">About me →</a>
         </div>
-        <p class="home-hero__profiles">@include('_partials.author.profile-links', ['separator' => '<span aria-hidden="true"> · </span>'])</p>
+        <p class="home-hero__profiles">@include('_partials.author.profile-links', ['separator' => ' · '])</p>
     </div>
 
     <aside class="home-signal" aria-label="Current focus">
