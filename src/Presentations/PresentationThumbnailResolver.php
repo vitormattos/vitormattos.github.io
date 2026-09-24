@@ -14,11 +14,18 @@ final class PresentationThumbnailResolver
     /**
      * @return array{path: string, width: int, height: int}|null
      */
-    public function resolve(object $item): ?array
+    public function resolve(object $item, bool $preferLocalLatex = false): ?array
     {
         $presentation = $item->presentation ?? [];
         if (!is_array($presentation)) {
             $presentation = [];
+        }
+
+        if ($preferLocalLatex) {
+            $localLatex = $this->localLatexThumbnail($item, $presentation);
+            if ($localLatex !== null) {
+                return $localLatex;
+            }
         }
 
         $latex = $this->latexThumbnail($item, $presentation);
@@ -50,6 +57,38 @@ final class PresentationThumbnailResolver
             'path' => $path,
             'width' => $width,
             'height' => $height,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $presentation
+     *
+     * @return array{path: string, width: int, height: int}|null
+     */
+    private function localLatexThumbnail(object $item, array $presentation): ?array
+    {
+        if (($item->managed ?? null) !== 'latex') {
+            return null;
+        }
+
+        $slug = $this->nonEmptyString($item->slug ?? null);
+        if ($slug === null) {
+            return null;
+        }
+
+        $relativePath = 'source/presentations/latex/' . $slug . '/thumbnail.png';
+        $absolutePath = rtrim($this->projectRoot, DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+
+        if (!is_file($absolutePath)) {
+            return null;
+        }
+
+        return [
+            'path' => '/presentations/latex/' . $slug . '/thumbnail.png',
+            'width' => $this->positiveInt($presentation['width'] ?? null),
+            'height' => $this->positiveInt($presentation['height'] ?? null),
         ];
     }
 
