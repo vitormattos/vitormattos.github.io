@@ -59,6 +59,10 @@ final class TalkTopics
 
         foreach ([$preferred, $fallback] as $collection) {
             foreach ($collection as $talk) {
+                if (!self::isCatalogVisible($talk)) {
+                    continue;
+                }
+
                 $identity = self::identity($talk);
                 if (isset($seen[$identity])) {
                     continue;
@@ -137,8 +141,26 @@ final class TalkTopics
         return 'slug:' . (string) ($talk->slug ?? $talk->title ?? spl_object_id($talk));
     }
 
+    private static function isCatalogVisible(object $talk): bool
+    {
+        $override = self::presentationOverride($talk);
+
+        return !is_array($override) || ($override['catalog'] ?? true) !== false;
+    }
+
     /** @return list<mixed>|null */
     private static function curatedTags(object $talk): ?array
+    {
+        $override = self::presentationOverride($talk);
+        if (!is_array($override) || !array_key_exists('tags', $override)) {
+            return null;
+        }
+
+        return (array) $override['tags'];
+    }
+
+    /** @return array<string, mixed>|null */
+    private static function presentationOverride(object $talk): ?array
     {
         $presentation = $talk->presentation ?? [];
         if (!is_array($presentation)) {
@@ -158,10 +180,8 @@ final class TalkTopics
             return null;
         }
         $override = $overrides[$source][$id] ?? null;
-        if (!is_array($override) || !array_key_exists('tags', $override)) {
-            return null;
-        }
-        return (array) $override['tags'];
+
+        return is_array($override) ? $override : null;
     }
 
     private static function expandRelatedTopics(array &$topics): void
