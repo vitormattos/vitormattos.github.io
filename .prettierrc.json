@@ -1,4 +1,5 @@
 {
+  "plugins": ["@shufo/prettier-plugin-blade"],
   "singleQuote": true,
   "printWidth": 120
 }
