@@ -147,22 +147,31 @@
     gap: .35rem .75rem;
 }
 
+.site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+}
+
 .profile-link,
-.rss-link {
+.rss-link,
+.source-link {
     align-items: center;
     display: inline-flex;
     gap: .35rem;
 }
 
 .profile-link__icon,
-.rss-link__icon {
+.rss-link__icon,
+.source-link__icon {
     block-size: .9rem;
     display: inline-flex;
     inline-size: .9rem;
 }
 
 .profile-link__icon svg,
-.rss-link__icon svg {
+.rss-link__icon svg,
+.source-link__icon svg {
     block-size: 100%;
     display: block;
     inline-size: 100%;
