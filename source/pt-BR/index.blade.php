@@ -15,8 +15,10 @@ alternateUrl: /
         <div class="home-hero__copy">
             <p class="eyebrow">Vitor Mattos</p>
             <h1 id="page-title">Engenheiro de software e mantenedor de software livre.</h1>
-            <p class="home-hero__positioning">CTO na LibreCode · mantenedor do LibreSign · construtor de comunidades de software livre</p>
-            <p class="home-hero__lead">Mais de duas décadas trabalhando com tecnologias web, liderança técnica, privacidade e comunidades abertas sustentáveis.</p>
+            <p class="home-hero__positioning">CTO na LibreCode · mantenedor do LibreSign · construtor de comunidades de
+                software livre</p>
+            <p class="home-hero__lead">Mais de duas décadas trabalhando com tecnologias web, liderança técnica, privacidade e
+                comunidades abertas sustentáveis.</p>
             <div class="home-hero__actions" aria-label="Links principais">
                 <a class="button-link" href="#trabalho-selecionado">Trabalho selecionado</a>
                 <a class="text-link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/sobre">Sobre mim →</a>
@@ -65,7 +67,8 @@ alternateUrl: /
                 <p>Como CTO e cooperado de uma cooperativa de tecnologia, atuo em arquitetura, infraestrutura, produtos,
                     práticas de engenharia e sustentabilidade de software livre.</p>
                 <p class="work-card__links">
-                    <a href="https://librecode.coop/" target="_blank" rel="external noopener noreferrer">Visitar LibreCode</a>
+                    <a href="https://librecode.coop/" target="_blank" rel="external noopener noreferrer">Visitar
+                        LibreCode</a>
                     <a href="https://github.com/LibreCodeCoop" target="_blank"
                         rel="external noopener noreferrer">Organização no GitHub</a>
                 </p>
@@ -73,11 +76,13 @@ alternateUrl: /
 
             <article class="work-card">
                 <p class="work-card__kicker">Comunidade e trabalho público</p>
-                <h3><a class="work-card__title-link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/sobre">Conhecimento em público</a></h3>
+                <h3><a class="work-card__title-link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/sobre">Conhecimento em
+                        público</a></h3>
                 <p>Organizo comunidades técnicas, falo sobre engenharia de software e autonomia digital e publico materiais
                     que tornam o trabalho técnico mais fácil de compreender, compartilhar e reutilizar.</p>
                 <p class="work-card__links">
-                    <a href="https://github.com/PHPRio" target="_blank" rel="external noopener noreferrer">PHPRio no GitHub</a>
+                    <a href="https://github.com/PHPRio" target="_blank" rel="external noopener noreferrer">PHPRio no
+                        GitHub</a>
                     <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/palestras">Palestras</a>
                     <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/artigos">Artigos</a>
                 </p>
