@@ -37,44 +37,47 @@ alternateUrl: /
     <section id="trabalho-selecionado" class="home-section" aria-labelledby="selected-work-title">
         <div class="section-heading section-heading--home">
             <div>
-                <p class="eyebrow">Evidências</p>
                 <h2 id="selected-work-title">Trabalho selecionado</h2>
+                <p class="section-intro">Projetos, liderança e trabalho público com links para o próprio trabalho.</p>
             </div>
         </div>
 
         <div class="work-grid">
             <article class="work-card">
                 <p class="work-card__kicker">Produto de software livre</p>
-                <h3>LibreSign</h3>
-                <p>Mantenho e ajudo a liderar uma plataforma de assinatura eletrônica de código aberto reconhecida como
-                    Digital Public Good.</p>
+                <h3><a class="work-card__title-link" href="https://libresign.coop/" target="_blank"
+                        rel="external noopener noreferrer">LibreSign <span aria-hidden="true">↗</span></a></h3>
+                <p>Mantenho e ajudo a liderar uma plataforma livre de assinatura eletrônica reconhecida como Digital Public
+                    Good.</p>
                 <p class="work-card__links">
-                    <a href="https://libresign.coop/" target="_blank" rel="external noopener noreferrer">Projeto</a>
+                    <a href="https://libresign.coop/" target="_blank" rel="external noopener noreferrer">Visitar projeto</a>
                     <a href="https://github.com/LibreSign/libresign" target="_blank"
                         rel="external noopener noreferrer">Código-fonte</a>
                     <a href="https://www.digitalpublicgoods.net/r/libresign" target="_blank"
-                        rel="external noopener noreferrer">Registro DPG</a>
+                        rel="external noopener noreferrer">Registro Digital Public Goods</a>
                 </p>
             </article>
 
             <article class="work-card">
                 <p class="work-card__kicker">Liderança técnica</p>
-                <h3>LibreCode</h3>
+                <h3><a class="work-card__title-link" href="https://librecode.coop/" target="_blank"
+                        rel="external noopener noreferrer">LibreCode <span aria-hidden="true">↗</span></a></h3>
                 <p>Como CTO e cooperado de uma cooperativa de tecnologia, atuo em arquitetura, infraestrutura, produtos,
                     práticas de engenharia e sustentabilidade de software livre.</p>
                 <p class="work-card__links">
-                    <a href="https://librecode.coop/" target="_blank" rel="external noopener noreferrer">LibreCode</a>
-                    <a href="https://github.com/LibreCodeCoop" target="_blank" rel="external noopener noreferrer">GitHub</a>
+                    <a href="https://librecode.coop/" target="_blank" rel="external noopener noreferrer">Visitar LibreCode</a>
+                    <a href="https://github.com/LibreCodeCoop" target="_blank"
+                        rel="external noopener noreferrer">Organização no GitHub</a>
                 </p>
             </article>
 
             <article class="work-card">
                 <p class="work-card__kicker">Comunidade e trabalho público</p>
-                <h3>Conhecimento em público</h3>
+                <h3><a class="work-card__title-link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/sobre">Conhecimento em público</a></h3>
                 <p>Organizo comunidades técnicas, falo sobre engenharia de software e autonomia digital e publico materiais
-                    que tornam o trabalho técnico mais fácil de inspecionar e reutilizar.</p>
+                    que tornam o trabalho técnico mais fácil de compreender, compartilhar e reutilizar.</p>
                 <p class="work-card__links">
-                    <a href="https://github.com/PHPRio" target="_blank" rel="external noopener noreferrer">PHPRio</a>
+                    <a href="https://github.com/PHPRio" target="_blank" rel="external noopener noreferrer">PHPRio no GitHub</a>
                     <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/palestras">Palestras</a>
                     <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/artigos">Artigos</a>
                 </p>
