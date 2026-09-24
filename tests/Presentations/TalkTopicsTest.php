@@ -143,6 +143,32 @@ final class TalkTopicsTest extends TestCase
         self::assertSame('SlideShare only', $merged[1]->title);
     }
 
+    public function testMergeCatalogCanHideImportedCopiesWithoutDeletingTheArchive(): void
+    {
+        $copy = (object) [
+            'title' => 'Copy of LibreSign - Integrações',
+            'date' => '2022-11-25',
+            'slidesId' => 2508353,
+            'presentation' => [
+                'type' => 'slides.com',
+                'url' => 'https://slides.com/vitormattos/libresign-integracoes',
+            ],
+        ];
+        $original = (object) [
+            'title' => 'LibreSign - Integrações',
+            'date' => '2022-11-25',
+            'presentation' => [
+                'type' => 'slides.com',
+                'url' => 'https://slides.com/vitormattos/libresign-integracao',
+            ],
+        ];
+
+        $merged = TalkTopics::mergeCatalog([$copy, $original], []);
+
+        self::assertCount(1, $merged);
+        self::assertSame('LibreSign - Integrações', $merged[0]->title);
+    }
+
     public function testActivityTimestampUsesMostRecentRecordedPresentationDate(): void
     {
         $updatedAfterPublication = (object) [
