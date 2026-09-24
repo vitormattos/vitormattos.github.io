@@ -52,7 +52,7 @@
 \newcommand{\source}[1]{\vfill{\scriptsize\color{muted}#1}}
 \newcommand{\bigclaim}[1]{\begin{center}\Large\bfseries #1\end{center}}
 \newcommand{\pill}[2]{\tikz[baseline=(n.base)]\node[rounded corners=4pt,fill=#1,inner xsep=6pt,inner ysep=3pt](n){\scriptsize #2};}
-\newcommand{\stage}[4]{\node[rounded corners=8pt,fill=#2,draw=#3,thick,minimum width=2.75cm,minimum height=1.0cm,align=center] (#1) {#4};}
+\newcommand{\stage}[5][]{\node[#1,rounded corners=8pt,fill=#3,draw=#4,thick,minimum width=2.75cm,minimum height=1.0cm,align=center] (#2) {#5};}
 
 \title{Do software proprietário ao ecossistema aberto}
 \subtitle{Leitura crítica de Kilamo et al. (2012)}
@@ -71,8 +71,8 @@
   \begin{center}
   \begin{tikzpicture}[node distance=0.70cm]
     \stage{a}{utfprdark}{utfprdark}{\color{white}produto\\fechado}
-    \stage{b}{softyellow}{utfpryellow}{abertura}
-    \stage{c}{softgreen}{utfprteal}{ecossistema\\aberto}
+    \stage[right=of a]{b}{softyellow}{utfpryellow}{abertura}
+    \stage[right=of b]{c}{softgreen}{utfprteal}{ecossistema\\aberto}
     \draw[-{Stealth[length=3mm]},line width=1.1pt,utfpryellow] (a)--(b);
     \draw[-{Stealth[length=3mm]},line width=1.1pt,utfprteal] (b)--(c);
   \end{tikzpicture}
@@ -87,9 +87,9 @@
   \begin{center}
   \begin{tikzpicture}[node distance=0.42cm]
     \stage{code}{softgray}{muted}{código}
-    \stage{people}{softblue}{utfprblue}{pessoas}
-    \stage{rules}{softyellow}{utfpryellow}{coordenação}
-    \stage{eco}{softgreen}{utfprteal}{ecossistema}
+    \stage[right=of code]{people}{softblue}{utfprblue}{pessoas}
+    \stage[right=of people]{rules}{softyellow}{utfpryellow}{coordenação}
+    \stage[right=of rules]{eco}{softgreen}{utfprteal}{ecossistema}
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (code)--(people);
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (people)--(rules);
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (rules)--(eco);
@@ -114,9 +114,9 @@
   \begin{center}
   \begin{tikzpicture}[node distance=0.38cm]
     \stage{s1}{softblue}{utfprblue}{técnica}
-    \stage{s2}{softyellow}{utfpryellow}{organizacional}
-    \stage{s3}{softred}{muted}{jurídica}
-    \stage{s4}{softgreen}{utfprteal}{social}
+    \stage[right=of s1]{s2}{softyellow}{utfpryellow}{organizacional}
+    \stage[right=of s2]{s3}{softred}{muted}{jurídica}
+    \stage[right=of s3]{s4}{softgreen}{utfprteal}{social}
   \end{tikzpicture}
   \end{center}
   \vspace{0.45cm}
@@ -248,9 +248,9 @@
   \begin{center}
   \begin{tikzpicture}[node distance=0.36cm]
     \stage{d}{softblue}{utfprblue}{downloads}
-    \stage{b}{softgray}{muted}{bugs e pedidos}
-    \stage{c}{softyellow}{utfpryellow}{comunicação}
-    \stage{x}{softgreen}{utfprteal}{contribuições}
+    \stage[right=of d]{b}{softgray}{muted}{bugs e pedidos}
+    \stage[right=of b]{c}{softyellow}{utfpryellow}{comunicação}
+    \stage[right=of c]{x}{softgreen}{utfprteal}{contribuições}
   \end{tikzpicture}
   \end{center}
   \vspace{0.56cm}
@@ -319,9 +319,9 @@
   \begin{center}
   \begin{tikzpicture}[node distance=0.45cm]
     \stage{c1}{utfprdark}{utfprdark}{\color{white}código}
-    \stage{c2}{softblue}{utfprblue}{qualidade}
-    \stage{c3}{softyellow}{utfpryellow}{entrada}
-    \stage{c4}{softgreen}{utfprteal}{governança}
+    \stage[right=of c1]{c2}{softblue}{utfprblue}{qualidade}
+    \stage[right=of c2]{c3}{softyellow}{utfpryellow}{entrada}
+    \stage[right=of c3]{c4}{softgreen}{utfprteal}{governança}
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (c1)--(c2);
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (c2)--(c3);
     \draw[-{Stealth[length=2.5mm]},line width=1pt] (c3)--(c4);
