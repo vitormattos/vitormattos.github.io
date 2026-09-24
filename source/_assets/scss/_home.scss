@@ -16,19 +16,27 @@
 }
 
 .home-hero h1 {
-    font-size: clamp(2.5rem, 5.4vw, 4.4rem);
-    letter-spacing: -.045em;
-    line-height: 1.02;
-    margin: .45rem 0 1.25rem;
-    max-width: 15ch;
+    font-size: clamp(2rem, 3.8vw, 3.15rem);
+    letter-spacing: -.035em;
+    line-height: 1.08;
+    margin: .4rem 0 .8rem;
+    max-width: 18ch;
+}
+
+.home-hero__positioning {
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    font-weight: 650;
+    line-height: 1.5;
+    margin: 0 0 .85rem;
+    max-width: 46rem;
 }
 
 .home-hero__lead {
     color: var(--text-muted);
-    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.7;
     margin: 0;
-    max-width: 45rem;
+    max-width: 42rem;
 }
 
 .home-hero__actions {
@@ -73,9 +81,9 @@
 .home-signal__label,
 .work-card__kicker {
     color: var(--text-muted);
-    font-size: .76rem;
+    font-size: .78rem;
     font-weight: 700;
-    letter-spacing: .09em;
+    letter-spacing: .045em;
     text-transform: uppercase;
 }
 
@@ -119,9 +127,9 @@
 }
 
 .section-heading--home h2 {
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    letter-spacing: -.025em;
-    line-height: 1.12;
+    font-size: clamp(1.65rem, 2.4vw, 2.15rem);
+    letter-spacing: -.02em;
+    line-height: 1.18;
 }
 
 .work-grid {
@@ -131,9 +139,11 @@
 }
 
 .work-card {
-    border-top: 1px solid var(--border);
+    background: var(--surface-muted);
+    border: 1px solid var(--border);
+    border-radius: .9rem;
     min-width: 0;
-    padding: 1.25rem 0 .25rem;
+    padding: 1.25rem;
 }
 
 .work-card h3 {
@@ -250,8 +260,8 @@
     }
 
     .home-hero h1 {
-        font-size: clamp(2.25rem, 11vw, 3.35rem);
-        max-width: 17ch;
+        font-size: clamp(2rem, 9vw, 2.8rem);
+        max-width: 18ch;
     }
 
     .home-signal ul {
