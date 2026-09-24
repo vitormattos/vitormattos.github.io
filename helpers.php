@@ -5,13 +5,15 @@
 
 declare(strict_types=1);
 
+use App\Presentations\PresentationAssetResolver;
 use App\Presentations\PresentationThumbnailResolver;
 use App\Seo\PageUrlResolver;
 use App\Seo\SeoMetadataBuilder;
 use App\Seo\SocialImageResolver;
 use App\Seo\StructuredDataBuilder;
 
-$thumbnailResolver = new PresentationThumbnailResolver(__DIR__);
+$assetResolver = new PresentationAssetResolver(__DIR__);
+$thumbnailResolver = new PresentationThumbnailResolver(__DIR__, $assetResolver);
 $seoMetadataBuilder = new SeoMetadataBuilder(
     new PageUrlResolver(),
     new SocialImageResolver($thumbnailResolver),
@@ -19,10 +21,18 @@ $seoMetadataBuilder = new SeoMetadataBuilder(
 );
 
 return [
+    'presentationAssets' => static function ($page) use ($assetResolver): array {
+        return $assetResolver->resolve(
+            $page,
+            (string) ($page->environment ?? 'production'),
+            (string) ($page->baseUrl ?? ''),
+        );
+    },
     'presentationThumbnail' => static function ($page, object $item) use ($thumbnailResolver): ?array {
         $thumbnail = $thumbnailResolver->resolve(
             $item,
-            preferLocalLatex: ($page->environment ?? null) === 'preview',
+            (string) ($page->environment ?? 'production'),
+            (string) ($page->baseUrl ?? ''),
         );
         if ($thumbnail === null) {
             return null;
