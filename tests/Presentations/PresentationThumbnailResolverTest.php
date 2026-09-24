@@ -44,6 +44,37 @@ final class PresentationThumbnailResolverTest extends TestCase
         ], $thumbnail);
     }
 
+    public function testResolvesLatexThumbnailFromCurrentReleaseManifest(): void
+    {
+        $directory = $this->projectRoot . '/presentations/latex/example';
+        mkdir($directory, 0777, true);
+        file_put_contents($directory . '/export.json', json_encode([
+            'release' => [
+                'assets' => [
+                    'thumbnail' => [
+                        'url' => 'https://example.test/thumbnail-sourcehash.png',
+                    ],
+                ],
+            ],
+        ], JSON_THROW_ON_ERROR));
+
+        $item = (object) [
+            'managed' => 'latex',
+            'slug' => 'example',
+            'presentation' => [
+                'type' => 'pdf',
+                'width' => 1920,
+                'height' => 1080,
+            ],
+        ];
+
+        $thumbnail = (new PresentationThumbnailResolver($this->projectRoot))->resolve($item);
+
+        self::assertSame('https://example.test/thumbnail-sourcehash.png', $thumbnail['path']);
+        self::assertSame(1920, $thumbnail['width']);
+        self::assertSame(1080, $thumbnail['height']);
+    }
+
     public function testArchivedSlidesComThumbnailOverridesFrontMatterAndReadsDimensions(): void
     {
         $this->writeOnePixelPng('presentations/slides.com/42/thumbnail.png');
