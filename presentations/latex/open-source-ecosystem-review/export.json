@@ -2,7 +2,7 @@
     "schema": 1,
     "source": {
         "path": "main.tex",
-        "sha256": "040771fc23aaafcece1a27ebf0b076f29eb6c286071bf2c5c9b25c6213ffbbe2"
+        "sha256": "a2de875efbe751a6436cd056ca966300ffafdd2b20c7b6a41a2e5d1c980fcbc5"
     },
     "render": {
         "format": "pdf",
@@ -14,19 +14,19 @@
         "title": "Do software proprietário ao ecossistema aberto",
         "assets": {
             "pdf": {
-                "name": "open-source-ecosystem-review-040771fc23aa.pdf",
-                "sha256": "c8fbf70a3bf78bf64d5b355b198c9a4c52e8c49ade0f391707fcf107434c92d3",
-                "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/latex-open-source-ecosystem-review/open-source-ecosystem-review-040771fc23aa.pdf"
+                "name": "open-source-ecosystem-review-a2de875efbe7.pdf",
+                "sha256": "269b7b2a73881a6e38dd0ca75bc0bee8337f60dd39871556a3310bf414f97626",
+                "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/latex-open-source-ecosystem-review/open-source-ecosystem-review-a2de875efbe7.pdf"
             },
             "source": {
-                "name": "open-source-ecosystem-review-040771fc23aa.tex",
-                "sha256": "040771fc23aaafcece1a27ebf0b076f29eb6c286071bf2c5c9b25c6213ffbbe2",
-                "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/latex-open-source-ecosystem-review/open-source-ecosystem-review-040771fc23aa.tex"
+                "name": "open-source-ecosystem-review-a2de875efbe7.tex",
+                "sha256": "a2de875efbe751a6436cd056ca966300ffafdd2b20c7b6a41a2e5d1c980fcbc5",
+                "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/latex-open-source-ecosystem-review/open-source-ecosystem-review-a2de875efbe7.tex"
             },
             "thumbnail": {
-                "name": "thumbnail-040771fc23aa.png",
-                "sha256": "09b908310a85dd477199ff62b62ae547877fd0d85cb5e315622f1b6b222481bd",
-                "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/latex-open-source-ecosystem-review/thumbnail-040771fc23aa.png"
+                "name": "thumbnail-a2de875efbe7.png",
+                "sha256": "6977c3e83353e06f89a17d10fd737218442a0ec638110870588258753837b435",
+                "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/latex-open-source-ecosystem-review/thumbnail-a2de875efbe7.png"
             },
             "metadata": {
                 "name": "metadata-5398cbffdcd5.json",
