@@ -29,9 +29,32 @@ alternateUrl: /
         <aside class="home-signal" aria-label="Atuação atual">
             <p class="home-signal__label">Atuação atual</p>
             <ul>
-                <li><strong>CTO e cooperado</strong><span>LibreCode</span></li>
-                <li><strong>Mantenedor</strong><span>LibreSign</span></li>
-                <li><strong>Pesquisa e trabalho público</strong><span>Engenharia de software e software livre</span></li>
+                <li>
+                    <a class="home-signal__link" href="https://librecode.coop/" target="_blank"
+                        rel="external noopener noreferrer">
+                        <span><strong>CTO e cooperado</strong><small>LibreCode</small></span>
+                        <span class="home-signal__arrow" aria-hidden="true">↗</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="home-signal__link" href="https://libresign.coop/" target="_blank"
+                        rel="external noopener noreferrer">
+                        <span><strong>Mantenedor</strong><small>LibreSign</small></span>
+                        <span class="home-signal__arrow" aria-hidden="true">↗</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="home-signal__link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/artigos/">
+                        <span><strong>Pesquisa e escrita</strong><small>Artigos e trabalho acadêmico</small></span>
+                        <span class="home-signal__arrow" aria-hidden="true">→</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="home-signal__link" href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/palestras/">
+                        <span><strong>Palestras e comunidade</strong><small>Palestras e compartilhamento de conhecimento</small></span>
+                        <span class="home-signal__arrow" aria-hidden="true">→</span>
+                    </a>
+                </li>
             </ul>
         </aside>
     </section>
