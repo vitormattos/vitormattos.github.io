@@ -158,10 +158,31 @@
     </div>
 @elseif ($type === 'pdf' && ($presentation['url'] ?? false))
     <div class="presentation-frame">
-        <div class="presentation-fallback">
-            <p><a href="{{ $presentation['url'] }}" target="_blank"
-                    rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}</a>
-            </p>
+        <div class="presentation-toolbar">
+            <span>{{ $isEnglish ? 'Presentation' : 'Apresentação' }}</span>
+            <div class="presentation-toolbar__actions">
+                <a class="presentation-action presentation-action--primary" href="{{ $presentation['url'] }}"
+                    target="_blank" rel="external noopener noreferrer">
+                    <span aria-hidden="true">↗</span>
+                    <span>{{ $isEnglish ? 'Open PDF' : 'Abrir PDF' }}</span>
+                </a>
+            </div>
+        </div>
+        <div class="presentation-stage">
+            @if ($archivedThumbnail)
+                <a class="presentation-pdf-preview" href="{{ $presentation['url'] }}" target="_blank"
+                    rel="external noopener noreferrer"
+                    aria-label="{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}">
+                    <img src="{{ str_starts_with($archivedThumbnail, 'http') ? $archivedThumbnail : $page->baseUrl . $archivedThumbnail }}"
+                        alt="{{ $page->title }}" loading="lazy">
+                </a>
+            @else
+                <div class="presentation-fallback">
+                    <p><a href="{{ $presentation['url'] }}" target="_blank"
+                            rel="external noopener noreferrer">{{ $isEnglish ? 'Open presentation PDF' : 'Abrir PDF da apresentação' }}</a>
+                    </p>
+                </div>
+            @endif
         </div>
     </div>
 @elseif ($presentation['url'] ?? false)
