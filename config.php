@@ -11,6 +11,7 @@ return [
     'production' => false,
     'indexable' => false,
     'siteName' => 'Vitor Mattos',
+    'sourceRepository' => 'https://github.com/vitormattos/vitormattos.github.io',
     'defaultLocale' => 'en',
     'locales' => ['en', 'pt-BR'],
     'siteDescription' => 'Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.',
