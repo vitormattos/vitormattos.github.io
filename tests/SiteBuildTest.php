@@ -100,8 +100,8 @@ final class SiteBuildTest extends TestCase
             self::assertStringNotContainsString('Global Talent', $html);
         }
 
-        self::assertStringContainsString('Building open technology, communities, and digital infrastructure.', $english);
-        self::assertStringContainsString('Construindo tecnologia aberta, comunidades e infraestrutura digital.', $portuguese);
+        self::assertStringContainsString('Software engineer and open-source maintainer.', $english);
+        self::assertStringContainsString('Engenheiro de software e mantenedor de software livre.', $portuguese);
     }
 
     public function testThemeToggleIsAvailableInBothLanguages(): void
