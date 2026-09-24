@@ -114,7 +114,7 @@ final class LatexPresentation
                 htmlspecialchars((string) $this->metadata['title'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
             ),
             '',
-            'Seminário acadêmico produzido em LaTeX/Beamer. Esta release preserva instantâneos imutáveis do PDF, da fonte LaTeX, da primeira página renderizada e dos metadados da apresentação.',
+            'Seminário acadêmico produzido em LaTeX/Beamer. Esta release publica o PDF, a fonte LaTeX, a primeira página renderizada e os metadados correspondentes à versão atual da apresentação.',
             '',
             '### Apresentação',
             '- **Página no portfólio:** ' . $this->portfolioUrl(),
