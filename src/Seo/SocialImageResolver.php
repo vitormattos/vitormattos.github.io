@@ -21,7 +21,11 @@ final class SocialImageResolver
         $image = $this->pageImage($page);
         $thumbnail = null;
         if ($image === null) {
-            $thumbnail = $this->thumbnailResolver->resolve($page);
+            $thumbnail = $this->thumbnailResolver->resolve(
+                $page,
+                (string) ($page->environment ?? 'production'),
+                (string) ($page->baseUrl ?? ''),
+            );
             $image = $thumbnail['path'] ?? null;
         }
 

@@ -44,6 +44,33 @@ final class PresentationThumbnailResolverTest extends TestCase
         ], $thumbnail);
     }
 
+    public function testPrefersBranchBuiltLatexThumbnailForPreview(): void
+    {
+        $this->writeOnePixelPng('source/presentations/latex/example/thumbnail.png');
+        $item = (object) [
+            'managed' => 'latex',
+            'slug' => 'example',
+            'presentation' => [
+                'type' => 'pdf',
+                'width' => 1920,
+                'height' => 1080,
+            ],
+        ];
+
+        $thumbnail = (new PresentationThumbnailResolver($this->projectRoot))->resolve(
+            $item,
+            environment: 'preview',
+        );
+
+        self::assertSame(
+            '/presentations/latex/example/thumbnail.png?v='
+                . substr(hash_file('sha256', $this->projectRoot . '/source/presentations/latex/example/thumbnail.png'), 0, 12),
+            $thumbnail['path'],
+        );
+        self::assertSame(1920, $thumbnail['width']);
+        self::assertSame(1080, $thumbnail['height']);
+    }
+
     public function testResolvesLatexThumbnailFromCurrentReleaseManifest(): void
     {
         $directory = $this->projectRoot . '/presentations/latex/example';

@@ -4,48 +4,12 @@
     $presentation = $page->presentation ?? [];
     $type = $presentation['type'] ?? 'external';
     $isEnglish = ($page->locale ?? 'en') === 'en';
-    $archivedPdf = $presentation['pdf'] ?? null;
-    $archivedOriginal = $presentation['original'] ?? null;
-    $archivedPptx = $presentation['pptx'] ?? null;
-    $archivedThumbnail = $presentation['thumbnail'] ?? null;
-
-    if (($page->managed ?? null) === 'latex' && ($page->slug ?? false)) {
-        $manifestPath = 'presentations/latex/' . $page->slug . '/export.json';
-        if (is_file($manifestPath)) {
-            try {
-                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                $presentation['url'] = $manifest['release']['assets']['pdf']['url'] ?? ($presentation['url'] ?? null);
-                $archivedThumbnail = $manifest['release']['assets']['thumbnail']['url'] ?? $archivedThumbnail;
-            } catch (Throwable) {
-                // Keep front matter values when the LaTeX release manifest is unavailable or malformed.
-            }
-        }
-    }
-
-    if ($page->slidesId ?? false) {
-        $sourceDirectory = $type === 'slideshare' ? 'slideshare' : 'slides.com';
-        $manifestPath = 'presentations/' . $sourceDirectory . '/' . $page->slidesId . '/export.json';
-        if (is_file($manifestPath)) {
-            try {
-                $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
-                $archivedPdf ??= $manifest['assets']['pdf']['url'] ?? ($manifest['pdf']['url'] ?? null);
-                $archivedOriginal ??= $manifest['assets']['original']['url'] ?? null;
-                $archivedPptx ??= $manifest['assets']['pptx']['url'] ?? null;
-                $archivedThumbnail ??= $manifest['assets']['thumbnail']['url'] ?? null;
-                if (!$archivedThumbnail) {
-                    $candidate = 'presentations/' . $sourceDirectory . '/' . $page->slidesId . '/thumbnail.';
-                    foreach (['jpg', 'jpeg', 'png', 'webp'] as $extension) {
-                        if (is_file($candidate . $extension)) {
-                            $archivedThumbnail = '/' . $candidate . $extension;
-                            break;
-                        }
-                    }
-                }
-            } catch (Throwable) {
-                // Keep front matter values when an archive manifest is unavailable or malformed.
-            }
-        }
-    }
+    $assets = $page->presentationAssets();
+    $presentation['url'] = $assets['url'] ?? ($presentation['url'] ?? null);
+    $archivedPdf = $assets['pdf'];
+    $archivedOriginal = $assets['original'];
+    $archivedPptx = $assets['pptx'];
+    $archivedThumbnail = $assets['thumbnail'];
 
     $slideShareDownloads = [];
     if ($archivedPdf) {
