@@ -1,0 +1,16 @@
+{
+    "schema": 1,
+    "source": {
+        "provider": "slideshare",
+        "id": "61993365",
+        "published_at": "2016-05-13T16:34:00Z",
+        "url": "https://pt.slideshare.net/slideshow/apresentao-feedback-cool/61993365"
+    },
+    "release": {
+        "tag": "slideshare-61993365",
+        "url": "https://github.com/vitormattos/vitormattos.github.io/releases/tag/slideshare-61993365",
+        "make_latest": false,
+        "published_at_note": "GitHub does not support backdating a release publication timestamp; the original SlideShare publication date is preserved in metadata and release notes."
+    },
+    "assets": []
+}
