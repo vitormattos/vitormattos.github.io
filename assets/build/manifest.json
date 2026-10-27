@@ -1,15 +1,15 @@
 {
-  "_markdown-BwiMjCfE.js": {
-    "file": "assets/markdown-BwiMjCfE.js",
+  "_markdown-CcJnyYDL.js": {
+    "file": "assets/markdown-CcJnyYDL.js",
     "name": "markdown"
   },
   "source/_assets/js/presentations.js": {
-    "file": "assets/presentations-vT-GmyK_.js",
+    "file": "assets/presentations-B57Ap9zk.js",
     "name": "presentations",
     "src": "source/_assets/js/presentations.js",
     "isEntry": true,
     "imports": [
-      "_markdown-BwiMjCfE.js"
+      "_markdown-CcJnyYDL.js"
     ]
   },
   "source/_assets/js/social-icons.js": {
@@ -19,12 +19,12 @@
     "isEntry": true
   },
   "source/_assets/js/talk-preview.js": {
-    "file": "assets/talk-preview-CGcuukfv.js",
+    "file": "assets/talk-preview-B0umaVM-.js",
     "name": "talk-preview",
     "src": "source/_assets/js/talk-preview.js",
     "isEntry": true,
     "imports": [
-      "_markdown-BwiMjCfE.js"
+      "_markdown-CcJnyYDL.js"
     ]
   },
   "source/_assets/scss/main.scss": {

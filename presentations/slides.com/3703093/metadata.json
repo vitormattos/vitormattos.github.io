@@ -1,0 +1,34 @@
+{
+    "id": 3703093,
+    "slug": "a-ia-entrega-codigo-e-depois",
+    "title": "A IA entrega código. E depois? | Latinoware 2026",
+    "description": "A inteligência artificial está transformando o desenvolvimento de software. Mas gerar código é apenas parte do desafio de construir tecnologias livres que permaneçam úteis ao longo do tempo.  Nesta palestra apresentada na Latinoware 2026, Vitor Mattos explora como a IA pode acelerar o desenvolvimento, os testes e a manutenção de software, sem eliminar a necessidade de decisões sobre segurança, qualidade, prioridades e continuidade.  A partir da experiência com o LibreSign e comunidades de software livre, a apresentação percorre três movimentos: chegar, voltar e continuar. Eles ajudam a discutir as barreiras à participação, a colaboração entre pessoas e agentes de IA, a circulação de conhecimento e a sustentabilidade dos projetos.  Uma reflexão prática sobre como construir tecnologias livres que possam ser compreendidas, utilizadas, modificadas e mantidas por diferentes pessoas e organizações.",
+    "visibility": "all",
+    "url": "https://slides.com/vitormattos/a-ia-entrega-codigo-e-depois",
+    "embed_url": "https://slides.com/vitormattos/a-ia-entrega-codigo-e-depois/embed",
+    "tags": {
+        "slides_com": []
+    },
+    "thumbnail_url": "https://media.slid.es/thumbnails/e5368caa7c10b17f5f1f5c6c4a8ddf5d/thumb.jpg?1792598581",
+    "slide_count": 51,
+    "width": 1280,
+    "height": 720,
+    "margin": 0.05,
+    "transition": "slide",
+    "background_transition": "slide",
+    "rtl": false,
+    "loop": false,
+    "theme_font": "montserrat",
+    "theme_color": "black-blue",
+    "language": "pt",
+    "created_at": "2026-10-14T02:54:10.749Z",
+    "updated_at": "2026-10-21T16:05:04.422Z",
+    "urls": {
+        "default": "https://slides.com/vitormattos/a-ia-entrega-codigo-e-depois",
+        "fullscreen": "https://slides.com/vitormattos/a-ia-entrega-codigo-e-depois/fullscreen",
+        "edit": "https://slides.com/vitormattos/a-ia-entrega-codigo-e-depois/edit",
+        "present": "https://slides.com/vitormattos/a-ia-entrega-codigo-e-depois/live"
+    },
+    "thumbnail_path": "/presentations/slides.com/3703093/thumbnail.jpg",
+    "thumbnail_source_url": "https://media.slid.es/thumbnails/e5368caa7c10b17f5f1f5c6c4a8ddf5d/thumb.jpg?1792598581"
+}
