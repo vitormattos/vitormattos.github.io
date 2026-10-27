@@ -60,6 +60,7 @@ return [
         '3553028' => ['tags' => ['Inteligência Artificial', 'Desenvolvimento de Software', 'Qualidade de Software', 'Dívida Técnica', 'Produtividade']],
         '3582536' => ['tags' => ['Soberania Digital', 'Privacidade', 'Infraestrutura Digital', 'Cooperação', 'Segurança']],
         '3629052' => ['tags' => ['Soberania Digital', 'Privacidade', 'Infraestrutura Digital', 'Cooperação', 'Segurança']],
+        '3703093' => ['tags' => ['Inteligência Artificial', 'Software Livre', 'Desenvolvimento de Software', 'Colaboração', 'Qualidade de Software']],
     ],
     'slideshare' => [
         '10406513' => ['tags' => ['JasperReports', 'Relatórios', 'Desenvolvimento de Software']],
