@@ -1,0 +1,337 @@
+% SPDX-FileCopyrightText: 2026 Vitor Mattos
+% SPDX-License-Identifier: CC-BY-SA-4.0
+\documentclass[10pt,aspectratio=169,t]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazilian]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage{hyperref}
+
+\definecolor{utfpryellow}{HTML}{F4C300}
+\definecolor{utfprdark}{HTML}{1D1D1F}
+\definecolor{utfprblue}{HTML}{1F5A94}
+\definecolor{utfprteal}{HTML}{277C78}
+\definecolor{muted}{HTML}{6B7280}
+\definecolor{softgray}{HTML}{F3F4F6}
+\definecolor{softblue}{HTML}{E8F0F7}
+\definecolor{softyellow}{HTML}{FFF7D6}
+\definecolor{softgreen}{HTML}{E7F1EA}
+\definecolor{softred}{HTML}{F8E6E6}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{normal text}{fg=utfprdark,bg=white}
+\setbeamercolor{frametitle}{fg=utfprdark,bg=white}
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+\setbeamerfont{title}{series=\bfseries,size=\huge}
+
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.74cm,dp=0.18cm,leftskip=0.55cm,rightskip=0.5cm]{frametitle}
+    \insertframetitle
+  \end{beamercolorbox}
+  \vspace{-0.10cm}
+  \hspace{0.55cm}\textcolor{utfpryellow}{\rule{2.6cm}{2.4pt}}
+}
+
+\setbeamertemplate{footline}{%
+  \leavevmode
+  \hbox{%
+  \begin{beamercolorbox}[wd=.80\paperwidth,ht=2.4ex,dp=.9ex,leftskip=.55cm]{author in head/foot}
+    \scriptsize UTFPR -- Software Livre \hspace{0.7em}|\hspace{0.7em} Vitor Mattos
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.20\paperwidth,ht=2.4ex,dp=.9ex,rightskip=.55cm plus1fil]{date in head/foot}
+    \scriptsize \insertframenumber/\inserttotalframenumber
+  \end{beamercolorbox}}
+}
+
+\newcommand{\source}[1]{\vfill{\scriptsize\color{muted}#1}}
+\newcommand{\bigclaim}[1]{\begin{center}\Large\bfseries #1\end{center}}
+\newcommand{\pill}[2]{\tikz[baseline=(n.base)]\node[rounded corners=4pt,fill=#1,inner xsep=6pt,inner ysep=3pt](n){\scriptsize #2};}
+\newcommand{\stage}[5][]{\node[#1,rounded corners=8pt,fill=#3,draw=#4,thick,minimum width=2.75cm,minimum height=1.0cm,align=center] (#2) {#5};}
+
+\title{Do software proprietário ao ecossistema aberto}
+\subtitle{Leitura crítica de Kilamo et al. (2012)}
+\author{Vitor Mattos}
+\institute{Disciplina de Software Livre -- UTFPR}
+\date{2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \vspace{0.35cm}
+  {\huge\bfseries Do software proprietário ao ecossistema aberto}\par
+  \vspace{0.15cm}
+  {\large Leitura crítica de Kilamo et al. (2012)}\par
+  \vspace{0.58cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.70cm]
+    \stage{a}{utfprdark}{utfprdark}{\color{white}produto\\fechado}
+    \stage[right=of a]{b}{softyellow}{utfpryellow}{abertura}
+    \stage[right=of b]{c}{softgreen}{utfprteal}{ecossistema\\aberto}
+    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfpryellow] (a)--(b);
+    \draw[-{Stealth[length=3mm]},line width=1.1pt,utfprteal] (b)--(c);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.35cm}
+  {\small Terhi Kilamo, Imed Hammouda, Tommi Mikkonen, Timo Aaltonen. \textit{Journal of Systems and Software}, 85(7), 1467--1478, 2012.}
+  \source{DOI: \href{https://doi.org/10.1016/j.jss.2011.06.071}{10.1016/j.jss.2011.06.071} \hspace{0.5em}|\hspace{0.5em} \href{https://www.sciencedirect.com/science/article/pii/S0164121211001683}{ScienceDirect}}
+\end{frame}
+
+\begin{frame}{1. O problema: abrir não é publicar}
+  \vspace{0.42cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.42cm]
+    \stage{code}{softgray}{muted}{código}
+    \stage[right=of code]{people}{softblue}{utfprblue}{pessoas}
+    \stage[right=of people]{rules}{softyellow}{utfpryellow}{coordenação}
+    \stage[right=of rules]{eco}{softgreen}{utfprteal}{ecossistema}
+    \draw[-{Stealth[length=2.5mm]},line width=1pt] (code)--(people);
+    \draw[-{Stealth[length=2.5mm]},line width=1pt] (people)--(rules);
+    \draw[-{Stealth[length=2.5mm]},line width=1pt] (rules)--(eco);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.60cm}
+  \bigclaim{O artigo pergunta como transformar abertura em continuidade.}
+  \source{Ponto de partida: havia poucas diretrizes para criar e manter um ecossistema a partir de software proprietário.}
+\end{frame}
+
+\begin{frame}{2. Abertura é multidimensional}
+  \vspace{0.45cm}
+  \begin{center}
+    \pill{softblue}{software}\hspace{0.25em}
+    \pill{softgray}{infraestrutura}\hspace{0.25em}
+    \pill{softyellow}{processo}\hspace{0.25em}
+    \pill{softred}{legalidade}\hspace{0.25em}
+    \pill{softgreen}{marketing}\hspace{0.25em}
+    \pill{softblue}{comunidade}
+  \end{center}
+  \vspace{0.75cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.38cm]
+    \stage{s1}{softblue}{utfprblue}{técnica}
+    \stage[right=of s1]{s2}{softyellow}{utfpryellow}{organizacional}
+    \stage[right=of s2]{s3}{softred}{muted}{jurídica}
+    \stage[right=of s3]{s4}{softgreen}{utfprteal}{social}
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.45cm}
+  \bigclaim{A contribuição começa ao tirar o foco exclusivo do código.}
+  \source{As seis dimensões são discutidas pelos autores como frentes que precisam ser preparadas em conjunto.}
+\end{frame}
+
+\begin{frame}{3. Comunidade não é uma massa homogênea}
+  \vspace{0.16cm}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.82]
+    \fill[softgreen] (0,0) circle (2.55);
+    \fill[softyellow] (0,0) circle (1.98);
+    \fill[softblue] (0,0) circle (1.42);
+    \fill[softred] (0,0) circle (0.90);
+    \fill[utfprdark] (0,0) circle (0.40);
+    \node[text=white,font=\bfseries\scriptsize] at (0,0) {líder};
+    \node[font=\bfseries\scriptsize] at (0,0.78) {núcleo};
+    \node[font=\bfseries\scriptsize] at (0,1.30) {ativos};
+    \node[font=\bfseries\scriptsize] at (0,1.84) {periféricos};
+    \node[font=\bfseries\scriptsize] at (0,2.36) {usuários};
+    \node[align=left,text width=4.4cm] at (5.0,0.55) {\Large\bfseries O núcleo sustenta a abertura antes que a periferia exista.};
+  \end{tikzpicture}
+  \end{center}
+  \source{O artigo retoma o modelo em cebola para representar diferentes níveis de participação e influência.}
+\end{frame}
+
+\begin{frame}{4. Quem ocupa essas camadas no começo?}
+  \vspace{0.35cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.55cm]
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,text width=3.2cm,align=center,minimum height=1.25cm] (pub) {\bfseries entidade publicadora\\\small equipe original};
+    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,right=of pub,text width=3.2cm,align=center,minimum height=1.25cm] (partners) {\bfseries parceiros\\\small desenvolvedores industriais};
+    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of partners,text width=3.2cm,align=center,minimum height=1.25cm] (external) {\bfseries externos\\\small comunidades e indivíduos};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.60cm}
+  \bigclaim{A empresa precisa investir recursos reais antes de esperar contribuição externa.}
+  \source{Os autores destacam a entidade publicadora, parceiros industriais e comunidades existentes como atores centrais no início.}
+\end{frame}
+
+\begin{frame}{5. Cinco perguntas estruturam o estudo}
+  \vspace{0.40cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.28cm]
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,text width=2.05cm,align=center,minimum height=0.98cm] (q1) {critérios\\\scriptsize prontidão};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of q1,text width=2.05cm,align=center,minimum height=0.98cm] (q2) {atores\\\scriptsize planejamento};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of q2,text width=2.05cm,align=center,minimum height=0.98cm] (q3) {dados\\\scriptsize avaliação};
+    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of q3,text width=2.05cm,align=center,minimum height=0.98cm] (q4) {uso\\\scriptsize resultados};
+    \node[rounded corners=7pt,fill=softred,draw=muted,thick,right=of q4,text width=2.05cm,align=center,minimum height=0.98cm] (q5) {medição\\\scriptsize comunidade};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.72cm}
+  \bigclaim{O foco é operacional: como avaliar, agir e acompanhar.}
+  \source{Síntese das cinco questões de pesquisa apresentadas na Seção 2.3 do artigo.}
+\end{frame}
+
+\begin{frame}{6. Método: construir e testar em contexto industrial}
+  \vspace{0.36cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.48cm]
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,minimum width=2.4cm] (lit) {literatura};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of lit,minimum width=2.4cm] (work) {workshops};
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,right=of work,minimum width=2.4cm] (cases) {4 empresas};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,below=0.55cm of work,minimum width=3.4cm] (model) {OSCOMM};
+    \draw[-{Stealth[length=2.2mm]}] (lit)--(model);
+    \draw[-{Stealth[length=2.2mm]}] (work)--(model);
+    \draw[-{Stealth[length=2.2mm]}] (cases)--(model);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.55cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}\centering\pill{softgreen}{força}\par\small contato com problemas reais
+    \column{0.48\textwidth}\centering\pill{softred}{limite}\par\small pesquisadores participam da intervenção
+  \end{columns}
+  \source{Fase construtiva + pesquisa-ação em Nokia, Sesca, IT Mill e Gurux.}
+\end{frame}
+
+\begin{frame}{7. OSCOMM: três momentos da abertura}
+  \vspace{0.48cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.70cm]
+    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,text width=3.05cm,align=center,minimum height=1.35cm] (r3) {\Large R3\\\small prontidão};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of r3,text width=3.05cm,align=center,minimum height=1.35cm] (eng) {\Large engenharia\\\small preparação};
+    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of eng,text width=3.05cm,align=center,minimum height=1.35cm] (bulb) {\Large BULB\\\small acompanhamento};
+    \draw[-{Stealth[length=3mm]},line width=1.1pt] (r3)--(eng);
+    \draw[-{Stealth[length=3mm]},line width=1.1pt] (eng)--(bulb);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.65cm}
+  \begin{center}\large\bfseries diagnosticar \hspace{1.1em}$\rightarrow$\hspace{1.1em} preparar \hspace{1.1em}$\rightarrow$\hspace{1.1em} observar\end{center}
+  \source{O OSCOMM organiza a transição antes, durante e depois da abertura.}
+\end{frame}
+
+\begin{frame}{8. R3: onde estão os gargalos?}
+  \vspace{0.34cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.34cm]
+    \node[rounded corners=8pt,fill=softblue,draw=utfprblue,thick,text width=2.4cm,align=center,minimum height=1.05cm] (sw) {software\\\scriptsize código • arquitetura • qualidade};
+    \node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,right=of sw,text width=2.4cm,align=center,minimum height=1.05cm] (co) {comunidade\\\scriptsize propósito • usuários • parceiros};
+    \node[rounded corners=8pt,fill=softred,draw=muted,thick,right=of co,text width=2.4cm,align=center,minimum height=1.05cm] (le) {legalidade\\\scriptsize copyright • licença • marca};
+    \node[rounded corners=8pt,fill=softyellow,draw=utfpryellow,thick,right=of le,text width=2.4cm,align=center,minimum height=1.05cm] (au) {autoridade\\\scriptsize cultura • processo • suporte};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.55cm}
+  \bigclaim{Não é ``abrir ou não abrir'': é saber o que precisa ser corrigido.}
+  \source{As quatro dimensões têm peso igual; os itens internos têm pesos distintos e o modelo deve ser adaptado ao caso.}
+\end{frame}
+
+\begin{frame}{9. Engenharia para abertura: transformar diagnóstico em trabalho}
+  \vspace{0.32cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.28cm]
+    \node[rounded corners=7pt,fill=softgray,draw=muted,thick,text width=2.25cm,align=center,minimum height=0.88cm] (ref) {refatorar};
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,right=of ref,text width=2.25cm,align=center,minimum height=0.88cm] (doc) {documentar};
+    \node[rounded corners=7pt,fill=softyellow,draw=utfpryellow,thick,right=of doc,text width=2.25cm,align=center,minimum height=0.88cm] (infra) {infraestrutura};
+    \node[rounded corners=7pt,fill=softgreen,draw=utfprteal,thick,right=of infra,text width=2.25cm,align=center,minimum height=0.88cm] (proc) {processo};
+    \node[rounded corners=7pt,fill=softred,draw=muted,thick,below=0.45cm of doc,text width=2.25cm,align=center,minimum height=0.88cm] (lic) {legalidade};
+    \node[rounded corners=7pt,fill=softblue,draw=utfprblue,thick,right=of lic,text width=2.25cm,align=center,minimum height=0.88cm] (comm) {comunidade};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.55cm}
+  \bigclaim{A abertura exige investimento antes de produzir participação externa.}
+  \source{A fase 2 atua sobre os problemas encontrados na avaliação de prontidão.}
+\end{frame}
+
+\begin{frame}{10. BULB: depois de abrir, medir}
+  \vspace{0.38cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.36cm]
+    \stage{d}{softblue}{utfprblue}{downloads}
+    \stage[right=of d]{b}{softgray}{muted}{bugs e pedidos}
+    \stage[right=of b]{c}{softyellow}{utfpryellow}{comunicação}
+    \stage[right=of c]{x}{softgreen}{utfprteal}{contribuições}
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.56cm}
+  \begin{center}
+    \pill{softgray}{tamanho}\hspace{0.4em}
+    \pill{softblue}{atividade}\hspace{0.4em}
+    \pill{softgreen}{evolução}
+  \end{center}
+  \vspace{0.45cm}
+  \bigclaim{Comunidade sustentável vira algo observável, não apenas desejado.}
+  \source{O Community Watchdog/BULB usa fontes de dados variadas para acompanhar tamanho, atividade e mudanças na comunidade.}
+\end{frame}
+
+\begin{frame}{11. Gurux: por que abrir?}
+  \vspace{0.38cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.24\textwidth}\centering\pill{softblue}{mercado}\par\large internacionalizar
+    \column{0.24\textwidth}\centering\pill{softyellow}{custo}\par\large compartilhar esforço
+    \column{0.24\textwidth}\centering\pill{softgreen}{negócio}\par\large mudar modelo
+    \column{0.24\textwidth}\centering\pill{softgray}{marca}\par\large ganhar reputação
+  \end{columns}
+  \vspace{0.90cm}
+  \bigclaim{A decisão era estratégica, não apenas técnica.}
+  \source{Gurux abriu a plataforma em 2009 buscando parceiros, clientes internacionais e novos modelos de negócio.}
+\end{frame}
+
+\begin{frame}{12. Gurux: quanto custou preparar?}
+  \vspace{0.38cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.32\textwidth}\centering\pill{softyellow}{tempo}\par\Huge 6\par\small meses
+    \column{0.32\textwidth}\centering\pill{softblue}{equipe}\par\Huge 6\par\small pessoas em tempo integral
+    \column{0.32\textwidth}\centering\pill{softred}{surpresa}\par\Large quase 2x\par\small documentação + reescrita
+  \end{columns}
+  \vspace{0.65cm}
+  \bigclaim{O trabalho invisível da abertura foi maior que o esperado.}
+  \source{No caso Gurux, a fase de engenharia mobilizou seis pessoas por seis meses; documentação e reescrita quase dobraram a estimativa inicial.}
+\end{frame}
+
+\begin{frame}{13. Gurux: o que apareceu depois?}
+  \vspace{0.35cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.31\textwidth}\centering\pill{softgreen}{comunidade}\par\Huge 100\par\small primeiros meses
+    \column{0.31\textwidth}\centering\pill{softgreen}{6 meses}\par\Huge 200\par\small usuários
+    \column{0.31\textwidth}\centering\pill{softblue}{sinais}\par\large downloads\par\small parceiros + visibilidade
+  \end{columns}
+  \vspace{0.65cm}
+  \bigclaim{Há sinais de tração; não há prova de sustentabilidade de longo prazo.}
+  \source{O artigo relata crescimento inicial da comunidade, aumento de downloads e novos parceiros, mas não acompanha o ecossistema por anos.}
+\end{frame}
+
+\begin{frame}{14. O que o artigo realmente demonstra?}
+  \vspace{0.38cm}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softgreen,draw=utfprteal,thick,inner sep=10pt,text width=5.0cm]{\bfseries Sustenta bem\par\vspace{0.2cm}\small problema é multidimensional\par processo pode ser organizado\par casos mostram aplicabilidade};\end{tikzpicture}
+    \column{0.48\textwidth}
+      \begin{tikzpicture}\node[rounded corners=8pt,fill=softred,draw=muted,thick,inner sep=10pt,text width=5.0cm]{\bfseries Não demonstra\par\vspace{0.2cm}\small causalidade\par generalização ampla\par sustentabilidade de longo prazo};\end{tikzpicture}
+  \end{columns}
+  \vspace{0.62cm}
+  \bigclaim{OSCOMM funciona melhor como diagnóstico do que como prova de sucesso.}
+  \source{Os próprios autores reconhecem dados confidenciais, diferentes níveis de detalhe e evidência real ainda insuficiente para conclusões definitivas.}
+\end{frame}
+
+\begin{frame}{15. Síntese: construir comunidade é parte da engenharia}
+  \vspace{0.45cm}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.45cm]
+    \stage{c1}{utfprdark}{utfprdark}{\color{white}código}
+    \stage[right=of c1]{c2}{softblue}{utfprblue}{qualidade}
+    \stage[right=of c2]{c3}{softyellow}{utfpryellow}{entrada}
+    \stage[right=of c3]{c4}{softgreen}{utfprteal}{governança}
+    \draw[-{Stealth[length=2.5mm]},line width=1pt] (c1)--(c2);
+    \draw[-{Stealth[length=2.5mm]},line width=1pt] (c2)--(c3);
+    \draw[-{Stealth[length=2.5mm]},line width=1pt] (c3)--(c4);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.70cm}
+  \bigclaim{Abrir o repositório é um evento. Sustentar um ecossistema é um processo.}
+  \vspace{0.20cm}
+  \begin{center}\small\color{muted}Em projetos como LibreSign, a experiência prática serve como lente crítica — não como evidência do artigo.\end{center}
+  \source{Síntese crítica da leitura de Kilamo et al. (2012).}
+\end{frame}
+
+\end{document}
