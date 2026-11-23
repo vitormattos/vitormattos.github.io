@@ -1,0 +1,16 @@
+{
+    "schema": 1,
+    "source": {
+        "provider": "slideshare",
+        "id": "42439965",
+        "published_at": "2014-12-07T07:47:33Z",
+        "url": "https://pt.slideshare.net/slideshow/bdd-php-behat/42439965"
+    },
+    "release": {
+        "tag": "slideshare-42439965",
+        "url": "https://github.com/vitormattos/vitormattos.github.io/releases/tag/slideshare-42439965",
+        "make_latest": false,
+        "published_at_note": "GitHub does not support backdating a release publication timestamp; the original SlideShare publication date is preserved in metadata and release notes."
+    },
+    "assets": []
+}
