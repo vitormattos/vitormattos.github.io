@@ -12,7 +12,6 @@ return [
             ['type' => 'cfp', 'label' => 'PHPRio CFP', 'href' => 'https://github.com/PHPRio/CFP/issues/12'],
         ],
         'resources' => [
-            ['type' => 'video', 'label' => 'FISL 2018', 'href' => 'http://hemingway.softwarelivre.org/fisl18/high/Sala%203/sala3-high-201807141605.ogv'],
             ['type' => 'slides', 'label' => 'SlideShare', 'href' => 'https://www.slideshare.net/vitormattosrj/contribuindo-e-criando-software-livre'],
         ],
     ],
@@ -22,8 +21,6 @@ return [
             ['type' => 'cfp', 'label' => 'PHPRio CFP', 'href' => 'https://github.com/PHPRio/CFP/issues/17'],
         ],
         'resources' => [
-            ['type' => 'video', 'label' => 'TDC Floripa 2017', 'href' => 'https://en.eventials.com/Globalcode/que-oportunidades-me-encontrem-carreira-intel-vitor-mattos/'],
-            ['type' => 'video', 'label' => 'FISL 2018', 'href' => 'http://hemingway.softwarelivre.org/fisl18/high/Sala%202/sala2-high-201807141704.ogv'],
             ['type' => 'slides', 'label' => 'SlideShare', 'href' => 'https://pt.slideshare.net/vitormattosrj/que-as-oportunidades-me-encontrem-75733906'],
         ],
     ],

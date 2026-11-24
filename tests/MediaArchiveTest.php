@@ -21,9 +21,13 @@ final class MediaArchiveTest extends TestCase
             $ids[] = $record['id'];
             self::assertArrayHasKey($record['type'], $archive['types']);
             self::assertNotEmpty($record['source']);
+            self::assertArrayHasKey($record['role'], $archive['roles']);
             self::assertNotFalse(filter_var($record['url'], FILTER_VALIDATE_URL));
             self::assertContains(parse_url($record['url'], PHP_URL_SCHEME), ['https', 'http']);
-            self::assertNotContains(parse_url($record['url'], PHP_URL_HOST), ['cloud.colab.rio', 'cloud.librecode.coop']);
+            self::assertNotContains(parse_url($record['url'], PHP_URL_HOST), ['cloud.colab.rio', 'cloud.librecode.coop', 'hemingway.softwarelivre.org', 'en.eventials.com']);
+            if (isset($record['youtube'])) {
+                self::assertSame('https://www.youtube.com/watch?v=' . $record['youtube'], $record['url']);
+            }
             foreach (['latitude', 'longitude', 'gps', 'exif', 'privatePath', 'fileId', 'faceEmbedding'] as $key) {
                 self::assertArrayNotHasKey($key, $record);
             }
@@ -38,7 +42,7 @@ final class MediaArchiveTest extends TestCase
                 self::assertGreaterThan(0, $record['coverWidth']);
                 self::assertGreaterThan(0, $record['coverHeight']);
             }
-            if ($record['type'] === 'photo' && isset($record['image'])) {
+            if ($record['type'] === 'photo') {
                 self::assertNotEmpty($record['credit']);
                 self::assertNotEmpty($record['license']);
                 self::assertFileExists(__DIR__ . '/../source' . $record['image']);
@@ -57,8 +61,11 @@ final class MediaArchiveTest extends TestCase
             self::assertMatchesRegularExpression('/<header class="site-header"[^>]*>.*?<\/header>\s*<main id="main-content">\s*<div class="media-archive"[^>]*data-media-catalog/s', $html);
             self::assertStringContainsString('data-media-catalog', $html);
             self::assertStringContainsString('id="web-summit-rio-2026"', $html);
-            self::assertStringContainsString('id="fisl-photo-coverage-2018"', $html);
-            self::assertStringContainsString('fisl-2018-kupac-thumb.webp', $html);
+            self::assertStringContainsString('id="artecult-interview-2022"', $html);
+            self::assertStringContainsString('https://www.youtube.com/watch?v=NB7bLwUvceg', $html);
+            self::assertStringNotContainsString('fisl-photo-coverage-2018', $html);
+            self::assertStringNotContainsString('hemingway.softwarelivre.org', $html);
+            self::assertStringNotContainsString('www.listennotes.com', $html);
             self::assertStringNotContainsString('i.ytimg.com', $html);
             self::assertStringNotContainsString('<iframe', $html);
         }

@@ -32,9 +32,3 @@ path = ["source/media-assets/south-america.geojson"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Natural Earth (public domain)"
 SPDX-License-Identifier = "LicenseRef-Natural-Earth-Public-Domain"
-
-[[annotations]]
-path = ["source/media-assets/fisl-2018-kupac*.webp"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2018 Alexandre A. Kupac / FISL 18"
-SPDX-License-Identifier = "CC-BY-2.0"

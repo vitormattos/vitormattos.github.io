@@ -11,6 +11,7 @@
     $records = $archive['items'];
     $years = array_values(array_unique(array_filter(array_column($records, 'year'))));
     rsort($years);
+    $hasUndated = in_array(null, array_column($records, 'year'), true);
     $cities = array_keys($archive['cities']);
     sort($cities);
     $relatedPages = [];
@@ -102,7 +103,9 @@
                         @foreach ($years as $year)
                             <option value="{{ $year }}">{{ $year }}</option>
                         @endforeach
-                        <option value="unknown">{{ $en ? 'Undated' : 'Sem data' }}</option>
+                        @if ($hasUndated)
+                            <option value="unknown">{{ $en ? 'Undated' : 'Sem data' }}</option>
+                        @endif
                     </select>
                 </label>
             </div>
@@ -225,11 +228,18 @@
                                     {{ $year === 'unknown' ? ($en ? 'Undated' : 'Sem data') : $year }}</p>
                                 <h2 data-detail-title>{{ $record['title'][$locale] }}</h2>
                                 <p>{{ $record['description'][$locale] }}</p>
+                                <p class="media-meta">{{ $en ? 'Role' : 'Atuação' }}:
+                                    {{ $archive['roles'][$record['role']][$locale] }}</p>
                                 <p class="media-meta">{{ $record['city'] ?? '' }}</p>
                                 <a class="media-source" href="{{ $record['url'] }}" target="_blank"
                                     rel="external noopener noreferrer">{{ $en ? 'Open original source' : 'Abrir fonte original' }}
                                     ↗</a>
                                 <p class="media-meta">{{ $record['source'] }}</p>
+                                @if (isset($record['audio']))
+                                    <p><a href="{{ $record['audio'] }}" target="_blank"
+                                            rel="external noopener noreferrer">{{ $en ? 'Listen to original audio' : 'Ouvir áudio original' }}
+                                            ↗</a></p>
+                                @endif
                                 @if (isset($record['credit']))
                                     <p>{{ $record['credit'] }}</p>
                                 @endif
@@ -284,7 +294,9 @@
                     <button type="button" data-jump="{{ $year }}"
                         aria-label="{{ $en ? 'Browse all media from' : 'Navegar pelas mídias de' }} {{ $year }}">{{ $year }}</button>
                 @endforeach
-                <button type="button" data-jump="unknown">{{ $en ? 'Undated' : 'Sem data' }}</button>
+                @if ($hasUndated)
+                    <button type="button" data-jump="unknown">{{ $en ? 'Undated' : 'Sem data' }}</button>
+                @endif
             </nav>
             <input type="range" min="0" max="{{ count($years) }}" value="0" data-time-range
                 aria-label="{{ $en ? 'Navigate by year' : 'Navegar por ano' }}">

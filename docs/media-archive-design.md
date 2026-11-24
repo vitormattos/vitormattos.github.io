@@ -19,14 +19,16 @@ is loaded on demand and displays a local simplified Natural Earth country
 outline; no tiles, geolocation or visitor tracking are needed. The city
 coordinates are approximate public event city centers, not photographic GPS.
 
-The initial catalog contains 18 documented public references. Historic
-recordings may be unavailable; dates are left unknown rather than guessed.
-Slide covers are explicitly marked as such. The external YouTube thumbnails
-are only requested after the visitor chooses to load them. No players or
-third-party images load by default. Linked-only photos remain references.
-The FISL 2018 photograph is credited to Alexandre A. Kupac / FISL 18,
-licensed CC BY 2.0, resized and converted to WebP with metadata stripped.
-See its Wikimedia Commons file page for original credit and license.
+Every catalog record must document Vitor Mattos's personal professional role
+as established by the source, not merely an institutional association.
+Do not include generic event images, a colleague's participation, or a
+recording whose source is known to be unavailable. A photograph requires
+an approved relevant original, credit and reuse permission. Keep historical
+proposals as documentary references, not playable recordings.
+Slide covers are explicitly marked as such. External YouTube thumbnails
+are opt-in; no third-party images or players load by default. Video metadata
+can be verified without confirming playback; original links are retained
+only where the source and personal connection are supported.
 
 Natural Earth 1:110m admin-0 country data was obtained from
 https://github.com/nvkelso/natural-earth-vector and reduced to South America
