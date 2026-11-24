@@ -86,7 +86,7 @@
 <meta name="twitter:image" content="https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&amp;r=g">
 <meta name="twitter:image:alt" content="Acervo multimídia">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://vitormattos.github.io/#website","url":"https://vitormattos.github.io/","name":"Vitor Mattos","description":"Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.","inLanguage":["en","pt-BR"]},{"@type":"Person","@id":"https://vitormattos.github.io/#person","name":"Vitor Mattos","url":"https://vitormattos.github.io/","image":"https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&r=g","sameAs":["https://github.com/vitormattos","https://www.linkedin.com/in/vitormattos/"],"knowsAbout":["Free software","PHP","Linux","LibreSign","Electronic signatures","Digital signatures","Software engineering","Open source communities"],"worksFor":{"@type":"Organization","name":"LibreCode","url":"https://librecode.coop/"}},{"@type":"WebPage","@id":"https://vitormattos.github.io/pt-BR/acervo#webpage","url":"https://vitormattos.github.io/pt-BR/acervo","name":"Acervo multimídia","description":"Explore fotografias, gravações em vídeo e entrevistas em áudio.","image":"https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&r=g","primaryImageOfPage":{"@type":"ImageObject","url":"https://gravatar.com/avatar/67d8686e0265c7d5aca8ebd047cf1fff8f41922d1b10126c7398851256feba79?s=512&r=g"},"inLanguage":"pt-BR","isPartOf":{"@id":"https://vitormattos.github.io/#website"},"about":{"@id":"https://vitormattos.github.io/#person"}}]}</script>
-        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-78/assets/build/assets/main-BZsmrHlE.css">
+        <link rel="stylesheet" href="https://vitormattos.github.io/pr-preview/pr-78/assets/build/assets/main-BhT9ZBLv.css">
     </head>
 
 <body>
@@ -175,7 +175,7 @@
     </header>
     <main id="main-content">
             <div class="media-archive" data-media-catalog data-locale="pt-BR"
-    data-map-url="https://vitormattos.github.io/pr-preview/pr-78/media-assets/south-america.geojson">
+    data-map-url="https://vitormattos.github.io/pr-preview/pr-78/media-assets/world.geojson">
     <header class="media-heading">
         <p class="eyebrow">
             MEMÓRIA PÚBLICA · PALESTRAS E COMUNIDADES</p>
@@ -291,27 +291,113 @@
                     data-album-back>← Todos os álbuns</button><strong
                     data-album-title></strong></div>
             <div class="media-albums" data-albums hidden></div>
-            <div class="media-map-panel" data-map-panel hidden>
-                <p>Centros aproximados de cidades de eventos públicos passados. Selecione uma cidade para filtrar o acervo.
-                </p>
-                <div class="media-map" data-map
-                    aria-label="Mapa de eventos públicos"></div>
-                <div class="media-city-list" data-cities>
-                                            <button type="button" data-city="Rio de Janeiro" data-lat="-22.91"
-                            data-lng="-43.2">Rio de Janeiro</button>
-                                            <button type="button" data-city="Foz do Iguaçu" data-lat="-25.54"
-                            data-lng="-54.59">Foz do Iguaçu</button>
-                                            <button type="button" data-city="Porto Alegre" data-lat="-30.03"
-                            data-lng="-51.23">Porto Alegre</button>
-                                    </div>
+            <section class="media-map-panel" data-map-panel hidden aria-labelledby="media-map-title">
+                <div class="media-map-heading">
+                    <div>
+                        <h2 id="media-map-title">Explore por localidade</h2>
+                        <p data-map-summary aria-live="polite"></p>
+                    </div>
+                    <button type="button" class="media-map-fit" data-map-fit disabled>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5M8 12h8m-4-4v8" />
+                        </svg>
+                        Enquadrar cidades
+                    </button>
+                </div>
+                <div class="media-map-shell">
+                    <div class="media-map" data-map
+                        aria-label="Mapa interativo de eventos públicos">
+                    </div>
+                    <aside class="media-map-directory" aria-label="Localidades">
+                        <div class="media-map-directory__heading">
+                            <h3>Localidades</h3>
+                            <button type="button" data-city-clear hidden>Limpar</button>
+                        </div>
+                        <div class="media-city-list" data-cities>
+                                                            <button type="button" data-city="Rio de Janeiro"
+                                    data-lat="-22.91"
+                                    data-lng="-43.2" data-country="BR"
+                                    data-region="RJ" aria-pressed="false">
+                                    <span class="media-city-icon" aria-hidden="true">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                                            <circle cx="12" cy="10" r="2.5" />
+                                        </svg>
+                                    </span>
+                                    <span class="media-city-copy">
+                                        <strong>Rio de Janeiro</strong>
+                                        <small data-city-region></small>
+                                        <small data-city-events></small>
+                                    </span>
+                                    <span class="media-city-count" data-city-count></span>
+                                </button>
+                                                            <button type="button" data-city="Foz do Iguaçu"
+                                    data-lat="-25.54"
+                                    data-lng="-54.59" data-country="BR"
+                                    data-region="PR" aria-pressed="false">
+                                    <span class="media-city-icon" aria-hidden="true">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                                            <circle cx="12" cy="10" r="2.5" />
+                                        </svg>
+                                    </span>
+                                    <span class="media-city-copy">
+                                        <strong>Foz do Iguaçu</strong>
+                                        <small data-city-region></small>
+                                        <small data-city-events></small>
+                                    </span>
+                                    <span class="media-city-count" data-city-count></span>
+                                </button>
+                                                            <button type="button" data-city="Porto Alegre"
+                                    data-lat="-30.03"
+                                    data-lng="-51.23" data-country="BR"
+                                    data-region="RS" aria-pressed="false">
+                                    <span class="media-city-icon" aria-hidden="true">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                                            <circle cx="12" cy="10" r="2.5" />
+                                        </svg>
+                                    </span>
+                                    <span class="media-city-copy">
+                                        <strong>Porto Alegre</strong>
+                                        <small data-city-region></small>
+                                        <small data-city-events></small>
+                                    </span>
+                                    <span class="media-city-count" data-city-count></span>
+                                </button>
+                                                    </div>
+                        <p class="media-map-directory__empty" data-map-empty hidden>
+                            Nenhuma localidade corresponde aos filtros atuais.
+                        </p>
+                    </aside>
+                </div>
+                <div class="media-map-footnote">
+                    <p>Localidades de eventos públicos, em nível de cidade. Não são dados de GPS pessoal.
+                    </p>
+                    <p data-map-unlocated aria-live="polite"></p>
+                </div>
                 <p data-map-error hidden>
-                    Mapa indisponível. Os filtros por cidade continuam disponíveis.
+                    Mapa indisponível. A lista de localidades continua disponível.
                 </p>
-            </div>
+                <div class="media-map-results-heading">
+                    <h3 data-map-results-title>
+                        Mídias de todas as localidades</h3>
+                    <button type="button" data-city-clear
+                        hidden>Todas as localidades</button>
+                </div>
+            </section>
             <div class="media-grid" data-grid>
-                                                        <article id="latinoware-bate-papo-nerd-2026" class="media-card" data-record data-type="audio"
-                        data-year="2026" data-city="Foz do Iguaçu"
-                        data-album="Latinoware · 2026"
+                                                        <article id="latinoware-bate-papo-nerd-2026" class="media-card" data-record
+                        data-type="audio" data-year="2026"
+                        data-city="Foz do Iguaçu" data-album="Latinoware · 2026"
+                        data-event="Latinoware"
                         data-topics="[&quot;colaboração&quot;,&quot;software livre&quot;]"
                         data-search="Interview on community and collaborative technology Entrevista sobre comunidade e tecnologia colaborativa Entrevista com Vitor Mattos na Latinoware 2026, publicada em 23 de outubro no feed do produtor. Latinoware · 2026 Foz do Iguaçu Bate Papo Nerd Colaboração Software Livre" data-youtube="">
                         <a class="media-card__open" data-open href="https://creators.spotify.com/pod/profile/bate-papo-nerd/episodes/Entrevista-com-Vitor-Mattos-no-Latinoware-2026-sobre-Comunidade-e-Tecnologia-Colaborativa-Ameaada-e3qu5ta"
@@ -383,9 +469,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="github-open-source-friday-2025" class="media-card" data-record data-type="video"
-                        data-year="2025" data-city=""
-                        data-album="Open Source Friday Brasil · 2025"
+                                                        <article id="github-open-source-friday-2025" class="media-card" data-record
+                        data-type="video" data-year="2025"
+                        data-city="" data-album="Open Source Friday Brasil · 2025"
+                        data-event="Open Source Friday Brasil"
                         data-topics="[&quot;libresign&quot;,&quot;software livre&quot;]"
                         data-search="Open Source Friday Brasil with Vitor Mattos Open Source Friday Brasil com Vitor Mattos O GitHub entrevistou Vitor Mattos sobre a manutenção do LibreSign em 30 de maio de 2025. Open Source Friday Brasil · 2025  GitHub / YouTube LibreSign Software Livre" data-youtube="a34UxYzVU1k">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=a34UxYzVU1k"
@@ -456,9 +543,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="phprio-cloud-privacy-2022" class="media-card" data-record data-type="video"
-                        data-year="2022" data-city="Rio de Janeiro"
-                        data-album="PHPRio · 2022"
+                                                        <article id="phprio-cloud-privacy-2022" class="media-card" data-record
+                        data-type="video" data-year="2022"
+                        data-city="Rio de Janeiro" data-album="PHPRio · 2022"
+                        data-event="PHPRio"
                         data-topics="[&quot;cloud computing&quot;,&quot;nextcloud&quot;,&quot;php&quot;,&quot;privacidade&quot;,&quot;self-hosting&quot;,&quot;soberania digital&quot;]"
                         data-search="Privacy and security in cloud systems Privacy and security in cloud systems https://youtu.be/1Ofuy9CMDXw Temos realmente privacidade na web? Tenha total controle sobre os seus dados, conheça o Nextcloud, a melhor solução para para armazenamento, sincronização e compartilhamento de arquivos integrando ferramentas para escritório online como editores de texto, planilha, slides e muito mais e 100% feita em PHP e melhor: Você pode ter seu servidor totalmente privado rodando em sua nuvem ou em seu escritório ou até mesmo em sua casa. PHPRio · 2022 Rio de Janeiro PHPRio / YouTube Cloud Computing Nextcloud PHP Privacidade Self-Hosting Soberania Digital" data-youtube="h2UF0h70NTA">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=h2UF0h70NTA"
@@ -547,9 +635,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="nextcloud-privacy-recording" class="media-card" data-record data-type="video"
-                        data-year="2020" data-city=""
-                        data-album="Latinoware · 2020"
+                                                        <article id="nextcloud-privacy-recording" class="media-card" data-record
+                        data-type="video" data-year="2020"
+                        data-city="" data-album="Latinoware · 2020"
+                        data-event="Latinoware"
                         data-topics="[&quot;nextcloud&quot;,&quot;php&quot;,&quot;privacidade&quot;,&quot;self-hosting&quot;,&quot;software livre&quot;]"
                         data-search="Nextcloud Nextcloud https://youtu.be/1Ofuy9CMDXw Temos realmente privacidade na web? Tenha total controle sobre os seus dados, conheça o Nextcloud, a melhor solução para para armazenamento, sincronização e compartilhamento de arquivos integrando ferramentas para escritório online como editores de texto, planilha, slides e muito mais e 100% feita em PHP e melhor: Você pode ter seu servidor totalmente privado rodando em sua nuvem ou em seu escritório ou até mesmo em sua casa. Latinoware · 2020  Latinoware / YouTube Nextcloud PHP Privacidade Self-Hosting Software Livre" data-youtube="1Ofuy9CMDXw">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=1Ofuy9CMDXw"
@@ -629,9 +718,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="webscraping-recording" class="media-card" data-record data-type="video"
-                        data-year="2020" data-city=""
-                        data-album="PHPSP Live! · 2020"
+                                                        <article id="webscraping-recording" class="media-card" data-record
+                        data-type="video" data-year="2020"
+                        data-city="" data-album="PHPSP Live! · 2020"
+                        data-event="PHPSP Live!"
                         data-topics="[&quot;automação&quot;,&quot;extração de dados&quot;,&quot;php&quot;,&quot;web scraping&quot;]"
                         data-search="web scraping web scraping Necessita coletar dados da web? Conheça como esta técnica funciona, suas variantes e as ferramentas mais atuais que podem facilitar a sua vida neste trabalho. PHPSP Live! · 2020  PHPSP / YouTube Automação Extração de Dados PHP Web Scraping" data-youtube="zo4tXW74a4k">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=zo4tXW74a4k"
@@ -709,9 +799,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="fisl-xdebug-2018" class="media-card" data-record data-type="video"
-                        data-year="2018" data-city="Porto Alegre"
-                        data-album="FISL 18 · 2018"
+                                                        <article id="fisl-xdebug-2018" class="media-card" data-record
+                        data-type="video" data-year="2018"
+                        data-city="Porto Alegre" data-album="FISL 18 · 2018"
+                        data-event="FISL 18"
                         data-topics="[&quot;debugging&quot;,&quot;php&quot;,&quot;profiling&quot;,&quot;xdebug&quot;]"
                         data-search="xdebug xdebug xdebug FISL 18 · 2018 Porto Alegre lpj info / YouTube Debugging PHP Profiling Xdebug" data-youtube="NB7bLwUvceg">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=NB7bLwUvceg"
@@ -790,9 +881,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="phprio-xdebug-2012" class="media-card" data-record data-type="video"
-                        data-year="2012" data-city="Rio de Janeiro"
-                        data-album="PHPRio · 2012"
+                                                        <article id="phprio-xdebug-2012" class="media-card" data-record
+                        data-type="video" data-year="2012"
+                        data-city="Rio de Janeiro" data-album="PHPRio · 2012"
+                        data-event="PHPRio"
                         data-topics="[&quot;debugging&quot;,&quot;php&quot;,&quot;profiling&quot;,&quot;xdebug&quot;]"
                         data-search="xdebug xdebug xdebug PHPRio · 2012 Rio de Janeiro Íparos / YouTube Debugging PHP Profiling Xdebug" data-youtube="27ONOPxLxVs">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=27ONOPxLxVs"
@@ -871,9 +963,10 @@
                             </div>
                         </template>
                     </article>
-                                                        <article id="video-a762ce8e0a908eda" class="media-card" data-record data-type="video"
-                        data-year="unknown" data-city=""
-                        data-album="Tenha um celular 100% FLOSS · Sem data"
+                                                        <article id="video-a762ce8e0a908eda" class="media-card" data-record
+                        data-type="video" data-year="unknown"
+                        data-city="" data-album="Tenha um celular 100% FLOSS · Sem data"
+                        data-event="Tenha um celular 100% FLOSS"
                         data-topics="[&quot;android&quot;,&quot;f-droid&quot;,&quot;privacidade&quot;,&quot;software livre&quot;]"
                         data-search="Tenha um celular 100% FLOSS Tenha um celular 100% FLOSS https://youtu.be/43hFB-Jw2TE Já pensou em algum dia não ser monitorado por diversas empresas e ter um celular 100% livre de software proprietário? Isto é possível! Conheça os passos para a liberdade e desintoxicação de empresas que monitoram tudo o que você faz. Tenha um celular 100% FLOSS · Sem data  Conferências Irmãs / YouTube Android F-Droid Privacidade Software Livre" data-youtube="43hFB-Jw2TE">
                         <a class="media-card__open" data-open href="https://www.youtube.com/watch?v=43hFB-Jw2TE"
@@ -1017,7 +1110,7 @@
         </p>
     </footer>
     <script type="module" src="https://vitormattos.github.io/pr-preview/pr-78/assets/build/assets/social-icons-BRXyyWXO.js"></script>
-        <script type="module" src="https://vitormattos.github.io/pr-preview/pr-78/assets/build/assets/media-catalog-CPlo9yqx.js"></script>
+        <script type="module" src="https://vitormattos.github.io/pr-preview/pr-78/assets/build/assets/media-catalog-CJ0qXcXH.js"></script>
 </body>
 
 </html>

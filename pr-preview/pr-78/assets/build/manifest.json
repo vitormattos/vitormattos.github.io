@@ -15,22 +15,22 @@
     "file": "assets/marker-icon-hN30_KVU.png",
     "src": "node_modules/leaflet/dist/images/marker-icon.png"
   },
-  "node_modules/leaflet/dist/leaflet-src.js": {
-    "file": "assets/leaflet-src-Cvbf-beH.js",
-    "name": "leaflet-src",
-    "src": "node_modules/leaflet/dist/leaflet-src.js",
-    "isDynamicEntry": true,
-    "imports": [
-      "source/_assets/js/media-catalog.js"
-    ]
-  },
   "source/_assets/js/media-catalog.js": {
-    "file": "assets/media-catalog-CPlo9yqx.js",
+    "file": "assets/media-catalog-CJ0qXcXH.js",
     "name": "media-catalog",
     "src": "source/_assets/js/media-catalog.js",
     "isEntry": true,
     "dynamicImports": [
-      "node_modules/leaflet/dist/leaflet-src.js"
+      "source/_assets/js/media-map.js"
+    ]
+  },
+  "source/_assets/js/media-map.js": {
+    "file": "assets/media-map-BtdysWsi.js",
+    "name": "media-map",
+    "src": "source/_assets/js/media-map.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "source/_assets/js/media-catalog.js"
     ],
     "assets": [
       "assets/layers-BWBAp2CZ.png",
@@ -63,7 +63,7 @@
     ]
   },
   "source/_assets/scss/main.scss": {
-    "file": "assets/main-BZsmrHlE.css",
+    "file": "assets/main-BhT9ZBLv.css",
     "name": "main",
     "names": [
       "main.css"
