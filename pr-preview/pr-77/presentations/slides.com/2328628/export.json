@@ -1,0 +1,32 @@
+{
+    "schema": 4,
+    "source": {
+        "sha256": "649b09e463a2cff74962b9f6120f2001263649e39c87771a9b5c89e7d3a745d9",
+        "artifacts": {
+            "deck.html": "de6e01824759ab7e8d808131e2bad6fd8007bcecaaf7fb99590cef6b6f18d7b7"
+        },
+        "render_metadata": {
+            "width": 1024,
+            "height": 576,
+            "margin": 0.05,
+            "transition": "slide",
+            "background_transition": "slide",
+            "rtl": false,
+            "loop": false,
+            "theme_font": "montserrat",
+            "theme_color": "black-mint"
+        }
+    },
+    "generator": {
+        "sha256": "839d81af472e436c9063bdeb9118ffdb06874e9e52cd64f6766662fd76dec9c8",
+        "decktape": "3.16.1",
+        "profile": "slides.com-v1"
+    },
+    "pdf": {
+        "sha256": "d248af10b827d69defcde388a7d5f4a44936735d8f86b28097714d11783a5f9b",
+        "bytes": 4254720,
+        "release_tag": "slides-com-2328628",
+        "asset": "slides-com-2328628-649b09e463a2.pdf",
+        "url": "https://github.com/vitormattos/vitormattos.github.io/releases/download/slides-com-2328628/slides-com-2328628-649b09e463a2.pdf"
+    }
+}
