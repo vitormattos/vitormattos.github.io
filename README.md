@@ -10,11 +10,11 @@ The site is intended to keep articles, talks, academic work and public professio
 
 ## Development
 
-Use PHP 8.4.1 or later in the PHP 8.4 series and Node.js 24. Install PHP and frontend dependencies:
+Use PHP 8.6, Composer 2.11.3 and Node.js 26 LTS with npm 12.2.3. Run PHP CS Fixer under PHP 8.5 until it supports PHP 8.6 syntax. Install PHP and frontend dependencies:
 
 ```bash
 composer install
-npm install
+npm ci
 ```
 
 Build the production site and run tests:
@@ -29,5 +29,7 @@ For local development with Vite and Jigsaw rebuilds:
 ```bash
 composer serve
 ```
+
+The PDF archive renderer is installed separately with `npm ci --prefix scripts/slides` and `npm exec --prefix scripts/slides -- puppeteer browsers install chrome`.
 
 Styles are authored in SCSS under `source/_assets/scss/` and compiled by Vite through `@tighten/jigsaw-vite-plugin`.

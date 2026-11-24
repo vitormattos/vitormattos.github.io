@@ -10,7 +10,6 @@ namespace App\Presentations;
 final class PdfExportPolicy
 {
     public const MINIMUM_PDF_BYTES = 10_000;
-    public const DECKTAPE_VERSION = '3.16.1';
     public const MANIFEST_SCHEMA_VERSION = 4;
     public const EXPORT_MANIFEST = 'export.json';
 
@@ -65,6 +64,18 @@ final class PdfExportPolicy
         );
     }
 
+    public static function deckTapeVersion(): string
+    {
+        $lockfile = dirname(__DIR__, 2) . '/scripts/slides/package-lock.json';
+        $lock = json_decode(file_get_contents($lockfile), true, flags: JSON_THROW_ON_ERROR);
+        $version = $lock['packages']['node_modules/decktape']['version'] ?? null;
+        if (!is_string($version) || $version === '') {
+            throw new \RuntimeException('DeckTape version is missing from the renderer lockfile.');
+        }
+
+        return $version;
+    }
+
     public static function generatorFingerprint(): string
     {
         $files = [
@@ -72,9 +83,10 @@ final class PdfExportPolicy
             __DIR__ . '/SlidesDeckPolicy.php',
             dirname(__DIR__, 2) . '/scripts/generate-slides-pdfs.php',
             dirname(__DIR__, 2) . '/scripts/slides/decktape-reveal.js',
+            dirname(__DIR__, 2) . '/scripts/slides/package-lock.json',
         ];
         $hash = hash_init('sha256');
-        hash_update($hash, 'decktape:' . self::DECKTAPE_VERSION . "\n");
+        hash_update($hash, 'decktape:' . self::deckTapeVersion() . "\n");
         foreach ($files as $file) {
             hash_update($hash, basename($file) . ':');
             if (is_file($file)) {
@@ -145,7 +157,7 @@ final class PdfExportPolicy
             ],
             'generator' => [
                 'sha256' => $generator,
-                'decktape' => self::DECKTAPE_VERSION,
+                'decktape' => self::deckTapeVersion(),
                 'profile' => 'slides.com-v1',
             ],
             'pdf' => [
@@ -190,7 +202,7 @@ final class PdfExportPolicy
         }
 
         return [
-            'node_modules/.bin/decktape', 'reveal',
+            'scripts/slides/node_modules/.bin/decktape', 'reveal',
             '--size', SlidesDeckPolicy::viewport($metadata),
             '--load-pause', '0', '--pause', '0',
             '--url-load-timeout', '60000', '--page-load-timeout', '30000',

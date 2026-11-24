@@ -9,6 +9,9 @@ path = [
     "composer.json",
     "composer.lock",
     "package.json",
+    "package-lock.json",
+    "scripts/slides/package.json",
+    "scripts/slides/package-lock.json",
     "source/robots.txt.blade.php"
 ]
 precedence = "aggregate"

@@ -6,7 +6,7 @@
     $sourceUrl = $page->baseUrl . $sourcePath;
     $deckId = 'deck-' . substr(sha1($sourcePath), 0, 10);
     $isEnglish = ($page->locale ?? 'en') === 'en';
-    $pdfUrl = $presentation['pdf'] ?? (rtrim($page->getPath(), '/') . '/presentation.pdf');
+    $pdfUrl = $presentation['pdf'] ?? rtrim($page->getPath(), '/') . '/presentation.pdf';
 @endphp
 
 <div class="presentation-frame">
@@ -33,18 +33,11 @@
         </div>
     </div>
     <div class="presentation-stage">
-        <div
-            class="reveal presentation-detail js-reveal-deck"
-            id="{{ $deckId }}"
-            data-presentation-mode="detail"
-        >
+        <div class="reveal presentation-detail js-reveal-deck" id="{{ $deckId }}"
+            data-presentation-mode="detail">
             <div class="slides">
-                <section
-                    data-markdown="{{ $sourceUrl }}"
-                    data-separator="^\r?\n---\r?\n$"
-                    data-separator-vertical="^\r?\n--\r?\n$"
-                    data-separator-notes="^Notes?:"
-                ></section>
+                <section data-markdown="{{ $sourceUrl }}" data-separator="^\r?\n---\r?\n$"
+                    data-separator-vertical="^\r?\n--\r?\n$" data-separator-notes="^Notes?:"></section>
             </div>
         </div>
     </div>

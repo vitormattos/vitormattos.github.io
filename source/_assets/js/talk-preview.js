@@ -33,12 +33,15 @@ function ensureDeck(root) {
     const deck = new Reveal(root, previewConfiguration(false));
     decks.set(root.id, deck);
 
-    const initialization = deck.initialize().then(() => {
-        root.dataset.previewReady = 'true';
-        return deck;
-    }).finally(() => {
-        initializations.delete(root.id);
-    });
+    const initialization = deck
+        .initialize()
+        .then(() => {
+            root.dataset.previewReady = 'true';
+            return deck;
+        })
+        .finally(() => {
+            initializations.delete(root.id);
+        });
 
     initializations.set(root.id, initialization);
     return initialization;
@@ -50,11 +53,14 @@ function initializeVisibleDeck(root) {
         return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        observer.disconnect();
-        ensureDeck(root);
-    }, { rootMargin: '240px' });
+    const observer = new IntersectionObserver(
+        (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
+            ensureDeck(root);
+        },
+        { rootMargin: '240px' },
+    );
 
     observer.observe(root);
 }

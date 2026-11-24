@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Vitor Mattos
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# These Blade templates emit plain text, not HTML. Preserve their line syntax.
+source/llms.txt.blade.php
+source/robots.txt.blade.php

@@ -268,7 +268,7 @@ function writeReleaseOnlyManifest(
         ],
         'generator' => [
             'sha256' => $generatorFingerprint,
-            'decktape' => PdfExportPolicy::DECKTAPE_VERSION,
+            'decktape' => PdfExportPolicy::deckTapeVersion(),
             'profile' => 'slides.com-v1',
         ],
         'pdf' => [

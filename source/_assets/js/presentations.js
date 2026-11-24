@@ -30,9 +30,7 @@ function initializeDeck(root) {
         scrollActivationWidth: isThumbnail ? 0 : 720,
         pdfMaxPagesPerSlide: 1,
         pdfSeparateFragments: false,
-        plugins: isThumbnail
-            ? [Markdown]
-            : [Markdown, Highlight, Notes, Search, Zoom, RevealMath.KaTeX],
+        plugins: isThumbnail ? [Markdown] : [Markdown, Highlight, Notes, Search, Zoom, RevealMath.KaTeX],
     });
 
     decks.set(root.id, deck);
@@ -45,11 +43,14 @@ function initializeWhenVisible(root) {
     }
 
     return new Promise((resolve) => {
-        const observer = new IntersectionObserver((entries) => {
-            if (!entries.some((entry) => entry.isIntersecting)) return;
-            observer.disconnect();
-            initializeDeck(root).then(resolve);
-        }, { rootMargin: '240px' });
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (!entries.some((entry) => entry.isIntersecting)) return;
+                observer.disconnect();
+                initializeDeck(root).then(resolve);
+            },
+            { rootMargin: '240px' },
+        );
         observer.observe(root);
     });
 }
@@ -86,7 +87,9 @@ function bindToolbar(toolbar) {
 }
 
 function normalizeTag(tag) {
-    return String(tag ?? '').trim().toLocaleLowerCase();
+    return String(tag ?? '')
+        .trim()
+        .toLocaleLowerCase();
 }
 
 function readTags(card) {
@@ -138,9 +141,10 @@ function initializeTagFilter(gallery) {
         }
 
         if (status) {
-            status.textContent = normalized === ''
-                ? ''
-                : `${visible} ${visible === 1 ? 'presentation' : 'presentations'} · ${tag.trim()}`;
+            status.textContent =
+                normalized === ''
+                    ? ''
+                    : `${visible} ${visible === 1 ? 'presentation' : 'presentations'} · ${tag.trim()}`;
         }
         if (empty) empty.hidden = visible !== 0;
 
