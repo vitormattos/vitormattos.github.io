@@ -36,6 +36,12 @@ final class PdfExportPolicyTest extends TestCase
         }
     }
 
+    public function testRendererVersionComesFromItsLockedDependency(): void
+    {
+        $manifest = json_decode(file_get_contents(dirname(__DIR__, 2) . '/scripts/slides/package.json'), true, flags: JSON_THROW_ON_ERROR);
+        self::assertSame($manifest['devDependencies']['decktape'], PdfExportPolicy::deckTapeVersion());
+    }
+
     public function testExportCommandUsesInstalledDeckTapeWithoutArtificialPause(): void
     {
         $arguments = PdfExportPolicy::deckTapeArguments([
@@ -45,7 +51,7 @@ final class PdfExportPolicyTest extends TestCase
             'height' => 540,
         ], '/tmp/deck.pdf');
 
-        self::assertSame('node_modules/.bin/decktape', $arguments[0]);
+        self::assertSame('scripts/slides/node_modules/.bin/decktape', $arguments[0]);
         self::assertSame('reveal', $arguments[1]);
         self::assertContains('960x540', $arguments);
         self::assertContains('0', $arguments);

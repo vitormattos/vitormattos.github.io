@@ -12,3 +12,5 @@
 .php-cs-fixer.cache
 .phpunit.cache/
 /presentations/slides.com/**/*.pdf
+
+/scripts/slides/node_modules/

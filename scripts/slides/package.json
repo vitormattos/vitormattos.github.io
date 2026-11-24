@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^26.0.0",
+    "npm": "^12.2.3"
+  },
+  "packageManager": "npm@12.2.3",
+  "devDependencies": {
+    "decktape": "3.17.0"
+  }
+}

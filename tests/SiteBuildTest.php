@@ -84,6 +84,18 @@ final class SiteBuildTest extends TestCase
         self::assertSame($englishItems, $portugueseItems);
     }
 
+    public function testProfileLinksKeepSeparatorsBetweenLinksOnly(): void
+    {
+        foreach (['index.html', 'pt-BR/index.html'] as $path) {
+            $html = $this->read($path);
+            self::assertSame(1, preg_match('/<p class="home-hero__profiles">(.*?)<\/p>/s', $html, $matches));
+            $links = substr_count($matches[1], 'class="profile-link"');
+            self::assertGreaterThan(1, $links);
+            self::assertSame($links - 1, substr_count($matches[1], ' · '));
+            self::assertStringEndsWith('</a>', trim($matches[1]));
+        }
+    }
+
     public function testHomePrioritizesVerifiableProfessionalEvidence(): void
     {
         $english = $this->read('index.html');

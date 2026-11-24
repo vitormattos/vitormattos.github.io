@@ -57,7 +57,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - Generated talk records are prefixed `slides-com-` and carry `managed: slides.com`. The synchronizer may delete/replace only these managed records; it must never alter native presentation records or `data/talks.php`.
 - Archived Slides.com material lives only under `presentations/slides.com/<deck-id>/`. Native decks must never be stored there.
 - Archive `deck_html`, deck CSS and API metadata so public presentations remain inspectable independently of the Slides.com iframe. Preserve the original public Slides.com URL for provenance and rendering.
-- PDF archives are rendered from public Slides.com URLs with the pinned DeckTape version defined by `PdfExportPolicy`; they do not use the Slides.com export API or its export quota.
+- PDF archives are rendered from public Slides.com URLs with the DeckTape version locked in `scripts/slides/package-lock.json` and read by `PdfExportPolicy`; they do not use the Slides.com export API or its export quota.
 - PDF generation is best effort and atomic: an invalid new render must never replace a previous valid PDF. A PDF is publishable only when it satisfies the tested signature and minimum-size contract.
 - The Slides.com API is an import source, not the canonical authoring system for native decks. Sync must never erase locally authored Reveal/Markdown/PDF presentations.
 
@@ -92,7 +92,8 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 
 - GitHub Actions must be pinned to immutable commit SHAs with an exact version comment.
 - Dependabot covers Composer, npm and Actions. Stylelint and its recommended SCSS configuration must be upgraded together when their peer dependencies require it.
-- PHP workflows use PHP 8.4; Composer resolves dependencies against the minimum supported PHP 8.4.1 so the lockfile remains installable across supported PHP 8.4 patch releases.
+- PHP workflows use PHP 8.6 except PHP CS Fixer, which runs on PHP 8.5 until upstream supports PHP 8.6 syntax. Composer resolves dependencies against PHP 8.5.0 for both runtimes. Node.js workflows use Node.js 26 LTS and install from the committed npm lockfile using npm ci.
+- Temporary npm overrides for the Blade formatter resolve patched glob and minimatch versions; remove them when upstream constraints admit the patched releases.
 - `SITE_BUILD_DIR` and `EXPECTED_BASE_URL` make tests preview-aware.
 - Tests are contract/regression tests for behavior and business invariants, not a coverage target. New presentation behavior must ship with tests that would fail if its rule is broken.
 - `data/talks.php` is validated in tests: slugs, dates, URLs/root-relative paths, event modes and country codes must remain structurally valid.

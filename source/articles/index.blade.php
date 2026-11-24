@@ -10,19 +10,21 @@ description: Articles by Vitor Mattos about free software, PHP, Linux, LibreSign
 @extends('_layouts.main')
 
 @section('body')
-<section class="content" aria-labelledby="page-title">
-    <header>
-        <p class="eyebrow">Writing</p>
-        <h1 id="page-title">Articles</h1>
-        <p class="lead">Writing about free software, PHP, Linux, LibreSign, software engineering and sustainable software communities.</p>
-    </header>
+    <section class="content" aria-labelledby="page-title">
+        <header>
+            <p class="eyebrow">Writing</p>
+            <h1 id="page-title">Articles</h1>
+            <p class="lead">Writing about free software, PHP, Linux, LibreSign, software engineering and sustainable
+                software communities.</p>
+        </header>
 
-    @foreach ($articlesEn as $article)
-        <article>
-            <p class="meta"><time datetime="{{ date('Y-m-d', $article->date) }}">{{ date('Y-m-d', $article->date) }}</time></p>
-            <h2><a href="{{ $article->getUrl() }}">{{ $article->title }}</a></h2>
-            <p>{{ $article->description }}</p>
-        </article>
-    @endforeach
-</section>
+        @foreach ($articlesEn as $article)
+            <article>
+                <p class="meta"><time
+                        datetime="{{ date('Y-m-d', $article->date) }}">{{ date('Y-m-d', $article->date) }}</time></p>
+                <h2><a href="{{ $article->getUrl() }}">{{ $article->title }}</a></h2>
+                <p>{{ $article->description }}</p>
+            </article>
+        @endforeach
+    </section>
 @endsection

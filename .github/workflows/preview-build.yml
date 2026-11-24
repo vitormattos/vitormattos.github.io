@@ -32,13 +32,18 @@ jobs:
       - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         if: github.event.action != 'closed'
         with:
-          php-version: '8.4'
+          php-version: '8.6'
+          tools: composer:2.11.3
           coverage: none
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         if: github.event.action != 'closed'
         with:
-          node-version: '24'
+          node-version: '26'
+
+      - name: Install npm
+        if: github.event.action != 'closed'
+        run: npm install -g npm@12.2.3
 
       - name: Install PHP dependencies
         if: github.event.action != 'closed'
@@ -77,7 +82,7 @@ jobs:
 
       - name: Install frontend dependencies
         if: github.event.action != 'closed'
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
 
       - name: Install LaTeX and rendering dependencies
         if: github.event.action != 'closed'

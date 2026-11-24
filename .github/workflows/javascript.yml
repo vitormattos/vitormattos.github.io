@@ -25,8 +25,11 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
-      - run: npm install --no-audit --no-fund
+          node-version: '26'
+      - run: npm install -g npm@12.2.3
+      - run: npm ci --no-audit --no-fund
+      - run: npm audit
+      - run: npm audit --prefix scripts/slides
       - name: Check changed JavaScript formatting
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
@@ -40,3 +43,19 @@ jobs:
             npx prettier --check "${files[@]}"
           fi
       - run: npm run test:js
+
+  renderer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '26'
+      - run: npm install -g npm@12.2.3
+      - run: npm ci --no-audit --no-fund
+      - run: npm ci --prefix scripts/slides --no-audit --no-fund
+      - run: npm exec --prefix scripts/slides -- puppeteer browsers install chrome
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils
+      - run: bash tests-js/decktape-smoke.sh
