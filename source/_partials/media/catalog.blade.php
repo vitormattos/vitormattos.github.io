@@ -116,8 +116,6 @@
                 <span data-active-scope hidden>{{ $en ? 'Filtered results' : 'Resultados filtrados' }}</span>
                 <button type="button" data-clear hidden>{{ $en ? 'Clear filters' : 'Limpar filtros' }}</button>
             </div>
-            <button type="button" data-external-thumbs
-                aria-pressed="false">{{ $en ? 'Load YouTube thumbnails' : 'Carregar miniaturas do YouTube' }}</button>
         </div>
     </div>
 
@@ -159,6 +157,9 @@
                                 ? 'Slide cover'
                                 : 'Capa dos slides');
                         $typeLabel = $archive['types'][$record['type']][$locale];
+                        $youtube = $record['youtube'] ?? null;
+                        $youtubeThumb = $youtube ? 'https://i.ytimg.com/vi/' . $youtube . '/hqdefault.jpg' : null;
+                        $isPlayable = $youtube || isset($record['video']) || isset($record['audio']);
                         $search =
                             $record['title']['en'] .
                             ' ' .
@@ -184,15 +185,45 @@
                         <a class="media-card__open" data-open href="{{ $record['url'] }}"
                             rel="external noopener noreferrer">
                             <div class="media-visual media-visual--{{ $record['type'] }}">
-                                @if ($thumb)
+                                @if ($youtubeThumb)
+                                    <img src="{{ $youtubeThumb }}" alt="" width="480" height="360"
+                                        loading="lazy" decoding="async" referrerpolicy="no-referrer"
+                                        data-youtube-thumbnail>
+                                    <div class="media-thumbnail-fallback" data-thumbnail-fallback hidden>
+                                        @if ($thumb)
+                                            <img src="{{ $base }}{{ $thumb }}" alt=""
+                                                loading="lazy" decoding="async">
+                                            <span class="media-cover-label">{{ $coverLabel }}</span>
+                                        @else
+                                            <div class="media-placeholder">
+                                                <strong>{{ $record['event'] }}</strong><small>{{ $en ? 'Video preview unavailable' : 'Prévia de vídeo indisponível' }}</small>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @elseif ($thumb)
                                     <img src="{{ $base }}{{ $thumb }}" alt=""
                                         width="{{ $record['coverWidth'] ?? 640 }}"
                                         height="{{ $record['coverHeight'] ?? 424 }}" loading="lazy" decoding="async">
-                                    <span class="media-cover-label" data-cover-label>{{ $coverLabel }}</span>
+                                    <span class="media-cover-label">{{ $coverLabel }}</span>
                                 @else
-                                    <div class="media-placeholder" data-placeholder><span
-                                            aria-hidden="true">{{ ['video' => '▶', 'photo' => '▧', 'audio' => '♫', 'press' => '↗', 'poster' => '▣'][$record['type']] }}</span><strong>{{ $record['event'] }}</strong><small>{{ $record['type'] === 'photo' ? ($en ? 'Photographic reference' : 'Referência fotográfica') : $typeLabel }}</small>
+                                    <div class="{{ isset($record['audio']) ? 'media-placeholder media-audio-cover' : 'media-placeholder' }}"
+                                        data-placeholder>
+                                        @if (isset($record['audio']))
+                                            <span class="media-audio-decoration"
+                                                aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                                            <strong>{{ $record['source'] }}</strong><small>Podcast</small>
+                                        @else
+                                            <span
+                                                aria-hidden="true">{{ ['video' => '▶', 'photo' => '▧', 'audio' => '♫', 'press' => '↗', 'poster' => '▣'][$record['type']] }}</span>
+                                            <strong>{{ $record['event'] }}</strong><small>{{ $record['type'] === 'photo' ? ($en ? 'Photographic reference' : 'Referência fotográfica') : $typeLabel }}</small>
+                                        @endif
                                     </div>
+                                @endif
+                                @if ($isPlayable)
+                                    <span class="media-play-indicator" data-play-indicator aria-hidden="true"><svg
+                                            viewBox="0 0 24 24" width="25" height="25" fill="currentColor">
+                                            <path d="M8 5.5v13l11-6.5z" />
+                                        </svg></span>
                                 @endif
                                 <span
                                     class="media-type">{{ $record['type'] === 'video' ? '▶ ' : '' }}{{ $typeLabel }}</span>
@@ -207,8 +238,41 @@
                             </div>
                         </a>
                         <template data-detail>
-                            <div class="media-detail-visual">
-                                @if ($image)
+                            <div
+                                class="{{ $isPlayable ? 'media-detail-visual media-detail-visual--player' : 'media-detail-visual' }}">
+                                @if ($youtube)
+                                    <div class="media-video-player">
+                                        <iframe
+                                            src="https://www.youtube-nocookie.com/embed/{{ $youtube }}?rel=0&amp;playsinline=1"
+                                            title="{{ $record['title'][$locale] }}"
+                                            allow="encrypted-media; picture-in-picture; fullscreen"
+                                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                                    </div>
+                                    <p class="media-player-note"><a href="{{ $record['url'] }}" target="_blank"
+                                            rel="external noopener noreferrer">{{ $en ? 'Watch on YouTube if the player is unavailable' : 'Se o player estiver indisponível, assista no YouTube' }}
+                                            ↗</a></p>
+                                @elseif (isset($record['video']))
+                                    <div class="media-video-player"><video src="{{ $record['video'] }}"
+                                            poster="{{ $thumb ? $base . $thumb : '' }}" controls playsinline
+                                            preload="metadata" aria-label="{{ $record['title'][$locale] }}"></video>
+                                    </div>
+                                    <p class="media-player-note"><a href="{{ $record['url'] }}" target="_blank"
+                                            rel="external noopener noreferrer">{{ $en ? 'Open original video' : 'Abrir vídeo original' }}
+                                            ↗</a></p>
+                                @elseif (isset($record['audio']))
+                                    <div class="media-audio-player">
+                                        <div class="media-audio-decoration" aria-hidden="true">
+                                            <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                                        </div>
+                                        <strong>{{ $record['source'] }}</strong>
+                                        <p>{{ $record['title'][$locale] }}</p>
+                                        <audio controls preload="metadata" src="{{ $record['audio'] }}"
+                                            aria-label="{{ $record['title'][$locale] }}"></audio>
+                                    </div>
+                                    <p class="media-player-note"><a href="{{ $record['audio'] }}" target="_blank"
+                                            rel="external noopener noreferrer">{{ $en ? 'Listen to original audio' : 'Ouvir áudio original' }}
+                                            ↗</a></p>
+                                @elseif ($image)
                                     <a href="{{ $base }}{{ $image }}" data-zoom
                                         data-width="{{ $record['width'] ?? ($record['coverWidth'] ?? 0) }}"
                                         data-height="{{ $record['height'] ?? ($record['coverHeight'] ?? 0) }}">
@@ -235,11 +299,6 @@
                                     rel="external noopener noreferrer">{{ $en ? 'Open original source' : 'Abrir fonte original' }}
                                     ↗</a>
                                 <p class="media-meta">{{ $record['source'] }}</p>
-                                @if (isset($record['audio']))
-                                    <p><a href="{{ $record['audio'] }}" target="_blank"
-                                            rel="external noopener noreferrer">{{ $en ? 'Listen to original audio' : 'Ouvir áudio original' }}
-                                            ↗</a></p>
-                                @endif
                                 @if (isset($record['credit']))
                                     <p>{{ $record['credit'] }}</p>
                                 @endif

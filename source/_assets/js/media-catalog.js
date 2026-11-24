@@ -43,7 +43,6 @@ function init(root) {
     let leaflet = null;
     let zoom = null;
     let zoomStyled = false;
-    let thumbs = false;
     let scheduled = false;
     let lastWidth = 0;
     let scrollFrame = false;
@@ -108,17 +107,31 @@ function init(root) {
             scheduleLayout();
         }
     }).observe(grid);
-    grid.addEventListener('load', scheduleLayout, true);
+    function showThumbnailFallback(image) {
+        image.hidden = true;
+        const fallback = image.parentElement.querySelector('[data-thumbnail-fallback]');
+        if (fallback) fallback.hidden = false;
+        scheduleLayout();
+    }
     grid.addEventListener(
-        'error',
+        'load',
         (event) => {
-            if (event.target instanceof HTMLImageElement) {
-                event.target.hidden = true;
-                scheduleLayout();
-            }
+            if (event.target.matches?.('[data-youtube-thumbnail]') && event.target.naturalWidth < 120) {
+                showThumbnailFallback(event.target);
+            } else scheduleLayout();
         },
         true,
     );
+    grid.addEventListener(
+        'error',
+        (event) => {
+            if (event.target instanceof HTMLImageElement) showThumbnailFallback(event.target);
+        },
+        true,
+    );
+    for (const image of grid.querySelectorAll('[data-youtube-thumbnail]')) {
+        if (image.complete && image.naturalWidth < 120) showThumbnailFallback(image);
+    }
 
     function showAlbum(name) {
         album = name;
@@ -146,6 +159,15 @@ function init(root) {
                 if (image) {
                     const clone = image.cloneNode();
                     clone.removeAttribute('id');
+                    clone.addEventListener(
+                        'error',
+                        () => {
+                            const placeholder = document.createElement('span');
+                            placeholder.textContent = card.dataset.type === 'video' ? '▶' : '▧';
+                            clone.replaceWith(placeholder);
+                        },
+                        { once: true },
+                    );
                     cover.append(clone);
                 } else {
                     const placeholder = document.createElement('span');
@@ -319,9 +341,17 @@ function init(root) {
         setActiveYear((onScreen || visible.at(-1)).dataset.year);
     }
 
+    function clearDetail() {
+        for (const media of dialogBody.querySelectorAll('audio, video')) media.pause();
+        // Removing the embedded player also stops third-party video playback.
+        dialogBody.replaceChildren();
+    }
+
     function openCard(card, focus = null) {
         current = card;
         if (!dialog.open) lastFocus = focus || document.activeElement;
+        clearDetail();
+        dialog.dataset.kind = card.dataset.type;
         dialogBody.replaceChildren(card.querySelector('template').content.cloneNode(true));
         dialogBody.querySelector('[data-detail-title]').id = 'media-dialog-heading';
         const index = visible.indexOf(card);
@@ -344,6 +374,9 @@ function init(root) {
         if (dialog.open) dialog.close();
     }
     dialog.addEventListener('close', () => {
+        if (dialog.open) return;
+        clearDetail();
+        delete dialog.dataset.kind;
         current = null;
         writeState('');
         if (lastFocus?.isConnected && !lastFocus.closest('[hidden]')) lastFocus.focus();
@@ -401,7 +434,8 @@ function init(root) {
         }
     });
     dialog.addEventListener('keydown', (event) => {
-        if (zoom || /^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName)) return;
+        if (zoom || event.defaultPrevented || /^(INPUT|SELECT|TEXTAREA|AUDIO|VIDEO|IFRAME)$/.test(event.target.tagName))
+            return;
         if (event.key === 'ArrowRight') {
             event.preventDefault();
             step(1);
@@ -423,51 +457,6 @@ function init(root) {
         event.preventDefault();
         openCard(anchor.closest('[data-record]'), anchor);
     });
-
-    function toggleThumbnails() {
-        thumbs = !thumbs;
-        const toggle = $('[data-external-thumbs]');
-        toggle.setAttribute('aria-pressed', String(thumbs));
-        toggle.textContent = thumbs
-            ? en
-                ? 'Hide YouTube thumbnails'
-                : 'Ocultar miniaturas do YouTube'
-            : en
-              ? 'Load YouTube thumbnails'
-              : 'Carregar miniaturas do YouTube';
-        for (const card of cards) {
-            if (!/^[A-Za-z0-9_-]{11}$/.test(card.dataset.youtube)) continue;
-            const visual = card.querySelector('.media-visual');
-            const originals = [...visual.children].filter((item) =>
-                item.matches('img:not([data-external]), [data-placeholder], [data-cover-label]'),
-            );
-            const previous = visual.querySelector('[data-external]');
-            if (!thumbs) {
-                previous?.remove();
-                for (const item of originals) item.hidden = false;
-                continue;
-            }
-            const img = document.createElement('img');
-            img.dataset.external = '';
-            img.alt = '';
-            img.width = 480;
-            img.height = 360;
-            img.loading = 'eager';
-            img.decoding = 'async';
-            img.referrerPolicy = 'no-referrer';
-            img.hidden = true;
-            img.addEventListener('load', () => {
-                if (!thumbs || !img.isConnected || img.naturalWidth < 120) return;
-                for (const item of originals) item.hidden = true;
-                img.hidden = false;
-                scheduleLayout();
-            });
-            img.addEventListener('error', () => img.remove(), { once: true });
-            visual.prepend(img);
-            img.src = 'https://i.ytimg.com/vi/' + card.dataset.youtube + '/hqdefault.jpg';
-        }
-        scheduleLayout();
-    }
 
     for (const button of $$('[data-view]')) button.addEventListener('click', () => switchView(button.dataset.view));
     form.addEventListener('input', () => render());
@@ -495,7 +484,6 @@ function init(root) {
         grid.dataset.density = event.target.value;
         scheduleLayout();
     });
-    $('[data-external-thumbs]').addEventListener('click', toggleThumbnails);
     for (const button of cityButtons) button.addEventListener('click', () => selectCity(button.dataset.city));
     for (const button of $$('[data-jump]')) button.addEventListener('click', () => jumpToYear(button.dataset.jump));
     range.addEventListener('input', () => jumpToYear(years[Number(range.value)]));

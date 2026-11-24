@@ -26,6 +26,8 @@ final class MediaArchiveTest extends TestCase
             self::assertContains(parse_url($record['url'], PHP_URL_SCHEME), ['https', 'http']);
             self::assertNotContains(parse_url($record['url'], PHP_URL_HOST), ['cloud.colab.rio', 'cloud.librecode.coop', 'hemingway.softwarelivre.org', 'en.eventials.com']);
             if (isset($record['youtube'])) {
+                self::assertMatchesRegularExpression('/^[A-Za-z0-9_-]{11}$/', $record['youtube']);
+                self::assertSame('video', $record['type']);
                 self::assertSame('https://www.youtube.com/watch?v=' . $record['youtube'], $record['url']);
             }
             foreach (['latitude', 'longitude', 'gps', 'exif', 'privatePath', 'fileId', 'faceEmbedding'] as $key) {
@@ -66,8 +68,32 @@ final class MediaArchiveTest extends TestCase
             self::assertStringNotContainsString('fisl-photo-coverage-2018', $html);
             self::assertStringNotContainsString('hemingway.softwarelivre.org', $html);
             self::assertStringNotContainsString('www.listennotes.com', $html);
-            self::assertStringNotContainsString('i.ytimg.com', $html);
-            self::assertStringNotContainsString('<iframe', $html);
+            self::assertStringNotContainsString('data-external-thumbs', $html);
+            $document = new \DOMDocument();
+            $previous = libxml_use_internal_errors(true);
+            try {
+                $document->loadHTML($html, LIBXML_NONET);
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($previous);
+            }
+            $xpath = new \DOMXPath($document);
+            $archive = require __DIR__ . '/../data/media.php';
+            foreach ($archive['items'] as $record) {
+                $card = "//article[@id='" . $record['id'] . "']";
+                if (isset($record['youtube'])) {
+                    $id = $record['youtube'];
+                    self::assertSame(1, $xpath->query($card . "/a//img[@src='https://i.ytimg.com/vi/" . $id . "/hqdefault.jpg'][@loading='lazy']")->length);
+                    self::assertSame(1, $xpath->query($card . "/a//*[@data-play-indicator]")->length);
+                    self::assertSame(1, $xpath->query($card . "/template//iframe[starts-with(@src, 'https://www.youtube-nocookie.com/embed/" . $id . "?')][@allowfullscreen]")->length);
+                    self::assertSame(0, $xpath->query($card . "/template//*[@data-zoom]")->length);
+                }
+                if (isset($record['audio'])) {
+                    self::assertSame(1, $xpath->query($card . "/template//audio[@controls][@src='" . $record['audio'] . "']")->length);
+                    self::assertSame(1, $xpath->query($card . "/a//*[@data-play-indicator]")->length);
+                }
+            }
+            self::assertSame(0, $xpath->query('//iframe[not(ancestor::template)] | //audio[not(ancestor::template)]')->length);
         }
         $talk = file_get_contents($build . '/talks/controle-tecnologia/index.html');
         self::assertIsString($talk);

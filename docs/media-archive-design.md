@@ -25,8 +25,12 @@ Do not include generic event images, a colleague's participation, or a
 recording whose source is known to be unavailable. A photograph requires
 an approved relevant original, credit and reuse permission. Keep historical
 proposals as documentary references, not playable recordings.
-Slide covers are explicitly marked as such. External YouTube thumbnails
-are opt-in; no third-party images or players load by default. Video metadata
+Slide covers are explicitly marked as such. Official YouTube thumbnails load
+lazily by default, with local-cover or text fallback. The video dialog uses
+YouTube privacy-enhanced embedding and the audio dialog uses native controls.
+Players are instantiated only when a record is opened and removed when
+navigating or closing. Original-source links remain available if embedding
+is restricted. Video metadata
 can be verified without confirming playback; original links are retained
 only where the source and personal connection are supported.
 

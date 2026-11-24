@@ -75,7 +75,7 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 - English hubs: `/articles`, `/talks`; Portuguese hubs: `/pt-BR/artigos`, `/pt-BR/palestras`.
 - Detail pages remain reachable from their collection hub and relevant homepage sections.
 
-Media archive hubs: /media and /pt-BR/acervo. Public records in data/media.php link to original sources and related talks/articles. City-level event geography is editorial metadata, never derived from personal GPS. Do not publish private paths, biometric data, or photographs without reuse permission. Slide covers must be labelled as such. The catalog is server-rendered; third-party video thumbnails are opt-in and the map uses local Natural Earth data.
+Media archive hubs: /media and /pt-BR/acervo. Public records in data/media.php link to original sources and related talks/articles. City-level event geography is editorial metadata, never derived from personal GPS. Do not publish private paths, biometric data, or photographs without reuse permission. Slide covers must be labelled as such. The catalog is server-rendered; official YouTube thumbnails load lazily, embedded players exist only while their detail dialog is open, and the map uses local Natural Earth data.
 
 ## SEO and answer-engine requirements
 

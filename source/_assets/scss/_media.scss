@@ -250,6 +250,88 @@
     display: none;
 }
 
+.media-visual--video {
+    aspect-ratio: 16 / 9;
+}
+
+.media-visual--video img,
+.media-thumbnail-fallback,
+.media-visual--video .media-placeholder {
+    height: 100%;
+    width: 100%;
+}
+
+.media-visual--video img {
+    object-fit: cover;
+}
+
+.media-thumbnail-fallback {
+    position: relative;
+}
+
+.media-play-indicator {
+    align-items: center;
+    background: #101010c9;
+    border: 1px solid #ffffffa6;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    height: 3.1rem;
+    justify-content: center;
+    left: 50%;
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: background .15s ease;
+    width: 3.1rem;
+}
+
+.media-card__open:hover .media-play-indicator,
+.media-card__open:focus-visible .media-play-indicator {
+    background: #111;
+}
+
+.media-placeholder.media-audio-cover {
+    background: linear-gradient(135deg, #142e40, #263b51);
+    color: #f0f5fa;
+    min-height: 9rem;
+}
+
+.media-placeholder.media-audio-cover strong {
+    color: inherit;
+}
+
+.media-audio-decoration {
+    align-items: center;
+    color: #8bbde0;
+    display: flex;
+    gap: .3rem;
+    height: 3rem;
+    justify-content: center;
+}
+
+.media-audio-decoration i {
+    background: currentColor;
+    border-radius: .3rem;
+    display: block;
+    height: 38%;
+    width: .28rem;
+}
+
+.media-audio-decoration i:nth-child(2n) {
+    height: 75%;
+}
+
+.media-audio-decoration i:nth-child(4) {
+    height: 100%;
+}
+
+.media-audio-cover .media-audio-decoration {
+    margin-bottom: 2rem;
+    opacity: .7;
+}
+
 .media-placeholder {
     align-content: center;
     aspect-ratio: 5 / 3;
@@ -514,6 +596,71 @@
     gap: .5rem;
     padding: 1.1rem;
     text-align: center;
+}
+
+.media-dialog[data-kind='video'] {
+    max-width: min(60rem, 94vw);
+}
+
+.media-dialog[data-kind='audio'] {
+    max-width: min(43rem, 94vw);
+}
+
+.media-dialog[data-kind='video'] .media-dialog-body,
+.media-dialog[data-kind='audio'] .media-dialog-body {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.media-detail-visual--player {
+    display: block;
+    padding: 0;
+}
+
+.media-video-player {
+    aspect-ratio: 16 / 9;
+    background: #000;
+    display: block;
+    width: 100%;
+}
+
+.media-video-player iframe,
+.media-video-player video {
+    border: 0;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.media-audio-player {
+    background: linear-gradient(135deg, #142e40, #263b51);
+    color: #f0f5fa;
+    display: grid;
+    gap: .6rem;
+    justify-items: center;
+    padding: clamp(1.2rem, 4vw, 2rem);
+}
+
+.media-audio-player > p {
+    color: #d1e3f2;
+    margin: 0;
+}
+
+.media-audio-player audio {
+    display: block;
+    max-width: 32rem;
+    width: 100%;
+}
+
+.media-player-note {
+    font-size: .8rem;
+    margin: 0;
+    padding: .65rem 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .media-play-indicator {
+        transition: none;
+    }
 }
 
 .media-detail-visual img {
