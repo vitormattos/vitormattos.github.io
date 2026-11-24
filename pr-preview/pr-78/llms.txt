@@ -74,7 +74,7 @@ Canonical site: https://vitormattos.github.io/
 
 ## Media archive
 
-- [Media archive](https://vitormattos.github.io/media): Recordings, interviews, photographic references and public event coverage.
+- [Media archive](https://vitormattos.github.io/media): Photographs, video recordings and audio interviews.
 - [Acervo multimídia](https://vitormattos.github.io/pt-BR/acervo): Portuguese version.
 
 ## Language versions
