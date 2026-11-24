@@ -91,7 +91,8 @@ English is the canonical editorial language. Brazilian Portuguese translations l
 ## CI and tests
 
 - GitHub Actions must be pinned to immutable commit SHAs with an exact version comment.
-- Dependabot covers Composer, npm and Actions.
+- Dependabot covers Composer, npm and Actions. Stylelint and its recommended SCSS configuration must be upgraded together when their peer dependencies require it.
+- PHP workflows use PHP 8.4; Composer resolves dependencies against the minimum supported PHP 8.4.1 so the lockfile remains installable across supported PHP 8.4 patch releases.
 - `SITE_BUILD_DIR` and `EXPECTED_BASE_URL` make tests preview-aware.
 - Tests are contract/regression tests for behavior and business invariants, not a coverage target. New presentation behavior must ship with tests that would fail if its rule is broken.
 - `data/talks.php` is validated in tests: slugs, dates, URLs/root-relative paths, event modes and country codes must remain structurally valid.
