@@ -53,6 +53,8 @@ final class MediaArchiveTest extends TestCase
         foreach (['media', 'pt-BR/acervo'] as $path) {
             $html = file_get_contents($build . '/' . $path . '/index.html');
             self::assertIsString($html);
+            self::assertStringStartsWith('<!doctype html>', ltrim($html), 'The archive must not render before the document.');
+            self::assertMatchesRegularExpression('/<header class="site-header"[^>]*>.*?<\/header>\s*<main id="main-content">\s*<div class="media-archive"[^>]*data-media-catalog/s', $html);
             self::assertStringContainsString('data-media-catalog', $html);
             self::assertStringContainsString('id="web-summit-rio-2026"', $html);
             self::assertStringContainsString('id="fisl-photo-coverage-2018"', $html);

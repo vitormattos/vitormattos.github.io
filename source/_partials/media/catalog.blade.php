@@ -64,47 +64,55 @@
                 <input type="search" name="q"
                     placeholder="{{ $en ? 'Event, topic, recording…' : 'Evento, assunto, gravação…' }}">
             </label>
-            <label>
-                <span>{{ $en ? 'Type' : 'Tipo' }}</span>
-                <select name="type">
-                    <option value="">{{ $en ? 'All types' : 'Todos os tipos' }}</option>
-                    @foreach ($archive['types'] as $type => $label)
-                        <option value="{{ $type }}">{{ $label[$locale] }}</option>
-                    @endforeach
-                </select>
-            </label>
-            <label>
-                <span>{{ $en ? 'Topic' : 'Assunto' }}</span>
-                <select name="topic">
-                    <option value="">{{ $en ? 'All topics' : 'Todos os assuntos' }}</option>
-                    @foreach ($archive['topics'] as $topic => $label)
-                        <option value="{{ $topic }}">{{ $label[$locale] }}</option>
-                    @endforeach
-                </select>
-            </label>
-            <label>
-                <span>{{ $en ? 'City' : 'Cidade' }}</span>
-                <select name="city">
-                    <option value="">{{ $en ? 'All cities' : 'Todas as cidades' }}</option>
-                    @foreach ($cities as $city)
-                        <option value="{{ $city }}">{{ $city }}</option>
-                    @endforeach
-                </select>
-            </label>
-            <label>
-                <span>{{ $en ? 'Year' : 'Ano' }}</span>
-                <select name="year">
-                    <option value="">{{ $en ? 'All years' : 'Todos os anos' }}</option>
-                    @foreach ($years as $year)
-                        <option value="{{ $year }}">{{ $year }}</option>
-                    @endforeach
-                    <option value="unknown">{{ $en ? 'Undated' : 'Sem data' }}</option>
-                </select>
-            </label>
-            <button type="button" data-clear>{{ $en ? 'Clear' : 'Limpar' }}</button>
+            <button class="media-advanced-toggle" type="button" data-advanced-toggle aria-expanded="false"
+                aria-controls="media-advanced-filters">{{ $en ? 'Filters' : 'Filtros' }} <span
+                    aria-hidden="true">▾</span></button>
+            <div class="media-advanced-filters" id="media-advanced-filters" data-collapsed="true">
+                <label>
+                    <span>{{ $en ? 'Type' : 'Tipo' }}</span>
+                    <select name="type">
+                        <option value="">{{ $en ? 'All types' : 'Todos os tipos' }}</option>
+                        @foreach ($archive['types'] as $type => $label)
+                            <option value="{{ $type }}">{{ $label[$locale] }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>
+                    <span>{{ $en ? 'Topic' : 'Assunto' }}</span>
+                    <select name="topic">
+                        <option value="">{{ $en ? 'All topics' : 'Todos os assuntos' }}</option>
+                        @foreach ($archive['topics'] as $topic => $label)
+                            <option value="{{ $topic }}">{{ $label[$locale] }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>
+                    <span>{{ $en ? 'City' : 'Cidade' }}</span>
+                    <select name="city">
+                        <option value="">{{ $en ? 'All cities' : 'Todas as cidades' }}</option>
+                        @foreach ($cities as $city)
+                            <option value="{{ $city }}">{{ $city }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                <label>
+                    <span>{{ $en ? 'Year' : 'Ano' }}</span>
+                    <select name="year">
+                        <option value="">{{ $en ? 'All years' : 'Todos os anos' }}</option>
+                        @foreach ($years as $year)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endforeach
+                        <option value="unknown">{{ $en ? 'Undated' : 'Sem data' }}</option>
+                    </select>
+                </label>
+            </div>
         </form>
         <div class="media-results">
-            <output data-count aria-live="polite">{{ count($records) }}</output>
+            <div class="media-result-status">
+                <output data-count aria-live="polite">{{ count($records) }}</output>
+                <span data-active-scope hidden>{{ $en ? 'Filtered results' : 'Resultados filtrados' }}</span>
+                <button type="button" data-clear hidden>{{ $en ? 'Clear filters' : 'Limpar filtros' }}</button>
+            </div>
             <button type="button" data-external-thumbs
                 aria-pressed="false">{{ $en ? 'Load YouTube thumbnails' : 'Carregar miniaturas do YouTube' }}</button>
         </div>
@@ -268,10 +276,13 @@
                 {{ $en ? 'No media match these filters.' : 'Nenhuma mídia corresponde aos filtros.' }}</p>
         </div>
         <aside class="media-timeline" data-timeline hidden>
-            <nav aria-label="{{ $en ? 'Jump to year' : 'Ir para o ano' }}">
-                <p>{{ $en ? 'Timeline' : 'Linha do tempo' }}</p>
+            <nav
+                aria-label="{{ $en ? 'Jump to a year in the complete archive' : 'Ir para um ano no acervo completo' }}">
+                <p>{{ $en ? 'Timeline' : 'Linha do tempo' }}<small>{{ $en ? 'Full archive' : 'Acervo completo' }}</small>
+                </p>
                 @foreach ($years as $year)
-                    <button type="button" data-jump="{{ $year }}">{{ $year }}</button>
+                    <button type="button" data-jump="{{ $year }}"
+                        aria-label="{{ $en ? 'Browse all media from' : 'Navegar pelas mídias de' }} {{ $year }}">{{ $year }}</button>
                 @endforeach
                 <button type="button" data-jump="unknown">{{ $en ? 'Undated' : 'Sem data' }}</button>
             </nav>

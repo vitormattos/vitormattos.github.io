@@ -6,7 +6,7 @@
 The bilingual archive exposes the same curated records through a visual mosaic,
 event albums and a city-level map. The default mosaic uses Masonry with
 horizontal ordering; DOM order remains chronological for keyboard and screen
-reader navigation. The year rail jumps to visible records, with a separate
+reader navigation. The year rail always represents the complete archive; selecting a year opens the unfiltered mosaic and scrolls to that year. The All media button clears previous filters and album/map scope. A separate
 year filter and thumbnail-density control. Filters and detail links are
 shareable through the URL. The base records and source links are rendered by
 Jigsaw and remain accessible without JavaScript.

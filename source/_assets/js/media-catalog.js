@@ -6,7 +6,7 @@ import PhotoSwipe from 'photoswipe';
 import photoSwipeCss from 'photoswipe/style.css?inline';
 import leafletCss from 'leaflet/dist/leaflet.css?inline';
 
-import { matchesMedia } from './media-filters.js';
+import { browseMode, catalogYears, matchesMedia } from './media-filters.js';
 
 function addStyles(css) {
     const style = document.createElement('style');
@@ -32,7 +32,8 @@ function init(root) {
     let view = 'mosaic';
     let album = '';
     let visible = [];
-    let years = [];
+    const years = catalogYears(cards.map((card) => card.dataset));
+    let selectedJump = null;
     let current = null;
     let lastFocus = null;
     let masonry = null;
@@ -62,7 +63,7 @@ function init(root) {
         if (!cards.some((card) => card.dataset.album === album)) album = '';
     }
 
-    function writeState(hash = location.hash) {
+    function writeState(hash = '') {
         const url = new URL(location.href);
         for (const [key, value] of Object.entries({ ...filters(), view: view === 'mosaic' ? '' : view })) {
             if (value) url.searchParams.set(key, value);
@@ -73,7 +74,7 @@ function init(root) {
     }
 
     function layout() {
-        if (grid.hidden) return;
+        if (grid.hidden || !visible.length) return;
         grid.classList.add('is-enhanced');
         const gutter = parseFloat(getComputedStyle(grid).getPropertyValue('--media-gap'));
         if (!masonry)
@@ -239,8 +240,10 @@ function init(root) {
 
     function render({ persist = true } = {}) {
         const criteria = filters();
+        selectedJump = null;
         visible = cards.filter((card) => matchesMedia(card.dataset, criteria));
-        for (const card of cards) card.hidden = !visible.includes(card);
+        const visibleSet = new Set(visible);
+        for (const card of cards) card.hidden = !visibleSet.has(card);
         for (const button of $$('[data-view]'))
             button.setAttribute('aria-pressed', String(button.dataset.view === view));
         const showAlbums = view === 'albums' && !album;
@@ -251,19 +254,19 @@ function init(root) {
         $('[data-album-title]').textContent = album;
         $('[data-count]').textContent = visible.length + (en ? ' records' : ' registros');
         $('[data-empty]').hidden = visible.length > 0;
-        timeline.hidden = showAlbums || view === 'map' || visible.length === 0;
-        years = [...new Set(visible.map((card) => card.dataset.year))];
-        range.max = String(Math.max(0, years.length - 1));
-        range.value = '0';
-        range.disabled = years.length < 2;
-        for (const button of $$('[data-jump]')) button.hidden = !years.includes(button.dataset.jump);
-        if (showAlbums) {
+        // The year rail is a navigator over the entire archive, not a facet of the current results.
+        timeline.hidden = years.length === 0;
+        setActiveYear(!showAlbums && visible.length ? visible[0].dataset.year : null);
+        const hasFilters = Object.values(criteria).some(Boolean);
+        $('[data-active-scope]').hidden = !hasFilters;
+        $('[data-clear]').hidden = !hasFilters;
+        if (showAlbums || visible.length === 0) {
             if (masonry) {
                 masonry.destroy();
                 masonry = null;
                 grid.classList.remove('is-enhanced');
             }
-            renderAlbums(visible);
+            if (showAlbums) renderAlbums(visible);
         } else scheduleLayout();
         if (view === 'map') {
             updateMarkers();
@@ -272,11 +275,25 @@ function init(root) {
         if (persist) writeState();
     }
 
+    function switchView(mode) {
+        const next = browseMode(mode, filters());
+        view = mode;
+        album = next.album;
+        for (const key of fieldNames) form.elements.namedItem(key).value = next[key];
+        render();
+    }
+
     function jumpToYear(year) {
-        const card = visible.find((item) => item.dataset.year === year);
+        if (!years.includes(year)) return;
+        const card = cards.find((item) => item.dataset.year === year);
         if (!card) return;
-        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        card.scrollIntoView({ block: 'start', behavior: reduced ? 'instant' : 'smooth' });
+        // A jump always opens the complete mosaic, even from an album or a filtered map.
+        if (view !== 'mosaic' || Object.values(filters()).some(Boolean)) switchView('mosaic');
+        layout();
+        // Instant jumps keep dragging responsive and prevent scroll events during an animation
+        // from moving the slider back to a previous year.
+        card.scrollIntoView({ block: 'start', behavior: 'instant' });
+        selectedJump = { year, scrollY: window.scrollY };
         setActiveYear(year);
     }
     function setActiveYear(year) {
@@ -285,10 +302,18 @@ function init(root) {
         if (years.includes(year)) {
             range.value = String(years.indexOf(year));
             range.setAttribute('aria-valuetext', year === 'unknown' ? (en ? 'Undated' : 'Sem data') : year);
+        } else {
+            range.value = '0';
+            range.setAttribute('aria-valuetext', en ? 'Choose a year' : 'Escolha um ano');
         }
     }
     function updateActiveYear() {
-        if (timeline.hidden || !visible.length) return;
+        if (timeline.hidden || view !== 'mosaic' || !visible.length) return;
+        if (selectedJump && Math.abs(window.scrollY - selectedJump.scrollY) < 2) {
+            setActiveYear(selectedJump.year);
+            return;
+        }
+        selectedJump = null;
         const point = Math.min(170, innerHeight / 3);
         const onScreen = visible.find((card) => card.getBoundingClientRect().bottom > point);
         setActiveYear((onScreen || visible.at(-1)).dataset.year);
@@ -444,16 +469,18 @@ function init(root) {
         scheduleLayout();
     }
 
-    for (const button of $$('[data-view]'))
-        button.addEventListener('click', () => {
-            view = button.dataset.view;
-            album = '';
-            render();
-        });
+    for (const button of $$('[data-view]')) button.addEventListener('click', () => switchView(button.dataset.view));
     form.addEventListener('input', () => render());
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         render();
+    });
+    $('[data-advanced-toggle]').addEventListener('click', () => {
+        const toggle = $('[data-advanced-toggle]');
+        const panel = $('#media-advanced-filters');
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        panel.dataset.collapsed = String(expanded);
     });
     $('[data-clear]').addEventListener('click', () => {
         form.reset();
@@ -489,6 +516,8 @@ function init(root) {
         render({ persist: false });
     });
     $('[data-media-controls]').hidden = false;
+    range.max = String(Math.max(0, years.length - 1));
+    range.disabled = years.length < 2;
     loadState();
     render({ persist: false });
     const target = cards.find((card) => '#' + card.id === location.hash);

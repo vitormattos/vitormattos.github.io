@@ -17,3 +17,16 @@ export function matchesMedia(record, filters) {
             .every((word) => normalize(record.search).includes(word))
     );
 }
+
+export function catalogYears(records) {
+    return [...new Set(records.map((record) => record.year))].sort((a, b) =>
+        a === 'unknown' ? 1 : b === 'unknown' ? -1 : Number(b) - Number(a),
+    );
+}
+
+export function browseMode(mode, currentFilters) {
+    if (mode === 'mosaic') {
+        return { q: '', type: '', topic: '', city: '', year: '', album: '' };
+    }
+    return { ...currentFilters, city: '', album: '' };
+}

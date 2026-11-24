@@ -3,7 +3,7 @@
 
 .media-archive {
     --media-gap: 12px;
-    margin-block: clamp(2rem, 5vw, 4rem) 4rem;
+    margin-block: clamp(1.5rem, 3vw, 2.75rem) 4rem;
 }
 
 .media-archive [hidden] {
@@ -11,8 +11,14 @@
 }
 
 .media-heading {
-    margin-bottom: 2rem;
+    margin-bottom: 1.35rem;
     max-width: 48rem;
+}
+
+.media-heading .eyebrow {
+    font-size: .75rem;
+    letter-spacing: .045em;
+    margin-block: 0 .4rem;
 }
 
 .media-heading h1 {
@@ -122,7 +128,15 @@
     align-items: end;
     display: grid;
     gap: .65rem;
-    grid-template-columns: minmax(12rem, 2fr) repeat(4, minmax(0, 1fr)) auto;
+    grid-template-columns: minmax(12rem, 2fr) repeat(4, minmax(0, 1fr));
+}
+
+.media-advanced-filters {
+    display: contents;
+}
+
+.media-archive .media-advanced-toggle {
+    display: none;
 }
 
 .media-filters label {
@@ -144,6 +158,20 @@
     color: var(--text-muted);
     font-size: .85rem;
     margin-top: .8rem;
+}
+
+.media-result-status {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+}
+
+.media-result-status [data-active-scope] {
+    border-left: 1px solid var(--border);
+    color: var(--link);
+    font-size: .75rem;
+    padding-left: .6rem;
 }
 
 .media-results button {
@@ -314,6 +342,13 @@
     margin: 0 0 .45rem;
 }
 
+.media-timeline nav small {
+    display: block;
+    font-size: .65rem;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
 .media-timeline button {
     background: transparent;
     border: 0;
@@ -336,7 +371,7 @@
     align-self: stretch;
     direction: ltr;
     height: auto;
-    margin: 1.8rem 0 0;
+    margin: 2.8rem 0 0;
     width: 1rem;
     writing-mode: vertical-lr;
 }
@@ -546,11 +581,21 @@
 
 @media (max-width: 40rem) {
     .media-archive {
-        margin-top: 1.75rem;
+        margin-top: 1.25rem;
     }
 
     .media-heading {
-        margin-bottom: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .media-heading h1 {
+        font-size: 1.8rem;
+        margin-block: .3rem;
+    }
+
+    .media-heading > p:last-child {
+        font-size: .9rem;
+        line-height: 1.45;
     }
 
     .media-toolbar {
@@ -568,11 +613,37 @@
     }
 
     .media-filters {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1fr) auto;
     }
 
     .media-search {
+        grid-column: auto;
+    }
+
+    .media-archive .media-advanced-toggle {
+        display: inline-flex;
+        gap: .3rem;
+        align-items: center;
+    }
+
+    .media-advanced-filters {
+        display: grid;
+        gap: .65rem;
         grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .media-advanced-filters[data-collapsed='true'] {
+        display: none;
+    }
+
+    .media-controls {
+        margin-bottom: .75rem;
+        padding-bottom: .75rem;
+    }
+
+    .media-toolbar {
+        margin-bottom: .6rem;
     }
 
     .media-browse {
