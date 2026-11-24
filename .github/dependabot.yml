@@ -23,6 +23,11 @@ updates:
       time: "09:10"
       timezone: America/Sao_Paulo
     open-pull-requests-limit: 10
+    groups:
+      stylelint:
+        patterns:
+          - "stylelint"
+          - "stylelint-config-*"
     labels:
       - dependencies
       - npm

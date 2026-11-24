@@ -10,7 +10,7 @@ The site is intended to keep articles, talks, academic work and public professio
 
 ## Development
 
-Install PHP and frontend dependencies:
+Use PHP 8.4.1 or later in the PHP 8.4 series and Node.js 24. Install PHP and frontend dependencies:
 
 ```bash
 composer install
