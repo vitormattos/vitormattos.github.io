@@ -16,6 +16,7 @@ export default defineConfig({
                 'source/_assets/js/presentations.js',
                 'source/_assets/js/talk-preview.js',
                 'source/_assets/js/social-icons.js',
+                'source/_assets/js/media-catalog.js',
             ],
             refresh: true,
         }),

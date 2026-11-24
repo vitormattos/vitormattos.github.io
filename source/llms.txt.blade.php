@@ -36,6 +36,11 @@ Canonical site: {{ rtrim($page->siteUrl, '/') }}/
 - [{{ $talk->title }}]({{ rtrim($page->siteUrl, '/') }}/{{ ltrim($talk->getPath(), '/') }}): {{ $talk->description }}
 @endforeach
 
+## Media archive
+
+- [Media archive]({{ rtrim($page->siteUrl, '/') }}/media): Photographs, video recordings and audio interviews.
+- [Acervo multimídia]({{ rtrim($page->siteUrl, '/') }}/pt-BR/acervo): Portuguese version.
+
 ## Language versions
 
 - English is the canonical editorial language.

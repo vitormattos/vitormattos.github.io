@@ -124,6 +124,15 @@ final class TalkMetadata
             if (!self::isValidHref((string) ($resource['href'] ?? ''))) {
                 $errors[] = $itemPath . '.href must be a valid URL or root-relative path.';
             }
+            if (isset($resource['availability']) && !in_array($resource['availability'], ['available', 'unavailable', 'unverified'], true)) {
+                $errors[] = $itemPath . '.availability must be available, unavailable or unverified.';
+            }
+            if (isset($resource['date']) && !self::isValidDate((string) $resource['date'])) {
+                $errors[] = $itemPath . '.date must use YYYY-MM-DD and be a real calendar date.';
+            }
+            if (isset($resource['archiveId']) && !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/D', (string) $resource['archiveId'])) {
+                $errors[] = $itemPath . '.archiveId must be a normalized media identifier.';
+            }
         }
 
         return $errors;

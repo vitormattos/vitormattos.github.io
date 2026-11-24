@@ -24,5 +24,6 @@
             </p>
         </header>
         @yield('content')
+        @include('_partials.media.related', ['mediaRelationKind' => 'articles'])
     </article>
 @endsection

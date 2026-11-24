@@ -9,13 +9,16 @@
     "format:blade": "prettier --write \"source/**/*.blade.php\"",
     "lint:blade": "prettier --check \"source/**/*.blade.php\"",
     "lint:js": "prettier --check \"source/_assets/js/**/*.js\" \"tests-js/**/*.js\"",
-    "test:js": "node --test tests-js/**/*.test.js"
+    "test:js": "node --test 'tests-js/**/*.test.js'"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.3.1",
     "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@shufo/prettier-plugin-blade": "^1.16.3",
     "@tighten/jigsaw-vite-plugin": "^2.1.0",
+    "leaflet": "1.9.4",
+    "masonry-layout": "4.2.2",
+    "photoswipe": "5.4.4",
     "prettier": "^3.10.1",
     "reveal.js": "^6.0.2",
     "sass-embedded": "^1.108.2",

@@ -7,6 +7,7 @@
     $aboutPath = $isEnglish ? '/about' : '/pt-BR/sobre';
     $articlesPath = $isEnglish ? '/articles' : '/pt-BR/artigos';
     $talksPath = $isEnglish ? '/talks' : '/pt-BR/palestras';
+    $mediaPath = $isEnglish ? '/media' : '/pt-BR/acervo';
     $alternatePath = null;
     if ($page->alternateUrl ?? false) {
         $rawAlternatePath = '/' . ltrim($page->alternateUrl, '/');
@@ -21,6 +22,7 @@
     $isArticles = $currentPath === $articlesPath || str_starts_with($currentPath, $articlesPath . '/');
     $isTalks = $currentPath === $talksPath || str_starts_with($currentPath, $talksPath . '/');
     $isTalksCatalog = $currentPath === $talksPath;
+    $isMedia = $currentPath === $mediaPath;
 @endphp
 <!doctype html>
 <html lang="{{ $locale }}"
@@ -113,6 +115,8 @@
                         @if ($isArticles) aria-current="page" @endif>{{ $isEnglish ? 'Articles' : 'Artigos' }}</a>
                     <a @class(['site-nav__link', 'is-active' => $isTalks]) href="{{ $page->baseUrl }}{{ $talksPath }}"
                         @if ($isTalks) aria-current="page" @endif>{{ $isEnglish ? 'Talks' : 'Palestras' }}</a>
+                    <a @class(['site-nav__link', 'is-active' => $isMedia]) href="{{ $page->baseUrl }}{{ $mediaPath }}"
+                        @if ($isMedia) aria-current="page" @endif>{{ $isEnglish ? 'Media' : 'Acervo' }}</a>
                 </nav>
 
                 <div class="site-controls">

@@ -130,7 +130,7 @@ footer {
     }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: 56rem) {
     .site-header {
         padding-inline: 0;
     }
@@ -196,7 +196,7 @@ footer {
         display: grid;
         grid-column: 1 / -1;
         grid-row: 2;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         padding-inline: $page-gutter;
     }
 
