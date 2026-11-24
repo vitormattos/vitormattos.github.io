@@ -1,0 +1,110 @@
+{
+  "_markdown-CcJnyYDL.js": {
+    "file": "assets/markdown-CcJnyYDL.js",
+    "name": "markdown"
+  },
+  "node_modules/leaflet/dist/images/layers-2x.png": {
+    "file": "assets/layers-2x-Bpkbi35X.png",
+    "src": "node_modules/leaflet/dist/images/layers-2x.png"
+  },
+  "node_modules/leaflet/dist/images/layers.png": {
+    "file": "assets/layers-BWBAp2CZ.png",
+    "src": "node_modules/leaflet/dist/images/layers.png"
+  },
+  "node_modules/leaflet/dist/images/marker-icon.png": {
+    "file": "assets/marker-icon-hN30_KVU.png",
+    "src": "node_modules/leaflet/dist/images/marker-icon.png"
+  },
+  "node_modules/leaflet/dist/leaflet-src.js": {
+    "file": "assets/leaflet-src-DuH2lDNf.js",
+    "name": "leaflet-src",
+    "src": "node_modules/leaflet/dist/leaflet-src.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "source/_assets/js/media-catalog.js"
+    ]
+  },
+  "source/_assets/js/media-catalog.js": {
+    "file": "assets/media-catalog-DhWsIw_F.js",
+    "name": "media-catalog",
+    "src": "source/_assets/js/media-catalog.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "node_modules/leaflet/dist/leaflet-src.js"
+    ],
+    "assets": [
+      "assets/layers-BWBAp2CZ.png",
+      "assets/layers-2x-Bpkbi35X.png",
+      "assets/marker-icon-hN30_KVU.png"
+    ]
+  },
+  "source/_assets/js/presentations.js": {
+    "file": "assets/presentations-B57Ap9zk.js",
+    "name": "presentations",
+    "src": "source/_assets/js/presentations.js",
+    "isEntry": true,
+    "imports": [
+      "_markdown-CcJnyYDL.js"
+    ]
+  },
+  "source/_assets/js/social-icons.js": {
+    "file": "assets/social-icons-BRXyyWXO.js",
+    "name": "social-icons",
+    "src": "source/_assets/js/social-icons.js",
+    "isEntry": true
+  },
+  "source/_assets/js/talk-preview.js": {
+    "file": "assets/talk-preview-B0umaVM-.js",
+    "name": "talk-preview",
+    "src": "source/_assets/js/talk-preview.js",
+    "isEntry": true,
+    "imports": [
+      "_markdown-CcJnyYDL.js"
+    ]
+  },
+  "source/_assets/scss/main.scss": {
+    "file": "assets/main-19BK7K4r.css",
+    "name": "main",
+    "names": [
+      "main.css"
+    ],
+    "src": "source/_assets/scss/main.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/presentations.scss": {
+    "file": "assets/presentations-dvGpoHSG.css",
+    "name": "presentations",
+    "names": [
+      "presentations.css"
+    ],
+    "src": "source/_assets/scss/presentations.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/talk-preview.scss": {
+    "file": "assets/talk-preview-WqU_8GBB.css",
+    "name": "talk-preview",
+    "names": [
+      "talk-preview.css"
+    ],
+    "src": "source/_assets/scss/talk-preview.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/talks-catalog.scss": {
+    "file": "assets/talks-catalog-DzXN1L7f.css",
+    "name": "talks-catalog",
+    "names": [
+      "talks-catalog.css"
+    ],
+    "src": "source/_assets/scss/talks-catalog.scss",
+    "isEntry": true
+  },
+  "source/_assets/scss/talks-list-flow.scss": {
+    "file": "assets/talks-list-flow-COkb1zGy.css",
+    "name": "talks-list-flow",
+    "names": [
+      "talks-list-flow.css"
+    ],
+    "src": "source/_assets/scss/talks-list-flow.scss",
+    "isEntry": true
+  }
+}
