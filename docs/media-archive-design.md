@@ -25,7 +25,13 @@ Do not include generic event images, a colleague's participation, or a
 recording whose source is known to be unavailable. A photograph requires
 an approved relevant original, credit and reuse permission. Keep historical
 proposals as documentary references, not playable recordings.
-Slide covers are explicitly marked as such. Official YouTube thumbnails load
+Slide covers are explicitly marked as such. Presentations are a distinct
+media type, not photographs or videos. Their embedded player reuses the
+existing talk collection metadata, including the original Slides.com embed
+and slide count; the event source stays linked as provenance. Type shortcuts
+are visible independently of the mosaic/album/map view. The enlarged viewer
+offers explicit fullscreen and keeps media navigation separate from
+presentation navigation. Official YouTube thumbnails load
 lazily by default, with local-cover or text fallback. The video dialog uses
 YouTube privacy-enhanced embedding and the audio dialog uses native controls.
 Players are instantiated only when a record is opened and removed when

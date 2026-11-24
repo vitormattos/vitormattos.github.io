@@ -27,8 +27,12 @@ function init(root) {
     const range = $('[data-time-range]');
     const dialog = $('[data-dialog]');
     const dialogBody = $('[data-dialog-body]');
+    const viewer = $('[data-viewer]');
+    const fullscreenButton = $('[data-fullscreen]');
+    const typeButtons = $$('[data-type-filter]');
     const fieldNames = ['q', 'type', 'topic', 'city', 'year'];
     const modes = ['mosaic', 'albums', 'map'];
+    const recordCount = (n) => n + (en ? (n === 1 ? ' record' : ' records') : n === 1 ? ' registro' : ' registros');
     let view = 'mosaic';
     let album = '';
     let visible = [];
@@ -178,7 +182,7 @@ function init(root) {
             const title = document.createElement('strong');
             title.textContent = name;
             const count = document.createElement('small');
-            count.textContent = entries.length + (en ? ' records' : ' registros');
+            count.textContent = recordCount(entries.length);
             button.append(cover, title, count);
             albumPanel.append(button);
         }
@@ -274,11 +278,14 @@ function init(root) {
         mapPanel.hidden = view !== 'map';
         $('[data-album-bar]').hidden = view !== 'albums' || !album;
         $('[data-album-title]').textContent = album;
-        $('[data-count]').textContent = visible.length + (en ? ' records' : ' registros');
+        $('[data-count]').textContent = recordCount(visible.length);
         $('[data-empty]').hidden = visible.length > 0;
         // The year rail is a navigator over the entire archive, not a facet of the current results.
         timeline.hidden = years.length === 0;
         setActiveYear(!showAlbums && visible.length ? visible[0].dataset.year : null);
+        for (const button of typeButtons) {
+            button.setAttribute('aria-pressed', String(button.dataset.typeFilter === criteria.type));
+        }
         const hasFilters = Object.values(criteria).some(Boolean);
         $('[data-active-scope]').hidden = !hasFilters;
         $('[data-clear]').hidden = !hasFilters;
@@ -352,10 +359,18 @@ function init(root) {
         if (!dialog.open) lastFocus = focus || document.activeElement;
         clearDetail();
         dialog.dataset.kind = card.dataset.type;
+        fullscreenButton.hidden =
+            !viewer.requestFullscreen ||
+            !document.fullscreenEnabled ||
+            (document.fullscreenElement !== viewer &&
+                !['photo', 'video', 'audio', 'presentation'].includes(card.dataset.type));
         dialogBody.replaceChildren(card.querySelector('template').content.cloneNode(true));
         dialogBody.querySelector('[data-detail-title]').id = 'media-dialog-heading';
         const index = visible.indexOf(card);
-        $('[data-position]').textContent = index + 1 + ' / ' + visible.length;
+        $('[data-position]').textContent = en
+            ? 'Media ' + (index + 1) + ' of ' + visible.length
+            : 'Mídia ' + (index + 1) + ' de ' + visible.length;
+        dialogBody.scrollTop = 0;
         $('[data-prev]').disabled = index <= 0;
         $('[data-next]').disabled = index >= visible.length - 1;
         if (!dialog.open) dialog.showModal();
@@ -366,6 +381,30 @@ function init(root) {
         const index = visible.indexOf(current);
         if (visible[index + delta]) openCard(visible[index + delta]);
     }
+    function syncFullscreen() {
+        const active = document.fullscreenElement === viewer;
+        fullscreenButton.hidden =
+            !viewer.requestFullscreen ||
+            !document.fullscreenEnabled ||
+            (!active && !['photo', 'video', 'audio', 'presentation'].includes(dialog.dataset.kind));
+        fullscreenButton.setAttribute('aria-pressed', String(active));
+        const label = active ? (en ? 'Exit fullscreen' : 'Sair da tela cheia') : en ? 'Fullscreen' : 'Tela cheia';
+        fullscreenButton.setAttribute('aria-label', label);
+        fullscreenButton.title = label;
+        $('[data-fullscreen-label]').textContent = label;
+    }
+
+    async function toggleFullscreen() {
+        try {
+            if (document.fullscreenElement === viewer) await document.exitFullscreen();
+            else if (viewer.requestFullscreen && document.fullscreenEnabled) await viewer.requestFullscreen();
+        } catch {
+            // The default viewport-sized viewer stays usable when fullscreen is denied.
+        }
+        syncFullscreen();
+    }
+    document.addEventListener('fullscreenchange', syncFullscreen);
+
     function closeDialog() {
         if (zoom) {
             zoom.close();
@@ -375,6 +414,7 @@ function init(root) {
     }
     dialog.addEventListener('close', () => {
         if (dialog.open) return;
+        if (document.fullscreenElement === viewer) document.exitFullscreen().catch(() => {});
         clearDetail();
         delete dialog.dataset.kind;
         current = null;
@@ -385,6 +425,7 @@ function init(root) {
         const target = event.target.closest('button, a');
         if (!target) return;
         if (target.matches('[data-close]')) closeDialog();
+        if (target.matches('[data-fullscreen]')) toggleFullscreen();
         if (target.matches('[data-prev]')) step(-1);
         if (target.matches('[data-next]')) step(1);
         if (target.matches('[data-topic]')) {
@@ -434,7 +475,12 @@ function init(root) {
         }
     });
     dialog.addEventListener('keydown', (event) => {
-        if (zoom || event.defaultPrevented || /^(INPUT|SELECT|TEXTAREA|AUDIO|VIDEO|IFRAME)$/.test(event.target.tagName))
+        if (
+            zoom ||
+            current?.dataset.type !== 'photo' ||
+            event.defaultPrevented ||
+            /^(INPUT|SELECT|TEXTAREA|AUDIO|VIDEO|IFRAME)$/.test(event.target.tagName)
+        )
             return;
         if (event.key === 'ArrowRight') {
             event.preventDefault();
@@ -449,6 +495,9 @@ function init(root) {
         if (zoom) {
             event.preventDefault();
             zoom.close();
+        } else if (document.fullscreenElement === viewer) {
+            event.preventDefault();
+            document.exitFullscreen().catch(() => {});
         }
     });
     grid.addEventListener('click', (event) => {
@@ -459,6 +508,11 @@ function init(root) {
     });
 
     for (const button of $$('[data-view]')) button.addEventListener('click', () => switchView(button.dataset.view));
+    for (const button of typeButtons)
+        button.addEventListener('click', () => {
+            form.elements.namedItem('type').value = button.dataset.typeFilter;
+            render();
+        });
     form.addEventListener('input', () => render());
     form.addEventListener('submit', (event) => {
         event.preventDefault();

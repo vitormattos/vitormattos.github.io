@@ -9,6 +9,12 @@
         $archive = $archive->toArray();
     }
     $records = $archive['items'];
+    $typeCounts = array_count_values(array_column($records, 'type'));
+    $typeFilters = array_filter(
+        $archive['types'],
+        static fn($type) => isset($typeCounts[$type]) || $type === 'photo',
+        ARRAY_FILTER_USE_KEY,
+    );
     $years = array_values(array_unique(array_filter(array_column($records, 'year'))));
     rsort($years);
     $hasUndated = in_array(null, array_column($records, 'year'), true);
@@ -28,6 +34,7 @@
                     'url' => $relatedPage->getUrl(),
                     'title' => $relatedPage->title,
                     'locale' => $language,
+                    'presentation' => $kind === 'talks' ? $relatedPage->presentation ?? [] : [],
                 ];
             }
         }
@@ -59,7 +66,21 @@
                     aria-label="{{ $en ? 'Thumbnail size' : 'Tamanho das miniaturas' }}">
             </label>
         </div>
+        <div class="media-type-filters" role="group" aria-label="{{ $en ? 'Media type' : 'Tipo de mídia' }}">
+            <button type="button" data-type-filter="" aria-pressed="true">{{ $en ? 'All types' : 'Todos os tipos' }}
+                <small>{{ count($records) }}</small></button>
+            @foreach ($typeFilters as $type => $label)
+                <button type="button" data-type-filter="{{ $type }}"
+                    aria-pressed="false">{{ $label[$locale] }} <small>{{ $typeCounts[$type] ?? 0 }}</small></button>
+            @endforeach
+        </div>
         <form class="media-filters" data-filters role="search">
+            <select name="type" hidden aria-label="{{ $en ? 'Media type' : 'Tipo de mídia' }}">
+                <option value="">{{ $en ? 'All types' : 'Todos os tipos' }}</option>
+                @foreach ($typeFilters as $type => $label)
+                    <option value="{{ $type }}">{{ $label[$locale] }}</option>
+                @endforeach
+            </select>
             <label class="media-search">
                 <span>{{ $en ? 'Search' : 'Buscar' }}</span>
                 <input type="search" name="q"
@@ -69,15 +90,6 @@
                 aria-controls="media-advanced-filters">{{ $en ? 'Filters' : 'Filtros' }} <span
                     aria-hidden="true">▾</span></button>
             <div class="media-advanced-filters" id="media-advanced-filters" data-collapsed="true">
-                <label>
-                    <span>{{ $en ? 'Type' : 'Tipo' }}</span>
-                    <select name="type">
-                        <option value="">{{ $en ? 'All types' : 'Todos os tipos' }}</option>
-                        @foreach ($archive['types'] as $type => $label)
-                            <option value="{{ $type }}">{{ $label[$locale] }}</option>
-                        @endforeach
-                    </select>
-                </label>
                 <label>
                     <span>{{ $en ? 'Topic' : 'Assunto' }}</span>
                     <select name="topic">
@@ -160,6 +172,12 @@
                         $youtube = $record['youtube'] ?? null;
                         $youtubeThumb = $youtube ? 'https://i.ytimg.com/vi/' . $youtube . '/hqdefault.jpg' : null;
                         $isPlayable = $youtube || isset($record['video']) || isset($record['audio']);
+                        $presentationPage = isset($record['presentation'])
+                            ? $relatedPages['talks:' . $record['presentation']] ?? null
+                            : null;
+                        $deck = $presentationPage['presentation'] ?? [];
+                        $deckEmbed = ($deck['type'] ?? '') === 'slides.com' ? $deck['embed'] ?? null : null;
+                        $slideCount = (int) ($deck['slideCount'] ?? 0);
                         $search =
                             $record['title']['en'] .
                             ' ' .
@@ -203,7 +221,8 @@
                                 @elseif ($thumb)
                                     <img src="{{ $base }}{{ $thumb }}" alt=""
                                         width="{{ $record['coverWidth'] ?? 640 }}"
-                                        height="{{ $record['coverHeight'] ?? 424 }}" loading="lazy" decoding="async">
+                                        height="{{ $record['coverHeight'] ?? 424 }}" loading="lazy"
+                                        decoding="async">
                                     <span class="media-cover-label">{{ $coverLabel }}</span>
                                 @else
                                     <div class="{{ isset($record['audio']) ? 'media-placeholder media-audio-cover' : 'media-placeholder' }}"
@@ -214,7 +233,7 @@
                                             <strong>{{ $record['source'] }}</strong><small>Podcast</small>
                                         @else
                                             <span
-                                                aria-hidden="true">{{ ['video' => '▶', 'photo' => '▧', 'audio' => '♫', 'press' => '↗', 'poster' => '▣'][$record['type']] }}</span>
+                                                aria-hidden="true">{{ ['video' => '▶', 'photo' => '▧', 'audio' => '♫', 'presentation' => '▤', 'press' => '↗', 'poster' => '▣'][$record['type']] }}</span>
                                             <strong>{{ $record['event'] }}</strong><small>{{ $record['type'] === 'photo' ? ($en ? 'Photographic reference' : 'Referência fotográfica') : $typeLabel }}</small>
                                         @endif
                                     </div>
@@ -225,6 +244,10 @@
                                             <path d="M8 5.5v13l11-6.5z" />
                                         </svg></span>
                                 @endif
+                                @if ($deckEmbed)
+                                    <span class="media-slides-indicator" aria-hidden="true">▤
+                                        {{ $en ? 'View slides' : 'Ver slides' }}</span>
+                                @endif
                                 <span
                                     class="media-type">{{ $record['type'] === 'video' ? '▶ ' : '' }}{{ $typeLabel }}</span>
                             </div>
@@ -232,6 +255,9 @@
                                 <p class="media-meta">{{ $record['event'] }} ·
                                     {{ $year === 'unknown' ? ($en ? 'Undated' : 'Sem data') : $year }}</p>
                                 <h2>{{ $record['title'][$locale] }}</h2>
+                                @if ($slideCount > 0)
+                                    <p class="media-meta">{{ $slideCount }} slides</p>
+                                @endif
                                 @if (!empty($record['city']))
                                     <p class="media-meta">{{ $record['city'] }}</p>
                                 @endif
@@ -239,8 +265,22 @@
                         </a>
                         <template data-detail>
                             <div
-                                class="{{ $isPlayable ? 'media-detail-visual media-detail-visual--player' : 'media-detail-visual' }}">
-                                @if ($youtube)
+                                class="{{ $isPlayable || $deckEmbed ? 'media-detail-visual media-detail-visual--player' : 'media-detail-visual' }}">
+                                @if ($deckEmbed)
+                                    <div class="media-slide-player">
+                                        <iframe src="{{ $deckEmbed }}" title="{{ $record['title'][$locale] }}"
+                                            data-presentation-embed allow="fullscreen" allowfullscreen
+                                            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                                    </div>
+                                    <div class="media-player-note media-presentation-note">
+                                        @if ($slideCount > 0)
+                                            <span data-slide-count>{{ $slideCount }} slides</span>
+                                        @endif
+                                        <span>{{ $en ? 'Use the presentation controls to navigate slides.' : 'Use os controles da apresentação para navegar pelos slides.' }}</span>
+                                        <a href="{{ $presentationPage['url'] }}">{{ $en ? 'Presentation page' : 'Página da palestra' }}
+                                            ↗</a>
+                                    </div>
+                                @elseif ($youtube)
                                     <div class="media-video-player">
                                         <iframe
                                             src="https://www.youtube-nocookie.com/embed/{{ $youtube }}?rel=0&amp;playsinline=1"
@@ -272,6 +312,13 @@
                                     <p class="media-player-note"><a href="{{ $record['audio'] }}" target="_blank"
                                             rel="external noopener noreferrer">{{ $en ? 'Listen to original audio' : 'Ouvir áudio original' }}
                                             ↗</a></p>
+                                @elseif ($record['type'] === 'presentation')
+                                    <div class="media-placeholder">
+                                        <strong>{{ $record['title'][$locale] }}</strong>
+                                        <a href="{{ $record['url'] }}" target="_blank"
+                                            rel="noopener noreferrer">{{ $en ? 'Open presentation' : 'Abrir apresentação' }}
+                                            ↗</a>
+                                    </div>
                                 @elseif ($image)
                                     <a href="{{ $base }}{{ $image }}" data-zoom
                                         data-width="{{ $record['width'] ?? ($record['coverWidth'] ?? 0) }}"
@@ -362,12 +409,23 @@
         </aside>
     </div>
     <dialog class="media-dialog" data-dialog aria-labelledby="media-dialog-heading">
-        <div class="media-dialog-toolbar">
-            <button type="button" data-prev aria-label="{{ $en ? 'Previous media' : 'Mídia anterior' }}">←</button>
-            <span data-position aria-live="polite"></span>
-            <button type="button" data-next aria-label="{{ $en ? 'Next media' : 'Próxima mídia' }}">→</button>
-            <button type="button" data-close aria-label="{{ $en ? 'Close' : 'Fechar' }}">✕</button>
+        <div class="media-viewer" data-viewer>
+            <div class="media-dialog-toolbar">
+                <button type="button" data-prev aria-label="{{ $en ? 'Previous media' : 'Mídia anterior' }}"
+                    title="{{ $en ? 'Previous media' : 'Mídia anterior' }}">←</button>
+                <span data-position aria-live="polite"></span>
+                <button type="button" data-next aria-label="{{ $en ? 'Next media' : 'Próxima mídia' }}"
+                    title="{{ $en ? 'Next media' : 'Próxima mídia' }}">→</button>
+                <div class="media-viewer-actions">
+                    <button type="button" data-fullscreen aria-pressed="false"
+                        aria-label="{{ $en ? 'Fullscreen' : 'Tela cheia' }}"
+                        title="{{ $en ? 'Fullscreen' : 'Tela cheia' }}"><span aria-hidden="true">⛶</span> <span
+                            data-fullscreen-label>{{ $en ? 'Fullscreen' : 'Tela cheia' }}</span></button>
+                    <button type="button" data-close aria-label="{{ $en ? 'Close' : 'Fechar' }}"
+                        title="{{ $en ? 'Close' : 'Fechar' }}">✕</button>
+                </div>
+            </div>
+            <div class="media-dialog-body" data-dialog-body></div>
         </div>
-        <div class="media-dialog-body" data-dialog-body></div>
     </dialog>
 </div>

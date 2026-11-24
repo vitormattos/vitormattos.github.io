@@ -14,6 +14,13 @@ final class MediaArchiveTest extends TestCase
     public function testPublicMediaMetadataAndProvenance(): void
     {
         $archive = require __DIR__ . '/../data/media.php';
+        self::assertArrayHasKey('presentation', $archive['types']);
+        $recordsById = array_column($archive['items'], null, 'id');
+        foreach (['web-summit-rio-2026' => 'controle-tecnologia', 'latinoware-2026-speaker' => 'a-ia-entrega-codigo-e-depois'] as $id => $slug) {
+            self::assertSame('presentation', $recordsById[$id]['type']);
+            self::assertSame($slug, $recordsById[$id]['presentation']);
+            self::assertNotEmpty($recordsById[$id]['reference']);
+        }
         $ids = [];
         foreach ($archive['items'] as $record) {
             self::assertMatchesRegularExpression('/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $record['id']);
@@ -69,6 +76,9 @@ final class MediaArchiveTest extends TestCase
             self::assertStringNotContainsString('hemingway.softwarelivre.org', $html);
             self::assertStringNotContainsString('www.listennotes.com', $html);
             self::assertStringNotContainsString('data-external-thumbs', $html);
+            self::assertStringContainsString('data-type-filter="presentation"', $html);
+            self::assertStringContainsString('data-fullscreen', $html);
+
             $document = new \DOMDocument();
             $previous = libxml_use_internal_errors(true);
             try {
@@ -87,6 +97,12 @@ final class MediaArchiveTest extends TestCase
                     self::assertSame(1, $xpath->query($card . "/a//*[@data-play-indicator]")->length);
                     self::assertSame(1, $xpath->query($card . "/template//iframe[starts-with(@src, 'https://www.youtube-nocookie.com/embed/" . $id . "?')][@allowfullscreen]")->length);
                     self::assertSame(0, $xpath->query($card . "/template//*[@data-zoom]")->length);
+                }
+                if ($record['type'] === 'presentation') {
+                    self::assertSame(1, $xpath->query($card . "[@data-type='presentation']")->length);
+                    self::assertSame(1, $xpath->query($card . "/template//iframe[@data-presentation-embed][@src='" . $record['url'] . "/embed'][@allowfullscreen]")->length);
+                    self::assertSame(0, $xpath->query($card . "/template//*[@data-zoom]")->length);
+                    self::assertSame(1, $xpath->query($card . "/template//*[@data-slide-count]")->length);
                 }
                 if (isset($record['audio'])) {
                     self::assertSame(1, $xpath->query($card . "/template//audio[@controls][@src='" . $record['audio'] . "']")->length);
