@@ -126,6 +126,16 @@ alternateUrl: /pt-BR/
         </div>
     </section>
 
+    <section id="media" class="home-section" aria-labelledby="home-media-title">
+        <div class="section-heading section-heading--home">
+            <div>
+                <p class="eyebrow">Public record</p>
+                <h2 id="home-media-title">Explore the media archive</h2>
+            </div>
+            <a href="{{ rtrim($page->baseUrl, '/') }}/media">Explore media →</a>
+        </div>
+        <p>Discover recordings, interviews and photographic references from conferences and free software communities.</p>
+    </section>
     <section id="articles" class="home-section" aria-labelledby="articles-title">
         <div class="section-heading section-heading--home">
             <div>

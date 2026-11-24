@@ -1,0 +1,3 @@
+Natural Earth data is in the public domain.
+https://www.naturalearthdata.com/about/terms-of-use/
+The source data may be used in any manner, including modification and redistribution.

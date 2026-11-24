@@ -16,6 +16,7 @@ return [
     'locales' => ['en', 'pt-BR'],
     'siteDescription' => 'Vitor Mattos writes about free software, PHP, Linux, LibreSign, digital signatures, research, engineering and sustainable software communities.',
     'talkMetadata' => require __DIR__ . '/data/talks.php',
+    'mediaArchive' => require __DIR__ . '/data/media.php',
     'author' => [
         'name' => 'Vitor Mattos',
         'id' => 'https://vitormattos.github.io/#person',

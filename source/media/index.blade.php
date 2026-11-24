@@ -1,0 +1,16 @@
+---
+extends: _layouts.main
+section: body
+locale: en
+title: Media archive
+description: Explore recordings, photographic references, interviews and public event coverage.
+alternateUrl: /pt-BR/acervo
+indexable: true
+---
+{{-- SPDX-FileCopyrightText: 2026 Vitor Mattos --}}
+{{-- SPDX-License-Identifier: AGPL-3.0-or-later --}}
+@include('_partials.media.catalog')
+
+@push('scripts')
+    <script type="module" src="{{ $page->baseUrl }}{{ vite('source/_assets/js/media-catalog.js') }}"></script>
+@endpush

@@ -149,6 +149,7 @@
                 @endif
             </section>
         @endif
+        @include('_partials.media.related', ['mediaRelationKind' => 'talks'])
         @if ($showAbout)
             <section aria-labelledby="talk-about-title">
                 <h2 id="talk-about-title">{{ $isEnglish ? 'About this presentation' : 'Sobre esta apresentação' }}</h2>

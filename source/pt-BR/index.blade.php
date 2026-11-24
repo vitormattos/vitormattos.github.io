@@ -129,6 +129,16 @@ alternateUrl: /
         </div>
     </section>
 
+    <section id="acervo" class="home-section" aria-labelledby="home-media-title">
+        <div class="section-heading section-heading--home">
+            <div>
+                <p class="eyebrow">Memória pública</p>
+                <h2 id="home-media-title">Explore o acervo multimídia</h2>
+            </div>
+            <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/acervo">Explorar acervo →</a>
+        </div>
+        <p>Descubra gravações, entrevistas e referências fotográficas de conferências e comunidades de software livre.</p>
+    </section>
     <section id="artigos" class="home-section" aria-labelledby="articles-title">
         <div class="section-heading section-heading--home">
             <div>
