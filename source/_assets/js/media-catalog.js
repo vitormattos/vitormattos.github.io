@@ -4,7 +4,6 @@
 import Masonry from 'masonry-layout';
 import PhotoSwipe from 'photoswipe';
 import photoSwipeCss from 'photoswipe/style.css?inline';
-import leafletCss from 'leaflet/dist/leaflet.css?inline';
 
 import { browseMode, catalogYears, matchesMedia } from './media-filters.js';
 
@@ -42,9 +41,7 @@ function init(root) {
     let lastFocus = null;
     let masonry = null;
     let map = null;
-    let markers = null;
     let mapLoading = null;
-    let leaflet = null;
     let zoom = null;
     let zoomStyled = false;
     let scheduled = false;
@@ -189,72 +186,111 @@ function init(root) {
     }
 
     const cityButtons = $$('[data-city][data-lat]');
+    const cityClearButtons = $$('[data-city-clear]');
+    const countryNames = new Intl.DisplayNames([en ? 'en' : 'pt-BR'], { type: 'region' });
+    const places = new Map(
+        cityButtons.map((button) => [
+            button.dataset.city,
+            { button, coordinates: [Number(button.dataset.lat), Number(button.dataset.lng)] },
+        ]),
+    );
+    for (const [city, { button }] of places) {
+        button.querySelector('[data-city-region]').textContent = [
+            button.dataset.region,
+            countryNames.of(button.dataset.country),
+        ]
+            .filter(Boolean)
+            .join(' · ');
+        button.setAttribute('aria-label', city);
+    }
+
     function selectCity(city) {
         form.elements.namedItem('city').value = form.elements.namedItem('city').value === city ? '' : city;
         render();
     }
-    function updateMarkers() {
-        const counts = new Map();
-        const withoutCity = { ...filters(), city: '', album: '' };
-        for (const card of cards.filter((card) => matchesMedia(card.dataset, withoutCity))) {
+
+    function updateMapDirectory() {
+        const criteria = { ...filters(), city: '', album: '' };
+        const matching = cards.filter((card) => matchesMedia(card.dataset, criteria));
+        const groups = new Map();
+        let unlocated = 0;
+        for (const card of matching) {
             const city = card.dataset.city;
-            if (city) counts.set(city, (counts.get(city) || 0) + 1);
+            if (!places.has(city)) {
+                unlocated++;
+                continue;
+            }
+            if (!groups.has(city)) groups.set(city, { count: 0, events: new Set() });
+            const group = groups.get(city);
+            group.count++;
+            group.events.add(card.dataset.event);
         }
-        for (const button of cityButtons) {
-            const city = button.dataset.city;
-            const count = counts.get(city) || 0;
-            button.textContent = city + ' (' + count + ')';
+        const active = filters().city;
+        for (const [city, { button }] of places) {
+            const group = groups.get(city);
+            const count = group?.count || 0;
+            button.hidden = count === 0;
             button.disabled = count === 0;
-            button.setAttribute('aria-pressed', String(filters().city === city));
+            button.querySelector('[data-city-count]').textContent = String(count);
+            button.querySelector('[data-city-events]').textContent = group
+                ? [...group.events].slice(0, 2).join(' · ')
+                : '';
+            button.setAttribute('aria-label', city + ', ' + recordCount(count));
+            button.setAttribute('aria-pressed', String(active === city));
         }
-        if (!markers) return;
-        markers.clearLayers();
-        for (const button of cityButtons.filter((button) => !button.disabled)) {
-            const city = button.dataset.city;
-            const active = filters().city === city;
-            const marker = leaflet.circleMarker([Number(button.dataset.lat), Number(button.dataset.lng)], {
-                radius: 8 + Math.min(counts.get(city), 8),
-                color: active ? '#0f172a' : '#2563eb',
-                weight: 2,
-                fillColor: active ? '#0f172a' : '#60a5fa',
-                fillOpacity: 0.9,
-            });
-            const label = document.createElement('span');
-            label.textContent = city + ' · ' + counts.get(city);
-            marker.bindTooltip(label);
-            marker.on('click', () => selectCity(city));
-            marker.addTo(markers);
-        }
+        $('[data-map-empty]').hidden = groups.size > 0;
+        const located = matching.length - unlocated;
+        const locations =
+            groups.size +
+            (en
+                ? groups.size === 1
+                    ? ' location'
+                    : ' locations'
+                : groups.size === 1
+                  ? ' localidade'
+                  : ' localidades');
+        $('[data-map-summary]').textContent =
+            locations + ' · ' + recordCount(located) + (en ? ' on the map' : ' no mapa');
+        $('[data-map-unlocated]').textContent = unlocated
+            ? recordCount(unlocated) + (en ? ' without a documented location' : ' sem localidade documentada')
+            : '';
+        for (const button of cityClearButtons) button.hidden = !active;
+        $('[data-map-results-title]').textContent = active
+            ? (en ? 'Media in ' : 'Mídias em ') + active
+            : en
+              ? 'All matching media'
+              : 'Todas as mídias correspondentes';
+        return [...groups].map(([city, group]) => ({
+            city,
+            count: group.count,
+            coordinates: places.get(city).coordinates,
+            country: places.get(city).button.dataset.country,
+            label: city + ', ' + recordCount(group.count),
+            active: city === active,
+        }));
     }
 
-    async function ensureMap() {
+    async function ensureMap(locations) {
         if (map) {
-            map.invalidateSize();
-            updateMarkers();
+            map.refresh(locations);
             return;
         }
         if (mapLoading) return mapLoading;
         mapLoading = (async () => {
             try {
-                const [{ default: L }, response] = await Promise.all([import('leaflet'), fetch(root.dataset.mapUrl)]);
+                const [{ createMediaMap }, response] = await Promise.all([
+                    import('./media-map.js'),
+                    fetch(root.dataset.mapUrl),
+                ]);
                 if (!response.ok) throw new Error('Map data unavailable');
                 const geography = await response.json();
-                leaflet = L;
-                addStyles(leafletCss);
-                map = L.map($('[data-map]'), {
-                    scrollWheelZoom: false,
-                    attributionControl: true,
-                    minZoom: 2,
-                    maxZoom: 8,
-                }).setView([-21, -53], 4);
-                L.geoJSON(geography, {
-                    style: { color: '#82958a', weight: 1, fillColor: '#c4d4c6', fillOpacity: 0.8 },
-                    interactive: false,
-                }).addTo(map);
-                map.attributionControl.addAttribution('Natural Earth · public domain');
-                markers = L.layerGroup().addTo(map);
-                updateMarkers();
-                if (!mapPanel.hidden) map.invalidateSize();
+                map = await createMediaMap($('[data-map]'), geography, {
+                    locale: en ? 'en' : 'pt-BR',
+                    selectCity,
+                    fitButton: $('[data-map-fit]'),
+                });
+                if (!mapPanel.hidden) map.refresh(updateMapDirectory());
+                $('[data-map-error]').hidden = true;
             } catch {
                 $('[data-map-error]').hidden = false;
             } finally {
@@ -298,8 +334,7 @@ function init(root) {
             if (showAlbums) renderAlbums(visible);
         } else scheduleLayout();
         if (view === 'map') {
-            updateMarkers();
-            ensureMap();
+            ensureMap(updateMapDirectory());
         }
         if (persist) writeState();
     }
@@ -538,6 +573,11 @@ function init(root) {
         scheduleLayout();
     });
     for (const button of cityButtons) button.addEventListener('click', () => selectCity(button.dataset.city));
+    for (const button of cityClearButtons)
+        button.addEventListener('click', () => {
+            form.elements.namedItem('city').value = '';
+            render();
+        });
     for (const button of $$('[data-jump]')) button.addEventListener('click', () => jumpToYear(button.dataset.jump));
     range.addEventListener('input', () => jumpToYear(years[Number(range.value)]));
     window.addEventListener(

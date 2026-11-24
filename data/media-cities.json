@@ -1,14 +1,26 @@
 {
-    "Rio de Janeiro": [
-        -22.91,
-        -43.2
-    ],
-    "Foz do Iguaçu": [
-        -25.54,
-        -54.59
-    ],
-    "Porto Alegre": [
-        -30.03,
-        -51.23
-    ]
+    "Rio de Janeiro": {
+        "coordinates": [
+            -22.91,
+            -43.2
+        ],
+        "region": "RJ",
+        "country": "BR"
+    },
+    "Foz do Iguaçu": {
+        "coordinates": [
+            -25.54,
+            -54.59
+        ],
+        "region": "PR",
+        "country": "BR"
+    },
+    "Porto Alegre": {
+        "coordinates": [
+            -30.03,
+            -51.23
+        ],
+        "region": "RS",
+        "country": "BR"
+    }
 }

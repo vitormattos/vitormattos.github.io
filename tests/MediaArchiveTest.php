@@ -167,7 +167,7 @@ final class MediaArchiveTest extends TestCase
         $article = file_get_contents($build . '/articles/communion-of-saints-digital-ethics/index.html');
         self::assertIsString($article);
         self::assertStringContainsString('/media#phprio-cloud-privacy-2022', $article);
-        self::assertFileExists($build . '/media-assets/south-america.geojson');
+        self::assertFileExists($build . '/media-assets/world.geojson');
     }
 
     public function testHistoricalRecordingReferencesAreRetained(): void

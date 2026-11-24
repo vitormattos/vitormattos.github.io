@@ -103,6 +103,60 @@ try {
     assert.equal(await count(), total);
     await page.click('[data-view=map]');
     await page.waitForSelector('.leaflet-container');
+    await page.waitForSelector('.media-map-pin[aria-label]');
+    await page.waitForSelector('.media-map-country-label');
+    const geo = await page.evaluate(() => {
+        const places = new Set(
+            [...document.querySelectorAll('[data-cities] button[data-city]')].map((button) => button.dataset.city),
+        );
+        const counts = {};
+        let unlocated = 0;
+        for (const record of document.querySelectorAll('[data-record]')) {
+            if (places.has(record.dataset.city)) counts[record.dataset.city] = (counts[record.dataset.city] || 0) + 1;
+            else unlocated++;
+        }
+        return { counts, unlocated };
+    });
+    assert.equal(await page.$$eval('.media-map-pin', (pins) => pins.length), Object.keys(geo.counts).length);
+    assert.ok(
+        (await page.$eval('[data-map-summary]', (summary) => summary.textContent)).startsWith(
+            String(Object.keys(geo.counts).length),
+        ),
+    );
+    assert.equal(
+        await page.$eval('[data-map-unlocated]', (summary) => summary.textContent),
+        geo.unlocated
+            ? geo.unlocated +
+                  (geo.unlocated === 1
+                      ? ' registro sem localidade documentada'
+                      : ' registros sem localidade documentada')
+            : '',
+    );
+    await page.waitForFunction(() =>
+        [...document.querySelectorAll('.media-map-country-label')].some((label) => label.textContent === 'Brasil'),
+    );
+    assert.ok(
+        await page.$eval(
+            '.leaflet-countryLabels-pane',
+            (pane) =>
+                Number(getComputedStyle(pane).zIndex) >
+                Number(getComputedStyle(document.querySelector('.leaflet-overlay-pane')).zIndex),
+        ),
+    );
+    assert.ok(await page.$$eval('.media-map-admin-boundary', (lines) => lines.length > 0));
+    await page.click('[data-map-fit]');
+    await page.click('.media-map-pin[aria-label^="Rio de Janeiro,"]');
+    assert.equal(
+        await page.$eval('button[data-city="Rio de Janeiro"]', (button) => button.getAttribute('aria-pressed')),
+        'true',
+    );
+    assert.equal(
+        await page.$eval('[data-map-results-title]', (heading) => heading.textContent),
+        'Mídias em Rio de Janeiro',
+    );
+    assert.equal(await count(), geo.counts['Rio de Janeiro']);
+    await page.click('.media-map-results-heading [data-city-clear]');
+    assert.equal(await count(), total);
     await page.click('[data-cities] button[data-city="Rio de Janeiro"]');
     assert.ok((await count()) < total);
     await page.click('[data-view=mosaic]');
@@ -118,7 +172,22 @@ try {
     assert.equal(await count(), 0);
     await page.click('[data-clear]');
     assert.equal(await count(), total);
+    await page.click('[data-view=map]');
+    await page.click('[data-type-filter="audio"]');
+    await page.waitForFunction(() => document.querySelectorAll('.media-map-pin').length === 1);
+    assert.equal(
+        await page.$eval('[data-map-summary]', (summary) => summary.textContent),
+        '1 localidade · 1 registro no mapa',
+    );
+    await page.type('input[name=q]', 'a-phrase-with-no-matching-media');
+    await page.waitForFunction(() => document.querySelectorAll('.media-map-pin').length === 0);
+    assert.equal(await page.$eval('[data-map-fit]', (button) => button.disabled), true);
+    assert.equal(await page.$eval('[data-map-empty]', (element) => element.hidden), false);
     await page.setViewport({ width: 390, height: 844 });
+    await page.goto(url + '?view=map', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.media-map-pin');
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2));
+
     await page.goto(url + '?type=audio', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.media-grid.is-enhanced');
     assert.equal(await count(), 1);

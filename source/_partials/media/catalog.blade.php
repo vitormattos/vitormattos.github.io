@@ -38,7 +38,7 @@
 @endphp
 
 <div class="media-archive" data-media-catalog data-locale="{{ $locale }}"
-    data-map-url="{{ $base }}/media-assets/south-america.geojson">
+    data-map-url="{{ $base }}/media-assets/world.geojson">
     <header class="media-heading">
         <p class="eyebrow">
             {{ $en ? 'PUBLIC RECORD · TALKS & COMMUNITIES' : 'MEMÓRIA PÚBLICA · PALESTRAS E COMUNIDADES' }}</p>
@@ -133,21 +133,72 @@
                     data-album-back>{{ $en ? '← All albums' : '← Todos os álbuns' }}</button><strong
                     data-album-title></strong></div>
             <div class="media-albums" data-albums hidden></div>
-            <div class="media-map-panel" data-map-panel hidden>
-                <p>{{ $en ? 'Approximate city centers of past public events. Select a city to filter the collection.' : 'Centros aproximados de cidades de eventos públicos passados. Selecione uma cidade para filtrar o acervo.' }}
-                </p>
-                <div class="media-map" data-map
-                    aria-label="{{ $en ? 'Map of public events' : 'Mapa de eventos públicos' }}"></div>
-                <div class="media-city-list" data-cities>
-                    @foreach ($archive['cities'] as $city => $coordinates)
-                        <button type="button" data-city="{{ $city }}" data-lat="{{ $coordinates[0] }}"
-                            data-lng="{{ $coordinates[1] }}">{{ $city }}</button>
-                    @endforeach
+            <section class="media-map-panel" data-map-panel hidden aria-labelledby="media-map-title">
+                <div class="media-map-heading">
+                    <div>
+                        <h2 id="media-map-title">{{ $en ? 'Explore by place' : 'Explore por localidade' }}</h2>
+                        <p data-map-summary aria-live="polite"></p>
+                    </div>
+                    <button type="button" class="media-map-fit" data-map-fit disabled>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5M8 12h8m-4-4v8" />
+                        </svg>
+                        {{ $en ? 'Fit locations' : 'Enquadrar cidades' }}
+                    </button>
+                </div>
+                <div class="media-map-shell">
+                    <div class="media-map" data-map
+                        aria-label="{{ $en ? 'Interactive map of public events' : 'Mapa interativo de eventos públicos' }}">
+                    </div>
+                    <aside class="media-map-directory" aria-label="{{ $en ? 'Locations' : 'Localidades' }}">
+                        <div class="media-map-directory__heading">
+                            <h3>{{ $en ? 'Locations' : 'Localidades' }}</h3>
+                            <button type="button" data-city-clear hidden>{{ $en ? 'Clear' : 'Limpar' }}</button>
+                        </div>
+                        <div class="media-city-list" data-cities>
+                            @foreach ($archive['cities'] as $city => $place)
+                                <button type="button" data-city="{{ $city }}"
+                                    data-lat="{{ $place['coordinates'][0] }}"
+                                    data-lng="{{ $place['coordinates'][1] }}" data-country="{{ $place['country'] }}"
+                                    data-region="{{ $place['region'] ?? '' }}" aria-pressed="false">
+                                    <span class="media-city-icon" aria-hidden="true">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                                            <circle cx="12" cy="10" r="2.5" />
+                                        </svg>
+                                    </span>
+                                    <span class="media-city-copy">
+                                        <strong>{{ $city }}</strong>
+                                        <small data-city-region></small>
+                                        <small data-city-events></small>
+                                    </span>
+                                    <span class="media-city-count" data-city-count></span>
+                                </button>
+                            @endforeach
+                        </div>
+                        <p class="media-map-directory__empty" data-map-empty hidden>
+                            {{ $en ? 'No locations match the current filters.' : 'Nenhuma localidade corresponde aos filtros atuais.' }}
+                        </p>
+                    </aside>
+                </div>
+                <div class="media-map-footnote">
+                    <p>{{ $en ? 'Locations represent public events at city level, not personal GPS data.' : 'Localidades de eventos públicos, em nível de cidade. Não são dados de GPS pessoal.' }}
+                    </p>
+                    <p data-map-unlocated aria-live="polite"></p>
                 </div>
                 <p data-map-error hidden>
-                    {{ $en ? 'Map unavailable. City filters remain available.' : 'Mapa indisponível. Os filtros por cidade continuam disponíveis.' }}
+                    {{ $en ? 'Map unavailable. The location directory remains usable.' : 'Mapa indisponível. A lista de localidades continua disponível.' }}
                 </p>
-            </div>
+                <div class="media-map-results-heading">
+                    <h3 data-map-results-title>
+                        {{ $en ? 'Media from all locations' : 'Mídias de todas as localidades' }}</h3>
+                    <button type="button" data-city-clear
+                        hidden>{{ $en ? 'All locations' : 'Todas as localidades' }}</button>
+                </div>
+            </section>
             <div class="media-grid" data-grid>
                 @foreach ($records as $record)
                     @php
@@ -191,9 +242,10 @@
                                 array_map(static fn($topic) => $archive['topics'][$topic][$locale], $record['topics']),
                             );
                     @endphp
-                    <article id="{{ $id }}" class="media-card" data-record data-type="{{ $record['type'] }}"
-                        data-year="{{ $year }}" data-city="{{ $record['city'] ?? '' }}"
-                        data-album="{{ $album }}"
+                    <article id="{{ $id }}" class="media-card" data-record
+                        data-type="{{ $record['type'] }}" data-year="{{ $year }}"
+                        data-city="{{ $record['city'] ?? '' }}" data-album="{{ $album }}"
+                        data-event="{{ $record['event'] }}"
                         data-topics="{{ json_encode($record['topics'], JSON_UNESCAPED_UNICODE) }}"
                         data-search="{{ $search }}" data-youtube="{{ $record['youtube'] ?? '' }}">
                         <a class="media-card__open" data-open href="{{ $publicHref($record['url']) }}"

@@ -50,3 +50,10 @@ use the existing examples for bilingual titles/descriptions, provenance,
 related talk/article slugs, date context and media type. Photos additionally
 require an optimized public image and thumbnail, dimensions, credit and a
 license. Do not import private cloud metadata or exact capture coordinates.
+
+The map uses the public-domain Natural Earth 1:50m country geography and first-order administrative boundaries
+(v5.1.2), vendored as a compact, localized GeoJSON in
+`source/media-assets/world.geojson`. The map and labels load locally on demand;
+no map tiles, tracking services, geocoding requests or personal coordinates
+are used. Add documented city centers with region/country information to
+`data/media-cities.json` for future public events.
