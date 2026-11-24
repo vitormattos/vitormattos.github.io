@@ -1,0 +1,25 @@
+{
+    "type": "audio",
+    "year": 2026,
+    "event": "Latinoware",
+    "city": "Foz do Iguaçu",
+    "title": {
+        "en": "Interview on community and collaborative technology",
+        "pt-BR": "Entrevista sobre comunidade e tecnologia colaborativa"
+    },
+    "description": {
+        "en": "Interview with Vitor Mattos at Latinoware 2026, published on 23 October in the producer’s podcast feed.",
+        "pt-BR": "Entrevista com Vitor Mattos na Latinoware 2026, publicada em 23 de outubro no feed do produtor."
+    },
+    "topics": [
+        "colaboração",
+        "software livre"
+    ],
+    "url": "https://creators.spotify.com/pod/profile/bate-papo-nerd/episodes/Entrevista-com-Vitor-Mattos-no-Latinoware-2026-sobre-Comunidade-e-Tecnologia-Colaborativa-Ameaada-e3qu5ta",
+    "source": "Bate Papo Nerd",
+    "talks": [
+        "a-ia-entrega-codigo-e-depois"
+    ],
+    "role": "interviewee",
+    "audio": "https://anchor.fm/s/113481ee4/podcast/play/127915370/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-22%2F8e320bd9-aaaf-d08b-34dc-cebcc3df3182.mp3"
+}

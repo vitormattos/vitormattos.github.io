@@ -1,7 +1,7 @@
 ---
 locale: pt-BR
 title: Acervo multimídia
-description: Explore gravações, referências fotográficas, entrevistas e registros de eventos públicos.
+description: Explore fotografias, gravações em vídeo e entrevistas em áudio.
 alternateUrl: /media
 indexable: true
 ---

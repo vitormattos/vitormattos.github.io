@@ -35,3 +35,14 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: composer build
       - run: composer test
+      - name: Install browser-test runtime
+        run: |
+          npm ci --prefix scripts/slides --no-audit --no-fund
+          npm exec --prefix scripts/slides -- puppeteer browsers install chrome
+      - name: Build and exercise the media gallery in Chrome
+        env:
+          PREVIEW_BASE_URL: http://127.0.0.1:18675/pr-preview/pr-local
+        run: |
+          npm run preview
+          vendor/bin/jigsaw build preview
+          node tests-js/media/browser-smoke.js

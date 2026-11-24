@@ -137,7 +137,8 @@ alternateUrl: /
             </div>
             <a href="{{ rtrim($page->baseUrl, '/') }}/pt-BR/acervo">Explorar acervo →</a>
         </div>
-        <p>Descubra gravações, entrevistas e referências fotográficas de conferências e comunidades de software livre.</p>
+        <p>Descubra fotografias, gravações em vídeo e entrevistas em áudio de conferências e comunidades de software livre.
+        </p>
     </section>
     <section id="artigos" class="home-section" aria-labelledby="articles-title">
         <div class="section-heading section-heading--home">

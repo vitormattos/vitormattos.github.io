@@ -10,7 +10,7 @@ export const normalize = (value) =>
 export function matchesMedia(record, filters) {
     return (
         ['type', 'city', 'year', 'album'].every((key) => !filters[key] || record[key] === filters[key]) &&
-        (!filters.topic || record.topics.split(' ').includes(filters.topic)) &&
+        (!filters.topic || JSON.parse(record.topics).includes(filters.topic)) &&
         normalize(filters.q)
             .split(/\s+/)
             .filter(Boolean)

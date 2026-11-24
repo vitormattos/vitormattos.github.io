@@ -4,10 +4,7 @@
     $locale = ($page->locale ?? 'en') === 'pt-BR' ? 'pt-BR' : 'en';
     $en = $locale === 'en';
     $base = rtrim((string) $page->baseUrl, '/');
-    $archive = $page->mediaArchive;
-    if (is_object($archive) && method_exists($archive, 'toArray')) {
-        $archive = $archive->toArray();
-    }
+    $archive = $page->mediaCatalog($talksEn, $talks);
     $records = $archive['items'];
     $typeCounts = array_count_values(array_column($records, 'type'));
     $typeFilters = array_filter(
@@ -34,7 +31,6 @@
                     'url' => $relatedPage->getUrl(),
                     'title' => $relatedPage->title,
                     'locale' => $language,
-                    'presentation' => $kind === 'talks' ? $relatedPage->presentation ?? [] : [],
                 ];
             }
         }
@@ -156,28 +152,27 @@
                 @foreach ($records as $record)
                     @php
                         $id = $record['id'];
+                        $publicHref = static fn(string $href): string => \App\Presentations\TalkMetadata::publicHref(
+                            $href,
+                            $base,
+                        );
                         $year = $record['year'] ?? 'unknown';
                         $album =
                             $record['event'] . ' · ' . ($year === 'unknown' ? ($en ? 'Undated' : 'Sem data') : $year);
                         $thumb = $record['thumbnail'] ?? ($record['cover'] ?? null);
                         $image = $record['image'] ?? ($record['cover'] ?? null);
-                        $coverLabel = isset($record['image'])
-                            ? ($en
-                                ? 'Photograph'
-                                : 'Fotografia')
-                            : ($en
-                                ? 'Slide cover'
-                                : 'Capa dos slides');
+                        $coverLabel =
+                            $record['type'] === 'photo'
+                                ? ($en
+                                    ? 'Photograph'
+                                    : 'Fotografia')
+                                : ($en
+                                    ? 'Preview'
+                                    : 'Prévia');
                         $typeLabel = $archive['types'][$record['type']][$locale];
                         $youtube = $record['youtube'] ?? null;
                         $youtubeThumb = $youtube ? 'https://i.ytimg.com/vi/' . $youtube . '/hqdefault.jpg' : null;
                         $isPlayable = $youtube || isset($record['video']) || isset($record['audio']);
-                        $presentationPage = isset($record['presentation'])
-                            ? $relatedPages['talks:' . $record['presentation']] ?? null
-                            : null;
-                        $deck = $presentationPage['presentation'] ?? [];
-                        $deckEmbed = ($deck['type'] ?? '') === 'slides.com' ? $deck['embed'] ?? null : null;
-                        $slideCount = (int) ($deck['slideCount'] ?? 0);
                         $search =
                             $record['title']['en'] .
                             ' ' .
@@ -198,9 +193,10 @@
                     @endphp
                     <article id="{{ $id }}" class="media-card" data-record data-type="{{ $record['type'] }}"
                         data-year="{{ $year }}" data-city="{{ $record['city'] ?? '' }}"
-                        data-album="{{ $album }}" data-topics="{{ implode(' ', $record['topics']) }}"
+                        data-album="{{ $album }}"
+                        data-topics="{{ json_encode($record['topics'], JSON_UNESCAPED_UNICODE) }}"
                         data-search="{{ $search }}" data-youtube="{{ $record['youtube'] ?? '' }}">
-                        <a class="media-card__open" data-open href="{{ $record['url'] }}"
+                        <a class="media-card__open" data-open href="{{ $publicHref($record['url']) }}"
                             rel="external noopener noreferrer">
                             <div class="media-visual media-visual--{{ $record['type'] }}">
                                 @if ($youtubeThumb)
@@ -220,9 +216,9 @@
                                     </div>
                                 @elseif ($thumb)
                                     <img src="{{ $base }}{{ $thumb }}" alt=""
-                                        width="{{ $record['coverWidth'] ?? 640 }}"
-                                        height="{{ $record['coverHeight'] ?? 424 }}" loading="lazy"
-                                        decoding="async">
+                                        width="{{ $record['width'] ?? ($record['coverWidth'] ?? 640) }}"
+                                        height="{{ $record['height'] ?? ($record['coverHeight'] ?? 424) }}"
+                                        loading="lazy" decoding="async">
                                     <span class="media-cover-label">{{ $coverLabel }}</span>
                                 @else
                                     <div class="{{ isset($record['audio']) ? 'media-placeholder media-audio-cover' : 'media-placeholder' }}"
@@ -233,7 +229,7 @@
                                             <strong>{{ $record['source'] }}</strong><small>Podcast</small>
                                         @else
                                             <span
-                                                aria-hidden="true">{{ ['video' => '▶', 'photo' => '▧', 'audio' => '♫', 'presentation' => '▤', 'press' => '↗', 'poster' => '▣'][$record['type']] }}</span>
+                                                aria-hidden="true">{{ ['video' => '▶', 'photo' => '▧', 'audio' => '♫'][$record['type']] }}</span>
                                             <strong>{{ $record['event'] }}</strong><small>{{ $record['type'] === 'photo' ? ($en ? 'Photographic reference' : 'Referência fotográfica') : $typeLabel }}</small>
                                         @endif
                                     </div>
@@ -244,10 +240,6 @@
                                             <path d="M8 5.5v13l11-6.5z" />
                                         </svg></span>
                                 @endif
-                                @if ($deckEmbed)
-                                    <span class="media-slides-indicator" aria-hidden="true">▤
-                                        {{ $en ? 'View slides' : 'Ver slides' }}</span>
-                                @endif
                                 <span
                                     class="media-type">{{ $record['type'] === 'video' ? '▶ ' : '' }}{{ $typeLabel }}</span>
                             </div>
@@ -255,9 +247,6 @@
                                 <p class="media-meta">{{ $record['event'] }} ·
                                     {{ $year === 'unknown' ? ($en ? 'Undated' : 'Sem data') : $year }}</p>
                                 <h2>{{ $record['title'][$locale] }}</h2>
-                                @if ($slideCount > 0)
-                                    <p class="media-meta">{{ $slideCount }} slides</p>
-                                @endif
                                 @if (!empty($record['city']))
                                     <p class="media-meta">{{ $record['city'] }}</p>
                                 @endif
@@ -265,22 +254,8 @@
                         </a>
                         <template data-detail>
                             <div
-                                class="{{ $isPlayable || $deckEmbed ? 'media-detail-visual media-detail-visual--player' : 'media-detail-visual' }}">
-                                @if ($deckEmbed)
-                                    <div class="media-slide-player">
-                                        <iframe src="{{ $deckEmbed }}" title="{{ $record['title'][$locale] }}"
-                                            data-presentation-embed allow="fullscreen" allowfullscreen
-                                            referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                                    </div>
-                                    <div class="media-player-note media-presentation-note">
-                                        @if ($slideCount > 0)
-                                            <span data-slide-count>{{ $slideCount }} slides</span>
-                                        @endif
-                                        <span>{{ $en ? 'Use the presentation controls to navigate slides.' : 'Use os controles da apresentação para navegar pelos slides.' }}</span>
-                                        <a href="{{ $presentationPage['url'] }}">{{ $en ? 'Presentation page' : 'Página da palestra' }}
-                                            ↗</a>
-                                    </div>
-                                @elseif ($youtube)
+                                class="{{ $isPlayable ? 'media-detail-visual media-detail-visual--player' : 'media-detail-visual' }}">
+                                @if ($youtube)
                                     <div class="media-video-player">
                                         <iframe
                                             src="https://www.youtube-nocookie.com/embed/{{ $youtube }}?rel=0&amp;playsinline=1"
@@ -288,15 +263,17 @@
                                             allow="encrypted-media; picture-in-picture; fullscreen"
                                             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                                     </div>
-                                    <p class="media-player-note"><a href="{{ $record['url'] }}" target="_blank"
+                                    <p class="media-player-note"><a href="{{ $publicHref($record['url']) }}"
+                                            target="_blank"
                                             rel="external noopener noreferrer">{{ $en ? 'Watch on YouTube if the player is unavailable' : 'Se o player estiver indisponível, assista no YouTube' }}
                                             ↗</a></p>
                                 @elseif (isset($record['video']))
-                                    <div class="media-video-player"><video src="{{ $record['video'] }}"
+                                    <div class="media-video-player"><video src="{{ $publicHref($record['video']) }}"
                                             poster="{{ $thumb ? $base . $thumb : '' }}" controls playsinline
                                             preload="metadata" aria-label="{{ $record['title'][$locale] }}"></video>
                                     </div>
-                                    <p class="media-player-note"><a href="{{ $record['url'] }}" target="_blank"
+                                    <p class="media-player-note"><a href="{{ $publicHref($record['url']) }}"
+                                            target="_blank"
                                             rel="external noopener noreferrer">{{ $en ? 'Open original video' : 'Abrir vídeo original' }}
                                             ↗</a></p>
                                 @elseif (isset($record['audio']))
@@ -306,19 +283,13 @@
                                         </div>
                                         <strong>{{ $record['source'] }}</strong>
                                         <p>{{ $record['title'][$locale] }}</p>
-                                        <audio controls preload="metadata" src="{{ $record['audio'] }}"
+                                        <audio controls preload="metadata" src="{{ $publicHref($record['audio']) }}"
                                             aria-label="{{ $record['title'][$locale] }}"></audio>
                                     </div>
-                                    <p class="media-player-note"><a href="{{ $record['audio'] }}" target="_blank"
+                                    <p class="media-player-note"><a href="{{ $publicHref($record['audio']) }}"
+                                            target="_blank"
                                             rel="external noopener noreferrer">{{ $en ? 'Listen to original audio' : 'Ouvir áudio original' }}
                                             ↗</a></p>
-                                @elseif ($record['type'] === 'presentation')
-                                    <div class="media-placeholder">
-                                        <strong>{{ $record['title'][$locale] }}</strong>
-                                        <a href="{{ $record['url'] }}" target="_blank"
-                                            rel="noopener noreferrer">{{ $en ? 'Open presentation' : 'Abrir apresentação' }}
-                                            ↗</a>
-                                    </div>
                                 @elseif ($image)
                                     <a href="{{ $base }}{{ $image }}" data-zoom
                                         data-width="{{ $record['width'] ?? ($record['coverWidth'] ?? 0) }}"
@@ -342,7 +313,7 @@
                                 <p class="media-meta">{{ $en ? 'Role' : 'Atuação' }}:
                                     {{ $archive['roles'][$record['role']][$locale] }}</p>
                                 <p class="media-meta">{{ $record['city'] ?? '' }}</p>
-                                <a class="media-source" href="{{ $record['url'] }}" target="_blank"
+                                <a class="media-source" href="{{ $publicHref($record['url']) }}" target="_blank"
                                     rel="external noopener noreferrer">{{ $en ? 'Open original source' : 'Abrir fonte original' }}
                                     ↗</a>
                                 <p class="media-meta">{{ $record['source'] }}</p>
@@ -350,13 +321,15 @@
                                     <p>{{ $record['credit'] }}</p>
                                 @endif
                                 @if (isset($record['rights']))
-                                    <p class="media-meta">{{ $record['rights'][$locale] }} @if (isset($record['license']))
-                                            <a href="{{ $record['license'] }}">CC BY 2.0</a>
-                                        @endif
+                                    <p class="media-meta">{{ $record['rights'][$locale] }}</p>
+                                @endif
+                                @if (isset($record['license']))
+                                    <p class="media-meta"><a
+                                            href="{{ $record['license'] }}">{{ $en ? 'License' : 'Licença' }}</a>
                                     </p>
                                 @endif
                                 @if (isset($record['reference']))
-                                    <p><a href="{{ $record['reference'] }}" target="_blank"
+                                    <p><a href="{{ $publicHref($record['reference']) }}" target="_blank"
                                             rel="external noopener noreferrer">{{ $en ? 'Documented reference' : 'Referência documentada' }}</a>
                                     </p>
                                 @endif

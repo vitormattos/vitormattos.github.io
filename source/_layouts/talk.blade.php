@@ -119,6 +119,11 @@
                                         @foreach ((array) $appearance['resources'] as $resource)
                                             <li><a href="{{ $resourceHref((array) $resource) }}" target="_blank"
                                                     rel="external noopener noreferrer">{{ $resource['label'] ?? ucfirst((string) ($resource['type'] ?? ($isEnglish ? 'resource' : 'recurso'))) }}</a>
+                                                @if (($resource['availability'] ?? '') === 'unavailable')
+                                                    <small>({{ $isEnglish ? 'Historical link, unavailable' : 'Link histórico indisponível' }})</small>
+                                                @elseif (($resource['availability'] ?? '') === 'unverified')
+                                                    <small>({{ $isEnglish ? 'Playback unverified' : 'Reprodução não verificada' }})</small>
+                                                @endif
                                             </li>
                                         @endforeach
                                     </ul>
@@ -133,6 +138,11 @@
                         @foreach ($resources as $resource)
                             <li><a href="{{ $resourceHref((array) $resource) }}" target="_blank"
                                     rel="external noopener noreferrer">{{ $resource['label'] ?? ucfirst((string) ($resource['type'] ?? ($isEnglish ? 'resource' : 'recurso'))) }}</a>
+                                @if (($resource['availability'] ?? '') === 'unavailable')
+                                    <small>({{ $isEnglish ? 'Historical link, unavailable' : 'Link histórico indisponível' }})</small>
+                                @elseif (($resource['availability'] ?? '') === 'unverified')
+                                    <small>({{ $isEnglish ? 'Playback unverified' : 'Reprodução não verificada' }})</small>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

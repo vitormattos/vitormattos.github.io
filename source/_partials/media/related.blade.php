@@ -5,10 +5,7 @@
     $mediaEnglish = $mediaLocale === 'en';
     $mediaHub = $mediaEnglish ? '/media' : '/pt-BR/acervo';
     $mediaSlug = (string) ($page->slug ?? basename(trim((string) $page->getPath(), '/')));
-    $mediaData = $page->mediaArchive ?? [];
-    if (is_object($mediaData) && method_exists($mediaData, 'toArray')) {
-        $mediaData = $mediaData->toArray();
-    }
+    $mediaData = $page->mediaCatalog($talksEn, $talks);
     $relatedMedia = array_filter(
         (array) ($mediaData['items'] ?? []),
         static fn(array $item): bool => in_array($mediaSlug, $item[$mediaRelationKind] ?? [], true),

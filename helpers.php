@@ -5,6 +5,7 @@
 
 declare(strict_types=1);
 
+use App\Media\MediaCatalog;
 use App\Presentations\PresentationAssetResolver;
 use App\Presentations\PresentationThumbnailResolver;
 use App\Seo\PageUrlResolver;
@@ -21,6 +22,15 @@ $seoMetadataBuilder = new SeoMetadataBuilder(
 );
 
 return [
+    'mediaCatalog' => static function ($page, iterable $talksEn, iterable $talks): array {
+        static $catalog = null;
+        $metadata = $page->talkMetadata ?? [];
+        if (is_object($metadata) && method_exists($metadata, 'toArray')) {
+            $metadata = $metadata->toArray();
+        }
+
+        return $catalog ??= MediaCatalog::fromDirectory(__DIR__, (array) $metadata, $talksEn, $talks);
+    },
     'presentationAssets' => static function ($page) use ($assetResolver): array {
         return $assetResolver->resolve(
             $page,

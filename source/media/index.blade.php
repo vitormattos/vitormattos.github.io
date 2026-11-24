@@ -1,7 +1,7 @@
 ---
 locale: en
 title: Media archive
-description: Explore recordings, photographic references, interviews and public event coverage.
+description: Explore photographs, video recordings and audio interviews.
 alternateUrl: /pt-BR/acervo
 indexable: true
 ---

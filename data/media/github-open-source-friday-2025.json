@@ -1,0 +1,23 @@
+{
+    "type": "video",
+    "year": 2025,
+    "event": "Open Source Friday Brasil",
+    "title": {
+        "en": "Open Source Friday Brasil with Vitor Mattos",
+        "pt-BR": "Open Source Friday Brasil com Vitor Mattos"
+    },
+    "description": {
+        "en": "GitHub interviewed Vitor Mattos about maintaining LibreSign on 30 May 2025.",
+        "pt-BR": "O GitHub entrevistou Vitor Mattos sobre a manutenção do LibreSign em 30 de maio de 2025."
+    },
+    "topics": [
+        "libresign",
+        "software livre"
+    ],
+    "url": "https://www.youtube.com/watch?v=a34UxYzVU1k",
+    "source": "GitHub / YouTube",
+    "talks": [
+        "libresign"
+    ],
+    "role": "interviewee"
+}

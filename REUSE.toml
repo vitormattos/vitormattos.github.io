@@ -32,3 +32,9 @@ path = ["source/media-assets/south-america.geojson"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Natural Earth (public domain)"
 SPDX-License-Identifier = "LicenseRef-Natural-Earth-Public-Domain"
+
+[[annotations]]
+path = ["data/media/*.json", "data/media-cities.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Vitor Mattos"
+SPDX-License-Identifier = "CC-BY-SA-4.0"

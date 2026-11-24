@@ -33,3 +33,20 @@ composer serve
 The PDF archive renderer is installed separately with `npm ci --prefix scripts/slides` and `npm exec --prefix scripts/slides -- puppeteer browsers install chrome`.
 
 Styles are authored in SCSS under `source/_assets/scss/` and compiled by Vite through `@tighten/jigsaw-vite-plugin`.
+
+
+## Media archive
+
+The archive is generated from the public talk collections and the recording
+resources in `data/talks.php` (including event appearances and native
+`presentation.video`). Duplicate YouTube URLs are consolidated. Historic
+recordings marked `availability: unavailable` or `unverified` remain on their
+talk pages but are excluded from the playable gallery. Use the recording's
+actual date, not the slide deck's creation date.
+
+For independent recordings, podcasts and approved photos, add one JSON
+sidecar per item under `data/media/`. The filename is the stable identifier;
+use the existing examples for bilingual titles/descriptions, provenance,
+related talk/article slugs, date context and media type. Photos additionally
+require an optimized public image and thumbnail, dimensions, credit and a
+license. Do not import private cloud metadata or exact capture coordinates.

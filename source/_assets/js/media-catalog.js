@@ -362,8 +362,7 @@ function init(root) {
         fullscreenButton.hidden =
             !viewer.requestFullscreen ||
             !document.fullscreenEnabled ||
-            (document.fullscreenElement !== viewer &&
-                !['photo', 'video', 'audio', 'presentation'].includes(card.dataset.type));
+            (document.fullscreenElement !== viewer && !['photo', 'video', 'audio'].includes(card.dataset.type));
         dialogBody.replaceChildren(card.querySelector('template').content.cloneNode(true));
         dialogBody.querySelector('[data-detail-title]').id = 'media-dialog-heading';
         const index = visible.indexOf(card);
@@ -386,7 +385,7 @@ function init(root) {
         fullscreenButton.hidden =
             !viewer.requestFullscreen ||
             !document.fullscreenEnabled ||
-            (!active && !['photo', 'video', 'audio', 'presentation'].includes(dialog.dataset.kind));
+            (!active && !['photo', 'video', 'audio'].includes(dialog.dataset.kind));
         fullscreenButton.setAttribute('aria-pressed', String(active));
         const label = active ? (en ? 'Exit fullscreen' : 'Sair da tela cheia') : en ? 'Fullscreen' : 'Tela cheia';
         fullscreenButton.setAttribute('aria-label', label);

@@ -10,7 +10,7 @@ const record = {
     city: 'Florianópolis',
     year: '2017',
     album: 'TDC · 2017',
-    topics: 'php community',
+    topics: JSON.stringify(['php', 'community', 'software livre']),
     search: 'TDC Florianópolis PHP oportunidades',
 };
 
@@ -23,6 +23,8 @@ test('accent-insensitive search combines words with metadata filters', () => {
 
 test('topic, album, year and city filters match exact metadata', () => {
     assert.equal(matchesMedia(record, { topic: 'ph' }), false);
+    assert.equal(matchesMedia(record, { topic: 'software livre' }), true);
+    assert.equal(matchesMedia(record, { topic: 'livre' }), false);
     assert.equal(matchesMedia(record, { city: 'Florianópolis', album: 'TDC · 2017' }), true);
     assert.equal(matchesMedia(record, { year: 'unknown' }), false);
     assert.equal(matchesMedia(record, { album: 'TDC · 2018' }), false);

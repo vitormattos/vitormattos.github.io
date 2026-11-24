@@ -9,7 +9,7 @@
     "format:blade": "prettier --write \"source/**/*.blade.php\"",
     "lint:blade": "prettier --check \"source/**/*.blade.php\"",
     "lint:js": "prettier --check \"source/_assets/js/**/*.js\" \"tests-js/**/*.js\"",
-    "test:js": "node --test tests-js/**/*.test.js"
+    "test:js": "node --test 'tests-js/**/*.test.js'"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.3.1",

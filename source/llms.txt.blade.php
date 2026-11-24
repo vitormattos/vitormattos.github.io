@@ -38,7 +38,7 @@ Canonical site: {{ rtrim($page->siteUrl, '/') }}/
 
 ## Media archive
 
-- [Media archive]({{ rtrim($page->siteUrl, '/') }}/media): Recordings, interviews, photographic references and public event coverage.
+- [Media archive]({{ rtrim($page->siteUrl, '/') }}/media): Photographs, video recordings and audio interviews.
 - [Acervo multimídia]({{ rtrim($page->siteUrl, '/') }}/pt-BR/acervo): Portuguese version.
 
 ## Language versions

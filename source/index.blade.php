@@ -134,7 +134,7 @@ alternateUrl: /pt-BR/
             </div>
             <a href="{{ rtrim($page->baseUrl, '/') }}/media">Explore media →</a>
         </div>
-        <p>Discover recordings, interviews and photographic references from conferences and free software communities.</p>
+        <p>Discover photographs, video recordings and audio interviews from conferences and free software communities.</p>
     </section>
     <section id="articles" class="home-section" aria-labelledby="articles-title">
         <div class="section-heading section-heading--home">
